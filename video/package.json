@@ -1,27 +1,19 @@
 {
-  "name": "video",
+  "name": "educafairino-video",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Vídeo EDUCAFAIRINO 2026–2027 generado con Three.js + Playwright + ffmpeg",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "render": "node tools/render.mjs 2 out/frames",
+    "stills": "node tools/stills.mjs"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@fontsource/anton": "^5.3.0",
-    "@fontsource/archivo-narrow": "^5.3.0",
-    "@fontsource/barlow-condensed": "^5.3.0",
-    "@fontsource/bebas-neue": "^5.3.0",
-    "@fontsource/big-shoulders-display": "^5.3.0",
-    "@fontsource/fjalla-one": "^5.3.0",
     "@fontsource/inter": "^5.3.0",
     "@fontsource/jetbrains-mono": "^5.3.0",
-    "@fontsource/league-gothic": "^5.3.0",
     "@fontsource/michroma": "^5.3.0",
-    "@fontsource/oswald": "^5.3.0",
-    "@fontsource/saira-extra-condensed": "^5.3.0",
     "all-the-cities": "^3.1.0",
     "es-atlas": "^0.6.0",
     "three": "^0.169.0",
@@ -30,5 +22,6 @@
   },
   "devDependencies": {
     "playwright": "^1.56.1"
-  }
+  },
+  "private": true
 }

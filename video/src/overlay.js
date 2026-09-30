@@ -214,7 +214,6 @@ export function createOverlay(root) {
       <div class="l1 e-a">Traed a vuestros alumnos.</div>
       <div class="l2 e-b">OS ESPERAMOS.</div>
       <div class="rule e-c"></div>
-      <div class="web e-d">fairino.es &nbsp;·&nbsp; po@fairino.es</div>
       <div class="edu e-d">EDUCAFAIRINO 2026–2027</div>`;
     const it = { kind: 'end', el, t0, t1, parts: {
       logo: el.querySelector('.e-logo'), a: el.querySelector('.e-a'), b: el.querySelector('.e-b'), c: el.querySelector('.e-c'), d: [...el.querySelectorAll('.e-d')],
