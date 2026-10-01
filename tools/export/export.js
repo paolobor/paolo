@@ -3,7 +3,7 @@ import { Scene, PerspectiveCamera, Group } from 'three';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { createModelMaterials } from '../../src/model/materials.js';
 import { buildAssembly, buildWordmark, buildBench, buildBrandMark, buildBrandWordmark } from '../../src/model/build.js';
-import { BRAND_FACE, BRAND_UP } from '../../src/model/brand.js';
+import { BRAND_FACE, BRAND_UP, brandTilt } from '../../src/model/brand.js';
 import { composeLogo, projectedExtents, basis, orientQuaternion } from '../../src/model/layout.js';
 
 const exporter = new GLTFExporter();
@@ -71,7 +71,7 @@ window.exportAll = async () => {
     const text = buildBrandWordmark(m.brandChrome);
     const aspect = 3.0, fov = 24;
     const b0 = basis(225, 30);
-    mark.quaternion.copy(orientQuaternion(BRAND_FACE, BRAND_UP, b0.back, b0.up));
+    mark.quaternion.copy(orientQuaternion(BRAND_FACE, BRAND_UP, b0.back, b0.up)).multiply(brandTilt());
     const L = composeLogo({ extents: projectedExtents(mark, b0.right, b0.up), textWidth: text.userData.meta.width, textCap: text.userData.meta.capHeight, aspect, fov, style: 'brand' });
     text.position.copy(L.text.position);
     text.quaternion.copy(L.text.quaternion);

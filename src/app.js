@@ -14,7 +14,7 @@ import { setupStructure } from './scenes/structure.js';
 import { Dimensions } from './ui/dimensions.js';
 import { createVideo } from './ui/media.js';
 import { basis, composeLogo, projectedExtents, orientQuaternion, FINAL_AZ } from './model/layout.js';
-import { BRAND, BRAND_FACE, BRAND_UP } from './model/brand.js';
+import { BRAND, BRAND_FACE, BRAND_UP, brandTilt } from './model/brand.js';
 import brandGlyphs from './assets/archivo-glyphs.json';
 
 const MODEL_URL = new URL('./assets/models/fdi-modular.glb', import.meta.url).href;
@@ -149,7 +149,7 @@ export class App {
         const a = ((k === 'izq' ? -1 : 1) * BRAND.spread * Math.PI) / 180;
         qStart = new Quaternion().setFromAxisAngle(Y_AXIS, a).multiply(qFinal);
       }
-      this.mark.arms[k] = { g, roll, qStart, qFinal };
+      this.mark.arms[k] = { g, roll, qStart, qFinal, rollFinal: roll.rotation.z };
     }
     marca.position.set(0, 0, 0);
     marca.traverse((o) => { if (o.isMesh) { o.castShadow = quality.shadows; o.receiveShadow = quality.shadows; } });
@@ -290,12 +290,12 @@ export class App {
 
     // Logotipo de marca: el símbolo mira a la cámara por su diagonal (1,-1,1)
     const mk = this.mark;
-    this.qIso.copy(orientQuaternion(BRAND_FACE, BRAND_UP, bb.back, bb.up));
+    this.qIso.copy(orientQuaternion(BRAND_FACE, BRAND_UP, bb.back, bb.up)).multiply(brandTilt());
     this.flip.quaternion.copy(this.qIso);
     const barsVis = mk.bars.visible, ringVis = mk.ring.visible, ringScale = mk.ring.scale.x;
     mk.bars.visible = true; mk.ring.visible = true; mk.ring.scale.setScalar(1);
     const armSaved = Object.values(mk.arms).map((a) => [a, a.g.quaternion.clone(), a.roll.rotation.z]);
-    for (const a of Object.values(mk.arms)) { a.g.quaternion.copy(a.qFinal); a.roll.rotation.z = Math.PI / 4; }
+    for (const a of Object.values(mk.arms)) { a.g.quaternion.copy(a.qFinal); a.roll.rotation.z = a.rollFinal; }
     this.flip.updateMatrixWorld(true);
     const ext2 = projectedExtents(mk.root, bb.right, bb.up);
     const bwm = this.brandWordmark;
@@ -309,7 +309,7 @@ export class App {
     // Corrección de perspectiva: la "Y" se orienta hacia la posición real de la cámara
     const b2 = basis(L2.pose.az, L2.pose.el);
     const camPos2 = L2.pose.target.clone().addScaledVector(b2.back, L2.pose.dist);
-    this.qIso.copy(orientQuaternion(BRAND_FACE, BRAND_UP, camPos2.sub(this.flip.position), b2.up));
+    this.qIso.copy(orientQuaternion(BRAND_FACE, BRAND_UP, camPos2.sub(this.flip.position), b2.up)).multiply(brandTilt());
     mk.bars.visible = barsVis; mk.ring.visible = ringVis; mk.ring.scale.setScalar(ringScale);
     for (const [a, q, r] of armSaved) { a.g.quaternion.copy(q); a.roll.rotation.z = r; }
     this.flip.quaternion.copy(flipQ);
@@ -500,7 +500,9 @@ export class App {
     // 1) Con la cámara quieta, la figura se gira hacia el frente: la cara
     //    cuadrada de la escuadra termina mirando al espectador
     tl.fromTo(this.flipState, { f: 0 }, { f: 0.6, duration: 1.5, ease: 'power2.inOut' }, o);
-    tl.to(this.stage.scene.environmentRotation, { y: '+=1.5', duration: 2.2, ease: 'power2.inOut' }, o + 0.3);
+    // Barrido de luz sobre el metal durante el giro; termina con el estudio en
+    // un ángulo que deja la "Y" de frente en satinado claro (sin quemarse)
+    tl.to(this.stage.scene.environmentRotation, { y: 0.9, duration: 2.8, ease: 'power2.inOut' }, o + 0.3);
     wm.letters.forEach((L, i) => {
       const t = o + 0.3 + i * 0.06;
       tl.to(L.pivot.rotation, { y: Math.PI / 2, duration: 0.42, ease: 'power2.in' }, t);
@@ -545,7 +547,7 @@ export class App {
     const m = MathUtils.smoothstep(f, 0.6, 1);
     for (const a of Object.values(mk.arms)) {
       a.g.quaternion.slerpQuaternions(a.qStart, a.qFinal, m);
-      a.roll.rotation.z = (Math.PI / 4) * m;
+      a.roll.rotation.z = a.rollFinal * m;
     }
     // La cara cuadrada con su filo naranja pasa a ser el anillo
     const rs = MathUtils.smoothstep(f, 0.6, 0.86);
@@ -591,6 +593,7 @@ export class App {
       outer.set(L.solid, { visible: false }, 0.9 + i * 0.035);
     });
     outer.to(this.flipState, { f: 0, duration: 1.2, ease: 'power3.inOut' }, 0.1);
+    outer.to(this.stage.scene.environmentRotation, { y: 1.75, duration: 1.4, ease: 'power2.inOut' }, 0);
     outer.add(() => { for (const k of ['pV', 'pX', 'pZ']) P[k].scale.z = 1; }, 1.32);
     const tl = gsap.timeline();
     outer.add(tl, 0.9);

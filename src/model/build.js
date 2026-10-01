@@ -1,4 +1,4 @@
-import { Group, Mesh, ExtrudeGeometry, CylinderGeometry, Vector3, Quaternion } from 'three';
+import { Group, Mesh, ExtrudeGeometry, CylinderGeometry, Vector2, Vector3, Quaternion } from 'three';
 import { Font } from 'three/addons/loaders/FontLoader.js';
 import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
 import { profileGeometry, addExtrusionTangents, PROFILE, MM } from '../gl/geometry/profile.js';
@@ -402,13 +402,18 @@ export function buildBrandWordmark(mat) {
 // unos grados para dar la "Y") y el inferior es el perfil vertical desplegado
 // hacia abajo en el plano. Cada barra va girada 45° sobre su eje (se ven dos caras).
 function barGeometry(lengthMm) {
-  // Barra de sección 40x40 con aristas redondeadas, desde el centro del símbolo
-  const b = 1.1;
-  let g = new ExtrudeGeometry(shapeFromPts(filletPolygon(roundedRectPts(40, 40, 4.5), 6)), {
-    depth: lengthMm - 2 * b, bevelEnabled: true, bevelThickness: b, bevelSize: b, bevelOffset: -b, bevelSegments: 3, steps: 1,
+  // Brazo plano del logotipo: sección rectangular (ancho en el plano x fondo
+  // hacia el espectador) con cantos achaflanados a 45° y extremo cortado recto
+  // con su chaflán. Va del centro del símbolo hacia fuera por +Z.
+  const w = BRAND.armW / MM / 2, d = BRAND.armD / MM / 2, c = BRAND.chamfer / MM;
+  const pts = [
+    [-w + c, -d], [w - c, -d], [w, -d + c], [w, d - c], [w - c, d], [-w + c, d], [-w, d - c], [-w, -d + c],
+  ].map(([x, y]) => new Vector2(x, y));
+  let g = new ExtrudeGeometry(shapeFromPts(pts), {
+    depth: lengthMm - 2 * c, bevelEnabled: true, bevelThickness: c, bevelSize: c, bevelOffset: -c, bevelSegments: 1, steps: 1,
   });
-  g.translate(0, 0, b);
-  g = flattenCaps(toCreasedNormals(g, (40 * Math.PI) / 180));
+  g.translate(0, 0, c);
+  g = flattenCaps(toCreasedNormals(g, (30 * Math.PI) / 180));
   addExtrusionTangents(g);
   g.scale(MM, MM, MM);
   g.computeBoundingBox();
@@ -442,21 +447,19 @@ export function buildBrandMark(m) {
     const g = new Group();
     g.name = `marca-brazo-${k}`;
     g.quaternion.copy(armQuaternion(dirs[k]));
-    const roll = new Group(); // giro de 45° sobre el eje de la barra
+    const roll = new Group(); // giro sobre el eje del brazo (0: cara plana al frente)
     roll.name = `marca-brazo-${k}-giro`;
-    roll.rotation.z = Math.PI / 4;
     roll.add(named(new Mesh(barGeometry(len / MM), m.brandMetal), `marca-brazo-${k}-barra`));
     g.add(roll);
     bars.add(g);
   }
+  // Centro de la "Y": disco al ras de la cara frontal que se ve por el hueco del anillo
+  const hub = named(new Mesh(new CylinderGeometry(BRAND.ringr + 0.15, BRAND.ringr + 0.15, 0.3, 72), m.brandMetal), 'marca-centro');
+  hub.position.copy(BRAND_FACE).multiplyScalar(BRAND.armD / 2 + 0.03);
+  bars.add(hub);
   const ring = new Group();
   ring.name = 'marca-anillo';
   ring.add(named(new Mesh(ringGeometry(), m.brandOrange), 'marca-anillo-naranja'));
-  // Disco metálico que se ve por el hueco del anillo
-  const disc = named(new Mesh(new CylinderGeometry(BRAND.ringr + 0.12, BRAND.ringr + 0.12, 0.3, 72), m.brandMetal), 'marca-anillo-centro');
-  disc.rotation.x = Math.PI / 2; // eje del cilindro (Y) -> Z del anillo
-  disc.position.z = -0.42;
-  ring.add(disc);
   ring.position.copy(BRAND_FACE).multiplyScalar(BRAND.ringOff);
   ring.quaternion.copy(new Quaternion().setFromUnitVectors(new Vector3(0, 0, 1), BRAND_FACE));
   root.add(bars, ring);

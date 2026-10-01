@@ -65,7 +65,7 @@ Para importarlos y comprimirlos (MP4 + WebM < 4 MB con póster, WebP):
 | `FDI-MODULAR_escuadra-cubica_40x40-ranura10.glb` | Escuadra cúbica + 3 perfiles 40x40 ranura 10 + tornillos Allen DIN 7984 M6 + tuercas martillo |
 | `FDI-MODULAR_logo-3D.glb` | Logo 3D completo (montaje + rótulo cromado) con la cámara del logo |
 | `FDI-MODULAR_bancada-cobot.glb` | Bancada para cobot 800 x 800 x 750 con 4 escuadras cúbicas, escuadras angulares, pies niveladores, placa y cobot |
-| `FDI-MODULAR_logotipo-marca-3D.glb` | Logotipo de marca en 3D: símbolo "Y" de frente (barras 40x40 + anillo naranja) y rótulo en bloque, con su cámara |
+| `FDI-MODULAR_logotipo-marca-3D.glb` | Logotipo de marca en 3D: símbolo "Y" plano de frente (brazos achaflanados + anillo naranja) y rótulo en bloque, con su cámara |
 | `renders/` | Renders de revisión |
 | `video/` | Vídeo del inicio renderizado desde la web |
 

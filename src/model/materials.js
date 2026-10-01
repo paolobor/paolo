@@ -136,12 +136,12 @@ export function createModelMaterials() {
   });
   const brandOrange = new MeshPhysicalMaterial({
     name: 'naranja-anillo',
-    color: new Color().setStyle('#ff6410', SRGBColorSpace),
-    metalness: 0.55,
-    roughness: 0.22,
+    color: new Color().setStyle('#f25500', SRGBColorSpace),
+    metalness: 0.3,
+    roughness: 0.3,
     clearcoat: 1,
-    clearcoatRoughness: 0.08,
-    emissive: new Color().setStyle('#ff4a00', SRGBColorSpace).multiplyScalar(0.12),
+    clearcoatRoughness: 0.1,
+    emissive: new Color().setStyle('#ff4a00', SRGBColorSpace).multiplyScalar(0.1),
   });
   const brandChrome = new MeshStandardMaterial({ name: 'cromo-marca', color: new Color(0.95, 0.955, 0.965), metalness: 1, roughness: 0.16 });
 
