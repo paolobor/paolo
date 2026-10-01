@@ -35,8 +35,6 @@ const CSS = `
 .cap .bar{width:86px;height:4px;background:${ORANGE};margin:18px 0 20px}
 .cap .big{font-size:66px;line-height:1.02;letter-spacing:.01em;text-shadow:0 0 30px rgba(0,0,0,.7)}
 .shade{position:absolute;left:0;bottom:0;width:1300px;height:520px;background:radial-gradient(ellipse at 0% 100%,rgba(0,0,0,.75),rgba(0,0,0,0) 70%)}
-.tag{position:absolute;right:56px;top:48px;font-family:Inter,sans-serif;font-weight:600;font-size:17px;letter-spacing:.16em;color:rgba(255,255,255,.88);
-  background:rgba(20,20,22,.55);border:1px solid rgba(255,255,255,.18);padding:9px 16px 8px;border-radius:4px;backdrop-filter:blur(2px)}
 .logo-sub{font-family:Inter,sans-serif;font-weight:500;text-align:center;white-space:nowrap}
 .card{position:absolute;min-width:430px;transform-origin:50% 100%}
 .card .top{padding:0 30px}
@@ -160,11 +158,6 @@ export function createOverlay(root) {
     items.push(it); return it;
   }
 
-  function tagItem({ t0, t1, text = 'RECREACIÓN CON IA' }) {
-    const el = document.createElement('div'); el.className = 'tag'; el.textContent = text; ov.appendChild(el);
-    const it = { kind: 'tag', el, t0, t1 }; items.push(it); return it;
-  }
-
   // ---------------------------------------------------------------- tarjetas del mapa
   function mapCard(c) {
     const el = document.createElement('div'); el.className = 'card'; ov.appendChild(el);
@@ -263,8 +256,6 @@ export function createOverlay(root) {
         const f = Math.floor(t * fps), g = t - it.t0 < 0.2 ? (hash(it.seed + f) - 0.5) * 30 * (1 - (t - it.t0) / 0.2) : 0;
         it.el.style.opacity = k * (1 - out);
         it.el.style.transform = `translateX(${(1 - k) * -40 + g}px)`;
-      } else if (it.kind === 'tag') {
-        it.el.style.opacity = range(t, it.t0, it.t0 + 0.15);
       } else if (it.kind === 'end') {
         const P = it.parts;
         const kl = easeOutExpo(range(t, it.t0 + 0.1, it.t0 + 0.9));
@@ -280,5 +271,5 @@ export function createOverlay(root) {
     }
   }
 
-  return { ov, headline, caption, tagItem, sectionTag, mapCard, miniLabel, legend, specCard, endCard, update, glitchState, applyGlitch };
+  return { ov, headline, caption, sectionTag, mapCard, miniLabel, legend, specCard, endCard, update, glitchState, applyGlitch };
 }

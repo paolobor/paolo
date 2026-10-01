@@ -257,7 +257,6 @@ ov.caption({ t0: b(88.3), t1: b(93.85), label: 'IES SAN BLAS · MADRID', lines: 
 ov.caption({ t0: b(94.3), t1: b(99.85), label: 'AULA FAIRINO ESPAÑA', lines: ['TECNOLOGÍA Y EXPERIENCIA', 'A TU DISPOSICIÓN.'] });
 ov.headline({ t0: b(100.25), t1: b(102.9), lines: [{ text: 'DEL AULA' }], size: 150 });
 ov.headline({ t0: b(103.15), t1: b(105.9), lines: [{ text: 'A LA *INDUSTRIA*.' }], size: 150 });
-for (const [a, c] of [[16, 24], [46, 48], [49, 54], [82, 103]]) ov.tagItem({ t0: b(a), t1: b(c) });
 ov.endCard({ t0: b(106) + 0.05, t1: 999 });
 
 // tarjetas del mapa y rótulos mini

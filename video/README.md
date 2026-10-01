@@ -6,7 +6,7 @@ mapa nocturno 3D de España, almacén oscuro con luces naranjas, tipografía Ant
 barridos con desenfoque de movimiento y cierre en blanco.
 
 Todo se genera por código (Three.js en Chromium sin GPU + ffmpeg). No hay material de terceros
-salvo los datos cartográficos públicos y las imágenes del aula («Recreación con IA»).
+salvo los datos cartográficos públicos y las imágenes del aula.
 
 ## Estructura
 

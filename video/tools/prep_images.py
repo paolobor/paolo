@@ -1,5 +1,5 @@
 """Prepara las imágenes del aula para los planos 2.5D:
-- borra la etiqueta incrustada (se superpone después fija en pantalla: «RECREACIÓN CON IA»)
+- borra la etiqueta de texto incrustada en cada imagen
 - genera un mapa de profundidad aproximado (suelo en gradiente + siluetas en primer plano)
 """
 import os
