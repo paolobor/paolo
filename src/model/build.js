@@ -1,4 +1,4 @@
-import { Group, Mesh, ExtrudeGeometry, Vector3, Quaternion } from 'three';
+import { Group, Mesh, ExtrudeGeometry, CylinderGeometry, Vector3, Quaternion } from 'three';
 import { Font } from 'three/addons/loaders/FontLoader.js';
 import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
 import { profileGeometry, addExtrusionTangents, PROFILE, MM } from '../gl/geometry/profile.js';
@@ -12,6 +12,7 @@ import {
 } from '../gl/geometry/bench.js';
 import { flattenCaps, filletPolygon, roundedRectPts, shapeFromPts, pathFromPts, circlePts } from '../gl/geometry/shapes.js';
 import glyphData from '../assets/saira-glyphs.json';
+import { BRAND, BRAND_FACE, brandArmDirs, armQuaternion } from './brand.js';
 import brandGlyphs from '../assets/archivo-glyphs.json';
 
 // Modelo 3D de FDI MODULAR (unidades: 1 = 10 mm, eje Y arriba).
@@ -394,35 +395,20 @@ export function buildBrandWordmark(mat) {
 }
 
 // ---------------------------------------------------------------------------
-// Símbolo de marca: la "Y" del logotipo es el propio montaje visto en diagonal.
-// Tres barras de 40x40 salen de un nudo cúbico por +X, +Z y -Y, y el anillo
-// naranja mira en la diagonal (1,-1,1), que es la dirección desde la que se ve.
-// Origen = centro del nudo (en el montaje, el cruce de los ejes de los perfiles).
-export const BRAND = { arm: 9.5, armV: 12.5, ringR: 4.4, ringr: 2.35, ringT: 1.2, ringOff: 7.0 };
-export const BRAND_VIEW = new Vector3(1, -1, 1).normalize();
-
+// Símbolo de marca: la "Y" del logotipo es el propio montaje mirando de frente.
+// Coordenadas del montaje con origen en el cruce de los ejes de los perfiles:
+// el anillo naranja mira por +Y (donde estaba la cara cuadrada de la escuadra),
+// los brazos superiores siguen a los perfiles horizontales (+X y +Z, abiertos
+// unos grados para dar la "Y") y el inferior es el perfil vertical desplegado
+// hacia abajo en el plano. Cada barra va girada 45° sobre su eje (se ven dos caras).
 function barGeometry(lengthMm) {
-  // Barra de sección 40x40 con aristas redondeadas, de la cara del nudo (20 mm) hasta su extremo
+  // Barra de sección 40x40 con aristas redondeadas, desde el centro del símbolo
   const b = 1.1;
   let g = new ExtrudeGeometry(shapeFromPts(filletPolygon(roundedRectPts(40, 40, 4.5), 6)), {
-    depth: lengthMm - 20 - 2 * b, bevelEnabled: true, bevelThickness: b, bevelSize: b, bevelOffset: -b, bevelSegments: 3, steps: 1,
+    depth: lengthMm - 2 * b, bevelEnabled: true, bevelThickness: b, bevelSize: b, bevelOffset: -b, bevelSegments: 3, steps: 1,
   });
-  g.translate(0, 0, 20 + b);
+  g.translate(0, 0, b);
   g = flattenCaps(toCreasedNormals(g, (40 * Math.PI) / 180));
-  addExtrusionTangents(g);
-  g.scale(MM, MM, MM);
-  g.computeBoundingBox();
-  g.computeBoundingSphere();
-  return g;
-}
-
-function nodeGeometry() {
-  const r = 4.5;
-  let g = new ExtrudeGeometry(shapeFromPts(filletPolygon(roundedRectPts(40 - 2 * r, 40 - 2 * r, 0.5), 6)), {
-    depth: 40 - 2 * r, bevelEnabled: true, bevelThickness: r, bevelSize: r, bevelOffset: 0, bevelSegments: 5, steps: 1, curveSegments: 6,
-  });
-  g.translate(0, 0, -20 + r);
-  g = toCreasedNormals(g, (50 * Math.PI) / 180);
   addExtrusionTangents(g);
   g.scale(MM, MM, MM);
   g.computeBoundingBox();
@@ -451,23 +437,28 @@ export function buildBrandMark(m) {
   root.name = 'marca';
   const bars = new Group();
   bars.name = 'marca-barras';
-  const arm = (name, len, rot) => {
+  const dirs = brandArmDirs();
+  for (const [k, len] of [['izq', BRAND.arm], ['der', BRAND.arm], ['inf', BRAND.armV]]) {
     const g = new Group();
-    g.name = name;
-    g.add(named(new Mesh(barGeometry(len / MM), m.brandMetal), `${name}-barra`));
-    rot(g);
+    g.name = `marca-brazo-${k}`;
+    g.quaternion.copy(armQuaternion(dirs[k]));
+    const roll = new Group(); // giro de 45° sobre el eje de la barra
+    roll.name = `marca-brazo-${k}-giro`;
+    roll.rotation.z = Math.PI / 4;
+    roll.add(named(new Mesh(barGeometry(len / MM), m.brandMetal), `marca-brazo-${k}-barra`));
+    g.add(roll);
     bars.add(g);
-    return g;
-  };
-  arm('marca-brazo-x', BRAND.arm, (g) => { g.rotation.y = Math.PI / 2; }); // +Z -> +X
-  arm('marca-brazo-z', BRAND.arm, () => {});
-  arm('marca-brazo-v', BRAND.armV, (g) => { g.rotation.x = Math.PI / 2; }); // +Z -> -Y
-  bars.add(named(new Mesh(nodeGeometry(), m.brandMetal), 'marca-nudo'));
+  }
   const ring = new Group();
   ring.name = 'marca-anillo';
   ring.add(named(new Mesh(ringGeometry(), m.brandOrange), 'marca-anillo-naranja'));
-  ring.position.copy(BRAND_VIEW).multiplyScalar(BRAND.ringOff);
-  ring.quaternion.copy(new Quaternion().setFromUnitVectors(new Vector3(0, 0, 1), BRAND_VIEW));
+  // Disco metálico que se ve por el hueco del anillo
+  const disc = named(new Mesh(new CylinderGeometry(BRAND.ringr + 0.12, BRAND.ringr + 0.12, 0.3, 72), m.brandMetal), 'marca-anillo-centro');
+  disc.rotation.x = Math.PI / 2; // eje del cilindro (Y) -> Z del anillo
+  disc.position.z = -0.42;
+  ring.add(disc);
+  ring.position.copy(BRAND_FACE).multiplyScalar(BRAND.ringOff);
+  ring.quaternion.copy(new Quaternion().setFromUnitVectors(new Vector3(0, 0, 1), BRAND_FACE));
   root.add(bars, ring);
   root.userData.meta = { ...BRAND };
   return root;

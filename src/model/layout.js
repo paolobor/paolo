@@ -76,17 +76,13 @@ export function composeLogo({ extents, textWidth, textCap, aspect, fov, style = 
   const hfov = 2 * Math.atan(Math.tan(vfov / 2) * aspect);
   const widthFill = brand || portrait ? 1.14 : 1.05; // margen lateral
   const dist = Math.max((totalW * widthFill) / 2 / Math.tan(hfov / 2), totalH / heightFill / 2 / Math.tan(vfov / 2));
-  // Montaje: la cámara apunta al centro de la figura (vista simétrica, a 45°) y
-  // la composición se encuadra desplazando la imagen (óptica descentrable).
+  // La cámara apunta al centro de la figura (vista simétrica y de frente) y la
+  // composición se encuadra desplazando la imagen (óptica descentrable).
   // shift = desplazamiento del centro de la composición respecto al eje óptico,
   // en fracción de la altura visible a la distancia del objetivo.
-  let aimR = compR, aimU = compU, shift = { x: 0, y: 0 };
-  if (!brand) {
-    aimR = (minR + maxR) / 2;
-    aimU = (minU + maxU) / 2;
-    const visH = 2 * dist * Math.tan(vfov / 2);
-    shift = { x: (compR - aimR) / visH, y: (compU - aimU) / visH };
-  }
+  const aimR = (minR + maxR) / 2, aimU = (minU + maxU) / 2;
+  const visH = 2 * dist * Math.tan(vfov / 2);
+  const shift = { x: (compR - aimR) / visH, y: (compU - aimU) / visH };
   const target = new Vector3().addScaledVector(right, aimR).addScaledVector(up, aimU);
   const quaternion = new Quaternion().setFromRotationMatrix(new Matrix4().makeBasis(right, up, back));
   const textPosition = new Vector3().addScaledVector(right, textLeft).addScaledVector(up, baseline);
@@ -102,6 +98,20 @@ export function composeLogo({ extents, textWidth, textCap, aspect, fov, style = 
 export function facingQuaternion(view, toCamera, screenUp) {
   const f = view.clone().normalize();
   const u = new Vector3(0, 1, 0).addScaledVector(f, -f.y).normalize();
+  const r = new Vector3().crossVectors(u, f);
+  const F = toCamera.clone().normalize();
+  const U = screenUp.clone().addScaledVector(F, -screenUp.dot(F)).normalize();
+  const R = new Vector3().crossVectors(U, F);
+  const local = new Matrix4().makeBasis(r, u, f);
+  const world = new Matrix4().makeBasis(R, U, F);
+  return new Quaternion().setFromRotationMatrix(world.multiply(local.transpose()));
+}
+
+// Orientación general: la dirección local "view" apunta a la cámara y la
+// dirección local "upLocal" queda hacia arriba en pantalla.
+export function orientQuaternion(view, upLocal, toCamera, screenUp) {
+  const f = view.clone().normalize();
+  const u = upLocal.clone().addScaledVector(f, -upLocal.dot(f)).normalize();
   const r = new Vector3().crossVectors(u, f);
   const F = toCamera.clone().normalize();
   const U = screenUp.clone().addScaledVector(F, -screenUp.dot(F)).normalize();

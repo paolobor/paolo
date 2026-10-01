@@ -11,10 +11,12 @@ brillos, profundidad de campo, oclusión ambiental, sombras de contacto y grano 
 2. **Unión:** las virutas vuelan y se funden: primero mecanizan la escuadra cúbica y después
    forman cada perfil con un frente incandescente que avanza por su eje. Entran los
    tornillos, se enciende el filo naranja y se ensambla el rótulo cromado (imagen de montaje).
-   Después **el montaje da la vuelta**: gira hasta verse por su diagonal, donde los tres
-   perfiles dibujan la "Y", los perfiles pasan a barras, la escuadra al anillo naranja y cada
-   letra gira sobre sí misma hasta el **logotipo de marca** (Y + anillo + rótulo en bloque +
-   "Soluciones de soportación para robótica colaborativa e industrial"). Todo en 3D con código.
+   Después **la figura se gira hacia el frente**: el montaje se inclina hasta que la cara
+   cuadrada de la escuadra mira al espectador y, ya enfrentado, se convierte en el
+   **logotipo de marca**: el filo naranja pasa a ser el anillo, los perfiles horizontales se
+   abren en los brazos superiores de la "Y" y el vertical se despliega hacia abajo; cada letra
+   gira sobre sí misma hasta el rótulo en bloque y aparece "Soluciones de soportación para
+   robótica colaborativa e industrial". Todo en 3D con código.
 3. **Estructura:** la cámara se aleja y se monta una bancada para cobot de 800 x 800 x 750 mm,
    con los tres textos de la marca.
 4. **Catálogo:** la cámara entra por la ranura de una viga y funde a la sección del catálogo,
@@ -63,7 +65,7 @@ Para importarlos y comprimirlos (MP4 + WebM < 4 MB con póster, WebP):
 | `FDI-MODULAR_escuadra-cubica_40x40-ranura10.glb` | Escuadra cúbica + 3 perfiles 40x40 ranura 10 + tornillos Allen DIN 7984 M6 + tuercas martillo |
 | `FDI-MODULAR_logo-3D.glb` | Logo 3D completo (montaje + rótulo cromado) con la cámara del logo |
 | `FDI-MODULAR_bancada-cobot.glb` | Bancada para cobot 800 x 800 x 750 con 4 escuadras cúbicas, escuadras angulares, pies niveladores, placa y cobot |
-| `FDI-MODULAR_logotipo-marca-3D.glb` | Logotipo de marca en 3D: símbolo "Y" (barras 40x40 + nudo + anillo naranja) y rótulo en bloque, con su cámara |
+| `FDI-MODULAR_logotipo-marca-3D.glb` | Logotipo de marca en 3D: símbolo "Y" de frente (barras 40x40 + anillo naranja) y rótulo en bloque, con su cámara |
 | `renders/` | Renders de revisión |
 | `video/` | Vídeo del inicio renderizado desde la web |
 

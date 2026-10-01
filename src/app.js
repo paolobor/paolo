@@ -13,12 +13,12 @@ import { setupAssembly } from './scenes/assembly.js';
 import { setupStructure } from './scenes/structure.js';
 import { Dimensions } from './ui/dimensions.js';
 import { createVideo } from './ui/media.js';
-import { basis, composeLogo, projectedExtents, facingQuaternion, FINAL_AZ } from './model/layout.js';
+import { basis, composeLogo, projectedExtents, orientQuaternion, FINAL_AZ } from './model/layout.js';
+import { BRAND, BRAND_FACE, BRAND_UP } from './model/brand.js';
 import brandGlyphs from './assets/archivo-glyphs.json';
 
 const MODEL_URL = new URL('./assets/models/fdi-modular.glb', import.meta.url).href;
 const HDRI_URL = './assets/hdri/estudio.exr';
-const BRAND_VIEW = new Vector3(1, -1, 1).normalize(); // diagonal desde la que el montaje dibuja la "Y"
 const Q_ID = new Quaternion();
 const Y_AXIS = new Vector3(0, 1, 0);
 
@@ -132,7 +132,25 @@ export class App {
       root: marca,
       bars: marca.getObjectByName('marca-barras'),
       ring: marca.getObjectByName('marca-anillo'),
+      arms: {},
     };
+    // Brazos: de la posición de los perfiles (inicio) a la "Y" de la marca (final)
+    for (const k of ['izq', 'der', 'inf']) {
+      const g = marca.getObjectByName(`marca-brazo-${k}`);
+      const roll = marca.getObjectByName(`marca-brazo-${k}-giro`);
+      const qFinal = g.quaternion.clone();
+      let qStart;
+      if (k === 'inf') {
+        // El perfil vertical apunta hacia atrás (-Y) y se despliega hacia abajo
+        const axis = new Vector3(1, 0, 0).applyQuaternion(qFinal);
+        qStart = new Quaternion().setFromAxisAngle(axis, Math.PI / 2).multiply(qFinal);
+        if (new Vector3(0, 0, 1).applyQuaternion(qStart).y > -0.99) qStart.setFromAxisAngle(axis, -Math.PI / 2).multiply(qFinal);
+      } else {
+        const a = ((k === 'izq' ? -1 : 1) * BRAND.spread * Math.PI) / 180;
+        qStart = new Quaternion().setFromAxisAngle(Y_AXIS, a).multiply(qFinal);
+      }
+      this.mark.arms[k] = { g, roll, qStart, qFinal };
+    }
     marca.position.set(0, 0, 0);
     marca.traverse((o) => { if (o.isMesh) { o.castShadow = quality.shadows; o.receiveShadow = quality.shadows; } });
     this.flip.add(marca);
@@ -272,10 +290,12 @@ export class App {
 
     // Logotipo de marca: el símbolo mira a la cámara por su diagonal (1,-1,1)
     const mk = this.mark;
-    this.qIso.copy(facingQuaternion(BRAND_VIEW, bb.back, bb.up));
+    this.qIso.copy(orientQuaternion(BRAND_FACE, BRAND_UP, bb.back, bb.up));
     this.flip.quaternion.copy(this.qIso);
     const barsVis = mk.bars.visible, ringVis = mk.ring.visible, ringScale = mk.ring.scale.x;
     mk.bars.visible = true; mk.ring.visible = true; mk.ring.scale.setScalar(1);
+    const armSaved = Object.values(mk.arms).map((a) => [a, a.g.quaternion.clone(), a.roll.rotation.z]);
+    for (const a of Object.values(mk.arms)) { a.g.quaternion.copy(a.qFinal); a.roll.rotation.z = Math.PI / 4; }
     this.flip.updateMatrixWorld(true);
     const ext2 = projectedExtents(mk.root, bb.right, bb.up);
     const bwm = this.brandWordmark;
@@ -289,8 +309,9 @@ export class App {
     // Corrección de perspectiva: la "Y" se orienta hacia la posición real de la cámara
     const b2 = basis(L2.pose.az, L2.pose.el);
     const camPos2 = L2.pose.target.clone().addScaledVector(b2.back, L2.pose.dist);
-    this.qIso.copy(facingQuaternion(BRAND_VIEW, camPos2.sub(this.flip.position), b2.up));
+    this.qIso.copy(orientQuaternion(BRAND_FACE, BRAND_UP, camPos2.sub(this.flip.position), b2.up));
     mk.bars.visible = barsVis; mk.ring.visible = ringVis; mk.ring.scale.setScalar(ringScale);
+    for (const [a, q, r] of armSaved) { a.g.quaternion.copy(q); a.roll.rotation.z = r; }
     this.flip.quaternion.copy(flipQ);
     this.flip.updateMatrixWorld(true);
 
@@ -476,24 +497,27 @@ export class App {
     const o = 0.5; // margen inicial: salida del lema y de las cotas
     tl.to(this.tagState, { p: 0, duration: 0.6, ease: 'power2.in' }, o - 0.3);
     for (const k of Object.keys(this.dimState)) tl.to(this.dimState[k], { alpha: 0, draw: 0, duration: 0.5 }, 0);
-    tl.fromTo(this.flipState, { f: 0 }, { f: 1, duration: 2.5, ease: 'power3.inOut' }, o);
-    tl.to(this.stage.scene.environmentRotation, { y: '+=1.5', duration: 1.6, ease: 'power2.inOut' }, o + 0.5);
-    // La cámara se aleja antes de que entren las letras de marca (más grandes)
-    tl.to(this.cam, { k5: 1, duration: 2.6, ease: 'power2.inOut' }, o - 0.4);
-    tl.to(this.mats.rimUniforms.uGlow, { value: 0, duration: 0.6 }, o + 0.6);
+    // 1) Con la cámara quieta, la figura se gira hacia el frente: la cara
+    //    cuadrada de la escuadra termina mirando al espectador
+    tl.fromTo(this.flipState, { f: 0 }, { f: 0.6, duration: 1.5, ease: 'power2.inOut' }, o);
+    tl.to(this.stage.scene.environmentRotation, { y: '+=1.5', duration: 2.2, ease: 'power2.inOut' }, o + 0.3);
     wm.letters.forEach((L, i) => {
-      const t = o + 0.2 + i * 0.07;
+      const t = o + 0.3 + i * 0.06;
       tl.to(L.pivot.rotation, { y: Math.PI / 2, duration: 0.42, ease: 'power2.in' }, t);
       tl.set(L.solid, { visible: false }, t + 0.42);
     });
+    // 2) Ya enfrentada se transforma en la marca mientras la cámara se aleja
+    tl.to(this.flipState, { f: 1, duration: 1.4, ease: 'power2.inOut' }, o + 1.6);
+    tl.to(this.cam, { k5: 1, duration: 2.2, ease: 'power2.inOut' }, o + 1.3);
+    tl.to(this.mats.rimUniforms.uGlow, { value: 0, duration: 0.6 }, o + 1.6);
     bw.letters.forEach((L, i) => {
-      const t = o + 0.9 + i * 0.07;
+      const t = o + 2.2 + i * 0.07;
       tl.set(L.solid, { visible: true }, t);
       tl.fromTo(L.pivot.rotation, { y: -Math.PI / 2 }, { y: 0, duration: 0.7, ease: 'power3.out' }, t);
     });
-    tl.fromTo(this.chromeSweep2, { v: -0.9 }, { v: 0.45, duration: 2.4, ease: 'power2.inOut' }, o + 0.9);
-    tl.to(this.tagState2, { p: 1, duration: 1.4, ease: 'power2.out' }, o + 2.3);
-    tl.add(() => { if (this.state === 'building') { this.state = 'logo'; this.ui.setState('logo'); } }, o + 2.4);
+    tl.fromTo(this.chromeSweep2, { v: -0.9 }, { v: 0.45, duration: 2.4, ease: 'power2.inOut' }, o + 2.2);
+    tl.to(this.tagState2, { p: 1, duration: 1.4, ease: 'power2.out' }, o + 3.4);
+    tl.add(() => { if (this.state === 'building') { this.state = 'logo'; this.ui.setState('logo'); } }, o + 3.5);
     return tl;
   }
 
@@ -503,13 +527,13 @@ export class App {
     if (f === this._appliedF) return;
     this._appliedF = f;
     const P = this.asm.parts, mk = this.mark;
-    // Giro completo sobre el eje vertical mientras se orienta hacia la diagonal
-    this._q1 = (this._q1 || new Quaternion()).slerpQuaternions(Q_ID, this.qIso, f);
-    this._q2 = (this._q2 || new Quaternion()).setFromAxisAngle(Y_AXIS, Math.PI * 2 * f);
-    this.flip.quaternion.copy(this._q2).multiply(this._q1);
+    // El montaje se gira hacia el frente hasta que la cara cuadrada de la
+    // escuadra mira a la cámara, y ya enfrentado se transforma en la marca
+    const tilt = MathUtils.smoothstep(f, 0, 0.62);
+    this.flip.quaternion.slerpQuaternions(Q_ID, this.qIso, tilt);
     if (f <= 0) return;
-    const swap = f >= 0.5;
-    const k = MathUtils.smoothstep(f, 0.08, 0.5);
+    const swap = f >= 0.6;
+    const k = MathUtils.smoothstep(f, 0.12, 0.6);
     for (const key of ['pV', 'pX', 'pZ']) {
       P[key].scale.z = MathUtils.lerp(1, this.barRatio[key], k);
       P[key].visible = !swap;
@@ -517,9 +541,16 @@ export class App {
     for (const p of [P.connector, P.screwX, P.screwZ, P.screwNX, P.screwNZ]) p.visible = !swap;
     mk.bars.visible = swap;
     mk.ring.visible = swap;
-    const rs = MathUtils.smoothstep(f, 0.5, 0.86);
-    mk.ring.scale.setScalar(Math.max(0.001, 0.35 + 0.65 * rs));
-    this.mats.brandOrange.emissiveIntensity = 1 + 7 * (1 - rs);
+    // Los perfiles horizontales se abren en "Y" y el vertical se despliega hacia abajo
+    const m = MathUtils.smoothstep(f, 0.6, 1);
+    for (const a of Object.values(mk.arms)) {
+      a.g.quaternion.slerpQuaternions(a.qStart, a.qFinal, m);
+      a.roll.rotation.z = (Math.PI / 4) * m;
+    }
+    // La cara cuadrada con su filo naranja pasa a ser el anillo
+    const rs = MathUtils.smoothstep(f, 0.6, 0.86);
+    mk.ring.scale.setScalar(0.8 + 0.2 * rs);
+    this.mats.brandOrange.emissiveIntensity = 1 + 6 * (1 - rs);
   }
 
   lettersTimeline() {
