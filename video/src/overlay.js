@@ -53,7 +53,11 @@ const CSS = `
 .badge{position:absolute;font-size:23px;line-height:1;color:#111;background:#f4f4f2;border-bottom:3px solid ${ORANGE};padding:5px 7px 3px;transform:translate(-50%,-50%);box-shadow:0 4px 16px rgba(0,0,0,.6)}
 .bline{position:absolute;height:2px;background:rgba(255,255,255,.85);transform-origin:0 50%}
 .legend{position:absolute;left:1330px;top:236px;width:520px;background:rgba(8,8,10,.72);border-top:4px solid ${ORANGE};padding:22px 28px 18px}
-.legend .hd{font-size:46px;line-height:1;margin-bottom:12px}
+.legend .hd{font-size:46px;line-height:1;margin-bottom:6px}
+.legend .sub{font-family:Inter,sans-serif;font-weight:700;font-size:15px;letter-spacing:.26em;color:#d8d8d8;margin-bottom:12px}
+.sec{position:absolute;left:78px;top:64px;padding-left:22px;border-left:5px solid ${ORANGE}}
+.sec .lab{font-family:Inter,sans-serif;font-weight:700;font-size:17px;letter-spacing:.24em;color:rgba(255,255,255,.88);margin-bottom:8px;text-shadow:0 0 12px #000}
+.sec .big{font-size:52px;line-height:1;letter-spacing:.015em;text-shadow:0 0 24px rgba(0,0,0,.85)}
 .legend .hd span{color:${ORANGE}}
 .legend .rw{display:flex;align-items:baseline;gap:14px;padding:6px 0;border-top:1px solid rgba(255,255,255,.08)}
 .legend .rn{font-size:24px;color:${ORANGE};width:32px}
@@ -148,6 +152,14 @@ export function createOverlay(root) {
     items.push(it); return it;
   }
 
+  // rótulo fijo de sección (arriba a la izquierda) con glitch de entrada
+  function sectionTag({ t0, t1, label, text }) {
+    const el = document.createElement('div'); el.className = 'sec'; ov.appendChild(el);
+    el.innerHTML = `<div class="lab">${label}</div><div class="big">${text}</div>`;
+    const it = { kind: 'sec', el, t0, t1, seed: hash(t0 * 3.3) * 1000 };
+    items.push(it); return it;
+  }
+
   function tagItem({ t0, t1, text = 'RECREACIÓN CON IA' }) {
     const el = document.createElement('div'); el.className = 'tag'; el.textContent = text; ov.appendChild(el);
     const it = { kind: 'tag', el, t0, t1 }; items.push(it); return it;
@@ -183,7 +195,7 @@ export function createOverlay(root) {
 
   function legend(cs) {
     const el = document.createElement('div'); el.className = 'legend'; ov.appendChild(el);
-    el.innerHTML = `<div class="hd"><span>10</span> CENTROS</div>` + cs.map((c) => `<div class="rw"><span class="rn">${c.n}</span><span class="rt">${c.name}</span><span class="rc">${c.city.split(' · ')[0]}</span></div>`).join('');
+    el.innerHTML = `<div class="hd"><span>10</span> CENTROS</div><div class="sub">INCORPORADOS EN 2026</div>` + cs.map((c) => `<div class="rw"><span class="rn">${c.n}</span><span class="rt">${c.name}</span><span class="rc">${c.city.split(' · ')[0]}</span></div>`).join('');
     const rows = [...el.querySelectorAll('.rw')], hd = el.querySelector('.hd');
     return {
       update(t, t0, t1) {
@@ -245,6 +257,12 @@ export function createOverlay(root) {
           const out = 1 - range(t, it.t1 - 0.15, it.t1);
           p.style.opacity = k * out; p.style.transform = `translateX(${(1 - k) * -40}px)`;
         });
+      } else if (it.kind === 'sec') {
+        const k = easeOutExpo(range(t, it.t0, it.t0 + 0.35));
+        const out = range(t, it.t1 - 0.15, it.t1);
+        const f = Math.floor(t * fps), g = t - it.t0 < 0.2 ? (hash(it.seed + f) - 0.5) * 30 * (1 - (t - it.t0) / 0.2) : 0;
+        it.el.style.opacity = k * (1 - out);
+        it.el.style.transform = `translateX(${(1 - k) * -40 + g}px)`;
       } else if (it.kind === 'tag') {
         it.el.style.opacity = range(t, it.t0, it.t0 + 0.15);
       } else if (it.kind === 'end') {
@@ -262,5 +280,5 @@ export function createOverlay(root) {
     }
   }
 
-  return { ov, headline, caption, tagItem, mapCard, miniLabel, legend, specCard, endCard, update, glitchState, applyGlitch };
+  return { ov, headline, caption, tagItem, sectionTag, mapCard, miniLabel, legend, specCard, endCard, update, glitchState, applyGlitch };
 }

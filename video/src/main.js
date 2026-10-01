@@ -250,7 +250,8 @@ ov.headline({ t0: b(46), t1: b(47), lines: [{ text: 'PROGRAMAR.' }], size: 210, 
 ov.headline({ t0: b(47), t1: b(48), lines: [{ text: 'INTEGRAR.' }], size: 210, outGlitch: false });
 ov.headline({ t0: b(48), t1: b(49), lines: [{ text: 'EXPERIMENTAR.' }], size: 210, outGlitch: false });
 ov.headline({ t0: b(49.05), t1: b(53.8), lines: [{ text: 'APRENDER *HACIENDO*.' }], size: 160 });
-ov.headline({ t0: b(54.4), t1: b(57.6), lines: [{ text: 'CENTROS DE FORMACIÓN', at: 0 }, { text: 'Y UNIVERSIDADES.', at: b(1) }], size: 112 });
+ov.headline({ t0: b(54.4), t1: b(57.6), lines: [{ text: 'CENTROS DE FORMACIÓN Y UNIVERSIDADES', at: 0 }, { text: 'INCORPORADOS EN 2026.', at: b(1) }], size: 100 });
+ov.sectionTag({ t0: b(58), t1: b(78), label: 'CENTROS DE FORMACIÓN Y UNIVERSIDADES', text: 'INCORPORADOS EN 2026' });
 ov.caption({ t0: b(82.3), t1: b(87.85), label: 'UNIVERSIDAD DE SEVILLA', lines: ['APRENDER AUTOMATIZACIÓN.'] });
 ov.caption({ t0: b(88.3), t1: b(93.85), label: 'IES SAN BLAS · MADRID', lines: ['ROBÓTICA Y VISIÓN ARTIFICIAL.'] });
 ov.caption({ t0: b(94.3), t1: b(99.85), label: 'AULA FAIRINO ESPAÑA', lines: ['TECNOLOGÍA Y EXPERIENCIA', 'A TU DISPOSICIÓN.'] });
