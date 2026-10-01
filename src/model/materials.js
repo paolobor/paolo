@@ -84,7 +84,6 @@ export function createModelMaterials() {
     roughnessMap: brushedRough,
     normalMap: brushedNormal,
     normalScale: new Vector2(0.35, 0.35),
-    anisotropy: 0.25,
   });
   const aluminiumCut = new MeshPhysicalMaterial({
     name: 'aluminio-corte',
@@ -116,5 +115,13 @@ export function createModelMaterials() {
   });
   const chrome = new MeshStandardMaterial({ name: 'cromo', color: new Color(0.96, 0.965, 0.975), metalness: 1, roughness: 0.075 });
 
-  return { aluminium, aluminiumCut, steel, screw, socket, rod, nut, orange, chrome };
+  // Bancada y cobot
+  const cast = new MeshPhysicalMaterial({ name: 'aluminio-fundido', color: new Color(0.74, 0.75, 0.76), metalness: 1, roughness: 0.5, roughnessMap: satin });
+  const zinc = new MeshStandardMaterial({ name: 'acero-zincado', color: new Color(0.7, 0.71, 0.73), metalness: 1, roughness: 0.32 });
+  const rubber = new MeshStandardMaterial({ name: 'goma', color: new Color(0.02, 0.02, 0.022), metalness: 0, roughness: 0.85 });
+  const blackAlu = new MeshPhysicalMaterial({ name: 'aluminio-negro', color: new Color(0.035, 0.036, 0.04), metalness: 1, roughness: 0.36, roughnessMap: brushedRough });
+  const cobotWhite = new MeshPhysicalMaterial({ name: 'cobot-blanco', color: new Color(0.82, 0.83, 0.84), metalness: 0, roughness: 0.34, clearcoat: 0.35, clearcoatRoughness: 0.3 });
+  const cobotGrey = new MeshPhysicalMaterial({ name: 'cobot-gris', color: new Color(0.05, 0.052, 0.058), metalness: 0.1, roughness: 0.45 });
+
+  return { aluminium, aluminiumCut, steel, screw, socket, rod, nut, orange, chrome, cast, zinc, rubber, blackAlu, cobotWhite, cobotGrey };
 }

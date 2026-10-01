@@ -30,7 +30,7 @@ export class Stage {
 
     this.scene = new Scene();
     this.scene.background = BG;
-    this.camera = new PerspectiveCamera(24, 1, 0.1, 500);
+    this.camera = new PerspectiveCamera(24, 1, 0.1, 1600);
 
     this.pixelRatio = quality.pixelRatio;
     this.resScale = 1;
@@ -106,7 +106,7 @@ export class Stage {
     const avg = this.frameTimes.reduce((a, b) => a + b, 0) / this.frameTimes.length;
     if (avg > 1 / 50 && this.resScale > 0.55) {
       this.resScale = Math.max(0.55, this.resScale - 0.15);
-      if (this.resScale <= 0.7 && this.ao) this.ao.enabled = false;
+      if (this.resScale <= 0.7 && this.ao) { this.aoDisabled = true; this.ao.enabled = false; }
       this.resize();
       this.frameTimes.length = 0;
     } else if (avg < 1 / 90 && this.resScale < 1) {

@@ -67,9 +67,9 @@ export function createStudioEnvironment(renderer) {
   // Panel suave detrás de la cámara final (caras frontales en gris medio)
   scene.add(panel(44, 22, 0.95, [-27, 10, -27]));
   // Tira horizontal alta (línea de brillo en las caras superiores)
-  scene.add(panel(70, 2.6, 3.4, [0, 22, 32]));
+  scene.add(panel(70, 2.6, 2.5, [0, 22, 32]));
   // Pequeño foco duro para destellos puntuales
-  scene.add(panel(3, 3, 22, [20, 26, 18]));
+  scene.add(panel(3, 3, 12, [20, 26, 18]));
 
   const pmrem = new PMREMGenerator(renderer);
   const rt = pmrem.fromScene(scene, 0.012);

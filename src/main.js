@@ -67,9 +67,20 @@ async function start() {
 
   document.getElementById('btn-skip').addEventListener('click', (e) => { e.stopPropagation(); app.skip(); });
   document.getElementById('btn-replay').addEventListener('click', (e) => { e.stopPropagation(); app.replay(); });
+  document.getElementById('btn-replay-top').addEventListener('click', (e) => { e.stopPropagation(); app.replay(); });
 
-  gsap.ticker.lagSmoothing(500, 33);
-  gsap.ticker.add((time, deltaMs) => app.update(Math.min(deltaMs / 1000, 1 / 20)));
+  if (params.has('capture')) {
+    // Modo vídeo: el reloj avanza a pasos fijos controlados desde fuera
+    let tlTime = 0;
+    window.__fdiStep = (dt, click = false) => {
+      if (click) { app.goToLogo(false); app.tl.pause(); tlTime = 0; }
+      if (app.tl && app.state !== 'intro') { tlTime += dt; app.tl.seek(Math.min(tlTime, app.tl.duration())); }
+      app.update(dt);
+    };
+  } else {
+    gsap.ticker.lagSmoothing(500, 33);
+    gsap.ticker.add((time, deltaMs) => app.update(Math.min(deltaMs / 1000, 1 / 20)));
+  }
 
   // Modo captura: ?t=segundos congela el guion en ese instante
   if (params.has('t')) {

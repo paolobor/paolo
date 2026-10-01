@@ -42,6 +42,8 @@ export function prepareMaterials(scene, { chromeEnv }) {
   };
   orange.customProgramCacheKey = () => 'fdi-orange-rim';
 
+  // Sin anisotropía: con UV degeneradas en biseles produce píxeles NaN que el bloom expande
+  mats.aluminium.anisotropy = 0;
   mats.chrome.envMap = chromeEnv;
   mats.chrome.envMapIntensity = 1;
 

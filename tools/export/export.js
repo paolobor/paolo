@@ -2,7 +2,7 @@
 import { Scene, PerspectiveCamera, Group } from 'three';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { createModelMaterials } from '../../src/model/materials.js';
-import { buildAssembly, buildWordmark } from '../../src/model/build.js';
+import { buildAssembly, buildWordmark, buildBench } from '../../src/model/build.js';
 import { composeLogo, projectedExtents, basis } from '../../src/model/layout.js';
 
 const exporter = new GLTFExporter();
@@ -22,8 +22,15 @@ window.exportAll = async () => {
   {
     const scene = new Scene();
     scene.name = 'FDI MODULAR';
-    scene.add(buildAssembly(m), buildWordmark(m.chrome));
+    scene.add(buildAssembly(m), buildWordmark(m.chrome), buildBench(m));
     out.web = b64(await toGLB(scene));
+  }
+  // Diseño: bancada para cobot completa
+  {
+    const scene = new Scene();
+    scene.name = 'FDI MODULAR - bancada para cobot 800x800x750';
+    scene.add(buildBench(m));
+    out.bancada = b64(await toGLB(scene));
   }
   // 2) Diseño: escuadra cúbica con perfiles y tornillería
   {
