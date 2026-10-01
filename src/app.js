@@ -29,16 +29,25 @@ const POSES = {
   wide: { az: 228, el: 24, dist: 38, target: new Vector3(1.6, -3.8, 1.6) },
 };
 const STRUCT_AZ = 218, STRUCT_EL = 21;
+// Logo del montaje: cámara a 45° de azimut respecto a los perfiles y 45° de
+// elevación, con la cara cuadrada de la escuadra casi de frente (como el logo)
+const LOGO_EL = 45;
 const A_SCAN_TOP = 0.35;
+
+// Desplazamiento de óptica de una pose (fracción de la altura visible)
+const shiftX = (p) => (p.shift ? p.shift.x : 0);
+const shiftY = (p) => (p.shift ? p.shift.y : 0);
 
 function lerpPose(a, b, t, out) {
   out.az = MathUtils.lerp(a.az, b.az, t);
   out.el = MathUtils.lerp(a.el, b.el, t);
   out.dist = MathUtils.lerp(a.dist, b.dist, t);
   out.target.lerpVectors(a.target, b.target, t);
+  out.shift.x = MathUtils.lerp(shiftX(a), shiftX(b), t);
+  out.shift.y = MathUtils.lerp(shiftY(a), shiftY(b), t);
   return out;
 }
-const newPose = () => ({ az: 0, el: 0, dist: 0, target: new Vector3() });
+const newPose = () => ({ az: 0, el: 0, dist: 0, target: new Vector3(), shift: { x: 0, y: 0 } });
 
 export class App {
   constructor({ canvas, svg, ui, quality, reducedMotion, resources = {} }) {
@@ -217,7 +226,9 @@ export class App {
     // En la bancada la luz directa solo se usa para la sombra del suelo
     key.intensity = which === 'logo' ? 1.1 : 0.3;
     if (which === 'logo') {
-      key.position.set(-9, 16, -7);
+      // Luz principal desde la izquierda-delante: modela la escuadra sin
+      // reflejarse de frente en las letras cromadas (que miran a la cámara)
+      key.position.set(-16, 7, 4);
       key.target.position.set(1, -4, 1);
       c.left = -16; c.right = 16; c.top = 16; c.bottom = -16; c.near = 1; c.far = 60;
       if (this.shadowFloor) this.shadowFloor.position.set(1.5, this.logoFloor + 0.005, 1.5);
@@ -236,8 +247,9 @@ export class App {
     const { width: w, height: h } = this.stage;
     const aspect = w / h;
     const cam = this.stage.camera;
-    const el = aspect < 0.95 ? 27 : 30;
-    const { right, up, back } = basis(FINAL_AZ, el);
+    const { right, up } = basis(FINAL_AZ, LOGO_EL);
+    const brandEl = aspect < 0.95 ? 27 : 30;
+    const bb = basis(FINAL_AZ, brandEl);
     const flipQ = this.flip.quaternion.clone();
     this.flip.quaternion.identity();
     this.flip.updateMatrixWorld(true);
@@ -249,7 +261,7 @@ export class App {
     this.asm.root.updateMatrixWorld(true);
 
     const wm = this.wordmark;
-    const L = composeLogo({ extents, textWidth: wm.width, textCap: wm.capHeight, aspect, fov: cam.fov });
+    const L = composeLogo({ extents, textWidth: wm.width, textCap: wm.capHeight, aspect, fov: cam.fov, el: LOGO_EL });
     this.finalPose = L.pose;
     this.textRig.position.copy(L.text.position);
     this.textRig.quaternion.copy(L.text.quaternion);
@@ -260,12 +272,12 @@ export class App {
 
     // Logotipo de marca: el símbolo mira a la cámara por su diagonal (1,-1,1)
     const mk = this.mark;
-    this.qIso.copy(facingQuaternion(BRAND_VIEW, back, up));
+    this.qIso.copy(facingQuaternion(BRAND_VIEW, bb.back, bb.up));
     this.flip.quaternion.copy(this.qIso);
     const barsVis = mk.bars.visible, ringVis = mk.ring.visible, ringScale = mk.ring.scale.x;
     mk.bars.visible = true; mk.ring.visible = true; mk.ring.scale.setScalar(1);
     this.flip.updateMatrixWorld(true);
-    const ext2 = projectedExtents(mk.root, right, up);
+    const ext2 = projectedExtents(mk.root, bb.right, bb.up);
     const bwm = this.brandWordmark;
     const L2 = composeLogo({ extents: ext2, textWidth: bwm.width, textCap: bwm.capHeight, aspect, fov: cam.fov, style: 'brand' });
     this.finalPose2 = L2.pose;
@@ -273,6 +285,7 @@ export class App {
     this.textRig2.quaternion.copy(L2.text.quaternion);
     this.textRig2.scale.setScalar(L2.text.scale);
     this.textRig2.updateMatrixWorld(true);
+    this.chromeBase2 = L2.text.quaternion.clone();
     // Corrección de perspectiva: la "Y" se orienta hacia la posición real de la cámara
     const b2 = basis(L2.pose.az, L2.pose.el);
     const camPos2 = L2.pose.target.clone().addScaledVector(b2.back, L2.pose.dist);
@@ -440,7 +453,7 @@ export class App {
     // El filo naranja se enciende con un barrido de luz
     tl.fromTo(R.uBand, { value: 0 }, { value: 1, duration: 0.35 }, 7.6);
     tl.fromTo(R.uSweep, { value: -0.15 }, { value: 1.85, duration: 1.9, ease: 'power1.inOut' }, 7.6);
-    tl.to(R.uGlow, { value: 0.9, duration: 1.3 }, 7.85);
+    tl.to(R.uGlow, { value: 2.6, duration: 1.3 }, 7.85);
     tl.to(R.uBand, { value: 0, duration: 0.6 }, 9.05);
 
     // Cámara a la composición del montaje y letras cromadas pieza a pieza
@@ -465,7 +478,8 @@ export class App {
     for (const k of Object.keys(this.dimState)) tl.to(this.dimState[k], { alpha: 0, draw: 0, duration: 0.5 }, 0);
     tl.fromTo(this.flipState, { f: 0 }, { f: 1, duration: 2.5, ease: 'power3.inOut' }, o);
     tl.to(this.stage.scene.environmentRotation, { y: '+=1.5', duration: 1.6, ease: 'power2.inOut' }, o + 0.5);
-    tl.to(this.cam, { k5: 1, duration: 2.7, ease: 'power3.inOut' }, o);
+    // La cámara se aleja antes de que entren las letras de marca (más grandes)
+    tl.to(this.cam, { k5: 1, duration: 2.6, ease: 'power2.inOut' }, o - 0.4);
     tl.to(this.mats.rimUniforms.uGlow, { value: 0, duration: 0.6 }, o + 0.6);
     wm.letters.forEach((L, i) => {
       const t = o + 0.2 + i * 0.07;
@@ -473,7 +487,7 @@ export class App {
       tl.set(L.solid, { visible: false }, t + 0.42);
     });
     bw.letters.forEach((L, i) => {
-      const t = o + 0.62 + i * 0.07;
+      const t = o + 0.9 + i * 0.07;
       tl.set(L.solid, { visible: true }, t);
       tl.fromTo(L.pivot.rotation, { y: -Math.PI / 2 }, { y: 0, duration: 0.7, ease: 'power3.out' }, t);
     });
@@ -739,7 +753,7 @@ export class App {
     this.cam.k5 = 0;
     this.tagState.p = 1;
     this.tagState2.p = 0;
-    this.mats.rimUniforms.uGlow.value = 0.9;
+    this.mats.rimUniforms.uGlow.value = 2.6;
     for (const L of this.wordmark.letters) { L.solid.visible = true; L.pivot.rotation.set(0, 0, 0); L.pivot.position.set(0, 0, 0); }
     for (const L of this.brandWordmark.letters) L.solid.visible = false;
     for (const st of Object.values(this.dimState)) st.alpha = 0;
@@ -877,6 +891,15 @@ export class App {
       near = MathUtils.lerp(0.1, 0.01, MathUtils.smoothstep(dk, 0.4, 0.7));
     }
     if (cam.near !== near) { cam.near = near; cam.updateProjectionMatrix(); }
+    // Óptica descentrable: en el logo del montaje la cámara mira de frente a la
+    // escuadra y la imagen se desplaza para dejar sitio al rótulo
+    const sx = p.shift.x, sy = p.shift.y, W = stage.width, H = stage.height;
+    const key = `${sx.toFixed(5)}|${sy.toFixed(5)}|${W}|${H}`;
+    if (key !== this._shiftKey) {
+      this._shiftKey = key;
+      if (Math.abs(sx) + Math.abs(sy) < 1e-5) cam.clearViewOffset();
+      else cam.setViewOffset(W, H, sx * H, -sy * H, W, H);
+    }
     cam.updateMatrixWorld(); // las superposiciones HTML se proyectan con la cámara de este fotograma
     // Dentro de la ranura la oclusión ambiental no aporta y es costosa
     if (stage.ao) stage.ao.enabled = !stage.aoDisabled && dk < 0.45;
@@ -937,8 +960,9 @@ export class App {
     this._ax = (this._ax || new Vector3()).set(0, 1, 0).applyQuaternion(this.chromeBase);
     this._qq = (this._qq || new Quaternion()).setFromAxisAngle(this._ax, this.chromeSweep.v + px.x * 0.06);
     e.setFromQuaternion(this._qq.multiply(this.chromeBase));
+    this._ax.set(0, 1, 0).applyQuaternion(this.chromeBase2);
     this._qq.setFromAxisAngle(this._ax, this.chromeSweep2.v + px.x * 0.06);
-    this.mats.brandChrome.envMapRotation.setFromQuaternion(this._qq.multiply(this.chromeBase));
+    this.mats.brandChrome.envMapRotation.setFromQuaternion(this._qq.multiply(this.chromeBase2));
     applyOutlineDraw(this.wordmark);
 
     // Superposiciones HTML

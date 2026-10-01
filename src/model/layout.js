@@ -36,24 +36,30 @@ export function projectedExtents(object, right, up) {
 // transformación del rótulo, que siempre mira a la cámara final.
 // style "assembly": montaje grande con rótulo fino (imagen de montaje).
 // style "brand": logotipo de marca, rótulo alto alineado con la base del símbolo.
-export function composeLogo({ extents, textWidth, textCap, aspect, fov, style = 'assembly' }) {
+// el: elevación de la cámara (por defecto 30°, 27° en vertical).
+export function composeLogo({ extents, textWidth, textCap, aspect, fov, style = 'assembly', el: elevation }) {
   const portrait = aspect < 0.95;
-  const el = portrait ? 27 : 30;
+  const el = elevation ?? (portrait ? 27 : 30);
   const { back, right, up } = basis(FINAL_AZ, el);
   const { minR, maxR, minU, maxU } = extents;
   const asmW = maxR - minR, asmH = maxU - minU;
   const brand = style === 'brand';
   let cap, textLeft, baseline, compR, compU, totalW, totalH;
+  let heightFill = 1 / 1.2; // fracción de la altura de pantalla que ocupa el conjunto
   if (!portrait) {
-    cap = asmH * (brand ? 0.6 : 0.19);
+    // Montaje: proporciones del logo (letras a ~0,18 de la altura de la figura,
+    // base del rótulo a ~0,24 desde abajo, empezando bajo el brazo derecho) y
+    // figura en torno al 60 % de la altura
+    cap = asmH * (brand ? 0.6 : 0.18);
     const tw = (textWidth / textCap) * cap;
-    const gap = brand ? asmW * 0.1 : asmW * 0.035;
-    textLeft = maxR + gap;
-    baseline = brand ? minU + asmH * 0.035 : (minU + maxU) / 2 - asmH * 0.07 - cap / 2;
-    totalW = asmW + gap + tw;
+    const gap = brand ? asmW * 0.1 : asmW * 0.03;
+    textLeft = brand ? maxR + gap : (minR + maxR) / 2 + asmW * 0.25;
+    baseline = brand ? minU + asmH * 0.035 : minU + asmH * 0.24;
+    totalW = brand ? asmW + gap + tw : textLeft + tw - minR;
     totalH = brand ? asmH * 1.18 : asmH;
+    if (!brand) heightFill = 0.6;
     compR = (minR + textLeft + tw) / 2;
-    compU = brand ? (minU + maxU) / 2 - asmH * 0.06 : (minU + maxU) / 2 - asmH * 0.03;
+    compU = brand ? (minU + maxU) / 2 - asmH * 0.06 : (minU + maxU) / 2;
   } else {
     const tw0 = Math.max(asmW * (brand ? 1.7 : 1.05), 1);
     cap = Math.min(asmH * (brand ? 0.34 : 0.16), (tw0 / textWidth) * textCap);
@@ -68,13 +74,25 @@ export function composeLogo({ extents, textWidth, textCap, aspect, fov, style = 
   }
   const vfov = fov * D2R;
   const hfov = 2 * Math.atan(Math.tan(vfov / 2) * aspect);
-  const dist = Math.max((totalW * 1.14) / 2 / Math.tan(hfov / 2), (totalH * 1.2) / 2 / Math.tan(vfov / 2));
-  const target = new Vector3().addScaledVector(right, compR).addScaledVector(up, compU);
+  const widthFill = brand || portrait ? 1.14 : 1.05; // margen lateral
+  const dist = Math.max((totalW * widthFill) / 2 / Math.tan(hfov / 2), totalH / heightFill / 2 / Math.tan(vfov / 2));
+  // Montaje: la cámara apunta al centro de la figura (vista simétrica, a 45°) y
+  // la composición se encuadra desplazando la imagen (óptica descentrable).
+  // shift = desplazamiento del centro de la composición respecto al eje óptico,
+  // en fracción de la altura visible a la distancia del objetivo.
+  let aimR = compR, aimU = compU, shift = { x: 0, y: 0 };
+  if (!brand) {
+    aimR = (minR + maxR) / 2;
+    aimU = (minU + maxU) / 2;
+    const visH = 2 * dist * Math.tan(vfov / 2);
+    shift = { x: (compR - aimR) / visH, y: (compU - aimU) / visH };
+  }
+  const target = new Vector3().addScaledVector(right, aimR).addScaledVector(up, aimU);
   const quaternion = new Quaternion().setFromRotationMatrix(new Matrix4().makeBasis(right, up, back));
   const textPosition = new Vector3().addScaledVector(right, textLeft).addScaledVector(up, baseline);
   return {
     portrait,
-    pose: { az: FINAL_AZ, el, dist, target },
+    pose: { az: FINAL_AZ, el, dist, target, shift },
     text: { position: textPosition, quaternion, scale: cap / textCap },
   };
 }
