@@ -51,12 +51,51 @@ export class Chips {
         this.items.push(it);
       }
     }
+    this.build = null; // guion de montaje: cada viruta vuela a fundirse en un perfil
+    this.buildT = 0;
     this._o = new Object3D();
     this._q = new Quaternion();
     this._p = new Vector3();
     this._v = new Vector3();
     this.time = 0;
     this.update(0);
+  }
+
+  // Asigna cada viruta a un perfil (o a la escuadra) con su instante de llegada.
+  // specs: [{ start, dir, len, t0, t1, weight }] (frente de crecimiento lineal t0->t1)
+  setBuild(specs, { scatterUntil = 2.4 } = {}) {
+    const r = rng(77);
+    const total = specs.reduce((a, s) => a + s.weight, 0);
+    const perp = new Vector3();
+    const side = new Vector3();
+    let maxT = scatterUntil;
+    for (const it of this.items) {
+      let pick = r() * total * 1.12; // ~10 % se dispersan fuera de cuadro
+      let spec = null;
+      for (const sp of specs) { if (pick < sp.weight) { spec = sp; break; } pick -= sp.weight; }
+      if (!spec) { it.job = { scatter: true, dir: new Vector3(r() - 0.5, r() - 0.5, r() - 0.5).normalize(), t0: 0.2 + r() * 1.2 }; continue; }
+      const s = Math.pow(r(), 0.9);
+      const ta = spec.t0 + s * (spec.t1 - spec.t0) + (r() - 0.5) * 0.08;
+      const flight = 1.1 + r() * 1.0;
+      // punto de llegada sobre la superficie del perfil, junto al frente
+      perp.set(spec.dir.y, spec.dir.z, spec.dir.x);
+      side.crossVectors(spec.dir, perp);
+      const a = (r() - 0.5) * 2 * (spec.half || 2), b = (r() > 0.5 ? 1 : -1) * (spec.half || 2) * (0.6 + r() * 0.45);
+      const flip = r() > 0.5;
+      const target = spec.start.clone().addScaledVector(spec.dir, s * spec.len)
+        .addScaledVector(perp, flip ? a : b).addScaledVector(side, flip ? b : a);
+      const swirl = new Vector3(r() - 0.5, (r() - 0.5) * 0.6, r() - 0.5).normalize().multiplyScalar(4 + r() * 6);
+      it.job = { target, td: Math.max(0, ta - flight), ta, swirl, p0: null };
+      maxT = Math.max(maxT, ta);
+    }
+    this.build = { maxT };
+    this.buildT = 0;
+  }
+
+  clearBuild() {
+    this.build = null;
+    this.buildT = 0;
+    for (const it of this.items) it.job = null;
   }
 
   update(dt) {
@@ -87,6 +126,32 @@ export class Chips {
         p.copy(this.center).add(v);
         s *= 1 - MathUtils.smoothstep(e, 0.62, 1.0);
       }
+      if (this.build && it.job) {
+        const j = it.job, bt = this.buildT;
+        if (j.scatter) {
+          // se alejan girando y desaparecen
+          const u = MathUtils.clamp((bt - j.t0) / 1.6, 0, 1);
+          p.addScaledVector(j.dir, u * u * 14);
+          s *= 1 - MathUtils.smoothstep(u, 0.3, 1);
+        } else if (bt > j.td) {
+          if (!j.p0) j.p0 = p.clone();
+          const u = MathUtils.clamp((bt - j.td) / (j.ta - j.td), 0, 1);
+          const e = u * u * (1.6 - 0.6 * u); // aceleración de succión
+          // Bézier cuadrática con un remolino lateral
+          const mid = this._v.copy(j.p0).lerp(j.target, 0.5).add(j.swirl);
+          const a = 1 - e;
+          p.set(
+            a * a * j.p0.x + 2 * a * e * mid.x + e * e * j.target.x,
+            a * a * j.p0.y + 2 * a * e * mid.y + e * e * j.target.y,
+            a * a * j.p0.z + 2 * a * e * mid.z + e * e * j.target.z,
+          );
+          s *= u >= 1 ? 0 : 1 - MathUtils.smoothstep(u, 0.78, 1) * 0.85;
+          q.setFromAxisAngle(it.axis, dt * 6 * u);
+          it.q.multiply(q);
+        } else if (j.p0) {
+          j.p0 = null; // guion rebobinado
+        }
+      }
       o.position.copy(p);
       o.quaternion.copy(it.q);
       o.scale.setScalar(s);
@@ -94,6 +159,6 @@ export class Chips {
       it.mesh.setMatrixAt(it.i, o.matrix);
     }
     for (const m of this.meshes) m.instanceMatrix.needsUpdate = true;
-    this.group.visible = c < 0.999;
+    this.group.visible = c < 0.999 && !(this.build && this.buildT > this.build.maxT + 0.05);
   }
 }

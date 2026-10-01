@@ -1,6 +1,7 @@
 import './styles.css';
 import gsap from 'gsap';
 import { UI } from './ui/ui.js';
+import { loadResources, applyFamilyPhotos, setupHeroVideo } from './ui/media.js';
 
 const params = new URLSearchParams(location.search);
 const body = document.body;
@@ -39,9 +40,14 @@ function detectQuality() {
 
 async function start() {
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches || params.has('reduced');
+  // Recursos fotorrealistas opcionales (si faltan, todo sigue funcionando)
+  const resources = await loadResources();
+  applyFamilyPhotos(resources.fotosFamilias);
+  const hero = setupHeroVideo(resources.videoNave, reducedMotion);
   if (!hasWebGL2() || params.has('nogl')) {
     body.classList.add('no-webgl');
     body.dataset.state = 'fallback';
+    if (hero) hero.play();
     return;
   }
   const ui = new UI();
@@ -54,7 +60,10 @@ async function start() {
       ui,
       quality: detectQuality(),
       reducedMotion,
+      resources,
     });
+    app.onCatalog = () => hero && hero.play();
+    app.onLeaveCatalog = () => hero && hero.pause();
     await app.init();
     await document.fonts.ready;
     await app.warmup();

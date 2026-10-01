@@ -5,15 +5,17 @@ import glyphData from '../assets/saira-glyphs.json';
 // Prepara el rótulo cromado cargado del .glb. Añade el croquis técnico
 // (contorno de cada letra y líneas guía) que se dibuja antes de que cada
 // pieza cromada llegue desde el fondo y encaje en su sitio.
-export function setupWordmark(root) {
+export function setupWordmark(root, glyphs = glyphData) {
   const { width, capHeight, em, depth } = root.userData.meta;
-  const font = new Font(glyphData);
+  const font = new Font(glyphs);
   const lineMat = new LineBasicMaterial({ color: new Color(0.9, 0.92, 0.95), transparent: true, opacity: 0, depthWrite: false });
   const letters = [];
   for (const holder of root.children) {
-    const [, , ch] = holder.name.split('-');
-    if (!ch) continue;
-    const solid = holder.children.find((c) => c.name.endsWith('-cromo')) || holder.children[0];
+    // El cargador glTF añade sufijos (_1) a nombres repetidos entre rótulos
+    const match = holder.name.match(/letra-\d+-([A-Z])/);
+    if (!match) continue;
+    const ch = match[1];
+    const solid = holder.children.find((c) => c.name.includes('-cromo')) || holder.children[0];
     // Pivote intermedio: se anima él y no la malla, que conserva la
     // transformación de descuantización del .glb comprimido.
     const pivot = new Group();

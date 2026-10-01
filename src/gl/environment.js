@@ -3,8 +3,9 @@ import {
   PMREMGenerator, Vector3,
 } from 'three';
 
-// Entorno HDR de estudio generado por código (sin descargas):
-// cúpula en degradado + softboxes emisivos, filtrado con PMREM.
+// Entorno HDR de estudio: HDRI real de estudio (Poly Haven, CC0) como base,
+// con softboxes emisivos añadidos para los brillos largos del metal, filtrado
+// con PMREM. Si el HDRI no carga, una cúpula en degradado lo sustituye.
 
 function gradientDome({ top, horizon, bottom, band = null }) {
   return new Mesh(
@@ -53,11 +54,24 @@ function panel(w, h, intensity, pos, color = [1, 1, 1]) {
   return m;
 }
 
+function hdriDome(texture, intensity) {
+  const m = new Mesh(
+    new SphereGeometry(60, 64, 32),
+    new MeshBasicMaterial({ map: texture, side: BackSide, depthWrite: false, color: new Color(intensity, intensity, intensity) }),
+  );
+  m.rotation.y = Math.PI * 0.62; // softboxes del HDRI a la izquierda de la cámara final
+  return m;
+}
+
 // Estudio para las piezas mecanizadas (aluminio, acero)
-export function createStudioEnvironment(renderer) {
+export function createStudioEnvironment(renderer, hdri = null) {
   const scene = new Scene();
-  // Cúpula en degradado: evita que las caras verticales reflejen negro puro
-  scene.add(gradientDome({ top: [0.46, 0.47, 0.49], horizon: [0.17, 0.175, 0.185], bottom: [0.025, 0.025, 0.028] }));
+  if (hdri) {
+    scene.add(hdriDome(hdri, 0.36));
+  } else {
+    // Cúpula en degradado: evita que las caras verticales reflejen negro puro
+    scene.add(gradientDome({ top: [0.46, 0.47, 0.49], horizon: [0.17, 0.175, 0.185], bottom: [0.025, 0.025, 0.028] }));
+  }
   // Softbox cenital grande
   scene.add(panel(54, 30, 2.1, [0, 36, 2]));
   // Tira de luz principal (izquierda-delante)
@@ -76,6 +90,17 @@ export function createStudioEnvironment(renderer) {
   pmrem.dispose();
   scene.traverse((o) => { if (o.isMesh) { o.geometry.dispose(); o.material.dispose(); } });
   return rt.texture;
+}
+
+export async function loadStudioHDRI(url) {
+  try {
+    const { EXRLoader } = await import('three/addons/loaders/EXRLoader.js');
+    const t = await new EXRLoader().loadAsync(url);
+    return t;
+  } catch (e) {
+    console.warn('HDRI no disponible, se usa el estudio procedural', e);
+    return null;
+  }
 }
 
 // Estudio para las letras cromadas: cielo claro, horizonte oscuro, suelo medio.

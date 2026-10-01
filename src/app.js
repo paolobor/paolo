@@ -3,7 +3,8 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 import gsap from 'gsap';
 import { Stage } from './gl/stage.js';
-import { createStudioEnvironment, createChromeEnvironment } from './gl/environment.js';
+import { createStudioEnvironment, createChromeEnvironment, loadStudioHDRI } from './gl/environment.js';
+import { createBrushedMaps, loadImage } from './gl/brushed.js';
 import { prepareMaterials } from './gl/materials.js';
 import { createGrid } from './gl/grid.js';
 import { setupWordmark, applyOutlineDraw } from './gl/letters.js';
@@ -11,9 +12,15 @@ import { Chips } from './scenes/chips.js';
 import { setupAssembly } from './scenes/assembly.js';
 import { setupStructure } from './scenes/structure.js';
 import { Dimensions } from './ui/dimensions.js';
-import { basis, composeLogo, projectedExtents, FINAL_AZ } from './model/layout.js';
+import { createVideo } from './ui/media.js';
+import { basis, composeLogo, projectedExtents, facingQuaternion, FINAL_AZ } from './model/layout.js';
+import brandGlyphs from './assets/archivo-glyphs.json';
 
 const MODEL_URL = new URL('./assets/models/fdi-modular.glb', import.meta.url).href;
+const HDRI_URL = './assets/hdri/estudio.exr';
+const BRAND_VIEW = new Vector3(1, -1, 1).normalize(); // diagonal desde la que el montaje dibuja la "Y"
+const Q_ID = new Quaternion();
+const Y_AXIS = new Vector3(0, 1, 0);
 
 // Poses de cámara (esféricas alrededor de un objetivo)
 const POSES = {
@@ -22,6 +29,7 @@ const POSES = {
   wide: { az: 228, el: 24, dist: 38, target: new Vector3(1.6, -3.8, 1.6) },
 };
 const STRUCT_AZ = 218, STRUCT_EL = 21;
+const A_SCAN_TOP = 0.35;
 
 function lerpPose(a, b, t, out) {
   out.az = MathUtils.lerp(a.az, b.az, t);
@@ -33,17 +41,19 @@ function lerpPose(a, b, t, out) {
 const newPose = () => ({ az: 0, el: 0, dist: 0, target: new Vector3() });
 
 export class App {
-  constructor({ canvas, svg, ui, quality, reducedMotion }) {
+  constructor({ canvas, svg, ui, quality, reducedMotion, resources = {} }) {
     this.ui = ui;
     this.svg = svg;
     this.quality = quality;
     this.reducedMotion = reducedMotion;
+    this.resources = resources;
     this.state = 'intro';
-    this.stage = new Stage(canvas, quality);
+    const vv = resources.videoVirutas;
+    this.stage = new Stage(canvas, quality, { backdrop: !!(vv && (vv.h || vv.v)) && !reducedMotion });
   }
 
   async init() {
-    const { stage, quality } = this;
+    const { stage, quality, resources } = this;
     const { scene, renderer } = stage;
 
     // Modelo 3D (diseño tipo CAD exportado a .glb)
@@ -52,11 +62,19 @@ export class App {
     const montaje = gltf.scene.getObjectByName('montaje');
     const rotulo = gltf.scene.getObjectByName('rotulo');
     const bancada = gltf.scene.getObjectByName('bancada');
+    const marca = gltf.scene.getObjectByName('marca');
+    const rotuloMarca = gltf.scene.getObjectByName('rotulo-marca');
 
-    // Entornos y materiales
-    scene.environment = createStudioEnvironment(renderer);
+    // Entornos (HDRI real de estudio + softboxes) y materiales
+    const [hdri, texImg] = await Promise.all([
+      loadStudioHDRI(HDRI_URL),
+      resources.texturaAluminio ? loadImage(resources.texturaAluminio) : Promise.resolve(null),
+    ]);
+    scene.environment = createStudioEnvironment(renderer, hdri);
+    if (hdri) hdri.dispose();
     const chromeEnv = createChromeEnvironment(renderer);
-    const mats = (this.mats = prepareMaterials(gltf.scene, { chromeEnv }));
+    const maps = createBrushedMaps(quality.tier === 'high' ? 1024 : 512, texImg);
+    const mats = (this.mats = prepareMaterials(gltf.scene, { chromeEnv, maps }));
 
     // Luces directas (destellos y sombras suaves)
     const key = (this.key = new DirectionalLight(0xfff6ec, 1.1));
@@ -74,20 +92,61 @@ export class App {
     const glint = (this.glint = new DirectionalLight(0xffffff, 3.2));
     glint.position.set(6, 8, 12);
     scene.add(glint);
+    // Contraluces: perfilan las aristas del metal contra el negro
+    const rimA = (this.rimA = new DirectionalLight(0xe8f0ff, 1.15));
+    rimA.position.set(16, 9, 3);
+    const rimB = (this.rimB = new DirectionalLight(0xfff4e8, 0.75));
+    rimB.position.set(2, 5, 17);
+    scene.add(rimA, rimB);
 
-    // Escena 1: virutas
+    // Escena 1: virutas (3D) con el vídeo macro fotorrealista detrás, si existe
     this.chips = new Chips(mats.chip, quality.chips);
     scene.add(this.chips.group);
+    this.backdropState = { o: 0 };
+    if (stage.backdrop) {
+      const vv = resources.videoVirutas;
+      stage.backdrop.setSources({ h: vv.h ? createVideo(vv.h, { autoplay: false }) : null, v: vv.v ? createVideo(vv.v, { autoplay: false }) : null });
+      stage.backdrop.fit(stage.width, stage.height);
+    }
 
-    // Escena 2: montaje
+    // Escena 2: montaje. Gira alrededor del cruce de los ejes de los perfiles (J),
+    // que es también el centro del símbolo "Y" del logotipo de marca.
     const asm = (this.asm = setupAssembly(montaje, mats, { shadows: quality.shadows }));
-    scene.add(asm.root);
+    const J = new Vector3(0, asm.meta.hy, 0);
+    this.flip = new Group();
+    this.flip.name = 'giro-logo';
+    this.flip.position.copy(J);
+    asm.root.position.copy(J).negate();
+    this.flip.add(asm.root);
+    // Símbolo de marca (barras + nudo + anillo naranja)
+    this.mark = {
+      root: marca,
+      bars: marca.getObjectByName('marca-barras'),
+      ring: marca.getObjectByName('marca-anillo'),
+    };
+    marca.position.set(0, 0, 0);
+    marca.traverse((o) => { if (o.isMesh) { o.castShadow = quality.shadows; o.receiveShadow = quality.shadows; } });
+    this.flip.add(marca);
+    scene.add(this.flip);
+    this.qIso = new Quaternion();
+    // Longitud de cada barra del símbolo respecto al perfil del montaje
+    const bm = marca.userData.meta || { arm: 9.5, armV: 12.5 };
+    const vStart = asm.meta.vTop - asm.meta.hy;
+    this.barRatio = {
+      pX: (bm.arm - (2 + asm.meta.gap)) / asm.meta.lengthH,
+      pZ: (bm.arm - (2 + asm.meta.gap)) / asm.meta.lengthH,
+      pV: (bm.armV + vStart) / asm.meta.lengthV,
+    };
 
-    // Rótulo cromado
+    // Rótulo cromado (montaje) y rótulo de marca
     const wm = (this.wordmark = setupWordmark(rotulo));
     this.textRig = new Group();
     this.textRig.add(wm.group);
     scene.add(this.textRig);
+    const bw = (this.brandWordmark = setupWordmark(rotuloMarca, brandGlyphs));
+    this.textRig2 = new Group();
+    this.textRig2.add(bw.group);
+    scene.add(this.textRig2);
 
     // Escena 3: bancada para cobot (la esquina 0 es el propio montaje del logo)
     const bench = (this.bench = setupStructure(bancada, { shadows: quality.shadows }));
@@ -121,7 +180,12 @@ export class App {
     this.dofState = { bokeh: stage.dof.bokehScale };
     this.gridState = { o: 0, y: this.logoFloor, r: 30 };
     this.chromeSweep = { v: 0 };
+    this.chromeSweep2 = { v: 0 };
     this.tagState = { p: 0 };
+    this.tagState2 = { p: 0 };
+    this.flipState = { f: 0 };
+    this.growState = { pV: 0, pX: 0, pZ: 0 };
+    this.cam.k5 = 0;
     // Postura del cobot: plegado -> trabajo (unfold) + movimiento de trabajo (w)
     this.cobotPose = bench.pose.map((r) => [r.x, r.y, r.z]);
     this.cobotFolded = [[0, 2.36 - 0.9, 0], [-0.2, 0, 0], [2.85, 0, 0], [0.5, 0, 0], [0, 0, 0], [0, 0, 0]];
@@ -129,6 +193,17 @@ export class App {
     this.diveState = { k: 0 };
     this.parallax = { x: 0, y: 0, tx: 0, ty: 0 };
     this.time = 0;
+
+    // Guion de las virutas: cada una vuela a fundirse en un perfil o en la escuadra
+    const G = asm.growth;
+    this.buildSchedule = {
+      scan: [0.9, 2.7], pV: [2.3, 4.1], pX: [3.0, 4.8], pZ: [3.4, 5.2],
+    };
+    const S = this.buildSchedule;
+    this.chipSpecs = [
+      { start: new Vector3(0, A_SCAN_TOP, 0), dir: new Vector3(0, -1, 0), len: A_SCAN_TOP - asm.anchors.scanBottom, t0: S.scan[0], t1: S.scan[1], half: 1.6, weight: 0.55 },
+      ...['pV', 'pX', 'pZ'].map((k) => ({ start: G[k].start, dir: G[k].dir, len: G[k].len, t0: S[k][0], t1: S[k][1], half: 2, weight: k === 'pV' ? 1 : 1.15 })),
+    ];
 
     this.computeLayout();
     stage.onResize = () => this.computeLayout();
@@ -145,7 +220,9 @@ export class App {
       key.position.set(-9, 16, -7);
       key.target.position.set(1, -4, 1);
       c.left = -16; c.right = 16; c.top = 16; c.bottom = -16; c.near = 1; c.far = 60;
+      if (this.shadowFloor) this.shadowFloor.position.set(1.5, this.logoFloor + 0.005, 1.5);
     } else {
+      if (this.shadowFloor) this.shadowFloor.position.set(this.bench.meta.W / 2, this.bench.meta.floor + 0.01, this.bench.meta.D / 2);
       key.position.set(-30, 90, -40);
       key.target.position.set(38, -40, 38);
       c.left = -85; c.right = 85; c.top = 85; c.bottom = -85; c.near = 10; c.far = 320;
@@ -160,7 +237,10 @@ export class App {
     const aspect = w / h;
     const cam = this.stage.camera;
     const el = aspect < 0.95 ? 27 : 30;
-    const { right, up } = basis(FINAL_AZ, el);
+    const { right, up, back } = basis(FINAL_AZ, el);
+    const flipQ = this.flip.quaternion.clone();
+    this.flip.quaternion.identity();
+    this.flip.updateMatrixWorld(true);
     // Extensión proyectada del montaje con las piezas en su posición final
     const saved = [];
     for (const p of Object.values(this.asm.parts)) { saved.push([p, p.position.clone()]); p.position.copy(p.userData.final); }
@@ -177,6 +257,29 @@ export class App {
     this.textRig.updateMatrixWorld(true);
     this.chromeBase = L.text.quaternion.clone();
     this.layout = { portrait: L.portrait, s: L.text.scale };
+
+    // Logotipo de marca: el símbolo mira a la cámara por su diagonal (1,-1,1)
+    const mk = this.mark;
+    this.qIso.copy(facingQuaternion(BRAND_VIEW, back, up));
+    this.flip.quaternion.copy(this.qIso);
+    const barsVis = mk.bars.visible, ringVis = mk.ring.visible, ringScale = mk.ring.scale.x;
+    mk.bars.visible = true; mk.ring.visible = true; mk.ring.scale.setScalar(1);
+    this.flip.updateMatrixWorld(true);
+    const ext2 = projectedExtents(mk.root, right, up);
+    const bwm = this.brandWordmark;
+    const L2 = composeLogo({ extents: ext2, textWidth: bwm.width, textCap: bwm.capHeight, aspect, fov: cam.fov, style: 'brand' });
+    this.finalPose2 = L2.pose;
+    this.textRig2.position.copy(L2.text.position);
+    this.textRig2.quaternion.copy(L2.text.quaternion);
+    this.textRig2.scale.setScalar(L2.text.scale);
+    this.textRig2.updateMatrixWorld(true);
+    // Corrección de perspectiva: la "Y" se orienta hacia la posición real de la cámara
+    const b2 = basis(L2.pose.az, L2.pose.el);
+    const camPos2 = L2.pose.target.clone().addScaledVector(b2.back, L2.pose.dist);
+    this.qIso.copy(facingQuaternion(BRAND_VIEW, camPos2.sub(this.flip.position), b2.up));
+    mk.bars.visible = barsVis; mk.ring.visible = ringVis; mk.ring.scale.setScalar(ringScale);
+    this.flip.quaternion.copy(flipQ);
+    this.flip.updateMatrixWorld(true);
 
     // Bancada: a la derecha (horizontal) o arriba (vertical), dejando sitio a los textos
     const B = this.bench;
@@ -212,27 +315,30 @@ export class App {
     this.tl = this.stl = this.dtl = null;
     this.state = 'intro';
     this.chips.converge = 0;
+    this.chips.setBuild(this.chipSpecs);
     this.chips.group.visible = true;
     const P = this.asm.parts;
-    for (const p of Object.values(P)) { p.visible = false; p.position.copy(p.userData.final); }
+    for (const p of Object.values(P)) { p.visible = false; p.position.copy(p.userData.final); p.scale.set(1, 1, 1); }
     for (const s of this.asm.screws) s.userData.spin.rotation.y = 0;
-    const wm = this.wordmark;
-    for (const L of wm.letters) {
-      L.solid.visible = false;
-      L.pivot.position.set(0, 0, 0);
-      L.pivot.rotation.set(0, 0, 0);
-      L.draw = 0;
-    }
+    for (const k of ['pV', 'pX', 'pZ']) { this.growState[k] = 0; this.asm.setGrowth(k, 0, 0); }
+    this.resetLetters(this.wordmark, true);
+    this.resetLetters(this.brandWordmark, false);
     this.textRig.visible = true;
-    wm.lineMat.opacity = 0;
-    wm.guides.material.opacity = 0;
+    this.textRig2.visible = true;
+    this.flipState.f = 0;
+    this._appliedF = -1;
+    this.flip.quaternion.identity();
+    this.mark.bars.visible = false;
+    this.mark.ring.visible = false;
     this.resetBench();
-    Object.assign(this.cam, { k1: 0, k2: 0, k3: 0, k4: 0, orbit: 0 });
+    Object.assign(this.cam, { k1: 0, k2: 0, k3: 0, k4: 0, k5: 0, orbit: 0 });
     Object.assign(this.scanState, { y: 1000, gain: 0 });
     this.dofState.bokeh = this.stage.quality.tier === 'low' ? 1.8 : 2.6;
     Object.assign(this.gridState, { o: 0, y: this.logoFloor, r: 30 });
     this.tagState.p = 0;
+    this.tagState2.p = 0;
     this.chromeSweep.v = 0;
+    this.chromeSweep2.v = 0;
     this.diveState.k = 0;
     this.stage.scene.environmentRotation.set(0, 0, 0);
     this.mats.rimUniforms.uGlow.value = 0;
@@ -244,7 +350,27 @@ export class App {
     this.ui.resetStatements();
     this.ui.setFade(0);
     this.ui.setState('intro');
+    if (this.stage.backdrop) {
+      this.stage.backdrop.play();
+      gsap.fromTo(this.backdropState, { o: 0 }, { o: 1, duration: 1.6, ease: 'power1.out', delay: 0.3 });
+    }
     if (this.reducedMotion) this.goToLogo(true);
+  }
+
+  resetLetters(wm, outlines) {
+    for (const L of wm.letters) {
+      L.solid.visible = false;
+      L.pivot.position.set(0, 0, 0);
+      L.pivot.rotation.set(0, 0, 0);
+      L.draw = 0;
+    }
+    if (outlines) {
+      wm.lineMat.opacity = 0;
+      wm.guides.material.opacity = 0;
+    } else {
+      for (const L of wm.letters) L.outline.visible = false;
+      wm.guides.visible = false;
+    }
   }
 
   resetBench() {
@@ -261,39 +387,41 @@ export class App {
 
   buildTimeline() {
     const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.inOut' } });
-    const A = this.asm, P = A.parts, R = this.mats.rimUniforms;
+    const A = this.asm, P = A.parts, R = this.mats.rimUniforms, S = this.buildSchedule;
+    const span = this.chips.build ? this.chips.build.maxT + 0.2 : 6;
 
-    // Las virutas se ordenan hacia el centro y desaparecen
-    tl.to(this.chips, { converge: 1, duration: 2.7, ease: 'power2.inOut' }, 0);
-    tl.to(this.cam, { k1: 1, duration: 3.2, ease: 'power3.inOut' }, 0);
-    tl.to(this.dofState, { bokeh: 0, duration: 2.4, ease: 'power1.inOut' }, 0.8);
+    // Las virutas vuelan y se funden en la escuadra y en los perfiles
+    tl.fromTo(this.chips, { buildT: 0 }, { buildT: span, duration: span, ease: 'none' }, 0);
+    tl.to(this.cam, { k1: 1, duration: 3.0, ease: 'power3.inOut' }, 0);
+    tl.to(this.dofState, { bokeh: 0, duration: 2.6, ease: 'power1.inOut' }, 1.4);
+    if (this.stage.backdrop) {
+      tl.add(() => gsap.killTweensOf(this.backdropState), 0);
+      tl.to(this.backdropState, { o: 0, duration: 2.2, ease: 'power2.inOut' }, 0.2);
+    }
 
-    // La escuadra se "mecaniza" de arriba abajo
-    tl.set(P.connector, { visible: true }, 1.95);
-    tl.fromTo(this.scanState, { y: A.anchors.scanTop }, { y: A.anchors.scanBottom, duration: 1.9, ease: 'power2.inOut' }, 1.95);
-    tl.fromTo(this.scanState, { gain: 0 }, { gain: 1, duration: 0.35 }, 1.95);
-    tl.to(this.scanState, { gain: 0, duration: 0.45 }, 3.45);
-    tl.set(this.scanState, { y: -1000 }, 3.9);
-    tl.fromTo(this.stage.scene.environmentRotation, { y: -1.1 }, { y: 0.25, duration: 5, ease: 'power1.inOut' }, 2.2);
+    // La escuadra se "mecaniza" de arriba abajo con las primeras virutas
+    tl.set(P.connector, { visible: true }, S.scan[0]);
+    tl.fromTo(this.scanState, { y: A.anchors.scanTop }, { y: A.anchors.scanBottom, duration: S.scan[1] - S.scan[0], ease: 'none' }, S.scan[0]);
+    tl.fromTo(this.scanState, { gain: 0 }, { gain: 1, duration: 0.35 }, S.scan[0]);
+    tl.to(this.scanState, { gain: 0, duration: 0.45 }, S.scan[1] - 0.3);
+    tl.set(this.scanState, { y: -1000 }, S.scan[1] + 0.2);
+    tl.fromTo(this.stage.scene.environmentRotation, { y: -1.1 }, { y: 0.25, duration: 5, ease: 'power1.inOut' }, 1.2);
 
-    // Perfil vertical desde abajo
-    tl.to(this.cam, { k2: 1, duration: 3.6, ease: 'power2.inOut' }, 3.2);
-    tl.to(this.gridState, { o: 1, duration: 3 }, 3.4);
-    tl.set(P.pV, { visible: true }, 3.35);
-    tl.fromTo(P.pV.position, { y: P.pV.userData.final.y - 24 }, { y: P.pV.userData.final.y, duration: 1.9, ease: 'expo.out' }, 3.35);
-    tl.to(this.dimState.width40, { draw: 1, duration: 0.9, ease: 'power2.out' }, 4.4);
-
-    // Perfiles horizontales desde sus direcciones
-    tl.set(P.pX, { visible: true }, 4.35);
-    tl.fromTo(P.pX.position, { x: P.pX.userData.final.x + 26 }, { x: P.pX.userData.final.x, duration: 1.9, ease: 'expo.out' }, 4.35);
-    tl.set(P.pZ, { visible: true }, 4.65);
-    tl.fromTo(P.pZ.position, { z: P.pZ.userData.final.z + 26 }, { z: P.pZ.userData.final.z, duration: 1.9, ease: 'expo.out' }, 4.65);
-    tl.to(this.dimState.slot10, { draw: 1, duration: 0.9, ease: 'power2.out' }, 5.7);
-    tl.to(this.dimState.height40, { draw: 1, duration: 0.9, ease: 'power2.out' }, 6.0);
+    // Los perfiles se forman con virutas: el frente incandescente avanza por su eje
+    tl.to(this.cam, { k2: 1, duration: 3.6, ease: 'power2.inOut' }, 2.6);
+    tl.to(this.gridState, { o: 1, duration: 3 }, 2.8);
+    tl.to(this.shadowFloor.material, { opacity: 0.34, duration: 2.5 }, 3.2);
+    for (const k of ['pV', 'pX', 'pZ']) {
+      tl.set(P[k], { visible: true }, S[k][0]);
+      tl.fromTo(this.growState, { [k]: 0 }, { [k]: 1, duration: S[k][1] - S[k][0], ease: 'none' }, S[k][0]);
+    }
+    tl.to(this.dimState.width40, { draw: 1, duration: 0.9, ease: 'power2.out' }, 4.2);
+    tl.to(this.dimState.slot10, { draw: 1, duration: 0.9, ease: 'power2.out' }, 5.2);
+    tl.to(this.dimState.height40, { draw: 1, duration: 0.9, ease: 'power2.out' }, 5.5);
 
     // Tornillos de las pletinas: entran en la ranura superior y se aprietan
     [P.screwX, P.screwZ].forEach((s, i) => {
-      const t = 6.3 + i * 0.28;
+      const t = 5.5 + i * 0.28;
       tl.set(s, { visible: true }, t);
       tl.fromTo(s.position, { y: s.userData.final.y + 3.4 }, { y: s.userData.final.y, duration: 1.35, ease: 'power3.out' }, t);
       tl.fromTo(s.userData.spin.rotation, { y: -Math.PI * 9 }, { y: -0.5, duration: 1.35, ease: 'power3.out' }, t);
@@ -301,29 +429,83 @@ export class App {
     });
     // Tornillos laterales del cuello
     [[P.screwNX, 'x'], [P.screwNZ, 'z']].forEach(([s, ax], i) => {
-      const t = 7.15 + i * 0.25;
+      const t = 6.35 + i * 0.25;
       tl.set(s, { visible: true }, t);
       tl.fromTo(s.position, { [ax]: s.userData.final[ax] - 2.6 }, { [ax]: s.userData.final[ax], duration: 1.2, ease: 'power3.out' }, t);
       tl.fromTo(s.userData.spin.rotation, { y: -Math.PI * 7 }, { y: -0.45, duration: 1.2, ease: 'power3.out' }, t);
       tl.to(s.userData.spin.rotation, { y: 0, duration: 0.45, ease: 'power4.out' }, t + 1.22);
     });
-    for (const k of Object.keys(this.dimState)) tl.to(this.dimState[k], { alpha: 1, duration: 0.7 }, 8.0);
+    for (const k of Object.keys(this.dimState)) tl.to(this.dimState[k], { alpha: 1, duration: 0.7 }, 7.2);
 
     // El filo naranja se enciende con un barrido de luz
-    tl.fromTo(R.uBand, { value: 0 }, { value: 1, duration: 0.35 }, 8.45);
-    tl.fromTo(R.uSweep, { value: -0.15 }, { value: 1.85, duration: 1.9, ease: 'power1.inOut' }, 8.45);
-    tl.to(R.uGlow, { value: 0.9, duration: 1.3 }, 8.7);
-    tl.to(R.uBand, { value: 0, duration: 0.6 }, 9.9);
+    tl.fromTo(R.uBand, { value: 0 }, { value: 1, duration: 0.35 }, 7.6);
+    tl.fromTo(R.uSweep, { value: -0.15 }, { value: 1.85, duration: 1.9, ease: 'power1.inOut' }, 7.6);
+    tl.to(R.uGlow, { value: 0.9, duration: 1.3 }, 7.85);
+    tl.to(R.uBand, { value: 0, duration: 0.6 }, 9.05);
 
-    // Cámara a la composición del logo
-    tl.to(this.cam, { k3: 1, duration: 2.9, ease: 'power3.inOut' }, 8.1);
+    // Cámara a la composición del montaje y letras cromadas pieza a pieza
+    tl.to(this.cam, { k3: 1, duration: 2.9, ease: 'power3.inOut' }, 7.3);
+    tl.add(this.lettersTimeline(), 9.4);
+    tl.to(this.tagState, { p: 1, duration: 1.4, ease: 'power2.out' }, 11.8);
+    tl.to(this.cam, { orbit: 1, duration: 4, ease: 'sine.inOut' }, 12.0);
 
-    // Letras cromadas pieza a pieza
-    tl.add(this.lettersTimeline(), 10.2);
-    tl.to(this.tagState, { p: 1, duration: 1.4, ease: 'power2.out' }, 12.6);
-    tl.to(this.cam, { orbit: 1, duration: 4, ease: 'sine.inOut' }, 12.8);
-    tl.add(() => { if (this.state === 'building') { this.state = 'logo'; this.ui.setState('logo'); } }, 12.6);
+    // "La vuelta": el montaje gira y se convierte en el logotipo de marca
+    tl.add(this.flipTimeline(), 13.1);
     return tl;
+  }
+
+  // El montaje da la vuelta hasta verse por su diagonal (los tres perfiles
+  // dibujan la "Y"), los perfiles pasan a barras, la escuadra al anillo naranja
+  // y cada letra cromada gira sobre sí misma y vuelve como letra de marca.
+  flipTimeline() {
+    const tl = gsap.timeline();
+    const wm = this.wordmark, bw = this.brandWordmark;
+    const o = 0.5; // margen inicial: salida del lema y de las cotas
+    tl.to(this.tagState, { p: 0, duration: 0.6, ease: 'power2.in' }, o - 0.3);
+    for (const k of Object.keys(this.dimState)) tl.to(this.dimState[k], { alpha: 0, draw: 0, duration: 0.5 }, 0);
+    tl.fromTo(this.flipState, { f: 0 }, { f: 1, duration: 2.5, ease: 'power3.inOut' }, o);
+    tl.to(this.stage.scene.environmentRotation, { y: '+=1.5', duration: 1.6, ease: 'power2.inOut' }, o + 0.5);
+    tl.to(this.cam, { k5: 1, duration: 2.7, ease: 'power3.inOut' }, o);
+    tl.to(this.mats.rimUniforms.uGlow, { value: 0, duration: 0.6 }, o + 0.6);
+    wm.letters.forEach((L, i) => {
+      const t = o + 0.2 + i * 0.07;
+      tl.to(L.pivot.rotation, { y: Math.PI / 2, duration: 0.42, ease: 'power2.in' }, t);
+      tl.set(L.solid, { visible: false }, t + 0.42);
+    });
+    bw.letters.forEach((L, i) => {
+      const t = o + 0.62 + i * 0.07;
+      tl.set(L.solid, { visible: true }, t);
+      tl.fromTo(L.pivot.rotation, { y: -Math.PI / 2 }, { y: 0, duration: 0.7, ease: 'power3.out' }, t);
+    });
+    tl.fromTo(this.chromeSweep2, { v: -0.9 }, { v: 0.45, duration: 2.4, ease: 'power2.inOut' }, o + 0.9);
+    tl.to(this.tagState2, { p: 1, duration: 1.4, ease: 'power2.out' }, o + 2.3);
+    tl.add(() => { if (this.state === 'building') { this.state = 'logo'; this.ui.setState('logo'); } }, o + 2.4);
+    return tl;
+  }
+
+  // Aplica el progreso del giro (0 = montaje, 1 = logotipo de marca)
+  applyFlip() {
+    const f = this.flipState.f;
+    if (f === this._appliedF) return;
+    this._appliedF = f;
+    const P = this.asm.parts, mk = this.mark;
+    // Giro completo sobre el eje vertical mientras se orienta hacia la diagonal
+    this._q1 = (this._q1 || new Quaternion()).slerpQuaternions(Q_ID, this.qIso, f);
+    this._q2 = (this._q2 || new Quaternion()).setFromAxisAngle(Y_AXIS, Math.PI * 2 * f);
+    this.flip.quaternion.copy(this._q2).multiply(this._q1);
+    if (f <= 0) return;
+    const swap = f >= 0.5;
+    const k = MathUtils.smoothstep(f, 0.08, 0.5);
+    for (const key of ['pV', 'pX', 'pZ']) {
+      P[key].scale.z = MathUtils.lerp(1, this.barRatio[key], k);
+      P[key].visible = !swap;
+    }
+    for (const p of [P.connector, P.screwX, P.screwZ, P.screwNX, P.screwNZ]) p.visible = !swap;
+    mk.bars.visible = swap;
+    mk.ring.visible = swap;
+    const rs = MathUtils.smoothstep(f, 0.5, 0.86);
+    mk.ring.scale.setScalar(Math.max(0.001, 0.35 + 0.65 * rs));
+    this.mats.brandOrange.emissiveIntensity = 1 + 7 * (1 - rs);
   }
 
   lettersTimeline() {
@@ -352,19 +534,25 @@ export class App {
 
   // Escena 3: la cámara se aleja y la bancada se monta pieza a pieza
   structureTimeline() {
-    const tl = gsap.timeline({ paused: true, defaults: { ease: 'power2.inOut' } });
-    const B = this.bench, P = this.asm.parts, wm = this.wordmark, ui = this.ui;
+    const outer = gsap.timeline({ paused: true, defaults: { ease: 'power2.inOut' } });
+    const B = this.bench, P = this.asm.parts, bw = this.brandWordmark, ui = this.ui;
     const m = B.meta;
 
-    // Salida del rótulo y del lema
-    tl.to(this.tagState, { p: 0, duration: 0.6, ease: 'power2.in' }, 0);
-    wm.letters.forEach((L, i) => {
-      tl.to(L.pivot.position, { z: -14, duration: 0.9, ease: 'power3.in' }, i * 0.035);
-      tl.set(L.solid, { visible: false }, 0.9 + i * 0.035);
+    // Salida del rótulo de marca y del lema; el símbolo vuelve a ser el montaje
+    // (la esquina real de la bancada) con el giro inverso
+    outer.to(this.tagState2, { p: 0, duration: 0.6, ease: 'power2.in' }, 0);
+    bw.letters.forEach((L, i) => {
+      outer.to(L.pivot.position, { z: -14, duration: 0.9, ease: 'power3.in' }, i * 0.035);
+      outer.set(L.solid, { visible: false }, 0.9 + i * 0.035);
     });
-    tl.to(this.cam, { k4: 1, duration: 3.4, ease: 'power3.inOut' }, 0.1);
+    outer.to(this.flipState, { f: 0, duration: 1.2, ease: 'power3.inOut' }, 0.1);
+    outer.add(() => { for (const k of ['pV', 'pX', 'pZ']) P[k].scale.z = 1; }, 1.32);
+    const tl = gsap.timeline();
+    outer.add(tl, 0.9);
+    outer.to(this.cam, { k4: 1, duration: 3.4, ease: 'power3.inOut' }, 0.4);
     tl.to(this.cam, { orbit: 0.6, duration: 2 }, 0);
     tl.to(this.gridState, { y: m.floor, r: 95, duration: 3, ease: 'power2.inOut' }, 0.3);
+    tl.to(this.shadowFloor.material, { opacity: 0, duration: 0.4 }, 0);
     tl.set(B.root, { visible: true }, 0.55);
     tl.add(() => this.setShadowFrame('bench'), 0.55);
     tl.to(this.shadowFloor.material, { opacity: 0.42, duration: 2.5 }, 2.2);
@@ -432,7 +620,7 @@ export class App {
     tl.to(this.benchDims.w800, { draw: 1, duration: 1.0, ease: 'power2.out' }, 8.9);
     tl.to(this.benchDims.h750, { draw: 1, duration: 1.0, ease: 'power2.out' }, 9.1);
     tl.add(() => { if (this.state === 'structuring') { this.state = 'structure'; this.ui.setState('structure'); } }, 9.4);
-    return tl;
+    return outer;
   }
 
   // Escena 4: la cámara se acerca a la ranura superior de una viga y la atraviesa
@@ -507,6 +695,7 @@ export class App {
     this.diveState.k = 0;
     this.ui.setState('catalog');
     this.ui.showCatalog();
+    if (this.onCatalog) this.onCatalog();
   }
 
   // Avance con clic / scroll / teclado / toque
@@ -534,11 +723,30 @@ export class App {
 
   replay() {
     this.ui.hideCatalog();
+    if (this.onLeaveCatalog) this.onLeaveCatalog();
     this.resetToIntro();
   }
 
+  // Estado previo al giro: montaje + rótulo cromado (imagen de montaje)
+  showAssemblyLogo() {
+    this.flipState.f = 0;
+    this._appliedF = -1;
+    this.flip.quaternion.identity();
+    const P = this.asm.parts;
+    for (const p of Object.values(P)) { p.visible = true; p.scale.set(1, 1, 1); }
+    this.mark.bars.visible = false;
+    this.mark.ring.visible = false;
+    this.cam.k5 = 0;
+    this.tagState.p = 1;
+    this.tagState2.p = 0;
+    this.mats.rimUniforms.uGlow.value = 0.9;
+    for (const L of this.wordmark.letters) { L.solid.visible = true; L.pivot.rotation.set(0, 0, 0); L.pivot.position.set(0, 0, 0); }
+    for (const L of this.brandWordmark.letters) L.solid.visible = false;
+    for (const st of Object.values(this.dimState)) st.alpha = 0;
+  }
+
   // Vistas técnicas del diseño 3D (renders de revisión):
-  // ?design=logo|escuadra|explosion|seccion|bancada
+  // ?design=marca|marca-limpio|logo|logo-limpio|escuadra|explosion|seccion|bancada
   designView(name) {
     this.reducedMotion = true;
     this.goToLogo(true);
@@ -550,6 +758,9 @@ export class App {
       for (const [k, st] of Object.entries(this.dimState)) Object.assign(st, { draw: keys.includes(k) ? 1 : 0, alpha: 0 });
     };
     showDims([]);
+    if (name === 'marca') return; // logotipo de marca (estado final)
+    if (name === 'marca-limpio') { this.grid.visible = false; this.tagState2.p = 0; return; }
+    this.showAssemblyLogo();
     if (name === 'logo') return;
     if (name === 'logo-limpio') { this.grid.visible = false; return; }
     this.textRig.visible = false;
@@ -575,7 +786,7 @@ export class App {
       const add = (k, a, b, offset, label) => { this.dimState[k] = this.dims.add(k, { a, b, offset, label }, A.root); Object.assign(this.dimState[k], { draw: 1, alpha: 0 }); };
       add('secW', V(xEnd, meta.hy - half, half), V(xEnd, meta.hy - half, -half), V(0, -0.9, 0), '40 mm');
       add('secH', V(xEnd, meta.hy - half, -half), V(xEnd, meta.hy + half, -half), V(0, 0, -0.9), '40 mm');
-      add('secS', V(xEnd, meta.topOfH, 0.505), V(xEnd, meta.topOfH, -0.505), V(0, 0.9, 0), 'Ranura 10');
+      add('secS', V(xEnd, meta.topOfH, 0.5), V(xEnd, meta.topOfH, -0.5), V(0, 0.9, 0), 'Ranura 10');
       this.customPose = { az: 84, el: 6, dist: 15.5, target: V(xEnd, meta.hy, -0.2) };
     }
   }
@@ -640,8 +851,8 @@ export class App {
     lerpPose(POSES.intro, POSES.close, this.cam.k1, p);
     lerpPose(p, POSES.wide, this.cam.k2, tmp);
     lerpPose(tmp, this.finalPose, this.cam.k3, p);
-    lerpPose(p, this.structPose, this.cam.k4, tmp);
-    p.az = tmp.az; p.el = tmp.el; p.dist = tmp.dist; p.target.copy(tmp.target);
+    lerpPose(p, this.finalPose2, this.cam.k5, tmp);
+    lerpPose(tmp, this.structPose, this.cam.k4, p);
     if (this.customPose) lerpPose(this.customPose, this.customPose, 0, p);
     const orb = this.cam.orbit * (this.reducedMotion ? 0 : 1);
     const introPar = 1 - this.cam.k1;
@@ -666,11 +877,19 @@ export class App {
       near = MathUtils.lerp(0.1, 0.01, MathUtils.smoothstep(dk, 0.4, 0.7));
     }
     if (cam.near !== near) { cam.near = near; cam.updateProjectionMatrix(); }
+    cam.updateMatrixWorld(); // las superposiciones HTML se proyectan con la cámara de este fotograma
     // Dentro de la ranura la oclusión ambiental no aporta y es costosa
     if (stage.ao) stage.ao.enabled = !stage.aoDisabled && dk < 0.45;
 
-    // Virutas
+    // Virutas (3D) y vídeo macro de fondo
     if (this.chips.group.visible || this.chips.converge < 1) this.chips.update(dt);
+    const bd = stage.backdrop;
+    if (bd) {
+      const o = this.backdropState.o * (this.diveState.k > 0 ? 0 : 1);
+      bd.opacity = o;
+      if (o <= 0.001 && bd.playing) bd.pause();
+      else if (o > 0.001 && !bd.playing) bd.play();
+    }
     this.glint.position.set(Math.sin(t * 0.35) * 12, 7 + Math.sin(t * 0.23) * 5, Math.cos(t * 0.35) * 12);
     this.glint.intensity = 3.2 * (1 - this.cam.k1);
 
@@ -678,6 +897,13 @@ export class App {
     stage.dof.cocMaterial.focusDistance = cam.position.distanceTo(p.target);
     stage.dof.bokehScale = this.dofState.bokeh;
     stage.setDof(this.dofState.bokeh > 0.05);
+
+    // Perfiles que se forman con virutas y giro hacia el logotipo de marca
+    for (const key of ['pV', 'pX', 'pZ']) {
+      const g = this.growState[key];
+      if (g !== this.asm.growth[key].s) this.asm.setGrowth(key, g, g > 0 && g < 1 ? 1 : 0);
+    }
+    this.applyFlip();
 
     // Mecanizado de la escuadra
     this.asm.scan.uScanY.value = this.scanState.y;
@@ -711,22 +937,24 @@ export class App {
     this._ax = (this._ax || new Vector3()).set(0, 1, 0).applyQuaternion(this.chromeBase);
     this._qq = (this._qq || new Quaternion()).setFromAxisAngle(this._ax, this.chromeSweep.v + px.x * 0.06);
     e.setFromQuaternion(this._qq.multiply(this.chromeBase));
+    this._qq.setFromAxisAngle(this._ax, this.chromeSweep2.v + px.x * 0.06);
+    this.mats.brandChrome.envMapRotation.setFromQuaternion(this._qq.multiply(this.chromeBase));
     applyOutlineDraw(this.wordmark);
 
     // Superposiciones HTML
     this.dims.update(cam, stage.width, stage.height);
-    this.ui.updateTagline(this.tagState.p, this.projectTagline());
+    this.ui.updateTagline(this.tagState.p, this.projectTagline(this.wordmark));
+    this.ui.updateTagline(this.tagState2.p, this.projectTagline(this.brandWordmark, 0.3), this.ui.tagline2);
 
     stage.adapt(dt);
     stage.render(dt);
   }
 
-  projectTagline() {
-    const wm = this.wordmark;
+  projectTagline(wm, below = 0.34) {
     const cam = this.stage.camera;
     const w = this.stage.width, h = this.stage.height;
-    const a = new Vector3(0, -wm.capHeight * 0.34, 0);
-    const b = new Vector3(wm.width, -wm.capHeight * 0.34, 0);
+    const a = new Vector3(0, -wm.capHeight * below, 0);
+    const b = new Vector3(wm.width, -wm.capHeight * below, 0);
     wm.group.localToWorld(a).project(cam);
     wm.group.localToWorld(b).project(cam);
     return {

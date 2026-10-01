@@ -1,63 +1,50 @@
-import { ExtrudeGeometry } from 'three';
+import { ExtrudeGeometry, Vector2, Float32BufferAttribute } from 'three';
 import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
-import { filletPolygon, rot90, shapeFromPts, pathFromPts, circlePts, flattenCaps } from './shapes.js';
+import { shapeFromPts, pathFromPts, flattenCaps } from './shapes.js';
+import section from '../../assets/profile-40x40.json';
 
 // Unidades de escena: 1 = 10 mm. Perfil 40x40 ranura 10 (familia 40).
 export const MM = 0.1;
 export const PROFILE = 40 * MM;
 
-// Medidas reales de la sección (mm)
-const A = 20;          // semilado
-const SLOT = 5.05;     // media apertura de ranura (10,1 mm)
-const LIP = 15.8;      // cara inferior del labio (espesor de labio 4,2 mm)
-const CAV = 10.4;      // media anchura de la cámara bajo el labio
-const BOTTOM = 7.9;    // fondo de la ranura
-const BORE = 4.25;     // taladro central Ø8,5
-
-function sidePoints() {
-  // Lado con normal +Y, recorrido de +X a -X (sentido antihorario global)
-  return [
-    { x: A, y: A, r: 1.5 },
-    { x: SLOT + 0.55, y: A, r: 0.2 },
-    { x: SLOT, y: A - 0.55, r: 0.2 },
-    { x: SLOT, y: LIP, r: 0.35 },
-    { x: CAV, y: LIP, r: 0.5 },
-    { x: CAV, y: 14.0, r: 0.8 },
-    { x: 5.2, y: BOTTOM, r: 1.0 },
-    { x: -5.2, y: BOTTOM, r: 1.0 },
-    { x: -CAV, y: 14.0, r: 0.8 },
-    { x: -CAV, y: LIP, r: 0.5 },
-    { x: -SLOT, y: LIP, r: 0.35 },
-    { x: -SLOT, y: A - 0.55, r: 0.2 },
-    { x: -(SLOT + 0.55), y: A, r: 0.2 },
-  ];
-}
-
-function cornerVoid() {
-  // Cámara hueca de esquina (cuadrante +X +Y), paredes de ~1,8-1,9 mm
-  return [
-    { x: 12.2, y: 18.1, r: 0.5 },
-    { x: 18.1, y: 18.1, r: 0.7 },
-    { x: 18.1, y: 12.2, r: 0.5 },
-    { x: 14.7, y: 12.2, r: 0.45 },
-    { x: 12.2, y: 14.7, r: 0.45 },
-  ];
-}
+// Sección real del perfil FDI MODULAR 40x40, extraída de la cara de corte del
+// CAD "Perfil básico 40x40.STEP" (mm, centrada en el eje del perfil).
+// Ranura: 10 mm bajo el labio (x = ±5) con entrada achaflanada de 12 mm.
+export const SECTION = {
+  slotHalf: 5,     // media ranura (10 mm)
+  mouthHalf: 6,    // media entrada (12 mm)
+  lipUnder: 14,    // cara inferior del labio
+  lipStep: 18.5,   // escalón de la entrada
+  chamberHalf: 10, // media cámara bajo el labio
+  coreTop: 7.625,  // cara exterior del núcleo central
+};
 
 let cachedShape = null;
 export function profileShape() {
   if (cachedShape) return cachedShape;
-  const outer = [];
-  for (let k = 0; k < 4; k++) outer.push(...sidePoints().map((p) => rot90(p, k)));
-  // La sección se construye en mm; la geometría se escala al final.
-  const shape = shapeFromPts(filletPolygon(outer, 4));
-  for (let k = 0; k < 4; k++) {
-    const v = cornerVoid().map((p) => rot90(p, k));
-    shape.holes.push(pathFromPts(filletPolygon(v, 3)));
-  }
-  shape.holes.push(pathFromPts(circlePts(BORE, 40)));
+  const v = (l) => l.map(([x, y]) => new Vector2(x, y));
+  const shape = shapeFromPts(v(section.outer));
+  for (const h of section.holes) shape.holes.push(pathFromPts(v(h)));
   cachedShape = shape;
   return shape;
+}
+
+// Tangentes explícitas (vec4). En las paredes la tangente recorre el contorno
+// de la sección (perpendicular al cepillado, que va a lo largo del perfil), así
+// la anisotropía estira el brillo como en un perfil extruido real y no depende
+// de derivadas de UV, que en los biseles son degeneradas.
+export function addExtrusionTangents(g) {
+  const n = g.attributes.normal;
+  const t = new Float32Array(n.count * 4);
+  for (let i = 0; i < n.count; i++) {
+    const nx = n.getX(i), ny = n.getY(i);
+    let tx = -ny, ty = nx;
+    const l = Math.hypot(tx, ty);
+    if (l < 1e-3) { tx = 1; ty = 0; } else { tx /= l; ty /= l; }
+    t[i * 4] = tx; t[i * 4 + 1] = ty; t[i * 4 + 2] = 0; t[i * 4 + 3] = 1;
+  }
+  g.setAttribute('tangent', new Float32BufferAttribute(t, 4));
+  return g;
 }
 
 // Sección extruida a lo largo de +Z, de z=0 a z=length.
@@ -66,7 +53,7 @@ const geoCache = new Map();
 export function profileGeometry(length) {
   const key = length.toFixed(3);
   if (geoCache.has(key)) return geoCache.get(key);
-  const b = 0.22; // chaflán de corte en mm
+  const b = 0.2; // rebaba/chaflán del corte de sierra en mm
   let g = new ExtrudeGeometry(profileShape(), {
     depth: length / MM - 2 * b,
     bevelEnabled: true,
@@ -78,6 +65,7 @@ export function profileGeometry(length) {
   });
   g.translate(0, 0, b);
   g = flattenCaps(toCreasedNormals(g, (34 * Math.PI) / 180));
+  addExtrusionTangents(g);
   g.scale(MM, MM, MM); // UV quedan en mm (útil para el cepillado)
   g.computeBoundingBox();
   g.computeBoundingSphere();

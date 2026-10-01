@@ -2,7 +2,7 @@ import { MeshStandardMaterial, Color, SRGBColorSpace } from 'three';
 
 // Recoge por nombre los materiales del .glb y les añade lo que solo existe
 // en la web: barrido de luz del filo naranja y entorno propio del cromo.
-export function prepareMaterials(scene, { chromeEnv }) {
+export function prepareMaterials(scene, { chromeEnv, maps }) {
   const byName = {};
   scene.traverse((o) => {
     if (!o.isMesh) return;
@@ -20,6 +20,10 @@ export function prepareMaterials(scene, { chromeEnv }) {
     rod: need('varilla'),
     orange: need('naranja'),
     chrome: need('cromo'),
+    socket: need('hexagono'),
+    brandMetal: need('aluminio-marca'),
+    brandOrange: need('naranja-anillo'),
+    brandChrome: need('cromo-marca'),
   };
 
   // Filo naranja: emisión controlada por el barrido
@@ -42,10 +46,25 @@ export function prepareMaterials(scene, { chromeEnv }) {
   };
   orange.customProgramCacheKey = () => 'fdi-orange-rim';
 
-  // Sin anisotropía: con UV degeneradas en biseles produce píxeles NaN que el bloom expande
-  mats.aluminium.anisotropy = 0;
-  mats.chrome.envMap = chromeEnv;
-  mats.chrome.envMapIntensity = 1;
+  // Aluminio cepillado: vetas + microarañazos y anisotropía física. Las mallas
+  // traen tangentes explícitas (a lo ancho de las vetas), así el brillo se
+  // estira en la dirección correcta sin depender de derivadas de UV.
+  for (const [m, aniso, ns] of [[mats.aluminium, 0.55, 0.22], [mats.brandMetal, 0.4, 0.18]]) {
+    m.normalMap = maps.normal;
+    m.roughnessMap = maps.rough;
+    m.normalScale.set(ns, ns);
+    m.anisotropy = aniso;
+    m.anisotropyRotation = 0;
+  }
+  mats.aluminium.roughness = 0.38;
+  mats.aluminium.color.setRGB(0.86, 0.87, 0.885);
+  mats.aluminiumCut.roughnessMap = maps.rough;
+  mats.brandMetal.roughness = 0.28;
+
+  for (const m of [mats.chrome, mats.brandChrome]) {
+    m.envMap = chromeEnv;
+    m.envMapIntensity = 1;
+  }
 
   // Virutas (solo en la web): aluminio recién cortado, muy brillante
   mats.chip = new MeshStandardMaterial({

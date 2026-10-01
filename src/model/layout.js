@@ -31,31 +31,34 @@ export function projectedExtents(object, right, up) {
   return { minR, maxR, minU, maxU };
 }
 
-// Composición del logo: montaje a la izquierda y rótulo a la derecha (horizontal)
+// Composición del logo: símbolo a la izquierda y rótulo a la derecha (horizontal)
 // o rótulo debajo (vertical). Devuelve la pose final de cámara y la
 // transformación del rótulo, que siempre mira a la cámara final.
-export function composeLogo({ extents, textWidth, textCap, aspect, fov }) {
+// style "assembly": montaje grande con rótulo fino (imagen de montaje).
+// style "brand": logotipo de marca, rótulo alto alineado con la base del símbolo.
+export function composeLogo({ extents, textWidth, textCap, aspect, fov, style = 'assembly' }) {
   const portrait = aspect < 0.95;
   const el = portrait ? 27 : 30;
   const { back, right, up } = basis(FINAL_AZ, el);
   const { minR, maxR, minU, maxU } = extents;
   const asmW = maxR - minR, asmH = maxU - minU;
+  const brand = style === 'brand';
   let cap, textLeft, baseline, compR, compU, totalW, totalH;
   if (!portrait) {
-    cap = asmH * 0.19;
+    cap = asmH * (brand ? 0.6 : 0.19);
     const tw = (textWidth / textCap) * cap;
-    const gap = asmW * 0.035;
+    const gap = brand ? asmW * 0.1 : asmW * 0.035;
     textLeft = maxR + gap;
-    baseline = (minU + maxU) / 2 - asmH * 0.07 - cap / 2;
+    baseline = brand ? minU + asmH * 0.035 : (minU + maxU) / 2 - asmH * 0.07 - cap / 2;
     totalW = asmW + gap + tw;
-    totalH = asmH;
+    totalH = brand ? asmH * 1.18 : asmH;
     compR = (minR + textLeft + tw) / 2;
-    compU = (minU + maxU) / 2 - asmH * 0.03;
+    compU = brand ? (minU + maxU) / 2 - asmH * 0.06 : (minU + maxU) / 2 - asmH * 0.03;
   } else {
-    const tw0 = Math.max(asmW * 1.05, 1);
-    cap = Math.min(asmH * 0.16, (tw0 / textWidth) * textCap);
+    const tw0 = Math.max(asmW * (brand ? 1.7 : 1.05), 1);
+    cap = Math.min(asmH * (brand ? 0.34 : 0.16), (tw0 / textWidth) * textCap);
     const tw = (textWidth / textCap) * cap;
-    const gap = cap * 0.9;
+    const gap = cap * (brand ? 0.75 : 0.9);
     textLeft = (minR + maxR) / 2 - tw / 2;
     baseline = minU - gap - cap;
     totalW = Math.max(asmW, tw);
@@ -74,4 +77,18 @@ export function composeLogo({ extents, textWidth, textCap, aspect, fov }) {
     pose: { az: FINAL_AZ, el, dist, target },
     text: { position: textPosition, quaternion, scale: cap / textCap },
   };
+}
+
+// Orientación del símbolo de marca: su diagonal "view" (local) apunta a la
+// cámara y su eje -Y local queda vertical hacia abajo en pantalla.
+export function facingQuaternion(view, toCamera, screenUp) {
+  const f = view.clone().normalize();
+  const u = new Vector3(0, 1, 0).addScaledVector(f, -f.y).normalize();
+  const r = new Vector3().crossVectors(u, f);
+  const F = toCamera.clone().normalize();
+  const U = screenUp.clone().addScaledVector(F, -screenUp.dot(F)).normalize();
+  const R = new Vector3().crossVectors(U, F);
+  const local = new Matrix4().makeBasis(r, u, f);
+  const world = new Matrix4().makeBasis(R, U, F);
+  return new Quaternion().setFromRotationMatrix(world.multiply(local.transpose()));
 }

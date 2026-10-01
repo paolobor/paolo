@@ -1,7 +1,7 @@
-import { Group, Mesh, ExtrudeGeometry, Vector3 } from 'three';
+import { Group, Mesh, ExtrudeGeometry, Vector3, Quaternion } from 'three';
 import { Font } from 'three/addons/loaders/FontLoader.js';
 import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
-import { profileGeometry, PROFILE, MM } from '../gl/geometry/profile.js';
+import { profileGeometry, addExtrusionTangents, PROFILE, MM } from '../gl/geometry/profile.js';
 import {
   CONNECTOR, capGeometry, rimGeometry, neckGeometry, plateGeometry, rodGeometry,
   screwHeadGeometry, screwSocketGeometry, screwShankGeometry, tNutGeometry,
@@ -10,8 +10,9 @@ import {
   angleBracketGeometry, footPadGeometry, footDiscGeometry, footStudGeometry, footNutGeometry, footPlateGeometry,
   robotPlateGeometry, roundedCylinder, capDisc, gripperBodyGeometry, gripperFingerGeometry,
 } from '../gl/geometry/bench.js';
-import { flattenCaps } from '../gl/geometry/shapes.js';
+import { flattenCaps, filletPolygon, roundedRectPts, shapeFromPts, pathFromPts, circlePts } from '../gl/geometry/shapes.js';
 import glyphData from '../assets/saira-glyphs.json';
+import brandGlyphs from '../assets/archivo-glyphs.json';
 
 // Modelo 3D de FDI MODULAR (unidades: 1 = 10 mm, eje Y arriba).
 // "montaje": escuadra cúbica + perfiles 40x40 ranura 10 + tornillería,
@@ -338,41 +339,136 @@ export function buildBench(m) {
 
 // ---------------------------------------------------------------------------
 
-export function buildWordmark(chrome, { capHeight = 2.6, depth = 0.5, tracking = 0.03 } = {}) {
-  const font = new Font(glyphData);
-  const em = capHeight / (glyphData.capHeight / glyphData.resolution);
+// Rótulo extruido letra a letra. Cada letra va en "letra-i-X" con su malla "-cromo".
+function wordmark(mat, o) {
+  const font = new Font(o.glyphs);
+  const em = o.capHeight / (o.glyphs.capHeight / o.glyphs.resolution);
   const S = 10; // se modela a x10 para la precisión del suavizado de normales
-  const bevelT = 0.07, bevelS = 0.05;
+  const { capHeight, depth, bevelT, bevelS, tracking } = o;
   // Curvatura leve de la cara frontal: el reflejo recorre el horizonte del estudio
-  const curve = 0.34;
-  const front = (px, py) => new Vector3(0, (curve * (py / S - capHeight * 0.5)) / capHeight, 1).normalize();
+  const front = (px, py) => new Vector3(0, (o.curve * (py / S - capHeight * 0.5)) / capHeight, 1).normalize();
   const root = new Group();
-  root.name = 'rotulo';
+  root.name = o.name;
   let x = 0;
-  const TEXT = 'FDI MODULAR';
-  [...TEXT].forEach((ch, i) => {
-    if (ch === ' ') { x += em * 0.28; return; }
+  [...'FDI MODULAR'].forEach((ch, i) => {
+    if (ch === ' ') { x += em * o.space; return; }
     let g = new ExtrudeGeometry(font.generateShapes(ch, em * S), {
       depth: (depth - 2 * bevelT) * S,
       bevelEnabled: true,
       bevelThickness: bevelT * S,
       bevelSize: bevelS * S,
-      bevelOffset: -0.012 * S,
-      bevelSegments: 3,
+      bevelOffset: o.bevelOffset * S,
+      bevelSegments: o.bevelSegments,
       curveSegments: 12,
     });
-    g = flattenCaps(toCreasedNormals(g, (40 * Math.PI) / 180), front);
+    g = flattenCaps(toCreasedNormals(g, (o.crease * Math.PI) / 180), front);
     g.scale(1 / S, 1 / S, 1 / S);
     g.translate(0, 0, bevelT - depth / 2); // caras: trasera -depth/2, frontal +depth/2
     const holder = new Group();
     holder.name = `letra-${i}-${ch}`;
     holder.position.x = x;
-    const mesh = new Mesh(g, chrome);
+    const mesh = new Mesh(g, mat);
     mesh.name = `letra-${i}-${ch}-cromo`;
     holder.add(mesh);
     root.add(holder);
-    x += glyphData.glyphs[ch].ha * (em / glyphData.resolution) + tracking * em;
+    x += o.glyphs.glyphs[ch].ha * (em / o.glyphs.resolution) + tracking * em;
   });
   root.userData.meta = { width: x - tracking * em, capHeight, em, depth };
+  return root;
+}
+
+// Rótulo cromado del montaje (Saira Expanded ExtraBold, bisel redondeado)
+export function buildWordmark(chrome) {
+  return wordmark(chrome, {
+    glyphs: glyphData, name: 'rotulo', capHeight: 2.6, depth: 0.5, tracking: 0.03, space: 0.28,
+    bevelT: 0.07, bevelS: 0.05, bevelOffset: -0.012, bevelSegments: 3, crease: 40, curve: 0.34,
+  });
+}
+
+// Rótulo del logotipo de marca (Archivo Black, letras en bloque con chaflán a 45°)
+export function buildBrandWordmark(mat) {
+  return wordmark(mat, {
+    glyphs: brandGlyphs, name: 'rotulo-marca', capHeight: 2.6, depth: 0.62, tracking: 0.045, space: 0.3,
+    bevelT: 0.12, bevelS: 0.1, bevelOffset: -0.1, bevelSegments: 1, crease: 30, curve: 0.22,
+  });
+}
+
+// ---------------------------------------------------------------------------
+// Símbolo de marca: la "Y" del logotipo es el propio montaje visto en diagonal.
+// Tres barras de 40x40 salen de un nudo cúbico por +X, +Z y -Y, y el anillo
+// naranja mira en la diagonal (1,-1,1), que es la dirección desde la que se ve.
+// Origen = centro del nudo (en el montaje, el cruce de los ejes de los perfiles).
+export const BRAND = { arm: 9.5, armV: 12.5, ringR: 4.4, ringr: 2.35, ringT: 1.2, ringOff: 7.0 };
+export const BRAND_VIEW = new Vector3(1, -1, 1).normalize();
+
+function barGeometry(lengthMm) {
+  // Barra de sección 40x40 con aristas redondeadas, de la cara del nudo (20 mm) hasta su extremo
+  const b = 1.1;
+  let g = new ExtrudeGeometry(shapeFromPts(filletPolygon(roundedRectPts(40, 40, 4.5), 6)), {
+    depth: lengthMm - 20 - 2 * b, bevelEnabled: true, bevelThickness: b, bevelSize: b, bevelOffset: -b, bevelSegments: 3, steps: 1,
+  });
+  g.translate(0, 0, 20 + b);
+  g = flattenCaps(toCreasedNormals(g, (40 * Math.PI) / 180));
+  addExtrusionTangents(g);
+  g.scale(MM, MM, MM);
+  g.computeBoundingBox();
+  g.computeBoundingSphere();
+  return g;
+}
+
+function nodeGeometry() {
+  const r = 4.5;
+  let g = new ExtrudeGeometry(shapeFromPts(filletPolygon(roundedRectPts(40 - 2 * r, 40 - 2 * r, 0.5), 6)), {
+    depth: 40 - 2 * r, bevelEnabled: true, bevelThickness: r, bevelSize: r, bevelOffset: 0, bevelSegments: 5, steps: 1, curveSegments: 6,
+  });
+  g.translate(0, 0, -20 + r);
+  g = toCreasedNormals(g, (50 * Math.PI) / 180);
+  addExtrusionTangents(g);
+  g.scale(MM, MM, MM);
+  g.computeBoundingBox();
+  g.computeBoundingSphere();
+  return g;
+}
+
+function ringGeometry() {
+  const { ringR, ringr, ringT } = BRAND;
+  const b = 0.32 / MM;
+  const shape = shapeFromPts(circlePts(ringR / MM - b, 120));
+  shape.holes.push(pathFromPts(circlePts(ringr / MM + b, 96)));
+  let g = new ExtrudeGeometry(shape, {
+    depth: ringT / MM - 2 * b, bevelEnabled: true, bevelThickness: b, bevelSize: b, bevelOffset: 0, bevelSegments: 6, curveSegments: 1,
+  });
+  g.translate(0, 0, -ringT / MM / 2 + b);
+  g = toCreasedNormals(g, (60 * Math.PI) / 180);
+  g.scale(MM, MM, MM);
+  g.computeBoundingBox();
+  g.computeBoundingSphere();
+  return g;
+}
+
+export function buildBrandMark(m) {
+  const root = new Group();
+  root.name = 'marca';
+  const bars = new Group();
+  bars.name = 'marca-barras';
+  const arm = (name, len, rot) => {
+    const g = new Group();
+    g.name = name;
+    g.add(named(new Mesh(barGeometry(len / MM), m.brandMetal), `${name}-barra`));
+    rot(g);
+    bars.add(g);
+    return g;
+  };
+  arm('marca-brazo-x', BRAND.arm, (g) => { g.rotation.y = Math.PI / 2; }); // +Z -> +X
+  arm('marca-brazo-z', BRAND.arm, () => {});
+  arm('marca-brazo-v', BRAND.armV, (g) => { g.rotation.x = Math.PI / 2; }); // +Z -> -Y
+  bars.add(named(new Mesh(nodeGeometry(), m.brandMetal), 'marca-nudo'));
+  const ring = new Group();
+  ring.name = 'marca-anillo';
+  ring.add(named(new Mesh(ringGeometry(), m.brandOrange), 'marca-anillo-naranja'));
+  ring.position.copy(BRAND_VIEW).multiplyScalar(BRAND.ringOff);
+  ring.quaternion.copy(new Quaternion().setFromUnitVectors(new Vector3(0, 0, 1), BRAND_VIEW));
+  root.add(bars, ring);
+  root.userData.meta = { ...BRAND };
   return root;
 }

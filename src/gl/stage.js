@@ -3,15 +3,16 @@ import {
 } from 'three';
 import {
   EffectComposer, RenderPass, EffectPass, BloomEffect, ToneMappingEffect, ToneMappingMode,
-  DepthOfFieldEffect, VignetteEffect, SMAAEffect,
+  DepthOfFieldEffect, VignetteEffect, SMAAEffect, NoiseEffect, BlendFunction,
 } from 'postprocessing';
 import { N8AOPostPass } from 'n8ao';
+import { VideoBackdropEffect } from './backdrop.js';
 
-export const BG = new Color(0x030304);
+export const BG = new Color(0x000000); // negro puro: casa sin cortes con los vídeos
 
 // Renderizador + cadena de postproceso con niveles de calidad adaptativos.
 export class Stage {
-  constructor(canvas, quality) {
+  constructor(canvas, quality, { backdrop = false } = {}) {
     this.quality = quality;
     const renderer = (this.renderer = new WebGLRenderer({
       canvas,
@@ -60,15 +61,22 @@ export class Stage {
 
     this.bloom = new BloomEffect({
       mipmapBlur: true,
-      luminanceThreshold: 1.6,
+      luminanceThreshold: 2.0,
       luminanceSmoothing: 0.4,
-      intensity: 0.38,
+      intensity: 0.32,
       radius: 0.62,
       levels: quality.tier === 'low' ? 5 : 7,
     });
     this.tone = new ToneMappingEffect({ mode: ToneMappingMode.ACES_FILMIC });
+    // Grano de película muy leve, proporcional a la luz (el negro sigue siendo negro puro)
+    this.grain = new NoiseEffect({ premultiply: true, blendFunction: BlendFunction.SCREEN });
+    this.grain.blendMode.opacity.value = 0.05;
     this.vignette = new VignetteEffect({ offset: 0.32, darkness: 0.62 });
-    const effects = [this.bloom, this.tone, this.vignette];
+    const effects = [this.bloom, this.tone, this.grain, this.vignette];
+    if (backdrop) {
+      this.backdrop = new VideoBackdropEffect();
+      effects.unshift(this.backdrop);
+    }
     if (!quality.msaa) effects.push(new SMAAEffect());
     this.composer.addPass(new EffectPass(this.camera, ...effects));
 
@@ -89,6 +97,7 @@ export class Stage {
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
     this.width = w; this.height = h;
+    if (this.backdrop) this.backdrop.fit(w, h);
     this.onResize && this.onResize(w, h);
   }
 

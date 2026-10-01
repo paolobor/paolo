@@ -1,6 +1,6 @@
-import { ExtrudeGeometry, LatheGeometry, CircleGeometry, Vector2 } from 'three';
-import { toCreasedNormals } from 'three/addons/utils/BufferGeometryUtils.js';
-import { filletPolygon, roundedRectPts, shapeFromPts, pathFromPts, flattenCaps } from './shapes.js';
+import { ExtrudeGeometry, LatheGeometry, ShapeGeometry, Shape, BufferGeometry, Float32BufferAttribute, Vector2 } from 'three';
+import { toCreasedNormals, mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { filletPolygon, roundedRectPts, shapeFromPts, pathFromPts, circlePts, flattenCaps } from './shapes.js';
 import { MM } from './profile.js';
 
 // Todas las piezas se modelan en mm y se escalan a unidades de escena (1 = 10 mm).
@@ -116,28 +116,58 @@ export function rodGeometry(length = 18.4, r = 2.3) {
 // Tornillo Allen de cabeza baja (DIN 7984 M6): cabeza Ø10 x 4, hexágono interior 4
 export const SCREW = { R: 5, H: 4, hexR: 4 / Math.sqrt(3), socketDepth: 2.6 };
 export function screwHeadGeometry() {
+  // Cabeza torneada: chaflán superior, cara plana y avellanado de entrada al hexágono
   const { R, H, hexR } = SCREW;
-  const outer = [];
-  for (let i = 0; i < 48; i++) {
-    const a = (i / 48) * Math.PI * 2;
-    outer.push(new Vector2(Math.cos(a) * R, Math.sin(a) * R));
-  }
+  const rcs = hexR + 0.38;
+  const pts = [
+    new Vector2(2.9, 0), new Vector2(R - 0.15, 0), new Vector2(R, 0.15),
+    new Vector2(R, H - 0.62), new Vector2(R - 0.12, H - 0.42), new Vector2(R - 0.55, H - 0.04),
+    new Vector2(R - 0.7, H), new Vector2(rcs, H), new Vector2(hexR + 0.015, H - 0.36),
+  ];
+  const lathe = new LatheGeometry(pts, 48);
+  // Corona plana entre el avellanado y el hexágono (aristas vivas)
+  const ring = new Shape();
+  ring.setFromPoints(circlePts(hexR + 0.015, 48));
   const hex = [];
   for (let i = 0; i < 6; i++) {
     const a = (i / 6) * Math.PI * 2;
     hex.push(new Vector2(Math.cos(a) * hexR, Math.sin(a) * hexR));
   }
-  const shape = shapeFromPts(outer);
-  shape.holes.push(pathFromPts(hex));
-  return slab(shape, 0, H, 0.55, 3, 50);
+  ring.holes.push(pathFromPts(hex));
+  const cap = new ShapeGeometry(ring);
+  cap.rotateX(-Math.PI / 2);
+  cap.translate(0, H - 0.36, 0);
+  const g = mergeGeometries([lathe.toNonIndexed(), cap.toNonIndexed()]);
+  return finish(g, 40);
 }
 
 export function screwSocketGeometry() {
-  // Fondo del hexágono (queda en sombra dentro de la cabeza)
-  const g = new CircleGeometry(SCREW.hexR, 6);
-  g.rotateX(-Math.PI / 2);
-  g.translate(0, SCREW.H - SCREW.socketDepth, 0);
+  // Hexágono interior de 4 mm: seis paredes planas y fondo cónico de taladro
+  const { H, hexR, socketDepth } = SCREW;
+  const top = H - 0.36, bot = H - socketDepth;
+  const pos = [], nor = [];
+  const v = (i) => { const a = (i / 6) * Math.PI * 2; return [Math.cos(a) * hexR, Math.sin(a) * hexR]; };
+  for (let i = 0; i < 6; i++) {
+    const [x0, z0] = v(i), [x1, z1] = v(i + 1);
+    const mx = -(x0 + x1) / 2, mz = -(z0 + z1) / 2, l = Math.hypot(mx, mz);
+    const n = [mx / l, 0, mz / l];
+    // pared vista desde el eje (normal hacia dentro)
+    pos.push(x0, top, z0, x1, bot, z1, x1, top, z1, x0, top, z0, x0, bot, z0, x1, bot, z1);
+    for (let k = 0; k < 6; k++) nor.push(...n);
+    // fondo cónico (punta de 118°)
+    const depth = hexR * 0.6;
+    pos.push(x0, bot, z0, 0, bot - depth, 0, x1, bot, z1);
+    const e = [x1 - x0, 0, z1 - z0], f = [-x0, -depth, -z0];
+    const c = [e[1] * f[2] - e[2] * f[1], e[2] * f[0] - e[0] * f[2], e[0] * f[1] - e[1] * f[0]];
+    const cl = Math.hypot(...c) * (c[1] > 0 ? 1 : -1);
+    for (let k = 0; k < 3; k++) nor.push(c[0] / cl, c[1] / cl, c[2] / cl);
+  }
+  const g = new BufferGeometry();
+  g.setAttribute('position', new Float32BufferAttribute(pos, 3));
+  g.setAttribute('normal', new Float32BufferAttribute(nor, 3));
   g.scale(MM, MM, MM);
+  g.computeBoundingBox();
+  g.computeBoundingSphere();
   return g;
 }
 
@@ -160,16 +190,17 @@ export function screwShankGeometry(length = 14, r = 3) {
 // perfil, coordenadas de la sección en mm) extruida a lo largo de Z.
 export function tNutGeometry(length = 20) {
   const pts = [
-    { x: -9.6, y: 15.7, r: 0.4 },
-    { x: -9.6, y: 13.1, r: 0.6 },
-    { x: -6.2, y: 10.2, r: 0.8 },
-    { x: 6.2, y: 10.2, r: 0.8 },
-    { x: 9.6, y: 13.1, r: 0.6 },
-    { x: 9.6, y: 15.7, r: 0.4 },
-    { x: 4.75, y: 15.7, r: 0.3 },
-    { x: 4.75, y: 18.4, r: 0.5 },
-    { x: -4.75, y: 18.4, r: 0.5 },
-    { x: -4.75, y: 15.7, r: 0.3 },
+    // Encaja en la cámara del perfil FDI 40x40 (labio a 14 mm, ranura de 10)
+    { x: -9.5, y: 13.8, r: 0.4 },
+    { x: -9.5, y: 11.8, r: 0.6 },
+    { x: -6.4, y: 8.7, r: 0.8 },
+    { x: 6.4, y: 8.7, r: 0.8 },
+    { x: 9.5, y: 11.8, r: 0.6 },
+    { x: 9.5, y: 13.8, r: 0.4 },
+    { x: 4.7, y: 13.8, r: 0.3 },
+    { x: 4.7, y: 17.6, r: 0.5 },
+    { x: -4.7, y: 17.6, r: 0.5 },
+    { x: -4.7, y: 13.8, r: 0.3 },
   ];
   const b = 0.4;
   const g = new ExtrudeGeometry(shapeFromPts(filletPolygon(pts, 3)), {

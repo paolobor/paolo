@@ -1,4 +1,4 @@
-import { CanvasTexture, RepeatWrapping, MeshPhysicalMaterial, MeshStandardMaterial, Color, SRGBColorSpace, NoColorSpace, Vector2 } from 'three';
+import { CanvasTexture, RepeatWrapping, MeshPhysicalMaterial, MeshStandardMaterial, Color, SRGBColorSpace, NoColorSpace, Vector2, DoubleSide } from 'three';
 
 // Materiales PBR del modelo 3D (compatibles con glTF 2.0).
 // Se exportan al .glb y la web los reutiliza al cargarlo.
@@ -100,7 +100,8 @@ export function createModelMaterials() {
     roughnessMap: satin,
   });
   const screw = new MeshStandardMaterial({ name: 'tornillo', color: new Color(0.86, 0.86, 0.87), metalness: 1, roughness: 0.2 });
-  const socket = new MeshStandardMaterial({ name: 'hexagono', color: new Color(0.02, 0.02, 0.02), metalness: 0.4, roughness: 0.65 });
+  // Interior del hexágono: acero oscurecido (queda en sombra), visible por ambas caras
+  const socket = new MeshStandardMaterial({ name: 'hexagono', color: new Color(0.2, 0.2, 0.21), metalness: 1, roughness: 0.5, side: DoubleSide });
   const rod = new MeshStandardMaterial({ name: 'varilla', color: new Color(0.42, 0.42, 0.43), metalness: 1, roughness: 0.38 });
   const nut = new MeshStandardMaterial({ name: 'tuerca', color: new Color(0.62, 0.62, 0.63), metalness: 1, roughness: 0.35 });
   const orange = new MeshPhysicalMaterial({
@@ -123,5 +124,29 @@ export function createModelMaterials() {
   const cobotWhite = new MeshPhysicalMaterial({ name: 'cobot-blanco', color: new Color(0.82, 0.83, 0.84), metalness: 0, roughness: 0.34, clearcoat: 0.35, clearcoatRoughness: 0.3 });
   const cobotGrey = new MeshPhysicalMaterial({ name: 'cobot-gris', color: new Color(0.05, 0.052, 0.058), metalness: 0.1, roughness: 0.45 });
 
-  return { aluminium, aluminiumCut, steel, screw, socket, rod, nut, orange, chrome, cast, zinc, rubber, blackAlu, cobotWhite, cobotGrey };
+  // Logotipo de marca: barras de aluminio satinado, anillo naranja lacado y letras cromadas satinadas
+  const brandMetal = new MeshPhysicalMaterial({
+    name: 'aluminio-marca',
+    color: new Color(0.9, 0.905, 0.915),
+    metalness: 1,
+    roughness: 0.3,
+    roughnessMap: brushedRough,
+    normalMap: brushedNormal,
+    normalScale: new Vector2(0.25, 0.25),
+  });
+  const brandOrange = new MeshPhysicalMaterial({
+    name: 'naranja-anillo',
+    color: new Color().setStyle('#ff6410', SRGBColorSpace),
+    metalness: 0.55,
+    roughness: 0.22,
+    clearcoat: 1,
+    clearcoatRoughness: 0.08,
+    emissive: new Color().setStyle('#ff4a00', SRGBColorSpace).multiplyScalar(0.12),
+  });
+  const brandChrome = new MeshStandardMaterial({ name: 'cromo-marca', color: new Color(0.95, 0.955, 0.965), metalness: 1, roughness: 0.16 });
+
+  return {
+    aluminium, aluminiumCut, steel, screw, socket, rod, nut, orange, chrome, cast, zinc, rubber, blackAlu, cobotWhite, cobotGrey,
+    brandMetal, brandOrange, brandChrome,
+  };
 }

@@ -2,8 +2,8 @@
 import { Scene, PerspectiveCamera, Group } from 'three';
 import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { createModelMaterials } from '../../src/model/materials.js';
-import { buildAssembly, buildWordmark, buildBench } from '../../src/model/build.js';
-import { composeLogo, projectedExtents, basis } from '../../src/model/layout.js';
+import { buildAssembly, buildWordmark, buildBench, buildBrandMark, buildBrandWordmark, BRAND_VIEW } from '../../src/model/build.js';
+import { composeLogo, projectedExtents, basis, facingQuaternion } from '../../src/model/layout.js';
 
 const exporter = new GLTFExporter();
 const toGLB = (input) => exporter.parseAsync(input, { binary: true, onlyVisible: true });
@@ -22,7 +22,7 @@ window.exportAll = async () => {
   {
     const scene = new Scene();
     scene.name = 'FDI MODULAR';
-    scene.add(buildAssembly(m), buildWordmark(m.chrome), buildBench(m));
+    scene.add(buildAssembly(m), buildWordmark(m.chrome), buildBench(m), buildBrandMark(m), buildBrandWordmark(m.brandChrome));
     out.web = b64(await toGLB(scene));
   }
   // Diseño: bancada para cobot completa
@@ -61,6 +61,30 @@ window.exportAll = async () => {
     logo.add(asm, text);
     scene.add(logo, cam);
     out.logo = b64(await toGLB(scene));
+  }
+  // 4) Diseño: logotipo de marca 3D (símbolo Y + anillo naranja + rótulo en bloque)
+  {
+    const scene = new Scene();
+    scene.name = 'FDI MODULAR - logotipo de marca 3D';
+    const mark = buildBrandMark(m);
+    const text = buildBrandWordmark(m.brandChrome);
+    const aspect = 3.0, fov = 24;
+    const b0 = basis(225, 30);
+    mark.quaternion.copy(facingQuaternion(BRAND_VIEW, b0.back, b0.up));
+    const L = composeLogo({ extents: projectedExtents(mark, b0.right, b0.up), textWidth: text.userData.meta.width, textCap: text.userData.meta.capHeight, aspect, fov, style: 'brand' });
+    text.position.copy(L.text.position);
+    text.quaternion.copy(L.text.quaternion);
+    text.scale.setScalar(L.text.scale);
+    const cam = new PerspectiveCamera(fov, aspect, 0.1, 500);
+    cam.name = 'camara-logotipo';
+    const b = basis(L.pose.az, L.pose.el);
+    cam.position.copy(L.pose.target).addScaledVector(b.back, L.pose.dist);
+    cam.lookAt(L.pose.target);
+    const logo = new Group();
+    logo.name = 'logotipo-fdi-modular';
+    logo.add(mark, text);
+    scene.add(logo, cam);
+    out.marca = b64(await toGLB(scene));
   }
   document.getElementById('s').textContent = 'Listo';
   return out;

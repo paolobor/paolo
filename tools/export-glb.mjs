@@ -21,6 +21,7 @@ const files = {
   escuadra: `${root}design/FDI-MODULAR_escuadra-cubica_40x40-ranura10.glb`,
   logo: `${root}design/FDI-MODULAR_logo-3D.glb`,
   bancada: `${root}design/FDI-MODULAR_bancada-cobot.glb`,
+  marca: `${root}design/FDI-MODULAR_logotipo-marca-3D.glb`,
 };
 for (const [k, path] of Object.entries(files)) {
   const buf = Buffer.from(out[k], 'base64');
@@ -33,6 +34,7 @@ const run = (cmd) => execSync(`npx gltf-transform ${cmd}`, { cwd: root, stdio: '
 run(`weld "${files.escuadra}" "${files.escuadra}"`);
 run(`weld "${files.logo}" "${files.logo}"`);
 run(`weld "${files.bancada}" "${files.bancada}"`);
+run(`weld "${files.marca}" "${files.marca}"`);
 run(`weld "${files.web}" tools/.cache/welded.glb`);
 fs.mkdirSync(`${root}src/assets/models`, { recursive: true });
 run('meshopt tools/.cache/welded.glb src/assets/models/fdi-modular.glb --level medium');
