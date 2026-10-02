@@ -1,0 +1,38 @@
+---
+// Hueco visible para material pendiente: [FOTO: …], [VÍDEO: …], [LOGO: …].
+interface Props {
+  label: string;
+  kind?: 'FOTO' | 'VÍDEO' | 'LOGO' | 'RENDER';
+  tone?: 'light' | 'dark';
+  // 'top': etiqueta arriba, para huecos con texto superpuesto abajo (tarjetas de aplicación).
+  align?: 'center' | 'top';
+  class?: string;
+}
+const { label, kind = 'FOTO', tone = 'light', align = 'center', class: className = '' } = Astro.props;
+---
+
+<div
+  class:list={[
+    'ph relative grid h-full w-full justify-items-center overflow-hidden p-4 text-center font-mono leading-snug',
+    align === 'top' ? 'content-start pt-6 text-[0.62rem] sm:text-[0.7rem]' : 'content-center text-[0.72rem]',
+    tone === 'light' ? 'ph-light text-muted' : 'ph-dark text-mist',
+    className,
+  ]}
+  role="img"
+  aria-label={`Pendiente: ${label}`}
+>
+  <span class="relative max-w-[28ch]">[{kind}: {label}]</span>
+</div>
+
+<style>
+  .ph-light {
+    background: repeating-linear-gradient(135deg, rgb(86 101 122 / 0.07) 0 10px, transparent 10px 20px), var(--color-paper);
+    outline: 1.5px dashed #9aa8ba;
+    outline-offset: -8px;
+  }
+  .ph-dark {
+    background: repeating-linear-gradient(135deg, #18345a 0 14px, #132b4b 14px 28px);
+    outline: 1.5px dashed rgb(185 198 216 / 0.35);
+    outline-offset: -8px;
+  }
+</style>

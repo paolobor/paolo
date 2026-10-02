@@ -1,0 +1,73 @@
+{
+  "name": "Safety Box",
+  "category": "accesorio",
+  "group": "control",
+  "order": 5,
+  "tagline": "Mando de interacción y seguridad: modo, arrastre, puntos y paro.",
+  "description": "Herramienta de interacción entre persona y cobot para controlar su funcionamiento de forma intuitiva y segura: selector manual/automático, arrastre, grabación de puntos, marcha/paro y emparejado del botón de seguridad.",
+  "highlights": [],
+  "images": [],
+  "specs": [
+    {
+      "label": "Funciones",
+      "value": "Manual/Auto, arrastre, grabación de puntos, marcha/paro, apagado"
+    },
+    {
+      "label": "Comunicación",
+      "value": "TCP/IP 100 Mbit/s, PoE, RJ45"
+    },
+    {
+      "label": "Dimensiones",
+      "value": "136 × 60 × 66",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": 490,
+      "unit": "g"
+    },
+    {
+      "label": "Cable",
+      "value": 5,
+      "unit": "m"
+    },
+    {
+      "label": "Protección",
+      "value": "IP54"
+    }
+  ],
+  "applications": [],
+  "compatibleWith": [
+    "fr3",
+    "fr3c",
+    "fr3wms",
+    "fr3wml",
+    "fr5",
+    "fr10",
+    "fr16",
+    "fr20",
+    "fr30"
+  ],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Manual de usuario",
+      "type": "manual",
+      "href": null
+    }
+  ],
+  "configurator": {
+    "slot": "safety",
+    "versions": [],
+    "price": null
+  },
+  "source": {
+    "url": "https://www.fairino.info/en/accessories/safety-box",
+    "verified": false
+  },
+  "seo": {}
+}

@@ -1,0 +1,99 @@
+{
+  "name": "Sensor de fuerza GZCX-6F-75MM",
+  "category": "accesorio",
+  "group": "fuerza",
+  "order": 3,
+  "tagline": "Sensor de fuerza y par de seis ejes para lijado, pulido y montaje.",
+  "description": "Sensor compacto de fuerza y par de seis ejes en aleación de aluminio, con módulo de adquisición integrado. Se monta entre la brida y la herramienta y se configura desde la WebApp de FAIRINO.",
+  "highlights": [],
+  "images": [],
+  "specs": [
+    {
+      "label": "Rango Fx / Fy",
+      "value": 100,
+      "unit": "N"
+    },
+    {
+      "label": "Rango Fz",
+      "value": null,
+      "unit": "N"
+    },
+    {
+      "label": "Rango Mx / My / Mz",
+      "value": 5,
+      "unit": "Nm"
+    },
+    {
+      "label": "Sobrecarga",
+      "value": "200 %"
+    },
+    {
+      "label": "Precisión",
+      "value": "≤ 1 % FS"
+    },
+    {
+      "label": "Muestreo",
+      "value": 1000,
+      "unit": "Hz"
+    },
+    {
+      "label": "Alimentación",
+      "value": "12–24 VDC"
+    },
+    {
+      "label": "Comunicación",
+      "value": "RS485"
+    },
+    {
+      "label": "Dimensiones",
+      "value": "Ø75 × 30,5",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": "0,2",
+      "unit": "kg"
+    },
+    {
+      "label": "Protección",
+      "value": "IP64"
+    }
+  ],
+  "applications": [
+    "lijado-y-pulido",
+    "manipulacion"
+  ],
+  "compatibleWith": [
+    "fr3",
+    "fr3c",
+    "fr3wms",
+    "fr3wml",
+    "fr5",
+    "fr10",
+    "fr16",
+    "fr20",
+    "fr30"
+  ],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Manual de usuario",
+      "type": "manual",
+      "href": null
+    }
+  ],
+  "configurator": {
+    "slot": "fuerza",
+    "versions": [],
+    "price": null
+  },
+  "source": {
+    "url": "https://a.storyblok.com/f/298593/x/7432cf2b70/fairino-accessories-ecosystem.pdf https://www.fairino.be/product/force-sensor-cobot",
+    "verified": false
+  },
+  "seo": {}
+}

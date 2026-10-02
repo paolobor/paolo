@@ -1,0 +1,194 @@
+@import '@fontsource-variable/archivo/wdth.css';
+@import '@fontsource/ibm-plex-sans/latin-400.css';
+@import '@fontsource/ibm-plex-sans/latin-500.css';
+@import '@fontsource/ibm-plex-sans/latin-600.css';
+@import '@fontsource/ibm-plex-mono/latin-500.css';
+@import 'tailwindcss';
+
+/* Tokens de marca FAIRINO España.
+   La paleta es provisional hasta verificarla contra el logo oficial: cambiar aquí lo cambia en todo el sitio. */
+@theme {
+  --color-ink: #0a1626;
+  --color-navy: #10233d;
+  --color-navy-2: #16304f;
+  --color-brand: #1557c0;
+  --color-brand-700: #0f4aa6;
+  --color-brand-hi: #4d8ef0;
+  --color-brand-50: #e9f0fb;
+  --color-signal: #22b8cf;
+  --color-paper: #f4f6f9;
+  --color-line: #dce2ea;
+  --color-text: #0e1a2b;
+  --color-muted: #56657a;
+  --color-mist: #b9c6d8;
+  --color-wa: #25d366;
+  --color-todo: #fff6db;
+  --color-todo-line: #e8c766;
+  --color-todo-text: #5a4508;
+
+  --font-display: 'Archivo Variable', 'Arial Narrow', Arial, sans-serif;
+  --font-sans: 'IBM Plex Sans', 'Segoe UI', Roboto, Arial, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+
+  --radius-btn: 10px;
+  --radius-card: 16px;
+
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    @apply bg-white font-sans text-text antialiased;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-stretch: 118%;
+    line-height: 1.08;
+    text-wrap: balance;
+    letter-spacing: -0.01em;
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+  ::selection {
+    background: var(--color-brand);
+    color: #fff;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-[1240px] px-4 sm:px-6 lg:px-8;
+  }
+  .section {
+    @apply py-16 md:py-24;
+  }
+  .eyebrow {
+    @apply font-mono text-xs font-medium uppercase tracking-[0.14em] text-brand;
+  }
+  .on-dark .eyebrow,
+  .eyebrow-dark {
+    @apply text-signal;
+  }
+  .h-section {
+    @apply text-[clamp(1.75rem,3.4vw,2.75rem)] font-bold;
+  }
+  .lead {
+    @apply max-w-[62ch] text-lg text-muted;
+  }
+  .on-dark .lead {
+    @apply text-mist;
+  }
+
+  /* Botones */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-[var(--radius-btn)] border-[1.5px] border-transparent px-5 py-3 text-[0.95rem] font-semibold leading-none whitespace-nowrap transition-[background-color,color,border-color,transform] duration-200 select-none;
+  }
+  .btn:active {
+    transform: translateY(1px);
+  }
+  .btn-sm {
+    @apply px-3.5 py-2.5 text-sm;
+  }
+  .btn-primary {
+    @apply bg-brand text-white hover:bg-brand-700;
+  }
+  .btn-secondary {
+    @apply border-brand bg-white text-brand hover:bg-brand-50;
+  }
+  .btn-light {
+    @apply bg-white text-ink hover:bg-brand-50;
+  }
+  .btn-ghost {
+    @apply border-white/55 bg-transparent text-white hover:border-white hover:bg-white/10;
+  }
+  .btn-wa {
+    @apply bg-wa text-[#06331a] hover:brightness-95;
+  }
+  .link-arrow {
+    @apply inline-flex items-center gap-1.5 font-semibold text-brand hover:gap-2.5 transition-[gap];
+  }
+  .on-dark .link-arrow {
+    @apply text-brand-hi;
+  }
+
+  /* Superficies */
+  .card {
+    @apply rounded-[var(--radius-card)] border border-line bg-white;
+  }
+  .card-hover {
+    @apply transition-[transform,box-shadow] duration-300 ease-(--ease-out-soft) hover:-translate-y-1 hover:shadow-[0_18px_40px_-18px_rgba(10,22,38,0.28)];
+  }
+  .blueprint {
+    background-color: var(--color-ink);
+    background-image:
+      linear-gradient(rgba(77, 142, 240, 0.09) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(77, 142, 240, 0.09) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+
+  /* Etiquetas */
+  .chip {
+    @apply inline-flex items-center rounded-md bg-brand-50 px-2 py-1 font-mono text-[0.7rem] font-medium tracking-wide text-brand;
+  }
+  .todo {
+    @apply inline-flex items-center rounded-md border border-dashed border-todo-line bg-todo px-1.5 py-0.5 font-mono text-[0.72em] font-medium leading-snug text-todo-text;
+  }
+
+  /* Lectura técnica de specs */
+  .readout {
+    @apply grid overflow-hidden rounded-[10px] border border-line;
+    grid-template-columns: repeat(var(--cols, 3), minmax(0, 1fr));
+  }
+  .readout > div {
+    @apply grid gap-0.5 border-r border-line px-2.5 py-2;
+  }
+  .readout > div:last-child {
+    @apply border-r-0;
+  }
+  .readout dt {
+    @apply font-mono text-[0.62rem] font-medium uppercase tracking-[0.08em] text-muted;
+  }
+  .readout dd {
+    @apply font-mono text-[0.95rem] font-medium text-text;
+  }
+}
+
+/* Aparición al hacer scroll: el contenido es visible sin JS; solo se oculta si el script lo prepara. */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.6s var(--ease-out-soft),
+    transform 0.6s var(--ease-out-soft);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.js [data-reveal].is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .js [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
+}

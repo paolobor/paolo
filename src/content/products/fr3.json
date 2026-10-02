@@ -1,0 +1,121 @@
+{
+  "name": "FR3",
+  "category": "cobot",
+  "order": 1,
+  "tagline": "Cobot compacto de 3 kg para fabricación flexible.",
+  "description": "Cobot de seis ejes de nueva generación, basado en la colaboración entre persona y robot. Pensado para fabricación inteligente y flexible en electrónica (3C), semiconductores, procesado de metal, encolado industrial o retail.",
+  "highlights": [],
+  "images": [],
+  "payloadKg": 3,
+  "reachMm": 622,
+  "repeatabilityMm": 0.02,
+  "specs": [
+    {
+      "label": "Carga útil",
+      "value": 3,
+      "unit": "kg"
+    },
+    {
+      "label": "Carga máxima",
+      "value": 5,
+      "unit": "kg"
+    },
+    {
+      "label": "Alcance",
+      "value": 622,
+      "unit": "mm"
+    },
+    {
+      "label": "Repetibilidad",
+      "value": "±0,02",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": "≈ 15",
+      "unit": "kg"
+    },
+    {
+      "label": "Grados de libertad",
+      "value": 6
+    },
+    {
+      "label": "Protección",
+      "value": "IP54 (IP65 opcional)"
+    },
+    {
+      "label": "Velocidad TCP típica",
+      "value": "1",
+      "unit": "m/s"
+    },
+    {
+      "label": "Montaje",
+      "value": "Cualquier orientación"
+    },
+    {
+      "label": "Temperatura de trabajo",
+      "value": "0–45 °C"
+    },
+    {
+      "label": "Consumo medio típico",
+      "value": 150,
+      "unit": "W"
+    },
+    {
+      "label": "Controlador",
+      "value": "AC/DC Mini Controller 2KW"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion",
+    "dosificacion-y-encolado"
+  ],
+  "compatibleWith": [
+    "ac-mini-controller-2kw",
+    "dc-mini-controller-2kw"
+  ],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Manual de usuario",
+      "type": "manual",
+      "href": null
+    },
+    {
+      "label": "Plano acotado",
+      "type": "cad",
+      "href": null
+    },
+    {
+      "label": "Modelo 3D (STEP)",
+      "type": "cad",
+      "href": null
+    }
+  ],
+  "configurator": {
+    "slot": "cobot",
+    "versions": [
+      {
+        "id": "estandar",
+        "label": "Estándar",
+        "note": "IP54"
+      },
+      {
+        "id": "ip65",
+        "label": "IP65",
+        "note": "Protección opcional"
+      }
+    ],
+    "price": null
+  },
+  "source": {
+    "url": "https://fairino.es/ https://www.frtech.fr/FR/5.html https://fairino.info/cobots/fairino-fr3",
+    "verified": false
+  },
+  "seo": {}
+}

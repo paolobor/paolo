@@ -1,0 +1,89 @@
+{
+  "name": "Sensor de fuerza XJC-6F-D80-H28-A",
+  "category": "accesorio",
+  "group": "fuerza",
+  "order": 4,
+  "tagline": "Sensor de fuerza y par de seis ejes con integración nativa en la WebApp.",
+  "description": "Sensor de fuerza y par de seis ejes de XJC, con configuración nativa en la WebApp de FAIRINO para aplicaciones que necesitan controlar la fuerza de contacto.",
+  "highlights": [],
+  "images": [],
+  "specs": [
+    {
+      "label": "Rango Fx / Fy",
+      "value": 100,
+      "unit": "N"
+    },
+    {
+      "label": "Rango Fz",
+      "value": null,
+      "unit": "N"
+    },
+    {
+      "label": "Rango Mx / My / Mz",
+      "value": 5,
+      "unit": "Nm"
+    },
+    {
+      "label": "Sobrecarga",
+      "value": "200 %"
+    },
+    {
+      "label": "Precisión",
+      "value": "≤ 1 % FS"
+    },
+    {
+      "label": "Muestreo",
+      "value": 1000,
+      "unit": "Hz"
+    },
+    {
+      "label": "Alimentación",
+      "value": "12–24 VDC"
+    },
+    {
+      "label": "Comunicación",
+      "value": null
+    },
+    {
+      "label": "Protección",
+      "value": null
+    }
+  ],
+  "applications": [
+    "lijado-y-pulido",
+    "manipulacion"
+  ],
+  "compatibleWith": [
+    "fr3",
+    "fr3c",
+    "fr3wms",
+    "fr3wml",
+    "fr5",
+    "fr10",
+    "fr16",
+    "fr20",
+    "fr30"
+  ],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Manual de usuario",
+      "type": "manual",
+      "href": null
+    }
+  ],
+  "configurator": {
+    "slot": "fuerza",
+    "versions": [],
+    "price": null
+  },
+  "source": {
+    "url": "https://a.storyblok.com/f/298593/x/7432cf2b70/fairino-accessories-ecosystem.pdf https://www.fairino.us/cobots-knowledge-base/connecting-an-xjc-force-torque-sensor-to-fairino-cobot",
+    "verified": false
+  },
+  "seo": {}
+}

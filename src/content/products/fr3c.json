@@ -1,0 +1,120 @@
+{
+  "name": "FR3C",
+  "category": "cobot",
+  "order": 2,
+  "tagline": "Cobot ligero de 3 kg para equipos móviles y de sobremesa.",
+  "description": "Cobot de seis ejes de última generación con un diseño ligero y flexible que facilita integrarlo en equipos móviles o de sobremesa y ayuda a resolver las limitaciones de espacio.",
+  "highlights": [],
+  "images": [],
+  "payloadKg": 3,
+  "reachMm": 622,
+  "repeatabilityMm": 0.05,
+  "specs": [
+    {
+      "label": "Carga útil",
+      "value": 3,
+      "unit": "kg"
+    },
+    {
+      "label": "Carga máxima",
+      "value": 5,
+      "unit": "kg"
+    },
+    {
+      "label": "Alcance",
+      "value": 622,
+      "unit": "mm"
+    },
+    {
+      "label": "Repetibilidad",
+      "value": "±0,05",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": "≈ 10",
+      "unit": "kg"
+    },
+    {
+      "label": "Grados de libertad",
+      "value": 6
+    },
+    {
+      "label": "Protección",
+      "value": "IP54 (IP65 opcional)"
+    },
+    {
+      "label": "Velocidad TCP típica",
+      "value": "1",
+      "unit": "m/s"
+    },
+    {
+      "label": "Montaje",
+      "value": "Cualquier orientación"
+    },
+    {
+      "label": "Temperatura de trabajo",
+      "value": "0–45 °C"
+    },
+    {
+      "label": "Consumo medio típico",
+      "value": null,
+      "unit": "W"
+    },
+    {
+      "label": "Controlador",
+      "value": "AC Mini Controller 2KW"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion"
+  ],
+  "compatibleWith": [
+    "ac-mini-controller-2kw",
+    "dc-mini-controller-2kw"
+  ],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Manual de usuario",
+      "type": "manual",
+      "href": null
+    },
+    {
+      "label": "Plano acotado",
+      "type": "cad",
+      "href": null
+    },
+    {
+      "label": "Modelo 3D (STEP)",
+      "type": "cad",
+      "href": null
+    }
+  ],
+  "configurator": {
+    "slot": "cobot",
+    "versions": [
+      {
+        "id": "estandar",
+        "label": "Estándar",
+        "note": "IP54"
+      },
+      {
+        "id": "ip65",
+        "label": "IP65",
+        "note": "Protección opcional"
+      }
+    ],
+    "price": null
+  },
+  "source": {
+    "url": "https://fairino.es/ https://www.frtech.fr/FR/7.html",
+    "verified": false
+  },
+  "seo": {}
+}

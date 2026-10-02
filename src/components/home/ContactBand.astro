@@ -1,0 +1,50 @@
+---
+import Icon from '../ui/Icon.astro';
+import Placeholder from '../ui/Placeholder.astro';
+import { contactBand } from '../../data/home';
+import { site } from '../../data/site';
+import { url, whatsappLink } from '../../lib/url';
+
+const options = [
+  { icon: 'circle-help', title: '¿Tienes dudas?', text: 'Escríbenos o llámanos y te orientamos.', cta: 'Contactar', href: url('contacto/') },
+  { icon: 'calendar', title: 'Ven a vernos', text: 'Reserva una visita a nuestras instalaciones.', cta: 'Reservar cita', href: url('reservar-cita/') },
+  { icon: 'send', title: 'Pide presupuesto', text: 'Configura tu célula o cuéntanos tu proyecto.', cta: 'Configurar', href: '#configurador' },
+];
+---
+
+<section class="relative isolate overflow-hidden bg-ink text-white" aria-labelledby="contact-band-title">
+  <div class="absolute inset-0 -z-10">
+    {contactBand.image ? <img src={url(contactBand.image)} alt="" loading="lazy" class="size-full object-cover" /> : <Placeholder label={contactBand.imageHint} tone="dark" />}
+    <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,22,38,0.75),rgba(10,22,38,0.95))]"></div>
+  </div>
+  <div class="container-x section">
+    <div class="grid gap-4" data-reveal>
+      <p class="eyebrow eyebrow-dark">Hablemos</p>
+      <h2 id="contact-band-title" class="h-section max-w-[22ch]">¿Damos el primer paso hacia tu célula?</h2>
+      <p class="lead text-mist!">
+        Llámanos al <a href={`tel:${site.contacts[0].tel}`} class="font-semibold text-white underline-offset-4 hover:underline">{site.contacts[0].phone}</a>,
+        escríbenos a <a href={`mailto:${site.contacts[0].email}`} class="font-semibold text-white underline-offset-4 hover:underline">{site.contacts[0].email}</a>
+        o elige una opción.
+      </p>
+    </div>
+    <div class="mt-10 grid gap-4 md:grid-cols-3">
+      {
+        options.map((o, i) => (
+          <a href={o.href} class="group grid content-start gap-3 rounded-[var(--radius-card)] border border-white/15 bg-white/5 p-6 backdrop-blur transition-colors hover:border-signal hover:bg-white/10" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+            <Icon name={o.icon} size={26} class="text-signal" />
+            <span class="font-display text-xl font-bold" style="font-stretch:115%">{o.title}</span>
+            <span class="text-mist">{o.text}</span>
+            <span class="mt-2 inline-flex items-center gap-2 font-semibold">
+              {o.cta}
+              <Icon name="arrow-right" size={17} class="transition-transform group-hover:translate-x-1" />
+            </span>
+          </a>
+        ))
+      }
+    </div>
+    <p class="mt-8 text-sm text-mist" data-reveal>
+      ¿Prefieres WhatsApp?
+      <a href={whatsappLink(site.whatsapp.number, site.whatsapp.defaultMessage)} target="_blank" rel="noopener" class="font-semibold text-white underline underline-offset-4">Escríbenos aquí</a>.
+    </p>
+  </div>
+</section>

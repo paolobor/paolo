@@ -1,0 +1,838 @@
+---
+import { getCollection } from 'astro:content';
+import Icon from '../ui/Icon.astro';
+import { site } from '../../data/site';
+import { hero } from '../../data/home';
+import { url, formatNumber, formatPrice } from '../../lib/url';
+
+interface Props {
+  // Encabezado propio en /configurador/ (allí el título es el h1 de la página).
+  standalone?: boolean;
+}
+const { standalone = false } = Astro.props;
+
+const all = (await getCollection('products')).sort((a, b) => a.data.order - b.data.order);
+const cobots = all.filter((p) => p.data.configurator?.slot === 'cobot');
+const controllers = all.filter((p) => p.data.configurator?.slot === 'controlador');
+const accessorySlots = [
+  { slot: 'gripper', label: 'Garra' },
+  { slot: 'camara', label: 'Cámara 3D' },
+  { slot: 'fuerza', label: 'Sensor de fuerza' },
+  { slot: 'safety', label: 'Seguridad' },
+  { slot: 'smarttool', label: 'Enseñanza manual' },
+  { slot: 'pendant', label: 'Programación' },
+];
+const accessories = accessorySlots.flatMap((s) =>
+  all.filter((p) => p.data.configurator?.slot === s.slot).map((p) => ({ entry: p, slotLabel: s.label })),
+);
+
+const priceAttr = (p: { data: { configurator?: { price: number | null } } }) =>
+  site.showPrices && p.data.configurator?.price != null ? String(p.data.configurator.price) : undefined;
+const priceText = (p: { data: { configurator?: { price: number | null } } }) =>
+  site.showPrices ? (p.data.configurator?.price != null ? formatPrice(p.data.configurator.price, site.currency) : 'Consultar') : null;
+
+const steps = ['Cobot', 'Versión', 'Controlador', 'Accesorios', 'Presupuesto'];
+const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
+---
+
+<section id="configurador" class="blueprint on-dark section scroll-mt-16 text-white" aria-labelledby="cfg-title">
+  <div class="container-x">
+    <div class="grid gap-4" data-reveal>
+      <p class="eyebrow">Configurador de célula</p>
+      {
+        standalone ? (
+          <h1 id="cfg-title" class="h-section max-w-[22ch] text-[clamp(2rem,4.4vw,3.25rem)]">Configura tu célula FAIRINO</h1>
+        ) : (
+          <h2 id="cfg-title" class="h-section max-w-[22ch]">Configura tu célula FAIRINO</h2>
+        )
+      }
+      <p class="lead">
+        Elige cobot, versión, controlador y accesorios. Te devolvemos una propuesta con lo que necesitas y nada más. Si dudas en
+        algún paso, márcalo y te asesoramos.
+      </p>
+    </div>
+
+    <div class="mt-10 grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-10" data-cfg>
+      <form class="cfg-form min-w-0" data-form="configurator" novalidate>
+        <!-- Pasos -->
+        <ol class="cfg-steps mb-6 flex gap-1 overflow-x-auto pb-1" aria-label="Pasos del configurador">
+          {
+            steps.map((s, i) => (
+              <li class="shrink-0">
+                <button type="button" class="cfg-step-btn" data-step-btn={i} aria-current={i === 0 ? 'step' : undefined}>
+                  <span class="num">{i + 1}</span>
+                  {s}
+                </button>
+              </li>
+            ))
+          }
+        </ol>
+
+        <!-- 1. Cobot -->
+        <fieldset class="cfg-step" data-step="0" data-current>
+          <legend class="cfg-legend">1 · Elige el cobot</legend>
+          <p class="cfg-hint">Ordenados por carga útil. La carga incluye garra y pieza.</p>
+          <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            {
+              cobots.map((p) => (
+                <label class="opt">
+                  <input
+                    type="radio"
+                    name="cobot"
+                    value={p.id}
+                    class="sr-only"
+                    checked={p.id === defaultCobot}
+                    data-name={p.data.name}
+                    data-price={priceAttr(p)}
+                  />
+                  <span class="font-display text-2xl font-extrabold" style="font-stretch:125%">{p.data.name}</span>
+                  <span class="opt-meta">
+                    {p.data.payloadKg != null ? `${formatNumber(p.data.payloadKg)} kg` : '[DATO: carga]'}
+                    {' · '}
+                    {p.data.reachMm != null ? `${formatNumber(p.data.reachMm)} mm` : '[DATO: alcance]'}
+                  </span>
+                  {priceText(p) && <span class="opt-price">{priceText(p)}</span>}
+                </label>
+              ))
+            }
+            <label class="opt opt-help">
+              <input type="radio" name="cobot" value="asesoramiento" class="sr-only" data-name="Necesito asesoramiento para elegir cobot" />
+              <Icon name="circle-help" size={22} class="text-signal" />
+              <span class="font-semibold">No lo tengo claro</span>
+              <span class="opt-meta">Te ayudamos a elegir</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- 2. Versión -->
+        <fieldset class="cfg-step" data-step="1">
+          <legend class="cfg-legend">2 · Versión</legend>
+          <p class="cfg-hint">Variantes disponibles para el modelo elegido. ¿Necesitas otra? Cuéntanoslo en el último paso.</p>
+          {
+            cobots.map((p) => (
+              <div class="grid grid-cols-2 gap-3 sm:grid-cols-3" data-versions-for={p.id}>
+                {(p.data.configurator?.versions.length ? p.data.configurator.versions : [{ id: 'estandar', label: 'Estándar' }]).map((v, vi) => (
+                  <label class="opt">
+                    <input type="radio" name="version" value={v.id} class="sr-only" checked={vi === 0} data-name={v.label} />
+                    <span class="font-semibold">{v.label}</span>
+                    <span class="opt-meta">{v.note ?? p.data.name}</span>
+                  </label>
+                ))}
+              </div>
+            ))
+          }
+          <p class="cfg-hint mt-3" data-versions-empty hidden>Primero elige un cobot, o deja que te asesoremos.</p>
+        </fieldset>
+
+        <!-- 3. Controlador -->
+        <fieldset class="cfg-step" data-step="2">
+          <legend class="cfg-legend">3 · Controlador</legend>
+          <p class="cfg-hint">Alimentación a red (AC) o en continua (DC). Solo se activan los compatibles con el cobot elegido.</p>
+          <div class="grid gap-3 sm:grid-cols-2">
+            {
+              controllers.map((p) => (
+                <label class="opt opt-row">
+                  <input
+                    type="radio"
+                    name="controlador"
+                    value={p.id}
+                    class="sr-only"
+                    data-name={p.data.name}
+                    data-price={priceAttr(p)}
+                    data-compat={p.data.compatibleWith.join(',')}
+                  />
+                  <Icon name="cpu" size={24} class="shrink-0 text-signal" />
+                  <span class="grid">
+                    <span class="font-semibold">{p.data.name}</span>
+                    <span class="opt-meta">{p.data.group === 'dc' ? 'Corriente continua' : 'Corriente alterna'}</span>
+                    <span class="opt-meta opt-incompat">No compatible con el cobot elegido</span>
+                  </span>
+                  {priceText(p) && <span class="opt-price ml-auto">{priceText(p)}</span>}
+                </label>
+              ))
+            }
+            <label class="opt opt-row">
+              <input type="radio" name="controlador" value="asesoramiento" class="sr-only" data-name="Necesito asesoramiento para el controlador" />
+              <Icon name="circle-help" size={24} class="shrink-0 text-signal" />
+              <span class="grid">
+                <span class="font-semibold">Recomendádmelo</span>
+                <span class="opt-meta">Según cobot e instalación</span>
+              </span>
+            </label>
+          </div>
+        </fieldset>
+
+        <!-- 4. Accesorios -->
+        <fieldset class="cfg-step" data-step="3">
+          <legend class="cfg-legend">4 · Accesorios</legend>
+          <p class="cfg-hint">Todos son del ecosistema FAIRINO y compatibles entre sí. Marca los que quieras.</p>
+          <div class="grid gap-3 sm:grid-cols-2">
+            {
+              accessories.map(({ entry: p, slotLabel }) => (
+                <label class="opt opt-row">
+                  <input
+                    type="checkbox"
+                    name="accesorios"
+                    value={p.id}
+                    class="sr-only"
+                    data-name={p.data.name}
+                    data-slot={p.data.configurator?.slot}
+                    data-price={priceAttr(p)}
+                  />
+                  <span class="check" aria-hidden="true"><Icon name="check" size={14} strokeWidth={3} /></span>
+                  <span class="grid">
+                    <span class="opt-meta uppercase tracking-[0.1em]">{slotLabel}</span>
+                    <span class="font-semibold">{p.data.name}</span>
+                  </span>
+                  {priceText(p) && <span class="opt-price ml-auto">{priceText(p)}</span>}
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+
+        <!-- 5. Presupuesto -->
+        <fieldset class="cfg-step" data-step="4">
+          <legend class="cfg-legend">5 · Solicita tu presupuesto</legend>
+          <p class="cfg-hint">Te contestamos con una propuesta para esta configuración. Sin compromiso.</p>
+          <div class="grid gap-4 sm:grid-cols-2">
+            <div class="field">
+              <label for="cfg-nombre">Nombre *</label>
+              <input id="cfg-nombre" name="nombre" required autocomplete="name" />
+            </div>
+            <div class="field">
+              <label for="cfg-empresa">Empresa</label>
+              <input id="cfg-empresa" name="empresa" autocomplete="organization" />
+            </div>
+            <div class="field">
+              <label for="cfg-email">Correo electrónico *</label>
+              <input id="cfg-email" name="email" type="email" required autocomplete="email" />
+            </div>
+            <div class="field">
+              <label for="cfg-telefono">Teléfono</label>
+              <input id="cfg-telefono" name="telefono" type="tel" autocomplete="tel" />
+            </div>
+            <div class="field sm:col-span-2">
+              <label for="cfg-mensaje">¿Qué quieres automatizar?</label>
+              <textarea id="cfg-mensaje" name="mensaje" rows="3" placeholder="Pieza, peso, cadencia, espacio disponible…"></textarea>
+            </div>
+            <label class="flex items-start gap-2.5 text-sm text-mist sm:col-span-2">
+              <input type="checkbox" name="privacidad" required class="mt-1 size-4 accent-[var(--color-signal)]" />
+              <span>He leído y acepto la <a href={url('politica-de-privacidad/')} class="underline hover:text-white">política de privacidad</a>. *</span>
+            </label>
+          </div>
+          <input type="hidden" name="configuracion" />
+          <input type="hidden" name="subject" value="Presupuesto desde el configurador" />
+          <div class="mt-6 flex flex-wrap gap-3">
+            <button type="submit" class="btn btn-light whitespace-normal text-left leading-snug">
+              <Icon name="send" size={18} class="shrink-0" />
+              Solicitar presupuesto de esta configuración
+            </button>
+            <button type="button" class="btn btn-wa" data-cfg-wa>
+              <Icon name="si:whatsapp" size={18} />
+              Enviar por WhatsApp
+            </button>
+          </div>
+          <p class="mt-4 text-sm text-mist" data-form-status aria-live="polite"></p>
+        </fieldset>
+
+        <div class="cfg-nav mt-6 flex items-center justify-between gap-3">
+          <button type="button" class="btn btn-ghost btn-sm" data-step-prev hidden>
+            <Icon name="chevron-left" size={17} />
+            Anterior
+          </button>
+          <button type="button" class="btn btn-primary ml-auto" data-step-next>
+            Siguiente
+            <Icon name="chevron-right" size={17} />
+          </button>
+        </div>
+      </form>
+
+      <!-- Resumen -->
+      <aside class="cfg-summary lg:sticky lg:top-24" aria-labelledby="cfg-sum-title">
+        <div class="overflow-hidden rounded-2xl border border-white/12 bg-navy/80 backdrop-blur">
+          <div class="flex items-center justify-between border-b border-white/10 px-5 py-4">
+            <h3 id="cfg-sum-title" class="font-display text-lg font-bold" style="font-stretch:112%">Tu célula</h3>
+            <span class="font-mono text-xs text-mist" data-cfg-count>0 elementos</span>
+          </div>
+
+          <svg viewBox="0 0 360 220" class="cfg-diagram block w-full" role="img" aria-label="Esquema de la célula configurada" data-cfg-diagram>
+            <line x1="12" y1="198" x2="348" y2="198" class="floor" />
+            <g data-node="pendant">
+              <path d="M56 116 V134" class="wire" />
+              <rect x="34" y="84" width="44" height="32" rx="4" class="part" />
+              <rect x="40" y="90" width="32" height="18" rx="2" class="detail" />
+              <text x="56" y="76" class="lbl">TEACH PENDANT</text>
+            </g>
+            <g data-node="controlador">
+              <rect x="24" y="134" width="66" height="64" rx="4" class="part" />
+              <path d="M34 148 H80 M34 156 H80 M34 164 H64" class="detail" />
+              <path d="M90 186 C 130 186 150 192 180 192" class="wire" />
+              <text x="57" y="214" class="lbl">CONTROLADOR</text>
+            </g>
+            <g data-node="safety">
+              <path d="M90 176 H104" class="wire" />
+              <rect x="104" y="166" width="36" height="32" rx="3" class="part" />
+              <circle cx="122" cy="182" r="6" class="detail" />
+              <text x="122" y="158" class="lbl">SAFETY BOX</text>
+            </g>
+            <g data-node="cobot">
+              <rect x="180" y="178" width="50" height="20" rx="3" class="part" />
+              <path d="M205 168 V96" class="arm" stroke-width="16" />
+              <path d="M205 92 L284 62" class="arm" stroke-width="12" />
+              <path d="M288 60 V92" class="arm" stroke-width="10" />
+              <circle cx="205" cy="170" r="13" class="joint" />
+              <circle cx="205" cy="93" r="11" class="joint" />
+              <circle cx="287" cy="60" r="9" class="joint" />
+              <text x="242" y="192" class="lbl lbl-model" data-cfg-model>COBOT</text>
+            </g>
+            <g data-node="smarttool">
+              <rect x="244" y="62" width="18" height="11" rx="2" class="part" transform="rotate(-21 253 67)" />
+              <text x="236" y="50" class="lbl">SMART TOOL</text>
+            </g>
+            <g data-node="camara">
+              <rect x="300" y="66" width="24" height="13" rx="2" class="part" />
+              <circle cx="317" cy="72.5" r="3" class="detail" />
+              <text x="320" y="96" class="lbl">CÁMARA</text>
+            </g>
+            <g data-node="fuerza">
+              <rect x="278" y="94" width="20" height="8" rx="2" class="part" />
+              <text x="327" y="116" class="lbl">SENSOR F/T</text>
+            </g>
+            <g data-node="gripper">
+              <rect x="276" y="104" width="24" height="12" rx="2" class="part" />
+              <rect x="277" y="116" width="5" height="15" rx="1" class="part" />
+              <rect x="294" y="116" width="5" height="15" rx="1" class="part" />
+              <text x="288" y="146" class="lbl">GARRA</text>
+            </g>
+          </svg>
+
+          <ul class="grid gap-px border-t border-white/10 bg-white/5 text-sm" data-cfg-list>
+            <li class="bg-navy px-5 py-3 text-mist">Elige un cobot para empezar.</li>
+          </ul>
+
+          <div class="grid gap-3 border-t border-white/10 px-5 py-5">
+            {
+              site.showPrices && (
+                <p class="flex items-baseline justify-between font-mono text-sm">
+                  <span class="text-mist">Total orientativo (sin IVA)</span>
+                  <span class="text-lg text-white" data-cfg-total>—</span>
+                </p>
+              )
+            }
+            <button type="button" class="btn btn-light w-full whitespace-normal text-center leading-snug" data-step-go="4">
+              Solicitar presupuesto de esta configuración
+            </button>
+            <div class="flex items-center justify-between gap-3 text-sm">
+              <button type="button" class="inline-flex items-center gap-1.5 text-mist hover:text-white" data-cfg-reset>
+                <Icon name="refresh-cw" size={15} />
+                Empezar de nuevo
+              </button>
+              <button type="button" class="inline-flex items-center gap-1.5 text-mist hover:text-white" data-cfg-share>
+                <Icon name="arrow-up-right" size={15} />
+                <span>Copiar enlace</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cfg-step-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.85rem 0.5rem 0.5rem;
+    border-radius: 999px;
+    border: 1px solid rgb(255 255 255 / 0.16);
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--color-mist);
+    transition:
+      background-color 0.2s,
+      border-color 0.2s,
+      color 0.2s;
+  }
+  .cfg-step-btn .num {
+    display: grid;
+    place-items: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 999px;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    background: rgb(255 255 255 / 0.08);
+  }
+  .cfg-step-btn[data-done] {
+    border-color: var(--color-signal);
+    color: var(--color-signal);
+  }
+  .cfg-step-btn[aria-current='step'] {
+    background: var(--color-signal);
+    border-color: var(--color-signal);
+    color: var(--color-ink);
+  }
+  .cfg-step-btn[aria-current='step'] .num {
+    background: rgb(10 22 38 / 0.15);
+  }
+  .cfg-step {
+    min-width: 0;
+  }
+  :global(.js) .cfg-step:not([data-current]) {
+    display: none;
+  }
+  :global(html:not(.js)) .cfg-step {
+    margin-bottom: 2.5rem;
+  }
+  :global(html:not(.js)) .cfg-nav,
+  :global(html:not(.js)) .cfg-steps {
+    display: none;
+  }
+  .cfg-legend {
+    font-family: var(--font-display);
+    font-stretch: 115%;
+    font-weight: 700;
+    font-size: 1.35rem;
+  }
+  .cfg-hint {
+    margin: 0.35rem 0 1.1rem;
+    color: var(--color-mist);
+    font-size: 0.95rem;
+  }
+  .opt {
+    position: relative;
+    display: grid;
+    align-content: start;
+    gap: 0.3rem;
+    padding: 1rem;
+    border-radius: 14px;
+    border: 1.5px solid rgb(255 255 255 / 0.14);
+    background: rgb(255 255 255 / 0.03);
+    cursor: pointer;
+    transition:
+      border-color 0.2s,
+      background-color 0.2s,
+      transform 0.2s;
+  }
+  .opt:hover {
+    border-color: rgb(255 255 255 / 0.4);
+  }
+  .opt-row {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+  .opt-meta {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: #9fb0c7;
+  }
+  .opt-price {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: #fff;
+  }
+  .opt:has(input:checked) {
+    border-color: var(--color-signal);
+    background: rgb(34 184 207 / 0.12);
+  }
+  .opt:has(input:checked) .opt-meta {
+    color: var(--color-signal);
+  }
+  .opt:has(input:focus-visible) {
+    outline: 3px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+  .opt-incompat {
+    display: none;
+  }
+  .opt:has(input:disabled) {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+  .opt:has(input:disabled) .opt-incompat {
+    display: block;
+    color: #f3d98a;
+  }
+  .check {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 1.35rem;
+    height: 1.35rem;
+    border-radius: 6px;
+    border: 1.5px solid rgb(255 255 255 / 0.35);
+    color: transparent;
+  }
+  .opt:has(input:checked) .check {
+    background: var(--color-signal);
+    border-color: var(--color-signal);
+    color: var(--color-ink);
+  }
+  .field {
+    display: grid;
+    gap: 0.4rem;
+  }
+  .field label {
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--color-mist);
+  }
+  .field input,
+  .field textarea {
+    width: 100%;
+    border-radius: 10px;
+    border: 1px solid rgb(255 255 255 / 0.2);
+    background: rgb(255 255 255 / 0.05);
+    padding: 0.7rem 0.85rem;
+    color: #fff;
+  }
+  .field input:focus,
+  .field textarea:focus {
+    border-color: var(--color-signal);
+    outline: none;
+  }
+  .field textarea::placeholder {
+    color: rgb(185 198 216 / 0.55);
+  }
+
+  /* Esquema */
+  .cfg-diagram {
+    background-image:
+      linear-gradient(rgb(77 142 240 / 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(77 142 240 / 0.08) 1px, transparent 1px);
+    background-size: 18px 18px;
+  }
+  .cfg-diagram .floor {
+    stroke: rgb(185 198 216 / 0.25);
+    stroke-dasharray: 3 4;
+  }
+  .cfg-diagram .part,
+  .cfg-diagram .joint {
+    fill: rgb(255 255 255 / 0.02);
+    stroke: rgb(185 198 216 / 0.3);
+    stroke-width: 1.4;
+    transition:
+      fill 0.35s,
+      stroke 0.35s;
+  }
+  .cfg-diagram .arm {
+    fill: none;
+    stroke: rgb(185 198 216 / 0.16);
+    stroke-linecap: round;
+    transition: stroke 0.35s;
+  }
+  .cfg-diagram .detail,
+  .cfg-diagram .wire {
+    fill: none;
+    stroke: rgb(185 198 216 / 0.25);
+    stroke-width: 1.2;
+    transition: stroke 0.35s;
+  }
+  .cfg-diagram .wire {
+    stroke-dasharray: 3 3;
+  }
+  .cfg-diagram .lbl {
+    font-family: var(--font-mono);
+    font-size: 7.5px;
+    letter-spacing: 0.08em;
+    text-anchor: middle;
+    fill: rgb(185 198 216 / 0.45);
+    transition: fill 0.35s;
+  }
+  .cfg-diagram .lbl-model {
+    text-anchor: start;
+    font-size: 11px;
+    font-weight: 500;
+  }
+  .cfg-diagram [data-on] .part,
+  .cfg-diagram [data-on] .joint {
+    fill: rgb(34 184 207 / 0.16);
+    stroke: var(--color-signal);
+  }
+  .cfg-diagram [data-on] .arm {
+    stroke: rgb(34 184 207 / 0.55);
+  }
+  .cfg-diagram [data-on] .detail,
+  .cfg-diagram [data-on] .wire {
+    stroke: var(--color-signal);
+  }
+  .cfg-diagram [data-on] .wire {
+    stroke-dasharray: none;
+  }
+  .cfg-diagram [data-on] .lbl {
+    fill: var(--color-signal);
+  }
+</style>
+
+<script>
+  import { getConfig, whatsappUrl } from '../../scripts/config';
+  import { submitForm } from '../../scripts/forms';
+
+  const STORAGE_KEY = 'fairino-config';
+  const root = document.querySelector<HTMLElement>('[data-cfg]');
+  const form = root?.querySelector<HTMLFormElement>('form[data-form="configurator"]');
+
+  if (root && form) {
+    const cfg = getConfig();
+    const steps = [...form.querySelectorAll<HTMLFieldSetElement>('[data-step]')];
+    const stepBtns = [...form.querySelectorAll<HTMLButtonElement>('[data-step-btn]')];
+    const prevBtn = form.querySelector<HTMLButtonElement>('[data-step-prev]');
+    const nextBtn = form.querySelector<HTMLButtonElement>('[data-step-next]');
+    const list = root.querySelector<HTMLUListElement>('[data-cfg-list]')!;
+    const count = root.querySelector<HTMLElement>('[data-cfg-count]');
+    const totalEl = root.querySelector<HTMLElement>('[data-cfg-total]');
+    const diagram = root.querySelector<SVGElement>('[data-cfg-diagram]');
+    const modelLabel = root.querySelector<SVGTextElement>('[data-cfg-model]');
+    const versionGroups = [...form.querySelectorAll<HTMLElement>('[data-versions-for]')];
+    const versionsEmpty = form.querySelector<HTMLElement>('[data-versions-empty]');
+    let current = 0;
+
+    const fmt = new Intl.NumberFormat('es-ES', { style: 'currency', currency: cfg.currency, maximumFractionDigits: 0 });
+    const checked = (name: string) => form.querySelector<HTMLInputElement>(`input[name="${name}"]:checked:not(:disabled)`);
+    const checkedAll = (name: string) => [...form.querySelectorAll<HTMLInputElement>(`input[name="${name}"]:checked`)];
+
+    type Item = { label: string; name: string; slot: string; price: number | null };
+
+    const readState = () => {
+      const cobot = checked('cobot');
+      const version = checked('version');
+      const ctrl = checked('controlador');
+      const accs = checkedAll('accesorios');
+      return { cobot, version, ctrl, accs };
+    };
+
+    const items = (): Item[] => {
+      const { cobot, version, ctrl, accs } = readState();
+      const out: Item[] = [];
+      const price = (el: HTMLInputElement) => (el.dataset.price ? Number(el.dataset.price) : null);
+      if (cobot) {
+        const isHelp = cobot.value === 'asesoramiento';
+        out.push({
+          label: 'Cobot',
+          name: isHelp ? cobot.dataset.name! : `${cobot.dataset.name}${version ? ` · ${version.dataset.name}` : ''}`,
+          slot: 'cobot',
+          price: price(cobot),
+        });
+      }
+      if (ctrl) out.push({ label: 'Controlador', name: ctrl.dataset.name!, slot: 'controlador', price: price(ctrl) });
+      accs.forEach((a) => out.push({ label: 'Accesorio', name: a.dataset.name!, slot: a.dataset.slot!, price: price(a) }));
+      return out;
+    };
+
+    const summaryText = () =>
+      items()
+        .map((i) => `- ${i.label}: ${i.name}`)
+        .join('\n');
+
+    const syncVersions = () => {
+      const cobot = checked('cobot');
+      let shown = false;
+      versionGroups.forEach((g) => {
+        const match = g.dataset.versionsFor === cobot?.value;
+        g.hidden = !match;
+        g.querySelectorAll<HTMLInputElement>('input').forEach((i) => (i.disabled = !match));
+        if (match) {
+          shown = true;
+          if (!g.querySelector('input:checked')) g.querySelector<HTMLInputElement>('input')!.checked = true;
+        }
+      });
+      if (versionsEmpty) versionsEmpty.hidden = shown;
+    };
+
+    // Controladores: solo los compatibles con el cobot elegido.
+    const syncControllers = () => {
+      const cobot = checked('cobot')?.value;
+      form.querySelectorAll<HTMLInputElement>('input[name="controlador"][data-compat]').forEach((i) => {
+        const ok = !cobot || cobot === 'asesoramiento' || (i.dataset.compat || '').split(',').includes(cobot);
+        i.disabled = !ok;
+        if (!ok) i.checked = false;
+      });
+    };
+
+    const render = () => {
+      const its = items();
+      list.innerHTML = '';
+      if (!its.length) {
+        const li = document.createElement('li');
+        li.className = 'bg-navy px-5 py-3 text-mist';
+        li.textContent = 'Elige un cobot para empezar.';
+        list.append(li);
+      }
+      its.forEach((i) => {
+        const li = document.createElement('li');
+        li.className = 'flex items-baseline justify-between gap-3 bg-navy px-5 py-3';
+        const left = document.createElement('span');
+        left.className = 'grid';
+        const k = document.createElement('span');
+        k.className = 'font-mono text-[0.68rem] uppercase tracking-[0.12em] text-signal';
+        k.textContent = i.label;
+        const v = document.createElement('span');
+        v.className = 'text-white';
+        v.textContent = i.name;
+        left.append(k, v);
+        li.append(left);
+        if (cfg.showPrices) {
+          const p = document.createElement('span');
+          p.className = 'shrink-0 font-mono text-xs text-mist';
+          p.textContent = i.price != null ? fmt.format(i.price) : 'Consultar';
+          li.append(p);
+        }
+        list.append(li);
+      });
+      if (count) count.textContent = `${its.length} ${its.length === 1 ? 'elemento' : 'elementos'}`;
+      if (totalEl) {
+        const priced = its.filter((i) => i.price != null);
+        const sum = priced.reduce((s, i) => s + (i.price ?? 0), 0);
+        totalEl.textContent = priced.length ? `${fmt.format(sum)}${priced.length < its.length ? ' + consultar' : ''}` : '—';
+      }
+
+      // Esquema
+      const on = new Set(its.map((i) => i.slot));
+      diagram?.querySelectorAll<SVGGElement>('[data-node]').forEach((n) => n.toggleAttribute('data-on', on.has(n.dataset.node!)));
+      const cobot = checked('cobot');
+      if (modelLabel) modelLabel.textContent = cobot && cobot.value !== 'asesoramiento' ? cobot.dataset.name! : 'COBOT';
+
+      // Pasos completados
+      const done = [Boolean(cobot), Boolean(checked('version')) || cobot?.value === 'asesoramiento', Boolean(checked('controlador')), checkedAll('accesorios').length > 0];
+      stepBtns.forEach((b, n) => b.toggleAttribute('data-done', Boolean(done[n]) && n !== current));
+    };
+
+    const serialize = () => {
+      const { cobot, version, ctrl, accs } = readState();
+      const p = new URLSearchParams();
+      if (cobot) p.set('cobot', cobot.value);
+      if (version) p.set('version', version.value);
+      if (ctrl) p.set('controlador', ctrl.value);
+      if (accs.length) p.set('acc', accs.map((a) => a.value).join(','));
+      return p;
+    };
+
+    const persist = () => {
+      const params = serialize();
+      try {
+        localStorage.setItem(STORAGE_KEY, params.toString());
+      } catch {
+        /* sin almacenamiento: se mantiene solo en la URL */
+      }
+      const u = new URL(location.href);
+      ['cobot', 'version', 'controlador', 'acc'].forEach((k) => u.searchParams.delete(k));
+      params.forEach((v, k) => u.searchParams.set(k, v));
+      try {
+        history.replaceState(null, '', u);
+      } catch {
+        /* entornos embebidos sin acceso al historial */
+      }
+    };
+
+    const restore = () => {
+      const fromUrl = new URLSearchParams(location.search);
+      let params = fromUrl.has('cobot') || fromUrl.has('acc') || fromUrl.has('controlador') ? fromUrl : null;
+      if (!params) {
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY);
+          if (saved) params = new URLSearchParams(saved);
+        } catch {
+          /* nada guardado */
+        }
+      }
+      if (!params) return;
+      const setRadio = (name: string, value: string | null) => {
+        if (!value) return;
+        const el = form.querySelector<HTMLInputElement>(`input[name="${name}"][value="${CSS.escape(value)}"]`);
+        if (el) el.checked = true;
+      };
+      setRadio('cobot', params.get('cobot'));
+      syncVersions();
+      syncControllers();
+      setRadio('version', params.get('version'));
+      setRadio('controlador', params.get('controlador'));
+      const acc = (params.get('acc') || '').split(',').filter(Boolean);
+      form.querySelectorAll<HTMLInputElement>('input[name="accesorios"]').forEach((i) => (i.checked = acc.includes(i.value)));
+    };
+
+    const go = (n: number, focus = true) => {
+      current = Math.max(0, Math.min(steps.length - 1, n));
+      steps.forEach((s, i) => s.toggleAttribute('data-current', i === current));
+      stepBtns.forEach((b, i) => (i === current ? b.setAttribute('aria-current', 'step') : b.removeAttribute('aria-current')));
+      if (prevBtn) prevBtn.hidden = current === 0;
+      if (nextBtn) nextBtn.hidden = current === steps.length - 1;
+      render();
+      if (focus) {
+        const legend = steps[current].querySelector('legend');
+        stepBtns[current].scrollIntoView({ block: 'nearest', inline: 'center' });
+        if (legend && root.getBoundingClientRect().top < 0) root.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    };
+
+    form.addEventListener('change', (e) => {
+      const t = e.target as HTMLInputElement;
+      if (t.name === 'cobot') {
+        syncVersions();
+        syncControllers();
+      }
+      render();
+      persist();
+    });
+    stepBtns.forEach((b) => b.addEventListener('click', () => go(Number(b.dataset.stepBtn))));
+    prevBtn?.addEventListener('click', () => go(current - 1));
+    nextBtn?.addEventListener('click', () => go(current + 1));
+    root.querySelectorAll<HTMLButtonElement>('[data-step-go]').forEach((b) =>
+      b.addEventListener('click', () => {
+        go(Number(b.dataset.stepGo));
+        form.querySelector<HTMLInputElement>('#cfg-nombre')?.focus({ preventScroll: true });
+        form.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }),
+    );
+
+    root.querySelector('[data-cfg-reset]')?.addEventListener('click', () => {
+      form.querySelectorAll<HTMLInputElement>('input[type="radio"], input[name="accesorios"]').forEach((i) => (i.checked = false));
+      syncVersions();
+      syncControllers();
+      persist();
+      go(0, false);
+    });
+
+    root.querySelector('[data-cfg-share]')?.addEventListener('click', async (e) => {
+      const btn = e.currentTarget as HTMLButtonElement;
+      const label = btn.querySelector('span');
+      const u = new URL(location.href);
+      u.hash = 'configurador';
+      try {
+        await navigator.clipboard.writeText(u.toString());
+        if (label) label.textContent = 'Enlace copiado';
+      } catch {
+        if (label) label.textContent = 'Copia la URL del navegador';
+      }
+      window.setTimeout(() => label && (label.textContent = 'Copiar enlace'), 2500);
+    });
+
+    const contactLine = () => {
+      const fd = new FormData(form);
+      const who = [fd.get('nombre'), fd.get('empresa')].filter(Boolean).join(' · ');
+      return who ? `\n\nDe: ${who}` : '';
+    };
+
+    root.querySelector('[data-cfg-wa]')?.addEventListener('click', () => {
+      const msg = `Hola, quiero un presupuesto para esta configuración FAIRINO:\n${summaryText() || '- (sin seleccionar todavía)'}${contactLine()}`;
+      window.open(whatsappUrl(cfg.whatsapp, msg), '_blank', 'noopener');
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+      const cobot = checked('cobot');
+      const subject = `Presupuesto configurador: ${cobot?.dataset.name ?? 'célula FAIRINO'}`;
+      (form.elements.namedItem('configuracion') as HTMLInputElement).value = summaryText();
+      submitForm(form, { subject, configuracion: summaryText() });
+    });
+
+    restore();
+    syncVersions();
+    syncControllers();
+    go(0, false);
+  }
+</script>

@@ -1,0 +1,119 @@
+{
+  "name": "FR3WML",
+  "category": "cobot",
+  "order": 4,
+  "tagline": "Cobot ultraligero de 922 mm para soldadura de alta precisión.",
+  "description": "Cobot ultraligero para soldadura de alta precisión y fabricación flexible. Lo maneja una sola persona, incorpora detección de colisiones y su sexto eje gira ±360° para soldar superficies curvas complejas.",
+  "highlights": [],
+  "images": [],
+  "payloadKg": 3,
+  "reachMm": 922,
+  "repeatabilityMm": 0.05,
+  "specs": [
+    {
+      "label": "Carga útil",
+      "value": 3,
+      "unit": "kg"
+    },
+    {
+      "label": "Carga máxima",
+      "value": null,
+      "unit": "kg"
+    },
+    {
+      "label": "Alcance",
+      "value": 922,
+      "unit": "mm"
+    },
+    {
+      "label": "Repetibilidad",
+      "value": "±0,05",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": "≈ 11,25",
+      "unit": "kg"
+    },
+    {
+      "label": "Grados de libertad",
+      "value": 6
+    },
+    {
+      "label": "Protección",
+      "value": "IP54 (IP65 opcional)"
+    },
+    {
+      "label": "Velocidad TCP típica",
+      "value": "1",
+      "unit": "m/s"
+    },
+    {
+      "label": "Montaje",
+      "value": "Cualquier orientación"
+    },
+    {
+      "label": "Temperatura de trabajo",
+      "value": "0–45 °C"
+    },
+    {
+      "label": "Consumo medio típico",
+      "value": 140,
+      "unit": "W"
+    },
+    {
+      "label": "Controlador",
+      "value": "AC/DC Mini Controller 2KW"
+    }
+  ],
+  "applications": [
+    "soldadura"
+  ],
+  "compatibleWith": [
+    "ac-mini-controller-2kw",
+    "dc-mini-controller-2kw"
+  ],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Manual de usuario",
+      "type": "manual",
+      "href": null
+    },
+    {
+      "label": "Plano acotado",
+      "type": "cad",
+      "href": null
+    },
+    {
+      "label": "Modelo 3D (STEP)",
+      "type": "cad",
+      "href": null
+    }
+  ],
+  "configurator": {
+    "slot": "cobot",
+    "versions": [
+      {
+        "id": "estandar",
+        "label": "Estándar",
+        "note": "IP54"
+      },
+      {
+        "id": "ip65",
+        "label": "IP65",
+        "note": "Protección opcional"
+      }
+    ],
+    "price": null
+  },
+  "source": {
+    "url": "https://fairino.es/ https://www.frtech.fr/FR/10.html https://www.fairino.info/en/cobots/fairino-fr3-wml",
+    "verified": false
+  },
+  "seo": {}
+}

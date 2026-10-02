@@ -1,0 +1,54 @@
+---
+import { logos } from '../../data/home';
+import { url } from '../../lib/url';
+---
+
+<section class="py-12 md:py-16" aria-labelledby="logos-title">
+  <div class="container-x">
+    <p id="logos-title" class="text-center font-mono text-xs font-medium uppercase tracking-[0.16em] text-muted">
+      Partners, certificaciones y clientes que confían en FAIRINO
+    </p>
+  </div>
+  <div class="marquee group mt-8 overflow-hidden" data-marquee>
+    <ul class="marquee-track flex w-max items-center gap-6 group-hover:[animation-play-state:paused]">
+      {
+        [...logos, ...logos].map((l, i) => (
+          <li class="shrink-0" aria-hidden={i >= logos.length ? 'true' : undefined}>
+            {l.src ? (
+              <img src={url(l.src)} alt={l.name} loading="lazy" width="160" height="56" class="h-12 w-auto opacity-60 grayscale transition hover:opacity-100 hover:grayscale-0" />
+            ) : (
+              <span class="grid h-14 w-44 place-items-center rounded-lg border border-dashed border-[#9aa8ba] bg-paper px-3 text-center font-mono text-[0.62rem] leading-tight text-muted">
+                {l.name}
+              </span>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .marquee {
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+  .marquee-track {
+    animation: marquee 42s linear infinite;
+  }
+  @keyframes marquee {
+    to {
+      transform: translateX(calc(-50% - 0.75rem));
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      width: auto;
+    }
+    .marquee-track > li[aria-hidden='true'] {
+      display: none;
+    }
+  }
+</style>

@@ -1,0 +1,120 @@
+{
+  "name": "FR10",
+  "category": "cobot",
+  "order": 6,
+  "tagline": "10 kg de carga y 1400 mm de alcance para fabricación flexible.",
+  "description": "Combina flexibilidad, seguridad y facilidad de uso con precisión y estabilidad de nivel industrial. Una solución sólida para la fabricación inteligente y flexible.",
+  "highlights": [],
+  "images": [],
+  "payloadKg": 10,
+  "reachMm": 1400,
+  "repeatabilityMm": 0.05,
+  "specs": [
+    {
+      "label": "Carga útil",
+      "value": 10,
+      "unit": "kg"
+    },
+    {
+      "label": "Carga máxima",
+      "value": 14,
+      "unit": "kg"
+    },
+    {
+      "label": "Alcance",
+      "value": 1400,
+      "unit": "mm"
+    },
+    {
+      "label": "Repetibilidad",
+      "value": "±0,05",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": "≈ 40",
+      "unit": "kg"
+    },
+    {
+      "label": "Grados de libertad",
+      "value": 6
+    },
+    {
+      "label": "Protección",
+      "value": "IP54 (IP65 opcional)"
+    },
+    {
+      "label": "Velocidad TCP típica",
+      "value": "1,5",
+      "unit": "m/s"
+    },
+    {
+      "label": "Montaje",
+      "value": "Cualquier orientación"
+    },
+    {
+      "label": "Temperatura de trabajo",
+      "value": "0–45 °C"
+    },
+    {
+      "label": "Consumo medio típico",
+      "value": 300,
+      "unit": "W"
+    },
+    {
+      "label": "Controlador",
+      "value": "AC/DC Mini Controller 2KW"
+    }
+  ],
+  "applications": [
+    "carga-de-maquinas",
+    "manipulacion"
+  ],
+  "compatibleWith": [
+    "ac-mini-controller-2kw",
+    "dc-mini-controller-2kw"
+  ],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Manual de usuario",
+      "type": "manual",
+      "href": null
+    },
+    {
+      "label": "Plano acotado",
+      "type": "cad",
+      "href": null
+    },
+    {
+      "label": "Modelo 3D (STEP)",
+      "type": "cad",
+      "href": null
+    }
+  ],
+  "configurator": {
+    "slot": "cobot",
+    "versions": [
+      {
+        "id": "estandar",
+        "label": "Estándar",
+        "note": "IP54"
+      },
+      {
+        "id": "ip65",
+        "label": "IP65",
+        "note": "Protección opcional"
+      }
+    ],
+    "price": null
+  },
+  "source": {
+    "url": "https://fairino.es/ https://www.frtech.fr/FR/3.html https://fairino.info/cobots/fairino-fr10",
+    "verified": false
+  },
+  "seo": {}
+}

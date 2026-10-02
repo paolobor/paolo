@@ -1,0 +1,91 @@
+---
+import Icon from './ui/Icon.astro';
+import Logo from './ui/Logo.astro';
+import { site } from '../data/site';
+import { footerNav } from '../data/navigation';
+import { url } from '../lib/url';
+
+const year = new Date().getFullYear();
+const columns = [
+  { title: 'Productos', links: footerNav.productos },
+  { title: 'Soluciones', links: footerNav.soluciones },
+  { title: 'Empresa', links: footerNav.empresa },
+];
+---
+
+<footer class="blueprint on-dark text-mist" aria-labelledby="footer-title">
+  <h2 id="footer-title" class="sr-only">Pie de página</h2>
+  <div class="container-x grid gap-12 py-16 lg:grid-cols-[1.25fr_2fr] lg:gap-16">
+    <div class="grid content-start gap-6">
+      <Logo tone="light" />
+      <p class="max-w-[42ch] text-[0.95rem]">{site.description}</p>
+      <address class="grid gap-3 not-italic text-[0.95rem]">
+        <a href={site.address.mapsUrl} target="_blank" rel="noopener" class="inline-flex gap-2.5 hover:text-white">
+          <Icon name="map-pin" size={19} class="mt-0.5 shrink-0 text-signal" />
+          <span>{site.address.street}<br />{site.address.postalCode} {site.address.city}, {site.address.region}</span>
+        </a>
+        {site.contacts.map((c) => (
+          <div class="flex flex-wrap gap-x-5 gap-y-1">
+            <a href={`tel:${c.tel}`} class="inline-flex items-center gap-2.5 hover:text-white"><Icon name="phone" size={18} class="text-signal" />{c.phone}</a>
+            <a href={`mailto:${c.email}`} class="inline-flex items-center gap-2.5 hover:text-white"><Icon name="mail" size={18} class="text-signal" />{c.email}</a>
+          </div>
+        ))}
+      </address>
+      <ul class="flex gap-2" aria-label="Redes sociales">
+        {site.social.map((s) => (
+          <li>
+            <a href={s.href} target="_blank" rel="noopener" class="grid size-10 place-items-center rounded-lg border border-white/15 text-white transition-colors hover:border-signal hover:text-signal">
+              <Icon name={`si:${s.icon}`} size={17} label={s.name} />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="grid gap-10 sm:grid-cols-3 lg:grid-cols-[1fr_1fr_1fr_1.4fr]">
+      {columns.map((col) => (
+        <div>
+          <h3 class="font-mono text-xs font-medium uppercase tracking-[0.14em] text-signal">{col.title}</h3>
+          <ul class="mt-4 grid gap-2.5 text-[0.95rem]">
+            {col.links.map((l) => <li><a href={url(l.href)} class="hover:text-white">{l.label}</a></li>)}
+          </ul>
+        </div>
+      ))}
+      <div class="sm:col-span-3 lg:col-span-1">
+        <h3 class="font-mono text-xs font-medium uppercase tracking-[0.14em] text-signal">Newsletter</h3>
+        <p class="mt-4 text-[0.95rem]">Novedades de producto y casos de aplicación, directamente en tu correo.</p>
+        <form class="mt-4 grid gap-3" data-form="newsletter" novalidate>
+          <label for="nl-email" class="sr-only">Correo electrónico</label>
+          <div class="flex gap-2">
+            <input
+              id="nl-email"
+              name="email"
+              type="email"
+              required
+              autocomplete="email"
+              placeholder="tu@empresa.com"
+              class="min-w-0 flex-1 rounded-[10px] border border-white/20 bg-white/5 px-3.5 py-2.5 text-white placeholder:text-mist/60 focus:border-signal"
+            />
+            <button type="submit" class="btn btn-primary btn-sm" aria-label="Suscribirme"><Icon name="send" size={17} /></button>
+          </div>
+          <label class="flex items-start gap-2 text-xs">
+            <input type="checkbox" name="privacidad" required class="mt-0.5 accent-[var(--color-signal)]" />
+            <span>Acepto la <a href={url('politica-de-privacidad/')} class="underline hover:text-white">política de privacidad</a>.</span>
+          </label>
+          <input type="hidden" name="subject" value="Alta en la newsletter de FAIRINO España" />
+          <p class="text-xs" data-form-status aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10">
+    <div class="container-x flex flex-col gap-3 py-6 text-sm md:flex-row md:items-center md:justify-between">
+      <p>© {year} {site.legalName}. Distribuidor oficial FAIRINO en España.</p>
+      <ul class="flex flex-wrap gap-x-5 gap-y-2">
+        {footerNav.legal.map((l) => <li><a href={url(l.href)} class="hover:text-white">{l.label}</a></li>)}
+        <li><button type="button" class="hover:text-white" data-cookie-settings>Configurar cookies</button></li>
+      </ul>
+    </div>
+  </div>
+</footer>

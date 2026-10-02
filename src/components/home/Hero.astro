@@ -1,0 +1,263 @@
+---
+import { getEntry } from 'astro:content';
+import Icon from '../ui/Icon.astro';
+import Placeholder from '../ui/Placeholder.astro';
+import { hero } from '../../data/home';
+import { url, formatNumber } from '../../lib/url';
+
+const { video, slides } = hero;
+const featured = hero.featuredSlug ? await getEntry('products', hero.featuredSlug) : undefined;
+const spec = (v: number | null | undefined, unit: string) => (v == null ? null : `${formatNumber(v)} ${unit}`);
+const hasVideo = Boolean(video.mp4 || video.webm);
+---
+
+<section class="hero relative isolate flex min-h-[640px] items-end overflow-hidden bg-ink text-white md:min-h-[100svh]" aria-roledescription="carrusel" aria-label="Destacados" data-hero>
+  <div class="absolute inset-0 -z-10">
+    {
+      hasVideo ? (
+        <video class="size-full object-cover" autoplay muted loop playsinline preload="metadata" poster={video.poster ? url(video.poster) : undefined} data-hero-video>
+          {video.webm && <source src={url(video.webm)} type="video/webm" />}
+          {video.mp4 && <source src={url(video.mp4)} type="video/mp4" />}
+        </video>
+      ) : (
+        <div class="hero-ph blueprint size-full">
+          <span class="absolute left-4 right-4 top-20 rounded-md border border-dashed border-white/30 bg-ink/60 px-2.5 py-1.5 font-mono text-[0.68rem] text-mist sm:left-auto sm:right-8 lg:top-28">
+            [VÍDEO: {video.hint}]
+          </span>
+        </div>
+      )
+    }
+    <div class="absolute inset-0 bg-[linear-gradient(90deg,rgba(10,22,38,0.92)_0%,rgba(10,22,38,0.65)_45%,rgba(10,22,38,0.15)_100%)]"></div>
+    <div class="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-ink to-transparent"></div>
+  </div>
+
+  <div class="container-x relative pb-20 pt-32 md:pb-28">
+    <div class="relative grid min-h-[340px] md:min-h-[360px]">
+      {
+        slides.map((s, i) => (
+          <div
+            class="slide col-start-1 row-start-1 grid items-end gap-10 lg:grid-cols-[minmax(0,44rem)_1fr]"
+            id={`slide-${s.id}`}
+            role="group"
+            aria-roledescription="diapositiva"
+            aria-label={`${i + 1} de ${slides.length}`}
+            data-slide
+            data-active={i === 0 ? '' : undefined}
+            aria-hidden={i === 0 ? undefined : 'true'}
+          >
+            <div class="grid content-end gap-5">
+            <p class="eyebrow eyebrow-dark">{s.eyebrow}</p>
+            {i === 0 ? (
+              <h1 class="text-[clamp(2.3rem,5.6vw,4.1rem)] font-extrabold leading-[1.03]" style="font-stretch:120%">{s.title}</h1>
+            ) : (
+              <h2 class="text-[clamp(2.3rem,5.6vw,4.1rem)] font-extrabold leading-[1.03]" style="font-stretch:120%">{s.title}</h2>
+            )}
+            <p class="max-w-[38rem] text-lg text-mist md:text-xl">{s.text}</p>
+            <div class="mt-2 flex flex-wrap gap-3">
+              <a href={url(s.primary.href)} class="btn btn-light" tabindex={i === 0 ? undefined : -1}>
+                {s.primary.label}
+                <Icon name="arrow-right" size={18} />
+              </a>
+              <a href={url(s.secondary.href)} class="btn btn-ghost" tabindex={i === 0 ? undefined : -1}>
+                {s.secondary.label}
+              </a>
+            </div>
+            </div>
+            {i === 0 && featured && (
+              <a
+                href={url(`productos/${featured.id}/`)}
+                class="group hidden w-[300px] justify-self-end overflow-hidden rounded-2xl border border-white/15 bg-ink/70 backdrop-blur-md transition-colors hover:border-signal lg:block"
+                tabindex="-1"
+              >
+                <div class="aspect-[4/3]">
+                  {featured.data.images[0] ? (
+                    <img src={url(featured.data.images[0].src)} alt={featured.data.images[0].alt} class="size-full object-contain p-4" />
+                  ) : (
+                    <Placeholder label={`${featured.data.name}, imagen de fairino.es`} tone="dark" />
+                  )}
+                </div>
+                <div class="grid gap-3 p-4">
+                  <div class="flex items-baseline justify-between">
+                    <span class="font-mono text-[0.68rem] uppercase tracking-[0.14em] text-signal">Modelo destacado</span>
+                    <Icon name="arrow-up-right" size={18} class="text-mist transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+                  </div>
+                  <span class="font-display text-3xl font-extrabold" style="font-stretch:125%">{featured.data.name}</span>
+                  <dl class="grid grid-cols-3 gap-2 font-mono text-xs">
+                    <div><dt class="text-mist/80">Carga</dt><dd class="text-white">{spec(featured.data.payloadKg, 'kg') ?? '[DATO]'}</dd></div>
+                    <div><dt class="text-mist/80">Alcance</dt><dd class="text-white">{spec(featured.data.reachMm, 'mm') ?? '[DATO]'}</dd></div>
+                    <div><dt class="text-mist/80">Repet.</dt><dd class="text-white">{featured.data.repeatabilityMm != null ? `±${formatNumber(featured.data.repeatabilityMm)} mm` : '[DATO]'}</dd></div>
+                  </dl>
+                </div>
+              </a>
+            )}
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="mt-12 flex items-center gap-4" data-hero-controls>
+      <button type="button" class="hero-btn" aria-label="Diapositiva anterior" data-prev><Icon name="chevron-left" size={20} /></button>
+      <div class="flex items-center gap-2" role="tablist" aria-label="Elegir diapositiva">
+        {
+          slides.map((s, i) => (
+            <button
+              type="button"
+              role="tab"
+              class="dot"
+              aria-label={`Ir a la diapositiva ${i + 1}: ${s.eyebrow}`}
+              aria-controls={`slide-${s.id}`}
+              aria-selected={i === 0 ? 'true' : 'false'}
+              data-dot={i}
+            >
+              <span class="dot-fill" />
+            </button>
+          ))
+        }
+      </div>
+      <button type="button" class="hero-btn" aria-label="Diapositiva siguiente" data-next><Icon name="chevron-right" size={20} /></button>
+      <button type="button" class="hero-btn ml-2" aria-label="Pausar el carrusel" data-toggle>
+        <Icon name="pause" size={18} class="i-pause" />
+        <Icon name="play" size={18} class="i-play hidden" />
+      </button>
+      <span class="ml-auto hidden font-mono text-xs tracking-[0.14em] text-mist md:inline" aria-hidden="true">
+        <span data-counter>01</span> / {String(slides.length).padStart(2, '0')}
+      </span>
+    </div>
+  </div>
+</section>
+
+<style>
+  .slide {
+    transition:
+      opacity 0.7s var(--ease-out-soft),
+      transform 0.7s var(--ease-out-soft),
+      visibility 0.7s;
+  }
+  .slide:not([data-active]) {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(14px);
+  }
+  .hero-ph {
+    background-size: 48px 48px;
+    background-position: center;
+  }
+  .hero-btn {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 999px;
+    border: 1px solid rgb(255 255 255 / 0.28);
+    color: #fff;
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+  .hero-btn:hover {
+    background: rgb(255 255 255 / 0.1);
+    border-color: #fff;
+  }
+  .dot {
+    position: relative;
+    width: 2.75rem;
+    height: 1.75rem;
+  }
+  .dot::before,
+  .dot-fill {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 3px;
+    margin-top: -1.5px;
+    border-radius: 3px;
+  }
+  .dot::before {
+    right: 0;
+    background: rgb(255 255 255 / 0.25);
+  }
+  .dot-fill {
+    width: 0;
+    background: var(--color-signal);
+  }
+  .dot[aria-selected='true'] .dot-fill {
+    width: 100%;
+    transition: width var(--slide-ms, 7000ms) linear;
+  }
+  [data-hero][data-paused] .dot[aria-selected='true'] .dot-fill {
+    transition: none;
+  }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-hero]');
+  if (root) {
+    const DURATION = 7000;
+    const slides = [...root.querySelectorAll<HTMLElement>('[data-slide]')];
+    const dots = [...root.querySelectorAll<HTMLButtonElement>('[data-dot]')];
+    const toggle = root.querySelector<HTMLButtonElement>('[data-toggle]');
+    const counter = root.querySelector<HTMLElement>('[data-counter]');
+    const video = root.querySelector<HTMLVideoElement>('[data-hero-video]');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let index = 0;
+    let timer: number | undefined;
+    let paused = reduce;
+
+    root.style.setProperty('--slide-ms', `${DURATION}ms`);
+
+    const show = (i: number) => {
+      index = (i + slides.length) % slides.length;
+      slides.forEach((s, n) => {
+        const active = n === index;
+        s.toggleAttribute('data-active', active);
+        s.setAttribute('aria-hidden', String(!active));
+        s.querySelectorAll('a').forEach((a) => (active ? a.removeAttribute('tabindex') : a.setAttribute('tabindex', '-1')));
+      });
+      dots.forEach((d, n) => {
+        d.setAttribute('aria-selected', 'false');
+        if (n === index) {
+          // Reinicia la barra de progreso del punto activo.
+          void d.offsetWidth;
+          d.setAttribute('aria-selected', 'true');
+        }
+      });
+      if (counter) counter.textContent = String(index + 1).padStart(2, '0');
+      schedule();
+    };
+
+    const schedule = () => {
+      window.clearTimeout(timer);
+      if (!paused) timer = window.setTimeout(() => show(index + 1), DURATION);
+    };
+
+    const setPaused = (p: boolean) => {
+      paused = p;
+      root.toggleAttribute('data-paused', p);
+      toggle?.setAttribute('aria-label', p ? 'Reanudar el carrusel' : 'Pausar el carrusel');
+      toggle?.querySelector('.i-pause')?.classList.toggle('hidden', p);
+      toggle?.querySelector('.i-play')?.classList.toggle('hidden', !p);
+      if (video) p ? video.pause() : video.play().catch(() => {});
+      schedule();
+    };
+
+    root.querySelector('[data-prev]')?.addEventListener('click', () => show(index - 1));
+    root.querySelector('[data-next]')?.addEventListener('click', () => show(index + 1));
+    dots.forEach((d) => d.addEventListener('click', () => show(Number(d.dataset.dot))));
+    toggle?.addEventListener('click', () => setPaused(!paused));
+
+    // Pausa mientras el usuario interactúa con el contenido de la diapositiva.
+    root.addEventListener('focusin', (e) => {
+      if ((e.target as HTMLElement).closest('[data-slide]')) window.clearTimeout(timer);
+    });
+    root.addEventListener('focusout', schedule);
+
+    // Ahorro de datos o movimiento reducido: sin vídeo, solo póster.
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+    if (video && (reduce || saveData)) {
+      video.removeAttribute('autoplay');
+      video.pause();
+    }
+
+    setPaused(paused);
+    show(0);
+  }
+</script>

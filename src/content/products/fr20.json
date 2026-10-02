@@ -1,0 +1,120 @@
+{
+  "name": "FR20",
+  "category": "cobot",
+  "order": 8,
+  "tagline": "El mayor alcance de la gama: 1854 mm con 20 kg de carga.",
+  "description": "Plataforma potente y escalable que da a integradores y usuarios finales una solución eficaz. Con los componentes propios de FAIRINO, lleva la robótica flexible a escenarios que piden mucho alcance.",
+  "highlights": [],
+  "images": [],
+  "payloadKg": 20,
+  "reachMm": 1854,
+  "repeatabilityMm": 0.1,
+  "specs": [
+    {
+      "label": "Carga útil",
+      "value": 20,
+      "unit": "kg"
+    },
+    {
+      "label": "Carga máxima",
+      "value": 25,
+      "unit": "kg"
+    },
+    {
+      "label": "Alcance",
+      "value": 1854,
+      "unit": "mm"
+    },
+    {
+      "label": "Repetibilidad",
+      "value": "±0,1",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": "≈ 85",
+      "unit": "kg"
+    },
+    {
+      "label": "Grados de libertad",
+      "value": 6
+    },
+    {
+      "label": "Protección",
+      "value": "IP54 (IP65 opcional)"
+    },
+    {
+      "label": "Velocidad TCP típica",
+      "value": "2",
+      "unit": "m/s"
+    },
+    {
+      "label": "Montaje",
+      "value": "Cualquier orientación"
+    },
+    {
+      "label": "Temperatura de trabajo",
+      "value": "0–45 °C"
+    },
+    {
+      "label": "Consumo medio típico",
+      "value": 620,
+      "unit": "W"
+    },
+    {
+      "label": "Controlador",
+      "value": "AC/DC Controller 5KW"
+    }
+  ],
+  "applications": [
+    "paletizado",
+    "manipulacion"
+  ],
+  "compatibleWith": [
+    "ac-controller-5kw",
+    "dc-controller-5kw"
+  ],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Manual de usuario",
+      "type": "manual",
+      "href": null
+    },
+    {
+      "label": "Plano acotado",
+      "type": "cad",
+      "href": null
+    },
+    {
+      "label": "Modelo 3D (STEP)",
+      "type": "cad",
+      "href": null
+    }
+  ],
+  "configurator": {
+    "slot": "cobot",
+    "versions": [
+      {
+        "id": "estandar",
+        "label": "Estándar",
+        "note": "IP54"
+      },
+      {
+        "id": "ip65",
+        "label": "IP65",
+        "note": "Protección opcional"
+      }
+    ],
+    "price": null
+  },
+  "source": {
+    "url": "https://fairino.es/ https://www.frtech.fr/FR/1.html https://fairino.info/cobots/fairino-fr20",
+    "verified": false
+  },
+  "seo": {}
+}

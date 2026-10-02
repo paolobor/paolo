@@ -1,0 +1,28 @@
+---
+import { site } from '../../data/site';
+import { url } from '../../lib/url';
+// Logotipo provisional en texto hasta tener el SVG oficial (site.logo).
+interface Props {
+  // 'inherit' toma los colores de las variables --logo-main y --logo-sub del contenedor (header transparente/sólido).
+  tone?: 'dark' | 'light' | 'inherit';
+  class?: string;
+}
+const { tone = 'dark', class: className = '' } = Astro.props;
+---
+
+<a href={url('/')} class:list={['logo inline-flex shrink-0 flex-col leading-none', className]} aria-label={site.logo ? `${site.name}, ir al inicio` : 'FAIRINO Cobot España, ir al inicio'}>
+  {
+    site.logo ? (
+      <img src={url(site.logo)} alt={site.name} width="168" height="36" class="h-9 w-auto" />
+    ) : (
+      <>
+        <span class:list={['font-display text-[1.35rem] font-extrabold tracking-[0.08em]', tone === 'dark' ? 'text-ink' : tone === 'light' ? 'text-white' : 'text-(--logo-main)']} style="font-stretch:125%">
+          FAIRINO
+        </span>
+        <span class:list={['mt-1 font-mono text-[0.58rem] font-medium tracking-[0.32em]', tone === 'dark' ? 'text-brand' : tone === 'light' ? 'text-signal' : 'text-(--logo-sub)']}>
+          COBOT ESPAÑA
+        </span>
+      </>
+    )
+  }
+</a>

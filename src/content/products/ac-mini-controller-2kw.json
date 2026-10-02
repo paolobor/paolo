@@ -1,0 +1,88 @@
+{
+  "name": "AC Mini Controller 2KW",
+  "category": "controlador",
+  "group": "ac",
+  "order": 3,
+  "tagline": "Controlador compacto a red para los cobots de hasta 16 kg.",
+  "description": "Caja de control mini, sencilla y eficiente, compatible con varios cobots FAIRINO e integrada en la plataforma de software y hardware FR+.",
+  "highlights": [],
+  "images": [],
+  "specs": [
+    {
+      "label": "Potencia",
+      "value": 2,
+      "unit": "kW"
+    },
+    {
+      "label": "Alimentación",
+      "value": null
+    },
+    {
+      "label": "Salida",
+      "value": "48 V / 42 A"
+    },
+    {
+      "label": "Dimensiones",
+      "value": "245 × 183 × 44,5",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": "2,5",
+      "unit": "kg"
+    },
+    {
+      "label": "E/S",
+      "value": "DI16 · DO16 · AI2 · AO2 · 2 entradas de pulsos"
+    },
+    {
+      "label": "Comunicaciones",
+      "value": "E/S, TCP/IP, Modbus TCP/RTU; opcional PROFINET, EtherCAT, EtherNet/IP, CC-Link"
+    },
+    {
+      "label": "Protección",
+      "value": "IP54"
+    },
+    {
+      "label": "Temperatura de trabajo",
+      "value": "0–45 °C"
+    }
+  ],
+  "applications": [],
+  "compatibleWith": [
+    "fr3",
+    "fr3c",
+    "fr3wms",
+    "fr3wml",
+    "fr5",
+    "fr10",
+    "fr16"
+  ],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Manual de usuario",
+      "type": "manual",
+      "href": null
+    },
+    {
+      "label": "Modelo 3D (STEP)",
+      "type": "cad",
+      "href": null
+    }
+  ],
+  "configurator": {
+    "slot": "controlador",
+    "versions": [],
+    "price": null
+  },
+  "source": {
+    "url": "https://fairino.es/productos/ac-mini-controller-2kw/ https://www.fairino.be/nl/product/fairino-ac-mini-controller-2kw",
+    "verified": false
+  },
+  "seo": {}
+}

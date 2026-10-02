@@ -1,0 +1,31 @@
+---
+import Icon from '../ui/Icon.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import { features } from '../../data/features';
+---
+
+<section class="section" aria-labelledby="features-title">
+  <div class="container-x">
+    <SectionHeading
+      id="features-title"
+      eyebrow="Por qué FAIRINO"
+      title="Seis razones por las que un FAIRINO se gana su sitio en la línea"
+      align="center"
+    />
+    <ul class="mt-14 grid gap-px overflow-hidden rounded-[var(--radius-card)] border border-line bg-line sm:grid-cols-2 lg:grid-cols-3">
+      {
+        features.map((f, i) => (
+          <li class="group grid content-start gap-4 bg-white p-7 transition-colors hover:bg-paper md:p-8" data-reveal style={`--reveal-delay:${(i % 3) * 80}ms`}>
+            <div class="flex items-center justify-between">
+              <span class="grid size-12 place-items-center rounded-xl bg-brand-50 text-brand transition-colors group-hover:bg-brand group-hover:text-white">
+                <Icon name={f.icon} size={24} />
+              </span>
+            </div>
+            <h3 class="text-xl font-bold" style="font-stretch:112%">{f.title}</h3>
+            <p class="text-muted">{f.text}</p>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

@@ -1,0 +1,438 @@
+---
+import { getCollection } from 'astro:content';
+import Icon from './ui/Icon.astro';
+import Logo from './ui/Logo.astro';
+import { nav } from '../data/navigation';
+import { url } from '../lib/url';
+import { formatNumber } from '../lib/url';
+
+interface Props {
+  // true: transparente sobre un hero oscuro hasta que se hace scroll.
+  overlay?: boolean;
+}
+const { overlay = false } = Astro.props;
+
+const products = (await getCollection('products')).sort((a, b) => a.data.order - b.data.order);
+const cobots = products.filter((p) => p.data.category === 'cobot');
+const controllers = products.filter((p) => p.data.category === 'controlador');
+const accessories = products.filter((p) => p.data.category === 'accesorio');
+const accessoryGroups = [
+  { key: 'vision', label: 'Visión' },
+  { key: 'garra', label: 'Garras' },
+  { key: 'fuerza', label: 'Sensores de fuerza' },
+  { key: 'control', label: 'Control y seguridad' },
+].map((g) => ({ ...g, items: accessories.filter((a) => a.data.group === g.key) }));
+---
+
+<header
+  id="site-header"
+  class="hdr fixed inset-x-0 top-0 z-50"
+  data-overlay={overlay ? '' : undefined}
+  data-solid={overlay ? undefined : ''}
+>
+  <a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-ink">
+    Saltar al contenido
+  </a>
+  <div class="hdr-bar">
+    <div class="container-x flex h-16 items-center gap-6 lg:h-[72px]">
+      <Logo tone="inherit" />
+
+      <nav aria-label="Principal" class="ml-4 hidden flex-1 lg:block">
+        <ul class="flex items-center gap-1 text-[0.95rem] font-medium">
+          <li data-mega-item>
+            <button type="button" class="nav-link" aria-expanded="false" aria-controls="mega-productos" data-mega-toggle>
+              {nav.products.label}
+              <Icon name="chevron-down" size={16} class="chev transition-transform" />
+            </button>
+          </li>
+          <li data-mega-item>
+            <button type="button" class="nav-link" aria-expanded="false" aria-controls="mega-soluciones" data-mega-toggle>
+              {nav.solutions.label}
+              <Icon name="chevron-down" size={16} class="chev transition-transform" />
+            </button>
+          </li>
+          {nav.links.map((l) => (
+            <li>
+              <a class="nav-link" href={url(l.href)}>{l.label}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="ml-auto hidden items-center gap-5 lg:flex">
+        <a href={url(nav.warranty.href)} class="hdr-muted inline-flex items-center gap-1.5 text-sm font-medium">
+          <Icon name="shield-check" size={17} />
+          {nav.warranty.label}
+        </a>
+        <a href={url(nav.booking.href)} class="btn btn-primary btn-sm">
+          <Icon name="calendar" size={17} />
+          {nav.booking.label}
+        </a>
+      </div>
+
+      <button
+        type="button"
+        class="hdr-fg ml-auto -mr-2 inline-flex size-11 items-center justify-center rounded-lg lg:hidden"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        data-drawer-toggle
+      >
+        <span class="sr-only">Abrir menú</span>
+        <Icon name="menu" size={26} class="icon-open" />
+        <Icon name="x" size={26} class="icon-close hidden" />
+      </button>
+    </div>
+  </div>
+
+  <!-- Mega-menú Productos -->
+  <div id="mega-productos" class="mega" hidden data-mega-panel>
+    <div class="container-x grid gap-8 py-8 lg:grid-cols-[1.1fr_1fr_1.3fr_1fr]">
+      <div>
+        <a href={url('cobots/')} class="mega-h">Cobots <Icon name="arrow-right" size={15} /></a>
+        <ul class="mt-3 grid gap-0.5">
+          {cobots.map((p) => (
+            <li>
+              <a href={url(`productos/${p.id}/`)} class="mega-link">
+                <span class="font-display font-bold" style="font-stretch:112%">{p.data.name}</span>
+                {p.data.payloadKg != null && <span class="font-mono text-xs text-muted">{formatNumber(p.data.payloadKg)} kg</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <a href={url('controladores/')} class="mega-h">Controladores <Icon name="arrow-right" size={15} /></a>
+        <ul class="mt-3 grid gap-0.5">
+          {controllers.map((p) => (
+            <li><a href={url(`productos/${p.id}/`)} class="mega-link">{p.data.name}</a></li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <a href={url('accesorios/')} class="mega-h">Accesorios <Icon name="arrow-right" size={15} /></a>
+        <div class="mt-3 grid gap-3 sm:grid-cols-2">
+          {accessoryGroups.map((g) => (
+            <div>
+              <p class="font-mono text-[0.68rem] font-medium uppercase tracking-[0.12em] text-muted">{g.label}</p>
+              <ul class="mt-1 grid">
+                {g.items.map((p) => (
+                  <li><a href={url(`productos/${p.id}/`)} class="mega-link text-sm">{p.data.name}</a></li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+      <a href={url('configurador/')} class="blueprint group flex flex-col justify-between gap-6 rounded-2xl p-6 text-white">
+        <div class="grid gap-2">
+          <span class="eyebrow eyebrow-dark">Configurador</span>
+          <span class="font-display text-xl font-bold leading-tight" style="font-stretch:115%">Monta tu célula y pide presupuesto</span>
+          <span class="text-sm text-mist">Cobot, controlador y accesorios en cinco pasos.</span>
+        </div>
+        <span class="inline-flex items-center gap-2 font-semibold text-signal">Empezar <Icon name="arrow-right" size={16} class="transition-transform group-hover:translate-x-1" /></span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Mega-menú Soluciones -->
+  <div id="mega-soluciones" class="mega" hidden data-mega-panel>
+    <div class="container-x grid gap-8 py-8 lg:grid-cols-[2fr_1fr_1fr]">
+      <div>
+        <a href={url('aplicaciones/')} class="mega-h">Aplicaciones <Icon name="arrow-right" size={15} /></a>
+        <ul class="mt-3 grid grid-cols-2 gap-x-6 gap-y-0.5">
+          {nav.solutions.applications.map((a) => (
+            <li><a href={url(a.href)} class="mega-link">{a.label}</a></li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <p class="mega-h">Más soluciones</p>
+        <ul class="mt-3 grid gap-0.5">
+          {nav.solutions.more.map((a) => (
+            <li><a href={url(a.href)} class="mega-link">{a.label}</a></li>
+          ))}
+        </ul>
+      </div>
+      <a href={url('reservar-cita/')} class="blueprint group flex flex-col justify-between gap-6 rounded-2xl p-6 text-white">
+        <div class="grid gap-2">
+          <span class="eyebrow eyebrow-dark">Asesoramiento gratuito</span>
+          <span class="font-display text-xl font-bold leading-tight" style="font-stretch:115%">¿No sabes por dónde empezar?</span>
+          <span class="text-sm text-mist">Te ayudamos a elegir la solución para tu proceso.</span>
+        </div>
+        <span class="inline-flex items-center gap-2 font-semibold text-signal">Reservar cita <Icon name="arrow-right" size={16} class="transition-transform group-hover:translate-x-1" /></span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Menú móvil -->
+  <div id="mobile-menu" class="drawer lg:hidden" hidden data-drawer>
+    <nav aria-label="Principal móvil" class="container-x flex h-full flex-col gap-2 overflow-y-auto pb-6 pt-2">
+      <details class="drawer-group">
+        <summary>{nav.products.label}<Icon name="chevron-down" size={18} class="chev" /></summary>
+        <div class="grid gap-4 pb-4 pl-1">
+          <div>
+            <a href={url('cobots/')} class="drawer-sub">Cobots</a>
+            <ul class="mt-1 flex flex-wrap gap-2">
+              {cobots.map((p) => <li><a href={url(`productos/${p.id}/`)} class="chip">{p.data.name}</a></li>)}
+            </ul>
+          </div>
+          <a href={url('controladores/')} class="drawer-sub">Controladores</a>
+          <a href={url('accesorios/')} class="drawer-sub">Accesorios</a>
+          <a href={url('configurador/')} class="drawer-sub text-brand">Configurador de célula</a>
+        </div>
+      </details>
+      <details class="drawer-group">
+        <summary>{nav.solutions.label}<Icon name="chevron-down" size={18} class="chev" /></summary>
+        <ul class="grid gap-1 pb-4 pl-1">
+          {[...nav.solutions.more, ...nav.solutions.applications].map((a) => (
+            <li><a href={url(a.href)} class="drawer-sub">{a.label}</a></li>
+          ))}
+        </ul>
+      </details>
+      {nav.links.map((l) => <a href={url(l.href)} class="drawer-link">{l.label}</a>)}
+      <a href={url(nav.warranty.href)} class="drawer-link inline-flex items-center gap-2"><Icon name="shield-check" size={20} />{nav.warranty.label}</a>
+      <a href={url(nav.booking.href)} class="btn btn-primary mt-auto w-full py-4 text-base">
+        <Icon name="calendar" size={18} />
+        {nav.booking.label}
+      </a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .hdr {
+    --hdr-fg: var(--color-ink);
+    --hdr-muted: var(--color-muted);
+    --logo-main: var(--color-ink);
+    --logo-sub: var(--color-brand);
+  }
+  .hdr-bar {
+    transition:
+      background-color 0.3s,
+      box-shadow 0.3s;
+    background: rgb(255 255 255 / 0.96);
+    box-shadow: 0 1px 0 var(--color-line);
+    color: var(--hdr-fg);
+  }
+  @supports (backdrop-filter: blur(1px)) {
+    .hdr-bar {
+      background: rgb(255 255 255 / 0.96);
+      backdrop-filter: saturate(1.4) blur(14px);
+    }
+  }
+  .hdr[data-overlay]:not([data-solid]) {
+    --hdr-fg: #fff;
+    --hdr-muted: rgb(255 255 255 / 0.82);
+    --logo-main: #fff;
+    --logo-sub: var(--color-signal);
+  }
+  .hdr[data-overlay]:not([data-solid]) .hdr-bar {
+    background: linear-gradient(to bottom, rgb(10 22 38 / 0.55), transparent);
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+  .hdr-fg {
+    color: var(--hdr-fg);
+  }
+  .hdr-muted {
+    color: var(--hdr-muted);
+  }
+  .hdr-muted:hover {
+    color: var(--hdr-fg);
+  }
+  .nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.55rem 0.8rem;
+    border-radius: 8px;
+    color: var(--hdr-fg);
+    cursor: pointer;
+  }
+  .nav-link:hover,
+  .nav-link[aria-expanded='true'] {
+    background: color-mix(in srgb, var(--hdr-fg) 9%, transparent);
+  }
+  .nav-link[aria-expanded='true'] :global(.chev) {
+    transform: rotate(180deg);
+  }
+  .mega {
+    position: absolute;
+    inset-inline: 0;
+    top: 100%;
+    background: #fff;
+    color: var(--color-text);
+    border-top: 1px solid var(--color-line);
+    box-shadow: 0 30px 60px -30px rgb(10 22 38 / 0.35);
+    animation: mega-in 0.22s var(--ease-out-soft);
+  }
+  @keyframes mega-in {
+    from {
+      opacity: 0;
+      transform: translateY(-6px);
+    }
+  }
+  .mega-h {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-brand);
+  }
+  .mega-link {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.35rem 0.5rem;
+    margin-inline: -0.5rem;
+    border-radius: 6px;
+  }
+  .mega-link:hover {
+    background: var(--color-paper);
+    color: var(--color-brand);
+  }
+  .drawer {
+    position: fixed;
+    inset: 64px 0 0 0;
+    background: #fff;
+    color: var(--color-text);
+    border-top: 1px solid var(--color-line);
+  }
+  .drawer-group {
+    border-bottom: 1px solid var(--color-line);
+  }
+  .drawer-group summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 0;
+    font-family: var(--font-display);
+    font-stretch: 112%;
+    font-weight: 700;
+    font-size: 1.2rem;
+    cursor: pointer;
+    list-style: none;
+  }
+  .drawer-group summary::-webkit-details-marker {
+    display: none;
+  }
+  .drawer-group[open] summary :global(.chev) {
+    transform: rotate(180deg);
+  }
+  .drawer-link {
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--color-line);
+    font-family: var(--font-display);
+    font-stretch: 112%;
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+  .drawer-sub {
+    display: block;
+    padding: 0.4rem 0;
+    font-weight: 500;
+  }
+</style>
+
+<script>
+  const header = document.getElementById('site-header');
+  if (header) {
+    const overlay = header.hasAttribute('data-overlay');
+    const toggles = [...header.querySelectorAll<HTMLButtonElement>('[data-mega-toggle]')];
+    const drawerBtn = header.querySelector<HTMLButtonElement>('[data-drawer-toggle]');
+    const drawer = header.querySelector<HTMLElement>('[data-drawer]');
+    let scrolled = false;
+    let closeTimer: number | undefined;
+
+    const anyOpen = () =>
+      toggles.some((t) => t.getAttribute('aria-expanded') === 'true') || drawerBtn?.getAttribute('aria-expanded') === 'true';
+
+    const syncSolid = () => {
+      if (!overlay) return;
+      header.toggleAttribute('data-solid', scrolled || anyOpen());
+    };
+
+    const setMega = (btn: HTMLButtonElement, open: boolean) => {
+      const panel = document.getElementById(btn.getAttribute('aria-controls') || '');
+      if (!panel) return;
+      btn.setAttribute('aria-expanded', String(open));
+      panel.hidden = !open;
+    };
+    const closeAll = (except?: HTMLButtonElement) => toggles.forEach((t) => t !== except && setMega(t, false));
+
+    toggles.forEach((btn) => {
+      const panel = document.getElementById(btn.getAttribute('aria-controls') || '');
+      const item = btn.closest('[data-mega-item]');
+      btn.addEventListener('click', () => {
+        const open = btn.getAttribute('aria-expanded') !== 'true';
+        closeAll(btn);
+        setMega(btn, open);
+        syncSolid();
+      });
+      // Apertura al pasar el ratón en dispositivos con puntero fino.
+      if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        const open = () => {
+          window.clearTimeout(closeTimer);
+          closeAll(btn);
+          setMega(btn, true);
+          syncSolid();
+        };
+        const scheduleClose = () => {
+          window.clearTimeout(closeTimer);
+          closeTimer = window.setTimeout(() => {
+            setMega(btn, false);
+            syncSolid();
+          }, 160);
+        };
+        item?.addEventListener('mouseenter', open);
+        item?.addEventListener('mouseleave', scheduleClose);
+        panel?.addEventListener('mouseenter', () => window.clearTimeout(closeTimer));
+        panel?.addEventListener('mouseleave', scheduleClose);
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return;
+      const openBtn = toggles.find((t) => t.getAttribute('aria-expanded') === 'true');
+      closeAll();
+      setDrawer(false);
+      syncSolid();
+      openBtn?.focus();
+    });
+    document.addEventListener('click', (e) => {
+      if (!header.contains(e.target as Node)) {
+        closeAll();
+        syncSolid();
+      }
+    });
+
+    const setDrawer = (open: boolean) => {
+      if (!drawerBtn || !drawer) return;
+      drawerBtn.setAttribute('aria-expanded', String(open));
+      drawer.hidden = !open;
+      drawerBtn.querySelector('.icon-open')?.classList.toggle('hidden', open);
+      drawerBtn.querySelector('.icon-close')?.classList.toggle('hidden', !open);
+      drawerBtn.querySelector('.sr-only')!.textContent = open ? 'Cerrar menú' : 'Abrir menú';
+      document.documentElement.style.overflow = open ? 'hidden' : '';
+    };
+    drawerBtn?.addEventListener('click', () => {
+      setDrawer(drawerBtn.getAttribute('aria-expanded') !== 'true');
+      syncSolid();
+    });
+
+    const onScroll = () => {
+      const next = window.scrollY > 24;
+      if (next !== scrolled) {
+        scrolled = next;
+        syncSolid();
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+</script>

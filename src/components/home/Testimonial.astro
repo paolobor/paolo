@@ -1,0 +1,28 @@
+---
+import Icon from '../ui/Icon.astro';
+import Placeholder from '../ui/Placeholder.astro';
+import { testimonial } from '../../data/home';
+import { url } from '../../lib/url';
+---
+
+<section class="relative isolate overflow-hidden bg-ink text-white" aria-label="Testimonio de cliente">
+  <div class="absolute inset-0 -z-10">
+    {testimonial.image ? <img src={url(testimonial.image)} alt="" loading="lazy" class="size-full object-cover opacity-50" /> : <Placeholder label={testimonial.imageHint} kind="RENDER" tone="dark" />}
+    <div class="absolute inset-0 bg-[linear-gradient(100deg,rgba(10,22,38,0.95)_30%,rgba(10,22,38,0.55))]"></div>
+  </div>
+  <div class="container-x section">
+    <figure class="grid max-w-[52rem] gap-8" data-reveal>
+      <Icon name="quote" size={44} class="text-signal" />
+      <blockquote class="font-display text-[clamp(1.5rem,3vw,2.4rem)] font-semibold leading-snug" style="font-stretch:108%">
+        {testimonial.quote ? <p>“{testimonial.quote}”</p> : <p class="font-mono text-lg font-medium text-[#ffe7a3]">[TESTIMONIO REAL: cita de un cliente sobre su célula FAIRINO, 2–3 frases]</p>}
+      </blockquote>
+      <figcaption class="flex items-center gap-4">
+        <span class="h-px w-10 bg-signal"></span>
+        <span>
+          <b class="block">{testimonial.author ?? '[DATO: nombre]'}</b>
+          <span class="text-mist">{testimonial.role ?? '[DATO: cargo]'}, {testimonial.company ?? '[DATO: empresa]'}</span>
+        </span>
+      </figcaption>
+    </figure>
+  </div>
+</section>

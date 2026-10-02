@@ -1,0 +1,48 @@
+---
+import Icon from '../ui/Icon.astro';
+import { url } from '../../lib/url';
+
+const blocks = [
+  { icon: 'box', title: '9 cobots', text: 'De 3 a 30 kg de carga y hasta 1854 mm de alcance.' },
+  { icon: 'cpu', title: '4 controladores', text: 'A red o en continua, compactos o de 5 kW.' },
+  { icon: 'scan-eye', title: 'Visión y fuerza', text: 'Cámara 3D y sensores de fuerza y par de seis ejes.' },
+  { icon: 'hand', title: 'Garras y mandos', text: 'Pinza eléctrica, Safety Box, Smart Tool y Teach Pendant.' },
+];
+---
+
+<section class="section" aria-labelledby="system-title">
+  <div class="container-x grid items-center gap-12 lg:grid-cols-[1fr_1.05fr] lg:gap-16">
+    <div class="grid gap-6" data-reveal>
+      <p class="eyebrow">Ecosistema FAIRINO</p>
+      <h2 id="system-title" class="h-section max-w-[20ch]">Monta tu sistema de automatización</h2>
+      <p class="lead">
+        Cobot, controlador, garra, visión y seguridad del mismo fabricante. Todo es 100 % compatible con FAIRINO, así que
+        no pierdes semanas integrando piezas de distintas marcas.
+      </p>
+      <ul class="grid gap-3">
+        {['Una sola plataforma de software para todo el conjunto', 'Un único interlocutor para soporte y repuestos', 'Ampliable cuando tu producción lo pida'].map((t) => (
+          <li class="flex items-start gap-3">
+            <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-brand text-white"><Icon name="check" size={14} strokeWidth={3} /></span>
+            <span>{t}</span>
+          </li>
+        ))}
+      </ul>
+      <div class="flex flex-wrap gap-3 pt-2">
+        <a href={url('cobots/')} class="btn btn-primary">Ver el catálogo <Icon name="arrow-right" size={18} /></a>
+        <a href="#configurador" class="btn btn-secondary">Configurar mi célula</a>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 sm:gap-4">
+      {
+        blocks.map((b, i) => (
+          <div class:list={['card grid content-start gap-3 p-5 sm:p-6', i % 2 === 1 && 'translate-y-6']} data-reveal style={`--reveal-delay:${i * 80}ms`}>
+            <span class="grid size-11 place-items-center rounded-xl bg-paper text-brand"><Icon name={b.icon} size={22} /></span>
+            <p class="font-display text-xl font-bold" style="font-stretch:115%">{b.title}</p>
+            <p class="text-sm text-muted">{b.text}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

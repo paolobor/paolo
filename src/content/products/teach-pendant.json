@@ -1,0 +1,77 @@
+{
+  "name": "Teach Pendant",
+  "category": "accesorio",
+  "group": "control",
+  "order": 7,
+  "tagline": "Consola táctil de 10,1″ con la misma interfaz que la WebApp.",
+  "description": "Complemento pensado para entornos industriales donde no conviene usar un portátil: una consola robusta tipo tableta que muestra la interfaz web para manejar y programar el cobot sin tener que volver a formar al operario.",
+  "highlights": [],
+  "images": [],
+  "specs": [
+    {
+      "label": "Pantalla",
+      "value": "Táctil 10,1″, 1280 × 800"
+    },
+    {
+      "label": "Seguridad",
+      "value": "Parada de emergencia e interruptor de habilitación"
+    },
+    {
+      "label": "Dimensiones",
+      "value": "268 × 210 × 88",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": "1,6",
+      "unit": "kg"
+    },
+    {
+      "label": "Cable",
+      "value": 5,
+      "unit": "m"
+    },
+    {
+      "label": "Protección",
+      "value": "IP54"
+    },
+    {
+      "label": "Temperatura de trabajo",
+      "value": "0–45 °C"
+    }
+  ],
+  "applications": [],
+  "compatibleWith": [
+    "fr3",
+    "fr3c",
+    "fr3wms",
+    "fr3wml",
+    "fr5",
+    "fr10",
+    "fr16",
+    "fr20",
+    "fr30"
+  ],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Manual de usuario",
+      "type": "manual",
+      "href": null
+    }
+  ],
+  "configurator": {
+    "slot": "pendant",
+    "versions": [],
+    "price": null
+  },
+  "source": {
+    "url": "https://fairino.es/productos/teach-pendant/",
+    "verified": false
+  },
+  "seo": {}
+}

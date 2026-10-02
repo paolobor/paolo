@@ -1,0 +1,18 @@
+---
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  align?: 'left' | 'center';
+  id?: string;
+  as?: 'h2' | 'h3';
+}
+const { eyebrow, title, lead, align = 'left', id, as: Tag = 'h2' } = Astro.props;
+---
+
+<div class:list={['grid gap-4', align === 'center' && 'mx-auto justify-items-center text-center']} data-reveal>
+  {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+  <Tag id={id} class="h-section max-w-[24ch]">{title}</Tag>
+  {lead && <p class="lead">{lead}</p>}
+  <slot />
+</div>

@@ -1,0 +1,92 @@
+{
+  "name": "Cámara Orbbec Gemini 2",
+  "category": "accesorio",
+  "group": "vision",
+  "order": 1,
+  "tagline": "Cámara 3D estéreo con imagen RGB, profundidad y nube de puntos.",
+  "description": "Captura imágenes RGB de alta resolución y mapas de profundidad, con salida de nube de puntos e infrarrojo. Un único cable USB-C para datos y alimentación: muy práctica para que el cobot localice piezas.",
+  "highlights": [],
+  "images": [],
+  "specs": [
+    {
+      "label": "Tecnología",
+      "value": "IR estéreo activo, 850 nm"
+    },
+    {
+      "label": "Rango de profundidad",
+      "value": "0,15–10 m (ideal 0,2–5 m)"
+    },
+    {
+      "label": "Resolución de profundidad",
+      "value": "1280 × 800 a 30 fps"
+    },
+    {
+      "label": "Resolución RGB",
+      "value": "1920 × 1080 a 30 fps"
+    },
+    {
+      "label": "Campo de visión (profundidad)",
+      "value": "91° H × 66° V"
+    },
+    {
+      "label": "Precisión",
+      "value": "≤ 2 % a 2 m"
+    },
+    {
+      "label": "IMU",
+      "value": "3 ejes"
+    },
+    {
+      "label": "Interfaz",
+      "value": "USB 3.0 Type-C"
+    },
+    {
+      "label": "Dimensiones",
+      "value": "90 × 25 × 30",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": 97,
+      "unit": "g"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "paletizado",
+    "manipulacion"
+  ],
+  "compatibleWith": [
+    "fr3",
+    "fr3c",
+    "fr3wms",
+    "fr3wml",
+    "fr5",
+    "fr10",
+    "fr16",
+    "fr20",
+    "fr30"
+  ],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Manual de usuario",
+      "type": "manual",
+      "href": null
+    }
+  ],
+  "configurator": {
+    "slot": "camara",
+    "versions": [],
+    "price": null
+  },
+  "source": {
+    "url": "https://fairino.es/productos/orbbec-gemini-2/",
+    "verified": false
+  },
+  "seo": {}
+}

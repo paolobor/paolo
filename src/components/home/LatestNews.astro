@@ -1,0 +1,47 @@
+---
+import { getCollection } from 'astro:content';
+import Icon from '../ui/Icon.astro';
+import Placeholder from '../ui/Placeholder.astro';
+import SectionHeading from '../ui/SectionHeading.astro';
+import { url } from '../../lib/url';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3);
+const df = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+---
+
+<section class="section bg-paper" aria-labelledby="news-title">
+  <div class="container-x">
+    <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+      <SectionHeading id="news-title" eyebrow="Blog" title="Últimas noticias y guías" />
+      <a href={url('blog/')} class="link-arrow shrink-0" data-reveal>Ver todo el blog <Icon name="arrow-right" size={17} /></a>
+    </div>
+    <div class="mt-10 grid gap-5 md:grid-cols-3">
+      {
+        posts.map((p, i) => (
+          <article class="card card-hover group flex flex-col overflow-hidden" data-reveal style={`--reveal-delay:${i * 90}ms`}>
+            <a href={url(`blog/${p.id}/`)} class="flex flex-1 flex-col">
+              <div class="aspect-[16/9] overflow-hidden">
+                {p.data.cover ? (
+                  <img src={url(p.data.cover)} alt={p.data.coverAlt} loading="lazy" class="size-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                ) : (
+                  <Placeholder label={p.data.coverAlt} />
+                )}
+              </div>
+              <div class="flex flex-1 flex-col gap-3 p-6">
+                <p class="flex items-center gap-3 font-mono text-[0.7rem] uppercase tracking-[0.1em] text-muted">
+                  <span class="text-brand">{p.data.category}</span>
+                  <time datetime={p.data.date.toISOString()}>{df.format(p.data.date)}</time>
+                </p>
+                <h3 class="text-lg font-bold leading-snug group-hover:text-brand" style="font-stretch:108%">{p.data.title}</h3>
+                <p class="text-sm text-muted">{p.data.description}</p>
+                <span class="link-arrow mt-auto pt-2 text-sm">Leer más <Icon name="arrow-right" size={16} /></span>
+              </div>
+            </a>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>

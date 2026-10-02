@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/home/Hero.astro';
+import ValueCards from '../components/home/ValueCards.astro';
+import LogoMarquee from '../components/home/LogoMarquee.astro';
+import Configurator from '../components/home/Configurator.astro';
+import SystemBand from '../components/home/SystemBand.astro';
+import Counters from '../components/home/Counters.astro';
+import Advice from '../components/home/Advice.astro';
+import Testimonial from '../components/home/Testimonial.astro';
+import Applications from '../components/home/Applications.astro';
+import Turnkey from '../components/home/Turnkey.astro';
+import Features from '../components/home/Features.astro';
+import LatestNews from '../components/home/LatestNews.astro';
+import ContactBand from '../components/home/ContactBand.astro';
+import { organizationSchema } from '../lib/schema';
+
+const siteUrl = new URL(import.meta.env.BASE_URL, Astro.site);
+---
+
+<BaseLayout
+  title="FAIRINO España · Distribuidor oficial de cobots FAIRINO"
+  description="Cobots FAIRINO de 3 a 30 kg, controladores y accesorios con integración llave en mano, asesoramiento gratuito y soporte desde Toledo. Configura tu célula y pide presupuesto."
+  overlayHeader
+  jsonLd={organizationSchema(siteUrl)}
+>
+  <Hero />
+  <ValueCards />
+  <LogoMarquee />
+  <Configurator />
+  <SystemBand />
+  <Counters />
+  <Advice />
+  <Testimonial />
+  <Applications />
+  <Turnkey />
+  <Features />
+  <LatestNews />
+  <ContactBand />
+</BaseLayout>

@@ -1,0 +1,73 @@
+{
+  "name": "Smart Tool",
+  "category": "accesorio",
+  "group": "control",
+  "order": 6,
+  "tagline": "Mando de muñeca con cinco teclas programables para enseñar puntos sin soltar el brazo.",
+  "description": "Interfaz compacta que se monta en el extremo del cobot para guiarlo a mano y grabar puntos o trayectorias continuas. Cinco teclas programables (A–E), LED de estado y diseño apto para usar con guantes.",
+  "highlights": [],
+  "images": [],
+  "specs": [
+    {
+      "label": "Teclas",
+      "value": "START, Auto/Manual, E/S, Deshacer, Borrar y 5 programables (A–E)"
+    },
+    {
+      "label": "Indicadores",
+      "value": "LED de estado"
+    },
+    {
+      "label": "Dimensiones",
+      "value": null,
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": null,
+      "unit": "g"
+    },
+    {
+      "label": "Protección",
+      "value": null
+    }
+  ],
+  "applications": [
+    "soldadura",
+    "dosificacion-y-encolado",
+    "pintura",
+    "lijado-y-pulido"
+  ],
+  "compatibleWith": [
+    "fr3",
+    "fr3c",
+    "fr3wms",
+    "fr3wml",
+    "fr5",
+    "fr10",
+    "fr16",
+    "fr20",
+    "fr30"
+  ],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Manual de usuario",
+      "type": "manual",
+      "href": null
+    }
+  ],
+  "configurator": {
+    "slot": "smarttool",
+    "versions": [],
+    "price": null
+  },
+  "source": {
+    "url": "https://www.fairino.be/product/smart-tool https://fairino.info/cobots-accessories",
+    "verified": false
+  },
+  "seo": {}
+}

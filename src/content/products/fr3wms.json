@@ -1,0 +1,119 @@
+{
+  "name": "FR3WMS",
+  "category": "cobot",
+  "order": 3,
+  "tagline": "Cobot portátil de 3 kg pensado para soldadura y producción flexible.",
+  "description": "Cobot ligero diseñado para producción flexible y escenarios de soldadura complejos. Portátil, rápido de desplegar, duradero y fácil de usar, y resistente al polvo, al aceite y a los chorros de agua.",
+  "highlights": [],
+  "images": [],
+  "payloadKg": 3,
+  "reachMm": 622,
+  "repeatabilityMm": 0.02,
+  "specs": [
+    {
+      "label": "Carga útil",
+      "value": 3,
+      "unit": "kg"
+    },
+    {
+      "label": "Carga máxima",
+      "value": null,
+      "unit": "kg"
+    },
+    {
+      "label": "Alcance",
+      "value": 622,
+      "unit": "mm"
+    },
+    {
+      "label": "Repetibilidad",
+      "value": "±0,02",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": "≈ 10,5",
+      "unit": "kg"
+    },
+    {
+      "label": "Grados de libertad",
+      "value": 6
+    },
+    {
+      "label": "Protección",
+      "value": "IP54 (IP65 opcional)"
+    },
+    {
+      "label": "Velocidad TCP típica",
+      "value": "1",
+      "unit": "m/s"
+    },
+    {
+      "label": "Montaje",
+      "value": "Cualquier orientación"
+    },
+    {
+      "label": "Temperatura de trabajo",
+      "value": "0–45 °C"
+    },
+    {
+      "label": "Consumo medio típico",
+      "value": 90,
+      "unit": "W"
+    },
+    {
+      "label": "Controlador",
+      "value": "AC/DC Mini Controller 2KW"
+    }
+  ],
+  "applications": [
+    "soldadura"
+  ],
+  "compatibleWith": [
+    "ac-mini-controller-2kw",
+    "dc-mini-controller-2kw"
+  ],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Manual de usuario",
+      "type": "manual",
+      "href": null
+    },
+    {
+      "label": "Plano acotado",
+      "type": "cad",
+      "href": null
+    },
+    {
+      "label": "Modelo 3D (STEP)",
+      "type": "cad",
+      "href": null
+    }
+  ],
+  "configurator": {
+    "slot": "cobot",
+    "versions": [
+      {
+        "id": "estandar",
+        "label": "Estándar",
+        "note": "IP54"
+      },
+      {
+        "id": "ip65",
+        "label": "IP65",
+        "note": "Protección opcional"
+      }
+    ],
+    "price": null
+  },
+  "source": {
+    "url": "https://fairino.es/ https://www.frtech.fr/FR/9.html https://www.fairino.be/product/fairino-fr3-wms-6-axis-collaborative-robot-3kg-622mm",
+    "verified": false
+  },
+  "seo": {}
+}

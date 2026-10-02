@@ -1,0 +1,93 @@
+{
+  "name": "Gripper EPG40-050",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 2,
+  "tagline": "Pinza eléctrica paralela con fuerza, velocidad y posición ajustables.",
+  "description": "Pinza eléctrica paralela de dos dedos, compacta y plug & play para cobots FAIRINO. Ajusta fuerza, velocidad y posición para coger desde piezas delicadas hasta componentes más pesados, y se bloquea mecánicamente si se corta la corriente.",
+  "highlights": [],
+  "images": [],
+  "specs": [
+    {
+      "label": "Carrera",
+      "value": "0–40",
+      "unit": "mm"
+    },
+    {
+      "label": "Fuerza de agarre",
+      "value": "2–50",
+      "unit": "N"
+    },
+    {
+      "label": "Carga recomendada",
+      "value": "0,8",
+      "unit": "kg"
+    },
+    {
+      "label": "Repetibilidad",
+      "value": "±0,02",
+      "unit": "mm"
+    },
+    {
+      "label": "Apertura / cierre",
+      "value": "0,5",
+      "unit": "s"
+    },
+    {
+      "label": "Control",
+      "value": "Modbus RTU (RS485); E/S digital opcional"
+    },
+    {
+      "label": "Dimensiones",
+      "value": "40 × 24 × 87",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": null,
+      "unit": "g"
+    },
+    {
+      "label": "Protección",
+      "value": "IP40"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "carga-de-maquinas",
+    "manipulacion"
+  ],
+  "compatibleWith": [
+    "fr3",
+    "fr3c",
+    "fr3wms",
+    "fr3wml",
+    "fr5",
+    "fr10",
+    "fr16",
+    "fr20",
+    "fr30"
+  ],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Manual de usuario",
+      "type": "manual",
+      "href": null
+    }
+  ],
+  "configurator": {
+    "slot": "gripper",
+    "versions": [],
+    "price": null
+  },
+  "source": {
+    "url": "https://www.frtech.fr/Gripper/12.html https://www.fairino.be/product/electric-gripper https://fairino.info/accessories/gripper-epg40-050",
+    "verified": false
+  },
+  "seo": {}
+}

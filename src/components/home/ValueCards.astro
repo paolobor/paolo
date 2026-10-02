@@ -1,0 +1,30 @@
+---
+import Icon from '../ui/Icon.astro';
+import { valueCards } from '../../data/home';
+import { url } from '../../lib/url';
+---
+
+<section class="relative z-10 -mt-12 pb-8 md:-mt-16" aria-label="Por qué trabajar con FAIRINO España">
+  <div class="container-x grid gap-4 md:grid-cols-3 md:gap-5">
+    {
+      valueCards.map((c, i) => (
+        <a
+          href={url(c.cta.href)}
+          class="card card-hover group grid content-start gap-4 p-6 md:p-7"
+          data-reveal
+          style={`--reveal-delay:${i * 90}ms`}
+        >
+          <span class="grid size-12 place-items-center rounded-xl bg-brand-50 text-brand transition-colors group-hover:bg-brand group-hover:text-white">
+            <Icon name={c.icon} size={24} />
+          </span>
+          <h2 class="text-xl font-bold" style="font-stretch:112%">{c.title}</h2>
+          <p class="text-muted">{c.text}</p>
+          <span class="link-arrow mt-1">
+            {c.cta.label}
+            <Icon name="arrow-right" size={17} />
+          </span>
+        </a>
+      ))
+    }
+  </div>
+</section>

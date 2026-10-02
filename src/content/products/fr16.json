@@ -1,0 +1,120 @@
+{
+  "name": "FR16",
+  "category": "cobot",
+  "order": 7,
+  "tagline": "16 kg de carga en un brazo compacto para tareas pesadas.",
+  "description": "Gestiona de forma eficiente y fiable las tareas pesadas. Equilibra velocidad, carga y seguridad, y es ideal para automatizar procesos con cargas altas.",
+  "highlights": [],
+  "images": [],
+  "payloadKg": 16,
+  "reachMm": 1034,
+  "repeatabilityMm": 0.03,
+  "specs": [
+    {
+      "label": "Carga útil",
+      "value": 16,
+      "unit": "kg"
+    },
+    {
+      "label": "Carga máxima",
+      "value": 20,
+      "unit": "kg"
+    },
+    {
+      "label": "Alcance",
+      "value": 1034,
+      "unit": "mm"
+    },
+    {
+      "label": "Repetibilidad",
+      "value": "±0,03",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": "≈ 40",
+      "unit": "kg"
+    },
+    {
+      "label": "Grados de libertad",
+      "value": 6
+    },
+    {
+      "label": "Protección",
+      "value": "IP54 (IP65 opcional)"
+    },
+    {
+      "label": "Velocidad TCP típica",
+      "value": "2",
+      "unit": "m/s"
+    },
+    {
+      "label": "Montaje",
+      "value": "Cualquier orientación"
+    },
+    {
+      "label": "Temperatura de trabajo",
+      "value": "0–45 °C"
+    },
+    {
+      "label": "Consumo medio típico",
+      "value": 310,
+      "unit": "W"
+    },
+    {
+      "label": "Controlador",
+      "value": "AC/DC Mini Controller 2KW"
+    }
+  ],
+  "applications": [
+    "carga-de-maquinas",
+    "manipulacion"
+  ],
+  "compatibleWith": [
+    "ac-mini-controller-2kw",
+    "dc-mini-controller-2kw"
+  ],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Manual de usuario",
+      "type": "manual",
+      "href": null
+    },
+    {
+      "label": "Plano acotado",
+      "type": "cad",
+      "href": null
+    },
+    {
+      "label": "Modelo 3D (STEP)",
+      "type": "cad",
+      "href": null
+    }
+  ],
+  "configurator": {
+    "slot": "cobot",
+    "versions": [
+      {
+        "id": "estandar",
+        "label": "Estándar",
+        "note": "IP54"
+      },
+      {
+        "id": "ip65",
+        "label": "IP65",
+        "note": "Protección opcional"
+      }
+    ],
+    "price": null
+  },
+  "source": {
+    "url": "https://fairino.es/ https://www.frtech.fr/FR/2.html https://fairino.info/cobots/fairino-fr16",
+    "verified": false
+  },
+  "seo": {}
+}

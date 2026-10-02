@@ -1,0 +1,83 @@
+{
+  "name": "AC Controller 5KW",
+  "category": "controlador",
+  "group": "ac",
+  "order": 4,
+  "tagline": "Controlador a red de 5 kW para FR20 y FR30.",
+  "description": "Controlador de 5 kW alimentado a red de corriente alterna para los cobots de mayor carga de la gama, FR20 y FR30.",
+  "highlights": [],
+  "images": [],
+  "specs": [
+    {
+      "label": "Potencia",
+      "value": 5,
+      "unit": "kW"
+    },
+    {
+      "label": "Alimentación",
+      "value": null
+    },
+    {
+      "label": "Salida",
+      "value": "48 VDC / 104 A máx."
+    },
+    {
+      "label": "Dimensiones",
+      "value": null,
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": null,
+      "unit": "kg"
+    },
+    {
+      "label": "E/S",
+      "value": "DI16 · DO16 · AI2 · AO2 · 2 entradas de pulsos"
+    },
+    {
+      "label": "Comunicaciones",
+      "value": "E/S, TCP/IP, Modbus TCP/RTU; opcional PROFINET, EtherCAT, EtherNet/IP, CC-Link"
+    },
+    {
+      "label": "Protección",
+      "value": "IP54"
+    },
+    {
+      "label": "Temperatura de trabajo",
+      "value": "0–45 °C"
+    }
+  ],
+  "applications": [],
+  "compatibleWith": [
+    "fr20",
+    "fr30"
+  ],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Manual de usuario",
+      "type": "manual",
+      "href": null
+    },
+    {
+      "label": "Modelo 3D (STEP)",
+      "type": "cad",
+      "href": null
+    }
+  ],
+  "configurator": {
+    "slot": "controlador",
+    "versions": [],
+    "price": null
+  },
+  "source": {
+    "url": "https://www.frtech.fr/Robotcontrolsystem https://www.fairino.be/product/fairino-ac-controller-5kw",
+    "verified": false
+  },
+  "seo": {}
+}

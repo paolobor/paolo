@@ -1,0 +1,36 @@
+---
+import Icon from '../ui/Icon.astro';
+import Placeholder from '../ui/Placeholder.astro';
+import { advice } from '../../data/home';
+import { url } from '../../lib/url';
+---
+
+<section class="section bg-paper" aria-labelledby="advice-title">
+  <div class="container-x grid items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
+    <div class="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] lg:aspect-[5/4]" data-reveal>
+      {advice.image ? <img src={url(advice.image)} alt={advice.imageHint} loading="lazy" class="size-full object-cover" /> : <Placeholder label={advice.imageHint} />}
+      <div class="absolute bottom-4 left-4 flex items-center gap-3 rounded-xl bg-white/95 px-4 py-3 shadow-lg backdrop-blur">
+        <Icon name="map-pin" size={20} class="text-brand" />
+        <span class="text-sm"><b class="block">Villaluenga de la Sagra</b><span class="text-muted">Toledo · Avenida de la Estación, 12</span></span>
+      </div>
+    </div>
+
+    <div class="grid gap-6" data-reveal style="--reveal-delay:100ms">
+      <p class="eyebrow">Te asesoramos gratis</p>
+      <h2 id="advice-title" class="h-section max-w-[18ch]">{advice.title}</h2>
+      <p class="lead">{advice.text}</p>
+      <ul class="grid gap-3">
+        {advice.points.map((p) => (
+          <li class="flex items-start gap-3">
+            <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-brand text-white"><Icon name="check" size={14} strokeWidth={3} /></span>
+            <span class="font-medium">{p}</span>
+          </li>
+        ))}
+      </ul>
+      <div class="flex flex-wrap gap-3 pt-2">
+        <a href={url('reservar-cita/')} class="btn btn-primary"><Icon name="calendar" size={18} />Reservar cita</a>
+        <a href={url('contacto/')} class="btn btn-secondary">Escribirnos</a>
+      </div>
+    </div>
+  </div>
+</section>

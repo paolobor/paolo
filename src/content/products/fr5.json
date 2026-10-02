@@ -1,0 +1,120 @@
+{
+  "name": "FR5",
+  "category": "cobot",
+  "order": 5,
+  "tagline": "El más versátil de la gama: 5 kg de carga y 922 mm de alcance.",
+  "description": "Flexible, eficiente y de aplicación muy amplia. Fue el primer cobot en obtener la certificación CR y funciona con un sistema de control en tiempo real de desarrollo propio, con precisión y estabilidad de nivel industrial. Ideal para pick and place, atornillado y manipulación ligera.",
+  "highlights": [],
+  "images": [],
+  "payloadKg": 5,
+  "reachMm": 922,
+  "repeatabilityMm": 0.02,
+  "specs": [
+    {
+      "label": "Carga útil",
+      "value": 5,
+      "unit": "kg"
+    },
+    {
+      "label": "Carga máxima",
+      "value": 7,
+      "unit": "kg"
+    },
+    {
+      "label": "Alcance",
+      "value": 922,
+      "unit": "mm"
+    },
+    {
+      "label": "Repetibilidad",
+      "value": "±0,02",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": "≈ 22",
+      "unit": "kg"
+    },
+    {
+      "label": "Grados de libertad",
+      "value": 6
+    },
+    {
+      "label": "Protección",
+      "value": "IP54 (IP65 opcional)"
+    },
+    {
+      "label": "Velocidad TCP típica",
+      "value": "1",
+      "unit": "m/s"
+    },
+    {
+      "label": "Montaje",
+      "value": "Cualquier orientación"
+    },
+    {
+      "label": "Temperatura de trabajo",
+      "value": "0–45 °C"
+    },
+    {
+      "label": "Consumo medio típico",
+      "value": null,
+      "unit": "W"
+    },
+    {
+      "label": "Controlador",
+      "value": "AC/DC Mini Controller 2KW"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion"
+  ],
+  "compatibleWith": [
+    "ac-mini-controller-2kw",
+    "dc-mini-controller-2kw"
+  ],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Manual de usuario",
+      "type": "manual",
+      "href": null
+    },
+    {
+      "label": "Plano acotado",
+      "type": "cad",
+      "href": null
+    },
+    {
+      "label": "Modelo 3D (STEP)",
+      "type": "cad",
+      "href": null
+    }
+  ],
+  "configurator": {
+    "slot": "cobot",
+    "versions": [
+      {
+        "id": "estandar",
+        "label": "Estándar",
+        "note": "IP54"
+      },
+      {
+        "id": "ip65",
+        "label": "IP65",
+        "note": "Protección opcional"
+      }
+    ],
+    "price": null
+  },
+  "source": {
+    "url": "https://fairino.es/productos/fr5/ https://www.frtech.fr/FR/4.html",
+    "verified": false
+  },
+  "seo": {}
+}
