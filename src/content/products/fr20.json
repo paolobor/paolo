@@ -115,11 +115,29 @@
         "note": "Protección opcional"
       }
     ],
-    "price": null
+    "price": 0
   },
   "source": {
     "url": "https://fairino.es/ https://www.frtech.fr/FR/1.html https://fairino.info/cobots/fairino-fr20",
     "verified": false
   },
-  "seo": {}
+  "seo": {},
+  "store": {
+    "sku": "FR20",
+    "price": 0,
+    "shipping": 0,
+    "versions": [
+      {
+        "id": "estandar",
+        "label": "Estándar (IP54)",
+        "delta": 0
+      },
+      {
+        "id": "ip65",
+        "label": "IP65",
+        "delta": 0
+      }
+    ],
+    "shopifyVariantId": null
+  }
 }

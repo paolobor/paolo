@@ -114,11 +114,29 @@
         "note": "Protección opcional"
       }
     ],
-    "price": null
+    "price": 0
   },
   "source": {
     "url": "https://fairino.es/ https://www.frtech.fr/FR/10.html https://www.fairino.info/en/cobots/fairino-fr3-wml",
     "verified": false
   },
-  "seo": {}
+  "seo": {},
+  "store": {
+    "sku": "FR3 WML",
+    "price": 0,
+    "shipping": 0,
+    "versions": [
+      {
+        "id": "estandar",
+        "label": "Estándar (IP54)",
+        "delta": 0
+      },
+      {
+        "id": "ip65",
+        "label": "IP65",
+        "delta": 0
+      }
+    ],
+    "shopifyVariantId": null
+  }
 }

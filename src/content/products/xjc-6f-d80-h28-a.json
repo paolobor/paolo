@@ -79,11 +79,18 @@
   "configurator": {
     "slot": "fuerza",
     "versions": [],
-    "price": null
+    "price": 0
   },
   "source": {
     "url": "https://a.storyblok.com/f/298593/x/7432cf2b70/fairino-accessories-ecosystem.pdf https://www.fairino.us/cobots-knowledge-base/connecting-an-xjc-force-torque-sensor-to-fairino-cobot",
     "verified": false
   },
-  "seo": {}
+  "seo": {},
+  "store": {
+    "sku": "XJC-6F-D80-H28",
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  }
 }

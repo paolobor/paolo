@@ -19,6 +19,7 @@ export const nav = {
       { label: 'Soluciones llave en mano', href: 'soluciones-llave-en-mano/' },
     ],
   },
+  store: { label: 'Tienda', href: 'tienda/' },
   links: [
     { label: 'Descargas', href: 'descargas/' },
     { label: 'Nosotros', href: 'sobre-nosotros/' },

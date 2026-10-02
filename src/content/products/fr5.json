@@ -115,11 +115,34 @@
         "note": "Protección opcional"
       }
     ],
-    "price": null
+    "price": 0
   },
   "source": {
     "url": "https://fairino.es/productos/fr5/ https://www.frtech.fr/FR/4.html",
     "verified": false
   },
-  "seo": {}
+  "seo": {},
+  "store": {
+    "sku": "FR5",
+    "price": 0,
+    "shipping": 0,
+    "versions": [
+      {
+        "id": "estandar",
+        "label": "Estándar (IP54)",
+        "delta": 0
+      },
+      {
+        "id": "negro",
+        "label": "Negro",
+        "delta": 0
+      },
+      {
+        "id": "ip65",
+        "label": "IP65",
+        "delta": 0
+      }
+    ],
+    "shopifyVariantId": null
+  }
 }

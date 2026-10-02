@@ -115,11 +115,29 @@
         "note": "Protección opcional"
       }
     ],
-    "price": null
+    "price": 0
   },
   "source": {
     "url": "https://fairino.es/ https://www.frtech.fr/FR/8.html https://www.fairino.be/product/fr30-collaborative-robot https://fairino.info/cobots/fairino-fr30",
     "verified": false
   },
-  "seo": {}
+  "seo": {},
+  "store": {
+    "sku": "FR30",
+    "price": 0,
+    "shipping": 0,
+    "versions": [
+      {
+        "id": "estandar",
+        "label": "Estándar (IP54)",
+        "delta": 0
+      },
+      {
+        "id": "ip65",
+        "label": "IP65",
+        "delta": 0
+      }
+    ],
+    "shopifyVariantId": null
+  }
 }

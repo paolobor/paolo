@@ -115,11 +115,34 @@
         "note": "Protección opcional"
       }
     ],
-    "price": null
+    "price": 0
   },
   "source": {
     "url": "https://fairino.es/ https://www.frtech.fr/FR/3.html https://fairino.info/cobots/fairino-fr10",
     "verified": false
   },
-  "seo": {}
+  "seo": {},
+  "store": {
+    "sku": "FR10",
+    "price": 0,
+    "shipping": 0,
+    "versions": [
+      {
+        "id": "estandar",
+        "label": "Estándar (IP54)",
+        "delta": 0
+      },
+      {
+        "id": "negro",
+        "label": "Negro",
+        "delta": 0
+      },
+      {
+        "id": "ip65",
+        "label": "IP65",
+        "delta": 0
+      }
+    ],
+    "shopifyVariantId": null
+  }
 }

@@ -78,11 +78,18 @@
   "configurator": {
     "slot": "controlador",
     "versions": [],
-    "price": null
+    "price": 0
   },
   "source": {
     "url": "https://www.frtech.fr/Robotcontrolsystem https://www.fairino.be/product/fairino-dc-mini-controller-2kw",
     "verified": false
   },
-  "seo": {}
+  "seo": {},
+  "store": {
+    "sku": "CTROL 1",
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  }
 }

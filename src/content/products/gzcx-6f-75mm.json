@@ -89,11 +89,18 @@
   "configurator": {
     "slot": "fuerza",
     "versions": [],
-    "price": null
+    "price": 0
   },
   "source": {
     "url": "https://a.storyblok.com/f/298593/x/7432cf2b70/fairino-accessories-ecosystem.pdf https://www.fairino.be/product/force-sensor-cobot",
     "verified": false
   },
-  "seo": {}
+  "seo": {},
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  }
 }

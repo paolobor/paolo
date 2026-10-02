@@ -53,8 +53,15 @@ export const site = {
   // Newsletter: proveedor pendiente (Brevo, Mailchimp…). Mientras sea null, el formulario usa el mismo envío que los demás.
   newsletter: { endpoint: null as string | null },
 
+  // Tienda. vatIncluded: true = precios con IVA, false = sin IVA, null = sin indicarlo (pendiente de confirmar).
+  store: {
+    vatIncluded: null as boolean | null,
+    // Dominio de la tienda Shopify para el pago (enlace de carrito). null = el pedido se envía por formulario.
+    shopifyDomain: null as string | null,
+  },
+
   // Configurador: precios ocultos por defecto. Para mostrarlos, poner true y rellenar "price" en cada producto.
-  showPrices: false,
+  showPrices: true,
   currency: 'EUR',
 };
 

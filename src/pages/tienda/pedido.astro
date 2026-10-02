@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { url } from '../../lib/url';
+---
+
+<BaseLayout title="Tramitar pedido" description="Revisa tu carrito y envía tu pedido a FAIRINO España." noindex>
+  <PageHero crumbs={[{ label: 'Tienda', href: 'tienda/' }, { label: 'Pedido' }]} eyebrow="Tienda" title="Tramitar pedido" compact />
+
+  <section class="section">
+    <div class="container-x grid items-start gap-10 lg:grid-cols-[1fr_400px]">
+      <form class="card grid gap-6 p-6 md:p-8" data-form="order" data-order-form novalidate>
+        <h2 class="text-2xl font-bold" style="font-stretch:112%">Datos de facturación y entrega</h2>
+        <div class="form-grid">
+          <div class="form-field"><label for="o-empresa">Empresa *</label><input id="o-empresa" name="empresa" required autocomplete="organization" /></div>
+          <div class="form-field"><label for="o-cif">CIF / NIF *</label><input id="o-cif" name="cif" required /></div>
+          <div class="form-field"><label for="o-nombre">Persona de contacto *</label><input id="o-nombre" name="nombre" required autocomplete="name" /></div>
+          <div class="form-field"><label for="o-email">Correo electrónico *</label><input id="o-email" name="email" type="email" required autocomplete="email" /></div>
+          <div class="form-field"><label for="o-tel">Teléfono *</label><input id="o-tel" name="telefono" type="tel" required autocomplete="tel" /></div>
+          <div class="form-field"><label for="o-cp">Código postal *</label><input id="o-cp" name="codigo_postal" required autocomplete="postal-code" /></div>
+          <div class="form-field sm:col-span-2"><label for="o-dir">Dirección de entrega *</label><input id="o-dir" name="direccion" required autocomplete="street-address" /></div>
+          <div class="form-field"><label for="o-ciudad">Población *</label><input id="o-ciudad" name="poblacion" required autocomplete="address-level2" /></div>
+          <div class="form-field"><label for="o-prov">Provincia *</label><input id="o-prov" name="provincia" required autocomplete="address-level1" /></div>
+          <div class="form-field sm:col-span-2"><label for="o-notas">Observaciones</label><textarea id="o-notas" name="observaciones" rows="3" placeholder="Horario de entrega, muelle de carga, versión IP65…"></textarea></div>
+        </div>
+        <label class="form-check"><input type="checkbox" name="condiciones" required /><span>Acepto las <a href={url('aviso-legal/')} class="text-brand underline">condiciones de venta</a> [DATO: condiciones de venta]. *</span></label>
+        <label class="form-check"><input type="checkbox" name="privacidad" required /><span>He leído la <a href={url('politica-de-privacidad/')} class="text-brand underline">política de privacidad</a>. *</span></label>
+        <input type="hidden" name="subject" value="Nuevo pedido desde la tienda web" />
+        <input type="hidden" name="pedido" />
+        <button type="submit" class="btn btn-primary justify-self-start"><Icon name="send" size={18} />Enviar pedido</button>
+        <p class="text-sm text-muted" data-form-status aria-live="polite">Recibirás la confirmación del pedido con las condiciones de pago y entrega.</p>
+      </form>
+
+      <aside class="card grid gap-4 p-6 lg:sticky lg:top-24" aria-labelledby="sum-title">
+        <h2 id="sum-title" class="text-xl font-bold" style="font-stretch:112%">Resumen</h2>
+        <ul class="grid gap-3 text-sm" data-order-lines></ul>
+        <dl class="grid gap-1.5 border-t border-line pt-3 font-mono text-sm">
+          <div class="flex justify-between"><dt class="text-muted">Subtotal</dt><dd data-order-subtotal>—</dd></div>
+          <div class="flex justify-between"><dt class="text-muted">Envío nacional</dt><dd data-order-shipping>—</dd></div>
+          <div class="flex justify-between text-base text-white"><dt>Total</dt><dd data-order-total>—</dd></div>
+        </dl>
+        <p class="text-sm text-muted" data-order-empty hidden>Tu carrito está vacío. <a href={url('tienda/')} class="text-brand underline">Ir a la tienda</a>.</p>
+        <button type="button" class="justify-self-start text-sm font-semibold text-brand hover:underline" data-cart-open>Editar carrito</button>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { cartSummary, cartText, clearCart } from '../../scripts/cart';
+  import { submitForm } from '../../scripts/forms';
+
+  const lines = document.querySelector<HTMLUListElement>('[data-order-lines]');
+  const render = () => {
+    const s = cartSummary();
+    if (!lines) return;
+    lines.innerHTML = '';
+    for (const r of s.rows) {
+      const li = document.createElement('li');
+      li.className = 'flex justify-between gap-3';
+      const a = document.createElement('span');
+      a.textContent = `${r.q} × ${r.item.name}${r.version ? ` · ${r.version}` : ''}`;
+      const b = document.createElement('span');
+      b.className = 'font-mono';
+      b.textContent = r.unit != null ? s.fmt(r.unit * r.q) : 'Consultar';
+      li.append(a, b);
+      lines.append(li);
+    }
+    document.querySelector('[data-order-subtotal]')!.textContent = s.fmt(s.subtotal);
+    document.querySelector('[data-order-shipping]')!.textContent = s.fmt(s.shipping);
+    document.querySelector('[data-order-total]')!.textContent = s.fmt(s.total);
+    document.querySelector<HTMLElement>('[data-order-empty]')!.hidden = s.rows.length > 0;
+  };
+  window.addEventListener('cart:change', render);
+  render();
+
+  const form = document.querySelector<HTMLFormElement>('[data-order-form]');
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+    if (cartSummary().rows.length === 0) {
+      const st = form.querySelector('[data-form-status]');
+      if (st) st.textContent = 'Añade al menos un producto al carrito.';
+      return;
+    }
+    const result = await submitForm(form, { pedido: cartText() });
+    if (result === 'sent') clearCart();
+  });
+</script>

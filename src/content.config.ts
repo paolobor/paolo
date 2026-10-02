@@ -45,6 +45,19 @@ const products = defineCollection({
         price: z.number().nullable().default(null),
       })
       .optional(),
+    // Tienda: precio de venta (PVP en €), envío y versiones con su suplemento.
+    store: z
+      .object({
+        sku: z.string().nullable().default(null),
+        price: z.number().nullable().default(null),
+        shipping: z.number().nullable().default(null),
+        versions: z
+          .array(z.object({ id: z.string(), label: z.string(), delta: z.number().default(0), note: z.string().optional() }))
+          .default([]),
+        // Para el pago con Shopify (enlace de carrito) cuando los productos estén dados de alta allí.
+        shopifyVariantId: z.string().nullable().default(null),
+      })
+      .default({ sku: null, price: null, shipping: null, versions: [], shopifyVariantId: null }),
     // Uso interno: de dónde salen los datos y si están verificados contra la ficha oficial.
     source: z.object({ url: z.string().nullable(), verified: z.boolean() }).default({ url: null, verified: false }),
     seo: z.object({ title: z.string().optional(), description: z.string().optional() }).default({}),

@@ -1,0 +1,169 @@
+---
+import Icon from './ui/Icon.astro';
+import { getStoreData } from '../lib/store';
+import { site } from '../data/site';
+import { url } from '../lib/url';
+
+const storeData = await getStoreData();
+const vatNote = site.store.vatIncluded === true ? 'IVA incluido' : site.store.vatIncluded === false ? 'IVA no incluido' : '';
+---
+
+<script type="application/json" id="store-data" set:html={JSON.stringify(storeData)} />
+
+<div class="cart-overlay fixed inset-0 z-[70] bg-black/60 backdrop-blur-sm" hidden data-cart-overlay></div>
+<aside
+  id="cart"
+  class="cart fixed inset-y-0 right-0 z-[71] flex w-full max-w-[440px] flex-col border-l border-line bg-surface text-text"
+  aria-labelledby="cart-title"
+  role="dialog"
+  aria-modal="true"
+  hidden
+  data-cart
+>
+  <header class="flex items-center justify-between border-b border-line px-5 py-4">
+    <h2 id="cart-title" class="font-display text-xl font-bold" style="font-stretch:112%">Tu carrito</h2>
+    <button type="button" class="grid size-10 place-items-center rounded-full border border-line hover:border-signal hover:text-signal" aria-label="Cerrar carrito" data-cart-close>
+      <Icon name="x" size={18} />
+    </button>
+  </header>
+
+  <ul class="flex-1 divide-y divide-line overflow-y-auto px-5" data-cart-lines></ul>
+
+  <div class="grid justify-items-center gap-3 px-5 py-16 text-center" data-cart-empty>
+    <Icon name="package" size={34} class="text-signal" />
+    <p class="font-display text-lg font-bold" style="font-stretch:112%">Tu carrito está vacío</p>
+    <p class="text-sm text-muted">Elige tu cobot en la tienda o monta tu célula en el configurador.</p>
+    <a href={url('tienda/')} class="btn btn-primary btn-sm mt-2">Ir a la tienda</a>
+  </div>
+
+  <footer class="grid gap-3 border-t border-line px-5 py-5" data-cart-footer>
+    <dl class="grid gap-1.5 font-mono text-sm">
+      <div class="flex justify-between"><dt class="text-muted">Subtotal</dt><dd data-cart-subtotal>—</dd></div>
+      <div class="flex justify-between"><dt class="text-muted">Envío nacional</dt><dd data-cart-shipping>—</dd></div>
+      <div class="flex justify-between border-t border-line pt-2 text-base text-white"><dt>Total</dt><dd data-cart-total>—</dd></div>
+    </dl>
+    {vatNote && <p class="text-right text-xs text-muted">{vatNote}</p>}
+    <a href={url('tienda/pedido/')} class="btn btn-primary w-full">
+      Tramitar pedido
+      <Icon name="arrow-right" size={18} />
+    </a>
+    <button type="button" class="text-sm font-semibold text-muted hover:text-white" data-cart-close>Seguir comprando</button>
+  </footer>
+</aside>
+
+<div class="toast fixed bottom-24 left-1/2 z-[72] -translate-x-1/2 rounded-full border border-signal/40 bg-surface px-5 py-3 text-sm font-semibold shadow-[0_10px_40px_-10px_rgba(255,106,19,0.6)]" role="status" aria-live="polite" hidden data-cart-toast></div>
+
+<style>
+  .cart {
+    animation: cart-in 0.32s var(--ease-out-soft);
+  }
+  @keyframes cart-in {
+    from {
+      transform: translateX(100%);
+    }
+  }
+</style>
+
+<script>
+  import { addToCart, cartSummary, readCart, setQty } from '../scripts/cart';
+
+  const drawer = document.querySelector<HTMLElement>('[data-cart]');
+  const overlay = document.querySelector<HTMLElement>('[data-cart-overlay]');
+  const list = drawer?.querySelector<HTMLUListElement>('[data-cart-lines]');
+  const empty = drawer?.querySelector<HTMLElement>('[data-cart-empty]');
+  const footer = drawer?.querySelector<HTMLElement>('[data-cart-footer]');
+  const toast = document.querySelector<HTMLElement>('[data-cart-toast]');
+  let lastFocus: HTMLElement | null = null;
+  let toastTimer: number | undefined;
+
+  const open = () => {
+    if (!drawer || !overlay) return;
+    lastFocus = document.activeElement as HTMLElement;
+    drawer.hidden = overlay.hidden = false;
+    document.documentElement.style.overflow = 'hidden';
+    drawer.querySelector<HTMLElement>('[data-cart-close]')?.focus();
+  };
+  const close = () => {
+    if (!drawer || !overlay) return;
+    drawer.hidden = overlay.hidden = true;
+    document.documentElement.style.overflow = '';
+    lastFocus?.focus();
+  };
+
+  const render = () => {
+    const s = cartSummary();
+    document.querySelectorAll<HTMLElement>('[data-cart-count]').forEach((b) => {
+      b.textContent = String(s.count);
+      b.hidden = s.count === 0;
+    });
+    if (!list || !empty || !footer) return;
+    list.innerHTML = '';
+    empty.hidden = s.rows.length > 0;
+    footer.hidden = s.rows.length === 0;
+    for (const r of s.rows) {
+      const li = document.createElement('li');
+      li.className = 'flex gap-4 py-4';
+      li.innerHTML = `
+        <a class="grid size-16 shrink-0 place-items-center overflow-hidden rounded-xl border border-line bg-surface-2"></a>
+        <div class="grid min-w-0 flex-1 gap-1">
+          <a class="font-semibold hover:text-signal"></a>
+          <span class="font-mono text-xs text-muted"></span>
+          <div class="mt-1 flex items-center justify-between gap-3">
+            <div class="inline-flex items-center rounded-full border border-line">
+              <button type="button" class="grid size-8 place-items-center hover:text-signal" aria-label="Quitar uno">−</button>
+              <span class="min-w-6 text-center font-mono text-sm"></span>
+              <button type="button" class="grid size-8 place-items-center hover:text-signal" aria-label="Añadir uno">+</button>
+            </div>
+            <span class="font-mono text-sm"></span>
+          </div>
+        </div>`;
+      const [thumb, name] = li.querySelectorAll('a');
+      thumb.href = name.href = r.item.href;
+      if (r.item.img) {
+        const img = document.createElement('img');
+        img.src = r.item.img;
+        img.alt = '';
+        img.className = 'size-full object-contain p-1';
+        thumb.append(img);
+      }
+      name.textContent = r.item.name;
+      li.querySelector('.font-mono.text-xs')!.textContent = [r.item.category, r.version].filter(Boolean).join(' · ');
+      li.querySelector('.min-w-6')!.textContent = String(r.q);
+      li.querySelector('.justify-between > .font-mono')!.textContent = r.unit != null ? s.fmt(r.unit * r.q) : 'Consultar';
+      const [minus, plus] = li.querySelectorAll('button');
+      minus.addEventListener('click', () => setQty(r.id, r.v, r.q - 1));
+      plus.addEventListener('click', () => setQty(r.id, r.v, r.q + 1));
+      list.append(li);
+    }
+    drawer!.querySelector('[data-cart-subtotal]')!.textContent = s.fmt(s.subtotal) + (s.unpriced ? ' + consultar' : '');
+    drawer!.querySelector('[data-cart-shipping]')!.textContent = s.fmt(s.shipping);
+    drawer!.querySelector('[data-cart-total]')!.textContent = s.fmt(s.total);
+  };
+
+  const showToast = (msg: string) => {
+    if (!toast) return;
+    toast.textContent = msg;
+    toast.hidden = false;
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => (toast.hidden = true), 2600);
+  };
+
+  document.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    const add = t.closest<HTMLElement>('[data-add-cart]');
+    if (add) {
+      const id = add.dataset.addCart!;
+      const sel = document.querySelector<HTMLSelectElement | HTMLInputElement>(`[data-version-for="${id}"]:is(select, input:checked)`);
+      addToCart(id, sel?.value ?? add.dataset.version ?? '');
+      showToast(`${add.dataset.name ?? 'Producto'} añadido al carrito`);
+      if (add.hasAttribute('data-open-cart')) open();
+      return;
+    }
+    if (t.closest('[data-cart-open]')) open();
+    if (t.closest('[data-cart-close]') || t === overlay) close();
+  });
+  document.addEventListener('keydown', (e) => e.key === 'Escape' && drawer && !drawer.hidden && close());
+  window.addEventListener('cart:change', render);
+  window.addEventListener('storage', (e) => e.key === 'fairino-cart' && render());
+  if (readCart().length >= 0) render();
+</script>

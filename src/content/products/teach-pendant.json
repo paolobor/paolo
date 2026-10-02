@@ -67,11 +67,18 @@
   "configurator": {
     "slot": "pendant",
     "versions": [],
-    "price": null
+    "price": 0
   },
   "source": {
     "url": "https://fairino.es/productos/teach-pendant/",
     "verified": false
   },
-  "seo": {}
+  "seo": {},
+  "store": {
+    "sku": "TP1",
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  }
 }

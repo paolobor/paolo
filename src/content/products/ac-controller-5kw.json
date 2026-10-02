@@ -73,11 +73,18 @@
   "configurator": {
     "slot": "controlador",
     "versions": [],
-    "price": null
+    "price": 0
   },
   "source": {
     "url": "https://www.frtech.fr/Robotcontrolsystem https://www.fairino.be/product/fairino-ac-controller-5kw",
     "verified": false
   },
-  "seo": {}
+  "seo": {},
+  "store": {
+    "sku": "CTROL 2",
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  }
 }

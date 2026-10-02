@@ -1,0 +1,71 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import StoreShowroom from '../../components/store/StoreShowroom.astro';
+import StoreCard from '../../components/store/StoreCard.astro';
+import Icon from '../../components/ui/Icon.astro';
+import { getProducts, accessoryGroups } from '../../lib/catalog';
+import { url } from '../../lib/url';
+
+const controllers = await getProducts('controlador');
+const accessories = await getProducts('accesorio');
+const groups = Object.entries(accessoryGroups)
+  .map(([key, label]) => ({ key, label, items: accessories.filter((a) => a.data.group === key) }))
+  .filter((g) => g.items.length);
+---
+
+<BaseLayout
+  title="Tienda de cobots FAIRINO"
+  description="Compra cobots FAIRINO, controladores y accesorios oficiales en la tienda de FAIRINO España, distribuidor oficial. FR3, FR5, FR10, FR16, FR20, FR30 y más."
+  overlayHeader
+>
+  <StoreShowroom />
+
+  <section class="section" aria-labelledby="ctrl-title">
+    <div class="container-x grid gap-8">
+      <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div class="grid gap-3">
+          <p class="eyebrow">Tienda</p>
+          <h2 id="ctrl-title" class="h-section">Controladores</h2>
+          <p class="lead">Los de 2 kW mueven los cobots de hasta 16 kg; los de 5 kW, el FR20 y el FR30.</p>
+        </div>
+        <a href={url('controladores/')} class="link-arrow shrink-0">Comparar controladores <Icon name="arrow-right" size={17} /></a>
+      </div>
+      <ul class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+        {controllers.map((p) => <li><StoreCard product={p} /></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section border-t border-line" aria-labelledby="acc-title">
+    <div class="container-x grid gap-10">
+      <div class="grid gap-3">
+        <p class="eyebrow">Tienda</p>
+        <h2 id="acc-title" class="h-section">Accesorios oficiales</h2>
+        <p class="lead">Visión, garras, sensores de fuerza y mandos del ecosistema FAIRINO, compatibles con toda la serie FR.</p>
+      </div>
+      {
+        groups.map((g) => (
+          <div class="grid gap-4">
+            <h3 class="font-mono text-xs uppercase tracking-[0.16em] text-mist">{g.label}</h3>
+            <ul class="grid grid-cols-2 gap-4 lg:grid-cols-4">
+              {g.items.map((p) => <li><StoreCard product={p} /></li>)}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  <section class="blueprint on-dark border-t border-line">
+    <div class="container-x grid items-center gap-6 py-14 md:grid-cols-[1fr_auto]">
+      <div class="grid gap-3">
+        <p class="eyebrow">¿Una célula completa?</p>
+        <h2 class="h-section max-w-[24ch]">Combina cobot, controlador y accesorios en el configurador</h2>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <a href={url('configurador/')} class="btn btn-primary"><Icon name="sliders-horizontal" size={18} />Configurar mi célula</a>
+        <a href={url('reservar-cita/')} class="btn btn-ghost">Pedir asesoramiento</a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

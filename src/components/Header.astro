@@ -51,6 +51,12 @@ const accessoryGroups = [
               <Icon name="chevron-down" size={16} class="chev transition-transform" />
             </button>
           </li>
+          <li>
+            <a class="nav-link" href={url(nav.store.href)}>
+              <span class="size-1.5 rounded-full bg-signal shadow-[0_0_10px_var(--color-signal)]"></span>
+              {nav.store.label}
+            </a>
+          </li>
           {nav.links.map((l) => (
             <li>
               <a class="nav-link" href={url(l.href)}>{l.label}</a>
@@ -70,9 +76,14 @@ const accessoryGroups = [
         </a>
       </div>
 
+      <button type="button" class="cart-btn hdr-fg relative ml-auto inline-flex size-11 items-center justify-center rounded-full lg:ml-0" aria-label="Abrir carrito" data-cart-open>
+        <Icon name="package" size={22} />
+        <span class="absolute -right-0.5 -top-0.5 grid min-w-5 place-items-center rounded-full bg-signal px-1 font-mono text-[0.65rem] font-bold leading-5 text-ink" data-cart-count hidden>0</span>
+      </button>
+
       <button
         type="button"
-        class="hdr-fg ml-auto -mr-2 inline-flex size-11 items-center justify-center rounded-lg lg:hidden"
+        class="hdr-fg -mr-2 inline-flex size-11 items-center justify-center rounded-lg lg:hidden"
         aria-expanded="false"
         aria-controls="mobile-menu"
         data-drawer-toggle
@@ -167,6 +178,7 @@ const accessoryGroups = [
   <!-- Menú móvil -->
   <div id="mobile-menu" class="drawer lg:hidden" hidden data-drawer>
     <nav aria-label="Principal móvil" class="container-x flex h-full flex-col gap-2 overflow-y-auto pb-6 pt-2">
+      <a href={url(nav.store.href)} class="drawer-link inline-flex items-center gap-2 text-signal">{nav.store.label}</a>
       <details class="drawer-group">
         <summary>{nav.products.label}<Icon name="chevron-down" size={18} class="chev" /></summary>
         <div class="grid gap-4 pb-4 pl-1">

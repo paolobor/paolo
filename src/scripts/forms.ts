@@ -51,7 +51,7 @@ export async function submitForm(form: HTMLFormElement, extra: Record<string, st
   }
 }
 
-document.querySelectorAll<HTMLFormElement>('form[data-form]:not([data-form="configurator"])').forEach((form) => {
+document.querySelectorAll<HTMLFormElement>('form[data-form]:not([data-form="configurator"]):not([data-form="order"])').forEach((form) => {
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!form.reportValidity()) return;

@@ -83,11 +83,18 @@
   "configurator": {
     "slot": "gripper",
     "versions": [],
-    "price": null
+    "price": 0
   },
   "source": {
     "url": "https://www.frtech.fr/Gripper/12.html https://www.fairino.be/product/electric-gripper https://fairino.info/accessories/gripper-epg40-050",
     "verified": false
   },
-  "seo": {}
+  "seo": {},
+  "store": {
+    "sku": "EPG40-50",
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  }
 }

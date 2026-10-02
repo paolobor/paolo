@@ -78,11 +78,18 @@
   "configurator": {
     "slot": "controlador",
     "versions": [],
-    "price": null
+    "price": 0
   },
   "source": {
     "url": "https://fairino.es/productos/ac-mini-controller-2kw/ https://www.fairino.be/nl/product/fairino-ac-mini-controller-2kw",
     "verified": false
   },
-  "seo": {}
+  "seo": {},
+  "store": {
+    "sku": "CTROL 1",
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  }
 }
