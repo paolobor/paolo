@@ -59,6 +59,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
 <section class="showroom relative isolate overflow-hidden bg-ink text-white" aria-roledescription="carrusel" aria-label="Cobots FAIRINO" data-showroom>
   <div class="showroom-glow pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
+  <canvas class="pointer-events-none absolute inset-0 -z-5 h-full w-full" data-embers="back" aria-hidden="true"></canvas>
 
   <!-- Cabecera del escaparate -->
   <div class="container-x relative grid gap-6 pt-24 md:grid-cols-[1fr_auto] md:items-start lg:pt-24">
@@ -84,15 +85,23 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
   <!-- Escenario -->
   <div class="stage relative mx-auto h-[min(46vh,430px)] min-h-[330px] max-w-[1600px]" data-stage>
+    <span class="backlight" aria-hidden="true"></span>
     <div class="ghost-wrap" data-parallax><p class="ghost" aria-hidden="true" data-ghost>{slides[0].name}</p></div>
+    <span class="floor" aria-hidden="true"></span>
 
     <span class="beam" aria-hidden="true"></span>
     <svg class="platform" viewBox="0 0 400 90" aria-hidden="true">
       <defs>
         <radialGradient id="plat-fill" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stop-color="#ff6a13" stop-opacity="0.35" />
-          <stop offset="70%" stop-color="#3a1206" stop-opacity="0.25" />
+          <stop offset="0%" stop-color="#ff8a3d" stop-opacity="0.55" />
+          <stop offset="45%" stop-color="#ff5a14" stop-opacity="0.3" />
+          <stop offset="75%" stop-color="#3a1206" stop-opacity="0.25" />
           <stop offset="100%" stop-color="#000" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient id="plat-core" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#ffd2a0" stop-opacity="0.55" />
+          <stop offset="40%" stop-color="#ff8a3d" stop-opacity="0.3" />
+          <stop offset="100%" stop-color="#ff6a13" stop-opacity="0" />
         </radialGradient>
         <filter id="plat-glow" x="-20%" y="-60%" width="140%" height="220%">
           <feGaussianBlur stdDeviation="3" result="b" />
@@ -100,7 +109,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
         </filter>
       </defs>
       <ellipse cx="200" cy="45" rx="196" ry="40" fill="url(#plat-fill)" />
-      <ellipse cx="200" cy="45" rx="150" ry="28" fill="none" stroke="#ff7a1a" stroke-width="2.2" filter="url(#plat-glow)" class="plat-ring" />
+      <ellipse cx="200" cy="45" rx="120" ry="20" fill="url(#plat-core)" />
+      <ellipse cx="200" cy="45" rx="150" ry="28" fill="none" stroke="#ff8a3d" stroke-width="2.6" filter="url(#plat-glow)" class="plat-ring" />
       <ellipse cx="200" cy="45" rx="176" ry="34" fill="none" stroke="#ff5a1f" stroke-width="2" stroke-dasharray="1 9" stroke-linecap="round" filter="url(#plat-glow)" class="plat-dots" />
       <ellipse cx="200" cy="45" rx="196" ry="40" fill="none" stroke="#ff7a1a" stroke-opacity="0.35" stroke-width="1" />
     </svg>
@@ -125,6 +135,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
         ))
       }
     </ul>
+
+    <canvas class="embers-front" data-embers="front" aria-hidden="true"></canvas>
 
     <!-- Zonas laterales: clic a la izquierda = modelo anterior, a la derecha = siguiente. -->
     <button type="button" class="side side-prev" data-side="-1" aria-label="Modelo anterior">
@@ -310,9 +322,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
 <style>
   .showroom-glow {
     background:
-      radial-gradient(ellipse 45% 40% at 50% 58%, rgb(255 106 19 / 0.22), transparent 70%),
-      radial-gradient(ellipse 30% 30% at 28% 50%, rgb(200 40 20 / 0.16), transparent 70%),
-      radial-gradient(ellipse 30% 30% at 72% 46%, rgb(255 140 40 / 0.1), transparent 70%),
+      radial-gradient(ellipse 80% 75% at 50% 50%, transparent 50%, rgb(0 0 0 / 0.6)),
+      radial-gradient(ellipse 50% 42% at 50% 56%, rgb(255 106 19 / 0.3), transparent 70%),
+      radial-gradient(ellipse 34% 34% at 22% 52%, rgb(200 40 20 / 0.24), transparent 70%),
+      radial-gradient(ellipse 30% 30% at 78% 46%, rgb(255 140 40 / 0.14), transparent 70%),
       linear-gradient(rgb(255 122 26 / 0.04) 1px, transparent 1px) 0 0 / 48px 48px,
       linear-gradient(90deg, rgb(255 122 26 / 0.04) 1px, transparent 1px) 0 0 / 48px 48px;
   }
@@ -329,10 +342,11 @@ const pad = (n: number) => String(n).padStart(2, '0');
     font-size: clamp(6rem, 21vw, 21rem);
     line-height: 1;
     letter-spacing: -0.02em;
-    background: linear-gradient(180deg, rgb(255 140 60 / 0.22), rgb(120 40 10 / 0.05) 80%);
+    background: linear-gradient(180deg, rgb(52 22 10 / 0.95), rgb(26 11 6 / 0.85) 75%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    -webkit-text-stroke: 1px rgb(255 120 40 / 0.1);
     transition:
       opacity 0.45s,
       transform 0.6s var(--ease-out-soft);
@@ -435,6 +449,59 @@ const pad = (n: number) => String(n).padStart(2, '0');
       background-position: 0 -20%;
     }
   }
+  /* Contraluz cálido detrás del cobot activo: el nombre gigante queda en silueta delante. */
+  .backlight {
+    position: absolute;
+    left: 50%;
+    bottom: 2%;
+    width: min(980px, 130vw);
+    height: 100%;
+    transform: translateX(-50%);
+    background:
+      radial-gradient(ellipse 26% 40% at 50% 64%, rgb(255 150 70 / 0.5), transparent 72%),
+      radial-gradient(ellipse 42% 58% at 50% 60%, rgb(255 96 20 / 0.36), transparent 72%),
+      radial-gradient(ellipse 62% 70% at 46% 58%, rgb(190 40 14 / 0.26), transparent 75%);
+    filter: blur(8px);
+    animation: backlight 7s ease-in-out infinite;
+    pointer-events: none;
+  }
+  @keyframes backlight {
+    0%,
+    100% {
+      opacity: 0.82;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  /* Suelo: línea de horizonte encendida y un baño de luz naranja que se apaga hacia delante. */
+  .floor {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 16%;
+    background:
+      radial-gradient(ellipse 42% 140% at 50% 0%, rgb(255 110 30 / 0.2), transparent 70%),
+      linear-gradient(180deg, rgb(6 3 2 / 0.6), rgb(6 3 2 / 0));
+    pointer-events: none;
+  }
+  .floor::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgb(255 122 26 / 0.3) 18%, rgb(255 180 110 / 0.9) 50%, rgb(255 122 26 / 0.3) 82%, transparent);
+    box-shadow: 0 0 14px 1px rgb(255 106 19 / 0.5);
+  }
+  .embers-front {
+    position: absolute;
+    inset: -10% 0 0;
+    z-index: 15;
+    width: 100%;
+    height: 110%;
+    pointer-events: none;
+  }
   .beam {
     position: absolute;
     left: 50%;
@@ -442,7 +509,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     width: min(300px, 50vw);
     height: 78%;
     transform: translateX(-50%);
-    background: linear-gradient(0deg, rgb(255 106 19 / 0.22), rgb(255 106 19 / 0.05) 55%, transparent);
+    background: linear-gradient(0deg, rgb(255 120 40 / 0.32), rgb(255 106 19 / 0.07) 55%, transparent);
     clip-path: polygon(18% 100%, 82% 100%, 62% 0, 38% 0);
     filter: blur(6px);
     animation: beam 5s ease-in-out infinite;
@@ -572,6 +639,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
     object-fit: contain;
     user-select: none;
     -webkit-user-drag: none;
+    filter: drop-shadow(0 0 1.5px rgb(255 150 70 / 0.35)) drop-shadow(0 0 22px rgb(255 96 20 / 0.22));
+  }
+  .robot[data-active] .robot-img {
+    filter: drop-shadow(0 0 1.5px rgb(255 160 80 / 0.55)) drop-shadow(0 0 28px rgb(255 96 20 / 0.34));
   }
   /* Contraluz cálido desde la peana: tinte naranja recortado con la silueta del propio robot (no altera su forma). */
   .rim {
@@ -581,10 +652,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
     -webkit-mask: var(--mask) center / contain no-repeat;
     mask: var(--mask) center / contain no-repeat;
     background:
-      radial-gradient(ellipse 60% 30% at 50% 100%, rgb(255 96 20 / 0.55), transparent 70%),
-      linear-gradient(90deg, rgb(255 110 30 / 0.28), transparent 22%, transparent 78%, rgb(255 130 40 / 0.22));
+      radial-gradient(ellipse 60% 32% at 50% 100%, rgb(255 96 20 / 0.7), transparent 72%),
+      linear-gradient(90deg, rgb(255 110 30 / 0.42), transparent 26%, transparent 74%, rgb(255 130 40 / 0.36));
     mix-blend-mode: screen;
-    opacity: 0;
+    opacity: 0.6;
     transition: opacity 0.6s;
     pointer-events: none;
   }
@@ -722,6 +793,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     .contact,
     .robot[data-active] .scan,
     .beam,
+    .backlight,
     .plat-ring {
       animation: none;
     }
@@ -761,9 +833,9 @@ const pad = (n: number) => String(n).padStart(2, '0');
         const visible = a <= 2;
         r.style.setProperty('--x', `${o * step}px`);
         r.style.setProperty('--s', String(a === 0 ? 1 : a === 1 ? 0.56 : 0.4));
-        r.style.setProperty('--op', String(!visible ? 0 : a === 0 ? 1 : a === 1 ? 0.55 : 0.22));
-        r.style.setProperty('--blur', `${a === 0 ? 0 : a === 1 ? 1.5 : 3}px`);
-        r.style.setProperty('--bright', String(a === 0 ? 1 : 0.6));
+        r.style.setProperty('--op', String(!visible ? 0 : a === 0 ? 1 : a === 1 ? 0.72 : 0.34));
+        r.style.setProperty('--blur', `${a === 0 ? 0 : a === 1 ? 0.6 : 2}px`);
+        r.style.setProperty('--bright', String(a === 0 ? 1 : a === 1 ? 0.8 : 0.62));
         r.style.setProperty('--z', String(10 - a));
         r.dataset.off = String(o);
         r.toggleAttribute('data-active', a === 0);
@@ -874,4 +946,89 @@ const pad = (n: number) => String(n).padStart(2, '0');
     const fromHash = ids.indexOf(location.hash.slice(1));
     show(fromHash >= 0 ? fromHash : 0, { hash: false });
   }
+
+  // Brasas flotando: luz ambiental del escaparate (decorativa, se pausa fuera de pantalla).
+  const sprite = (stops: [number, string][]) => {
+    const c = document.createElement('canvas');
+    c.width = c.height = 64;
+    const x = c.getContext('2d')!;
+    const g = x.createRadialGradient(32, 32, 0, 32, 32, 32);
+    stops.forEach(([o, col]) => g.addColorStop(o, col));
+    x.fillStyle = g;
+    x.fillRect(0, 0, 64, 64);
+    return c;
+  };
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll<HTMLCanvasElement>('[data-embers]').forEach((canvas) => {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    const front = canvas.dataset.embers === 'front';
+    const img = front
+      ? sprite([[0, 'rgba(255,160,80,0.55)'], [0.55, 'rgba(255,110,40,0.3)'], [1, 'rgba(255,80,20,0)']])
+      : sprite([[0, 'rgba(255,230,190,1)'], [0.16, 'rgba(255,160,70,0.95)'], [0.42, 'rgba(255,90,20,0.32)'], [1, 'rgba(255,60,10,0)']]);
+    type Ember = { x: number; y: number; r: number; vx: number; vy: number; a: number; ph: number; sp: number };
+    let w = 0;
+    let h = 0;
+    let parts: Ember[] = [];
+    const spawn = (anywhere: boolean): Ember => {
+      const big = !front && Math.random() < 0.14;
+      return {
+        // Más densas en el centro, donde está la luz.
+        x: w * (0.5 + (Math.random() + Math.random() - 1) * 0.62),
+        y: anywhere ? Math.random() * h : h + 30,
+        r: front ? 14 + Math.random() * 22 : big ? 5 + Math.random() * 5 : 1.6 + Math.random() * 2.6,
+        vx: (Math.random() - 0.5) * 8,
+        vy: -(front ? 5 + Math.random() * 9 : 10 + Math.random() * 26),
+        a: front ? 0.14 + Math.random() * 0.16 : big ? 0.22 + Math.random() * 0.22 : 0.5 + Math.random() * 0.5,
+        ph: Math.random() * Math.PI * 2,
+        sp: 0.5 + Math.random() * 1.5,
+      };
+    };
+    const resize = () => {
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = canvas.clientWidth;
+      h = canvas.clientHeight;
+      canvas.width = Math.round(w * dpr);
+      canvas.height = Math.round(h * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const n = front ? Math.round(Math.min(9, w / 150)) : Math.round(Math.min(120, (w * h) / 10000));
+      parts = Array.from({ length: n }, () => spawn(true));
+    };
+    let last = performance.now();
+    let running = false;
+    const frame = (now: number) => {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+      ctx.clearRect(0, 0, w, h);
+      ctx.globalCompositeOperation = 'lighter';
+      for (const p of parts) {
+        p.ph += dt * p.sp;
+        p.y += p.vy * dt;
+        p.x += (p.vx + Math.sin(p.ph) * 9) * dt;
+        if (p.y < -40) Object.assign(p, spawn(false));
+        // Se apagan al subir y parpadean un poco, como brasas.
+        const life = Math.max(0, Math.min(1, p.y / h));
+        ctx.globalAlpha = p.a * (0.72 + 0.28 * Math.sin(p.ph * 3.3)) * (0.3 + 0.7 * life);
+        const d = p.r * 2;
+        ctx.drawImage(img, p.x - d, p.y - d, d * 2, d * 2);
+      }
+      if (running) requestAnimationFrame(frame);
+    };
+    const start = () => {
+      if (running || reduceMotion || document.hidden) return;
+      running = true;
+      last = performance.now();
+      requestAnimationFrame(frame);
+    };
+    const stop = () => (running = false);
+    resize();
+    frame(last);
+    new ResizeObserver(() => {
+      resize();
+      if (!running) frame(performance.now());
+    }).observe(canvas);
+    let onScreen = false;
+    new IntersectionObserver(([e]) => ((onScreen = e.isIntersecting) ? start() : stop())).observe(canvas);
+    document.addEventListener('visibilitychange', () => (document.hidden || !onScreen ? stop() : start()));
+  });
 </script>
