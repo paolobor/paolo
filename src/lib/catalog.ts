@@ -4,7 +4,10 @@ import { applications } from '../data/applications';
 export type Product = CollectionEntry<'products'>;
 
 export async function getProducts(category?: Product['data']['category']) {
-  const all = (await getCollection('products')).sort((a, b) => a.data.order - b.data.order);
+  const rank = { cobot: 0, controlador: 1, accesorio: 2 } as const;
+  const all = (await getCollection('products')).sort(
+    (a, b) => rank[a.data.category] - rank[b.data.category] || a.data.order - b.data.order,
+  );
   return category ? all.filter((p) => p.data.category === category) : all;
 }
 

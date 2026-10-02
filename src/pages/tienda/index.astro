@@ -3,56 +3,55 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import StoreShowroom from '../../components/store/StoreShowroom.astro';
 import StoreCard from '../../components/store/StoreCard.astro';
 import Icon from '../../components/ui/Icon.astro';
-import { getProducts, accessoryGroups } from '../../lib/catalog';
+import { getProducts, categoryMeta } from '../../lib/catalog';
 import { url } from '../../lib/url';
 
-const controllers = await getProducts('controlador');
-const accessories = await getProducts('accesorio');
-const groups = Object.entries(accessoryGroups)
-  .map(([key, label]) => ({ key, label, items: accessories.filter((a) => a.data.group === key) }))
-  .filter((g) => g.items.length);
+const products = await getProducts();
+const tabs = [
+  { key: 'todos', label: 'Todos', count: products.length },
+  ...(['cobot', 'controlador', 'accesorio'] as const).map((c) => ({
+    key: c,
+    label: categoryMeta[c].label,
+    count: products.filter((p) => p.data.category === c).length,
+  })),
+];
 ---
 
 <BaseLayout
   title="Tienda de cobots FAIRINO"
-  description="Compra cobots FAIRINO, controladores y accesorios oficiales en la tienda de FAIRINO España, distribuidor oficial. FR3, FR5, FR10, FR16, FR20, FR30 y más."
+  description="Compra cobots FAIRINO, controladores y accesorios oficiales en la tienda de FAIRINO España, distribuidor oficial. FR3, FR5, FR5WML, FR10, FR16, FR20, FR30 y más."
   overlayHeader
 >
   <StoreShowroom />
 
-  <section class="section" aria-labelledby="ctrl-title">
+  <section id="productos" class="section scroll-mt-20" aria-labelledby="all-title" data-shop>
     <div class="container-x grid gap-8">
-      <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
         <div class="grid gap-3">
           <p class="eyebrow">Tienda</p>
-          <h2 id="ctrl-title" class="h-section">Controladores</h2>
-          <p class="lead">Los de 2 kW mueven los cobots de hasta 16 kg; los de 5 kW, el FR20 y el FR30.</p>
+          <h2 id="all-title" class="h-section">Todos los productos</h2>
         </div>
-        <a href={url('controladores/')} class="link-arrow shrink-0">Comparar controladores <Icon name="arrow-right" size={17} /></a>
+        <div class="flex flex-wrap gap-2" role="tablist" aria-label="Filtrar por categoría">
+          {
+            tabs.map((t, i) => (
+              <button type="button" role="tab" class="shop-tab" aria-selected={i === 0 ? 'true' : 'false'} data-tab={t.key}>
+                {t.label}
+                <span class="font-mono text-xs opacity-70">{t.count}</span>
+              </button>
+            ))
+          }
+        </div>
       </div>
-      <ul class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        {controllers.map((p) => <li><StoreCard product={p} /></li>)}
-      </ul>
-    </div>
-  </section>
 
-  <section class="section border-t border-line" aria-labelledby="acc-title">
-    <div class="container-x grid gap-10">
-      <div class="grid gap-3">
-        <p class="eyebrow">Tienda</p>
-        <h2 id="acc-title" class="h-section">Accesorios oficiales</h2>
-        <p class="lead">Visión, garras, sensores de fuerza y mandos del ecosistema FAIRINO, compatibles con toda la serie FR.</p>
-      </div>
-      {
-        groups.map((g) => (
-          <div class="grid gap-4">
-            <h3 class="font-mono text-xs uppercase tracking-[0.16em] text-mist">{g.label}</h3>
-            <ul class="grid grid-cols-2 gap-4 lg:grid-cols-4">
-              {g.items.map((p) => <li><StoreCard product={p} /></li>)}
-            </ul>
-          </div>
-        ))
-      }
+      <ul class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4" data-shop-grid>
+        {
+          products.map((p) => (
+            <li data-cat={p.data.category}>
+              <StoreCard product={p} />
+            </li>
+          ))
+        }
+      </ul>
     </div>
   </section>
 
@@ -69,3 +68,41 @@ const groups = Object.entries(accessoryGroups)
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .shop-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-line);
+    padding: 0.55rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition:
+      border-color 0.2s,
+      background-color 0.2s,
+      color 0.2s;
+  }
+  .shop-tab:hover {
+    border-color: var(--color-signal);
+  }
+  .shop-tab[aria-selected='true'] {
+    background: var(--color-signal);
+    border-color: var(--color-signal);
+    color: var(--color-ink);
+  }
+</style>
+
+<script>
+  const shop = document.querySelector<HTMLElement>('[data-shop]');
+  if (shop) {
+    const tabs = [...shop.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+    const items = [...shop.querySelectorAll<HTMLElement>('[data-cat]')];
+    const select = (key: string) => {
+      tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.tab === key)));
+      items.forEach((it) => (it.hidden = key !== 'todos' && it.dataset.cat !== key));
+    };
+    tabs.forEach((t) => t.addEventListener('click', () => select(t.dataset.tab!)));
+  }
+</script>
