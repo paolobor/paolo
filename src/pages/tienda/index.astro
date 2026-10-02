@@ -3,10 +3,60 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import StoreShowroom from '../../components/store/StoreShowroom.astro';
 import StoreCard from '../../components/store/StoreCard.astro';
 import Icon from '../../components/ui/Icon.astro';
-import { getProducts, categoryMeta } from '../../lib/catalog';
+import { getProducts, categoryMeta, type Product } from '../../lib/catalog';
+import { applications } from '../../data/applications';
 import { url } from '../../lib/url';
 
 const products = await getProducts();
+
+// Qué encaja con cada producto, según la compatibilidad real y las aplicaciones de cada uno.
+type Rec = { id: string; reason: string };
+const appName = (slug: string) => applications.find((a) => a.slug === slug)?.name ?? slug;
+const shared = (a: Product, b: Product) => a.data.applications.filter((x) => b.data.applications.includes(x));
+const relations: Record<string, { groups: { title: string; note?: string; items: Rec[] }[] }> = {};
+for (const p of products) {
+  const d = p.data;
+  const groups: { title: string; note?: string; items: Rec[] }[] = [];
+  if (d.category === 'cobot') {
+    groups.push({
+      title: 'Controlador',
+      note: 'Imprescindible: elige uno (red AC o continua DC).',
+      items: products
+        .filter((x) => x.data.category === 'controlador' && d.compatibleWith.includes(x.id))
+        .map((x) => ({ id: x.id, reason: x.data.group === 'dc' ? 'Corriente continua' : 'Corriente alterna' })),
+    });
+    const accs = products
+      .filter((x) => x.data.category === 'accesorio' && x.data.compatibleWith.includes(p.id))
+      .map((x) => ({ x, common: shared(p, x) }))
+      .sort((a, b) => b.common.length - a.common.length || a.x.data.order - b.x.data.order);
+    groups.push({
+      title: 'Accesorios recomendados',
+      note: `Según las aplicaciones del ${d.name}.`,
+      items: accs.map(({ x, common }) => ({
+        id: x.id,
+        reason: common.length ? `Para ${common.map(appName).join(' y ').toLowerCase()}` : 'Compatible',
+      })),
+    });
+  } else if (d.category === 'controlador') {
+    groups.push({
+      title: 'Cobots compatibles',
+      items: products.filter((x) => d.compatibleWith.includes(x.id)).map((x) => ({ id: x.id, reason: `${x.data.payloadKg ?? '—'} kg · ${x.data.reachMm ?? '—'} mm` })),
+    });
+  } else {
+    groups.push({
+      title: 'Cobots compatibles',
+      items: products
+        .filter((x) => x.data.category === 'cobot' && d.compatibleWith.includes(x.id))
+        .map((x) => ({ x, common: shared(p, x) }))
+        .sort((a, b) => b.common.length - a.common.length || a.x.data.order - b.x.data.order)
+        .map(({ x, common }) => ({ id: x.id, reason: common.length ? `Ideal para ${common.map(appName).join(' y ').toLowerCase()}` : `${x.data.payloadKg ?? '—'} kg` })),
+    });
+    const others = products.filter((x) => x.data.category === 'accesorio' && x.id !== p.id && shared(p, x).length > 0);
+    if (others.length)
+      groups.push({ title: 'Combina bien con', items: others.map((x) => ({ id: x.id, reason: `También para ${shared(p, x).map(appName).join(' y ').toLowerCase()}` })) });
+  }
+  relations[p.id] = { groups: groups.filter((g) => g.items.length) };
+}
 const tabs = [
   { key: 'todos', label: 'Todos', count: products.length },
   ...(['cobot', 'controlador', 'accesorio'] as const).map((c) => ({
@@ -24,6 +74,7 @@ const tabs = [
 >
   <StoreShowroom />
 
+  <script type="application/json" id="shop-relations" set:html={JSON.stringify(relations)} />
   <section id="productos" class="section scroll-mt-20" aria-labelledby="all-title" data-shop>
     <div class="container-x grid gap-8">
       <div class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
@@ -43,15 +94,29 @@ const tabs = [
         </div>
       </div>
 
-      <ul class="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4" data-shop-grid>
-        {
-          products.map((p) => (
-            <li data-cat={p.data.category}>
-              <StoreCard product={p} />
-            </li>
-          ))
-        }
-      </ul>
+      <div class="grid items-start gap-6 lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-8">
+        <!-- Lo que encaja con el producto elegido -->
+        <aside class="reco card lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto" aria-live="polite" aria-label="Productos que encajan con tu elección" data-reco>
+          <div class="grid gap-3 p-6" data-reco-empty>
+            <span class="grid size-11 place-items-center rounded-xl bg-signal/10 text-signal"><Icon name="layers" size={22} /></span>
+            <p class="font-display text-lg font-bold" style="font-stretch:112%">Elige un producto</p>
+            <p class="text-sm text-muted">
+              Pulsa la imagen de cualquier producto y aquí te mostramos lo que encaja con él: controlador, accesorios o cobots compatibles. Marca lo que necesites y añádelo todo al carrito.
+            </p>
+          </div>
+          <div class="grid gap-5 p-5" data-reco-body hidden></div>
+        </aside>
+
+        <ul class="grid grid-cols-2 gap-4 md:grid-cols-3" data-shop-grid>
+          {
+            products.map((p) => (
+              <li data-cat={p.data.category}>
+                <StoreCard product={p} selectable />
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -95,14 +160,124 @@ const tabs = [
 </style>
 
 <script>
+  import { addToCart, storeData } from '../../scripts/cart';
+
+  type Rec = { id: string; reason: string };
   const shop = document.querySelector<HTMLElement>('[data-shop]');
   if (shop) {
     const tabs = [...shop.querySelectorAll<HTMLButtonElement>('[data-tab]')];
     const items = [...shop.querySelectorAll<HTMLElement>('[data-cat]')];
-    const select = (key: string) => {
+    const reco = shop.querySelector<HTMLElement>('[data-reco]')!;
+    const empty = reco.querySelector<HTMLElement>('[data-reco-empty]')!;
+    const body = reco.querySelector<HTMLElement>('[data-reco-body]')!;
+    const relations: Record<string, { groups: { title: string; note?: string; items: Rec[] }[] }> = JSON.parse(
+      document.getElementById('shop-relations')?.textContent || '{}',
+    );
+    const data = storeData();
+    const fmt = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+    const price = (id: string) => (data[id]?.price != null ? fmt.format(data[id].price!) : 'Consultar');
+
+    const filter = (key: string) => {
       tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.tab === key)));
       items.forEach((it) => (it.hidden = key !== 'todos' && it.dataset.cat !== key));
     };
-    tabs.forEach((t) => t.addEventListener('click', () => select(t.dataset.tab!)));
+    tabs.forEach((t) => t.addEventListener('click', () => filter(t.dataset.tab!)));
+
+    const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text = '') => {
+      const e = document.createElement(tag);
+      if (cls) e.className = cls;
+      if (text) e.textContent = text;
+      return e;
+    };
+    const thumb = (id: string, size = 'size-12') => {
+      const box = el('span', `grid ${size} shrink-0 place-items-center overflow-hidden rounded-lg border border-line bg-surface-2`);
+      if (data[id]?.img) {
+        const img = el('img', 'size-full object-contain p-1') as HTMLImageElement;
+        img.src = data[id].img!;
+        img.alt = '';
+        box.append(img);
+      }
+      return box;
+    };
+
+    const updateButton = () => {
+      const n = body.querySelectorAll('input[data-reco-pick]:checked').length + 1;
+      const btn = body.querySelector<HTMLButtonElement>('[data-reco-add]');
+      if (btn) btn.textContent = n > 1 ? `Añadir ${n} productos al carrito` : 'Añadir al carrito';
+    };
+
+    const select = (id: string) => {
+      const it = data[id];
+      if (!it) return;
+      shop.querySelectorAll('[data-card]').forEach((c) => c.toggleAttribute('data-selected', (c as HTMLElement).dataset.card === id));
+      empty.hidden = true;
+      body.hidden = false;
+      body.innerHTML = '';
+
+      // Producto elegido
+      const head = el('div', 'flex items-center gap-3');
+      head.append(thumb(id, 'size-16'));
+      const ht = el('div', 'grid min-w-0');
+      ht.append(el('span', 'font-mono text-[0.62rem] uppercase tracking-[0.14em] text-signal', 'Has elegido'));
+      ht.append(el('span', 'font-display text-xl font-bold leading-tight', it.name));
+      ht.append(el('span', 'font-mono text-sm text-mist', price(id)));
+      head.append(ht);
+      const close = el('button', 'ml-auto grid size-8 shrink-0 place-items-center rounded-full border border-line text-mist hover:border-signal hover:text-signal', '×');
+      close.setAttribute('aria-label', 'Quitar selección');
+      close.addEventListener('click', () => {
+        shop.querySelectorAll('[data-card]').forEach((c) => c.removeAttribute('data-selected'));
+        body.hidden = true;
+        empty.hidden = false;
+      });
+      head.append(close);
+      body.append(head);
+
+      // Grupos recomendados
+      for (const g of relations[id]?.groups ?? []) {
+        const sec = el('section', 'grid gap-2 border-t border-line pt-4');
+        sec.append(el('h3', 'font-display text-base font-bold', g.title));
+        if (g.note) sec.append(el('p', 'text-xs text-muted', g.note));
+        const ul = el('ul', 'grid gap-1.5');
+        for (const r of g.items) {
+          if (!data[r.id]) continue;
+          const li = el('li');
+          const label = el('label', 'flex cursor-pointer items-center gap-3 rounded-xl border border-transparent p-2 transition-colors hover:border-line hover:bg-surface-2');
+          const cb = el('input', 'size-4 shrink-0 accent-[var(--color-signal)]') as HTMLInputElement;
+          cb.type = 'checkbox';
+          cb.dataset.recoPick = r.id;
+          cb.addEventListener('change', updateButton);
+          label.append(cb, thumb(r.id, 'size-10'));
+          const t = el('span', 'grid min-w-0 flex-1');
+          t.append(el('span', 'truncate text-sm font-semibold', data[r.id].name));
+          t.append(el('span', 'truncate text-xs text-muted', r.reason));
+          label.append(t, el('span', 'shrink-0 font-mono text-xs text-mist', price(r.id)));
+          li.append(label);
+          ul.append(li);
+        }
+        sec.append(ul);
+        body.append(sec);
+      }
+
+      // Acciones
+      const actions = el('div', 'grid gap-2 border-t border-line pt-4');
+      const add = el('button', 'btn btn-primary w-full', 'Añadir al carrito') as HTMLButtonElement;
+      add.type = 'button';
+      add.dataset.recoAdd = '';
+      add.addEventListener('click', () => {
+        addToCart(id);
+        body.querySelectorAll<HTMLInputElement>('input[data-reco-pick]:checked').forEach((c) => addToCart(c.dataset.recoPick!));
+        document.querySelector<HTMLElement>('[data-cart-open]')?.click();
+      });
+      const link = el('a', 'text-center text-sm font-semibold text-brand hover:underline', 'Ver ficha completa') as HTMLAnchorElement;
+      link.href = it.href;
+      actions.append(add, link);
+      body.append(actions);
+      updateButton();
+
+      // En móvil el panel está encima: lo traemos a la vista.
+      if (window.matchMedia('(max-width: 1023px)').matches) reco.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    shop.querySelectorAll<HTMLElement>('[data-select]').forEach((b) => b.addEventListener('click', () => select(b.dataset.select!)));
   }
 </script>
