@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8" /><title>Perfil de tapa</title>
+<script type="importmap">{ "imports": { "three": "/node_modules/three/build/three.module.js", "three/addons/": "/node_modules/three/examples/jsm/" } }</script>
+</head><body><script type="module">
+  // Perfil (r, z) de los vértices de una malla en el marco de una articulación. ?model=fr5&joint=j1&mesh=shoulder&z0=190&z1=230&rmax=70
+  import * as THREE from 'three';
+  import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+  import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+  const q = new URLSearchParams(location.search);
+  const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync(`/public/models/${q.get('model') || 'fr5'}.glb`);
+  const robot = gltf.scene; robot.updateMatrixWorld(true);
+  const j = robot.getObjectByName(`${q.get('joint')}_rot`);
+  let m = null;
+  robot.traverse((o) => o.isMesh && o.name.toLowerCase().startsWith(`${q.get('mesh')}_link`) && (m = o));
+  const M = j.matrixWorld.clone().invert().multiply(m.matrixWorld);
+  const pos = m.geometry.attributes.position, v = new THREE.Vector3();
+  const z0 = +q.get('z0') / 1000, z1 = +q.get('z1') / 1000, rm = +q.get('rmax') / 1000;
+  const set = new Map();
+  for (let i = 0; i < pos.count; i++) {
+    v.fromBufferAttribute(pos, i).applyMatrix4(M);
+    const r = Math.hypot(v.x, v.y);
+    if (v.z < z0 || v.z > z1 || r > rm) continue;
+    const k = `${(r * 1000).toFixed(1)},${(v.z * 1000).toFixed(1)}`;
+    set.set(k, (set.get(k) || 0) + 1);
+  }
+  window.__info = [...set.entries()].map(([k, n]) => k.split(',').map(Number).concat(n)).sort((a, b) => a[1] - b[1] || a[0] - b[0]);
+  window.__done = true;
+</script></body></html>

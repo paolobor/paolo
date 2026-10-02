@@ -16,6 +16,8 @@
   // Estudio virtual para renders de producto con la estética del catálogo FAIRINO Spain:
   // negro profundo, halo naranja, plataforma luminosa y luz de estudio. Parámetros por la URL:
   //   ?model=fr5&w=2400&h=1600&pose=0.5,-1.9,1.7,-1.4,-1.57,0&cam=az,el,dist&alpha=0&platform=1
+  // Aros naranjas, tornillos y brida de aluminio (tools/cad/trim.js): siempre, salvo trim=0.
+  // Depuración: debug=1 (tapas candidatas en window.__info), all=1 (todas las candidatas en colores).
   import * as THREE from 'three';
   import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
   import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
@@ -24,6 +26,7 @@
   import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
   import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
   import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+  import { addRealTrim } from './trim.js';
 
   const q = new URLSearchParams(location.search);
   const W = Number(q.get('w') || 1600), H = Number(q.get('h') || 1000);
@@ -168,6 +171,8 @@
       o.receiveShadow = true;
     }
   });
+  // Aros naranjas con tornillos y brida de aluminio, como el robot real (trim=0 para quitarlos).
+  const trim = q.get('trim') === '0' ? [] : addRealTrim(robot, { debug: q.get('debug') === 'prof' ? 'prof' : q.get('debug') === '1', all: q.get('all') === '1' });
 
   // Postura: ángulo de cada articulación sobre su eje real.
   let idx = 0;
@@ -202,7 +207,7 @@
     // Recorte con transparencia: render directo (el postproceso no conserva el canal alfa).
     renderer.setClearColor(0x000000, 0);
     renderer.render(scene, camera);
-    window.__info = { size: size.toArray(), center: center.toArray() };
+    window.__info = { size: size.toArray(), center: center.toArray(), trim };
     window.__done = true;
   } else {
   const composer = new EffectComposer(renderer);
@@ -212,7 +217,7 @@
   if (!alpha) composer.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), 0.42, 0.35, 1.3));
   composer.addPass(new OutputPass());
   composer.render();
-  window.__info = { size: size.toArray(), center: center.toArray() };
+  window.__info = { size: size.toArray(), center: center.toArray(), trim };
   window.__done = true;
   }
 </script>

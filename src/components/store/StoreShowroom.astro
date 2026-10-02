@@ -28,7 +28,7 @@ const slides = await Promise.all(
     const payloadMax = spec(c, 'Carga máxima')?.value;
     // Escala visual según el tamaño real: un FR3 se ve más pequeño que un FR20.
     const reach = c.data.reachMm ?? minReach;
-    const scale = 0.74 + (0.26 * (reach - minReach)) / (maxReach - minReach || 1);
+    const scale = 0.82 + (0.18 * (reach - minReach)) / (maxReach - minReach || 1);
     return {
       id: c.id,
       i,
@@ -84,7 +84,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
   </div>
 
   <!-- Escenario -->
-  <div class="stage relative mx-auto h-[min(46vh,430px)] min-h-[330px] max-w-[1600px]" data-stage>
+  <div class="stage relative mx-auto -mt-4 h-[min(60vh,580px)] min-h-[380px] max-w-[1600px]" data-stage>
     <span class="backlight" aria-hidden="true"></span>
     <div class="ghost-wrap" data-parallax><p class="ghost" aria-hidden="true" data-ghost>{slides[0].name}</p></div>
     <span class="floor" aria-hidden="true"></span>
@@ -322,12 +322,12 @@ const pad = (n: number) => String(n).padStart(2, '0');
 <style>
   .showroom-glow {
     background:
-      radial-gradient(ellipse 80% 75% at 50% 50%, transparent 50%, rgb(0 0 0 / 0.6)),
-      radial-gradient(ellipse 50% 42% at 50% 56%, rgb(255 106 19 / 0.3), transparent 70%),
-      radial-gradient(ellipse 34% 34% at 22% 52%, rgb(200 40 20 / 0.24), transparent 70%),
-      radial-gradient(ellipse 30% 30% at 78% 46%, rgb(255 140 40 / 0.14), transparent 70%),
-      linear-gradient(rgb(255 122 26 / 0.04) 1px, transparent 1px) 0 0 / 48px 48px,
-      linear-gradient(90deg, rgb(255 122 26 / 0.04) 1px, transparent 1px) 0 0 / 48px 48px;
+      radial-gradient(ellipse 80% 75% at 50% 50%, transparent 50%, rgb(0 0 0 / 0.66)),
+      radial-gradient(ellipse 50% 42% at 50% 56%, rgb(255 106 19 / 0.2), transparent 70%),
+      radial-gradient(ellipse 34% 34% at 22% 52%, rgb(200 40 20 / 0.16), transparent 70%),
+      radial-gradient(ellipse 30% 30% at 78% 46%, rgb(255 140 40 / 0.1), transparent 70%),
+      linear-gradient(rgb(255 122 26 / 0.035) 1px, transparent 1px) 0 0 / 48px 48px,
+      linear-gradient(90deg, rgb(255 122 26 / 0.035) 1px, transparent 1px) 0 0 / 48px 48px;
   }
   .ghost {
     position: absolute;
@@ -360,9 +360,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
     position: absolute;
     left: 50%;
     bottom: 2%;
-    width: min(420px, 70vw);
+    width: min(520px, 80vw);
     transform: translateX(-50%);
     overflow: visible;
+    opacity: 0.8;
   }
   .plat-dots {
     animation: plat-spin 24s linear infinite;
@@ -393,8 +394,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
     position: absolute;
     left: 50%;
     bottom: 3%;
-    height: calc(86% * var(--size));
-    max-width: 70vw;
+    height: calc(97% * var(--size));
+    max-width: 82vw;
     transform: translateX(calc(-50% + var(--x))) scale(var(--s));
     transform-origin: 50% 100%;
     opacity: var(--op);
@@ -431,7 +432,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     z-index: 4;
     -webkit-mask: var(--mask) center / contain no-repeat;
     mask: var(--mask) center / contain no-repeat;
-    background: linear-gradient(180deg, transparent 0%, rgb(255 170 90 / 0) 40%, rgb(255 170 90 / 0.65) 50%, rgb(255 170 90 / 0) 60%, transparent 100%) 0 0 / 100% 260% no-repeat;
+    background: linear-gradient(180deg, transparent 0%, rgb(255 170 90 / 0) 40%, rgb(255 170 90 / 0.4) 50%, rgb(255 170 90 / 0) 60%, transparent 100%) 0 0 / 100% 260% no-repeat;
     mix-blend-mode: screen;
     opacity: 0;
     pointer-events: none;
@@ -458,9 +459,9 @@ const pad = (n: number) => String(n).padStart(2, '0');
     height: 100%;
     transform: translateX(-50%);
     background:
-      radial-gradient(ellipse 26% 40% at 50% 64%, rgb(255 150 70 / 0.5), transparent 72%),
-      radial-gradient(ellipse 42% 58% at 50% 60%, rgb(255 96 20 / 0.36), transparent 72%),
-      radial-gradient(ellipse 62% 70% at 46% 58%, rgb(190 40 14 / 0.26), transparent 75%);
+      radial-gradient(ellipse 26% 40% at 50% 64%, rgb(255 150 70 / 0.32), transparent 72%),
+      radial-gradient(ellipse 42% 58% at 50% 60%, rgb(255 96 20 / 0.24), transparent 72%),
+      radial-gradient(ellipse 62% 70% at 46% 58%, rgb(190 40 14 / 0.18), transparent 75%);
     filter: blur(8px);
     animation: backlight 7s ease-in-out infinite;
     pointer-events: none;
@@ -468,10 +469,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
   @keyframes backlight {
     0%,
     100% {
-      opacity: 0.82;
+      opacity: 0.75;
     }
     50% {
-      opacity: 1;
+      opacity: 0.9;
     }
   }
   /* Suelo: línea de horizonte encendida y un baño de luz naranja que se apaga hacia delante. */
@@ -481,7 +482,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     bottom: 0;
     height: 16%;
     background:
-      radial-gradient(ellipse 42% 140% at 50% 0%, rgb(255 110 30 / 0.2), transparent 70%),
+      radial-gradient(ellipse 42% 140% at 50% 0%, rgb(255 110 30 / 0.13), transparent 70%),
       linear-gradient(180deg, rgb(6 3 2 / 0.6), rgb(6 3 2 / 0));
     pointer-events: none;
   }
@@ -491,8 +492,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
     inset-inline: 0;
     top: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgb(255 122 26 / 0.3) 18%, rgb(255 180 110 / 0.9) 50%, rgb(255 122 26 / 0.3) 82%, transparent);
-    box-shadow: 0 0 14px 1px rgb(255 106 19 / 0.5);
+    background: linear-gradient(90deg, transparent, rgb(255 122 26 / 0.22) 18%, rgb(255 180 110 / 0.62) 50%, rgb(255 122 26 / 0.22) 82%, transparent);
+    box-shadow: 0 0 12px 1px rgb(255 106 19 / 0.32);
   }
   .embers-front {
     position: absolute;
@@ -506,10 +507,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
     position: absolute;
     left: 50%;
     bottom: 6%;
-    width: min(300px, 50vw);
-    height: 78%;
+    width: min(360px, 56vw);
+    height: 86%;
     transform: translateX(-50%);
-    background: linear-gradient(0deg, rgb(255 120 40 / 0.32), rgb(255 106 19 / 0.07) 55%, transparent);
+    background: linear-gradient(0deg, rgb(255 120 40 / 0.2), rgb(255 106 19 / 0.045) 55%, transparent);
     clip-path: polygon(18% 100%, 82% 100%, 62% 0, 38% 0);
     filter: blur(6px);
     animation: beam 5s ease-in-out infinite;
@@ -635,14 +636,14 @@ const pad = (n: number) => String(n).padStart(2, '0');
     display: block;
     width: auto;
     height: 100%;
-    max-width: 70vw;
+    max-width: 82vw;
     object-fit: contain;
     user-select: none;
     -webkit-user-drag: none;
-    filter: drop-shadow(0 0 1.5px rgb(255 150 70 / 0.35)) drop-shadow(0 0 22px rgb(255 96 20 / 0.22));
+    filter: drop-shadow(0 0 1.5px rgb(255 150 70 / 0.22)) drop-shadow(0 0 20px rgb(255 96 20 / 0.13));
   }
   .robot[data-active] .robot-img {
-    filter: drop-shadow(0 0 1.5px rgb(255 160 80 / 0.55)) drop-shadow(0 0 28px rgb(255 96 20 / 0.34));
+    filter: drop-shadow(0 0 1.5px rgb(255 160 80 / 0.34)) drop-shadow(0 0 26px rgb(255 96 20 / 0.2));
   }
   /* Contraluz cálido desde la peana: tinte naranja recortado con la silueta del propio robot (no altera su forma). */
   .rim {
@@ -652,15 +653,15 @@ const pad = (n: number) => String(n).padStart(2, '0');
     -webkit-mask: var(--mask) center / contain no-repeat;
     mask: var(--mask) center / contain no-repeat;
     background:
-      radial-gradient(ellipse 60% 32% at 50% 100%, rgb(255 96 20 / 0.7), transparent 72%),
-      linear-gradient(90deg, rgb(255 110 30 / 0.42), transparent 26%, transparent 74%, rgb(255 130 40 / 0.36));
+      radial-gradient(ellipse 60% 32% at 50% 100%, rgb(255 96 20 / 0.42), transparent 72%),
+      linear-gradient(90deg, rgb(255 110 30 / 0.24), transparent 22%, transparent 78%, rgb(255 130 40 / 0.2));
     mix-blend-mode: screen;
-    opacity: 0.6;
+    opacity: 0.45;
     transition: opacity 0.6s;
     pointer-events: none;
   }
   .robot[data-active] .rim {
-    opacity: 1;
+    opacity: 0.8;
   }
   .contact {
     position: absolute;
@@ -823,7 +824,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
     const layout = () => {
       const w = root.clientWidth;
-      const step = Math.min(330, Math.max(150, w * 0.21));
+      // En móvil los robots laterales asoman por el borde en vez de taparse con el activo.
+      const step = w < 640 ? w * 0.5 : Math.min(400, w * 0.25);
       robots.forEach((r, i) => {
         // Distancia circular al activo (−4…4).
         let o = i - index;
@@ -964,8 +966,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
     if (!ctx) return;
     const front = canvas.dataset.embers === 'front';
     const img = front
-      ? sprite([[0, 'rgba(255,160,80,0.55)'], [0.55, 'rgba(255,110,40,0.3)'], [1, 'rgba(255,80,20,0)']])
-      : sprite([[0, 'rgba(255,230,190,1)'], [0.16, 'rgba(255,160,70,0.95)'], [0.42, 'rgba(255,90,20,0.32)'], [1, 'rgba(255,60,10,0)']]);
+      ? sprite([[0, 'rgba(255,160,80,0.4)'], [0.55, 'rgba(255,110,40,0.2)'], [1, 'rgba(255,80,20,0)']])
+      : sprite([[0, 'rgba(255,225,185,0.85)'], [0.16, 'rgba(255,160,70,0.7)'], [0.42, 'rgba(255,90,20,0.22)'], [1, 'rgba(255,60,10,0)']]);
     type Ember = { x: number; y: number; r: number; vx: number; vy: number; a: number; ph: number; sp: number };
     let w = 0;
     let h = 0;
@@ -991,7 +993,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const n = front ? Math.round(Math.min(9, w / 150)) : Math.round(Math.min(120, (w * h) / 10000));
+      const n = front ? Math.round(Math.min(6, w / 200)) : Math.round(Math.min(90, (w * h) / 13000));
       parts = Array.from({ length: n }, () => spawn(true));
     };
     let last = performance.now();
