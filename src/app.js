@@ -6,7 +6,6 @@ import { Stage } from './gl/stage.js';
 import { createStudioEnvironment, createChromeEnvironment, loadStudioHDRI } from './gl/environment.js';
 import { createBrushedMaps, loadImage } from './gl/brushed.js';
 import { prepareMaterials } from './gl/materials.js';
-import { createGrid } from './gl/grid.js';
 import { setupWordmark, applyOutlineDraw } from './gl/letters.js';
 import { Chips } from './scenes/chips.js';
 import { setupAssembly } from './scenes/assembly.js';
@@ -182,8 +181,6 @@ export class App {
 
     // Rejilla técnica y sombra en el suelo
     this.logoFloor = asm.meta.vTop - asm.meta.lengthV - 0.6;
-    this.grid = createGrid({ y: this.logoFloor, center: new Vector3(1.5, 0, 1.5) });
-    scene.add(this.grid);
     this.shadowFloor = new Mesh(new PlaneGeometry(400, 400), new ShadowMaterial({ opacity: 0, transparent: true, depthWrite: false }));
     this.shadowFloor.rotation.x = -Math.PI / 2;
     this.shadowFloor.position.set(bench.meta.W / 2, bench.meta.floor + 0.01, bench.meta.D / 2);
@@ -205,7 +202,6 @@ export class App {
     this.pose = newPose();
     this.scanState = { y: 1000, gain: 0 };
     this.dofState = { bokeh: stage.dof.bokehScale };
-    this.gridState = { o: 0, y: this.logoFloor, r: 30 };
     this.chromeSweep = { v: 0 };
     this.chromeSweep2 = { v: 0 };
     this.tagState = { p: 0 };
@@ -368,7 +364,6 @@ export class App {
     Object.assign(this.cam, { k1: 0, k2: 0, k3: 0, k4: 0, k5: 0, orbit: 0 });
     Object.assign(this.scanState, { y: 1000, gain: 0 });
     this.dofState.bokeh = this.stage.quality.tier === 'low' ? 1.8 : 2.6;
-    Object.assign(this.gridState, { o: 0, y: this.logoFloor, r: 30 });
     this.tagState.p = 0;
     this.tagState2.p = 0;
     this.chromeSweep.v = 0;
@@ -443,7 +438,6 @@ export class App {
 
     // Los perfiles se forman con virutas: el frente incandescente avanza por su eje
     tl.to(this.cam, { k2: 1, duration: 3.6, ease: 'power2.inOut' }, 2.6);
-    tl.to(this.gridState, { o: 1, duration: 3 }, 2.8);
     tl.to(this.shadowFloor.material, { opacity: 0.34, duration: 2.5 }, 3.2);
     for (const k of ['pV', 'pX', 'pZ']) {
       tl.set(P[k], { visible: true }, S[k][0]);
@@ -599,7 +593,6 @@ export class App {
     outer.add(tl, 0.9);
     outer.to(this.cam, { k4: 1, duration: 3.4, ease: 'power3.inOut' }, 0.4);
     tl.to(this.cam, { orbit: 0.6, duration: 2 }, 0);
-    tl.to(this.gridState, { y: m.floor, r: 95, duration: 3, ease: 'power2.inOut' }, 0.3);
     tl.to(this.shadowFloor.material, { opacity: 0, duration: 0.4 }, 0);
     tl.set(B.root, { visible: true }, 0.55);
     tl.add(() => this.setShadowFrame('bench'), 0.55);
@@ -807,13 +800,12 @@ export class App {
     };
     showDims([]);
     if (name === 'marca') return; // logotipo de marca (estado final)
-    if (name === 'marca-limpio') { this.grid.visible = false; this.tagState2.p = 0; return; }
+    if (name === 'marca-limpio') { this.tagState2.p = 0; return; }
     this.showAssemblyLogo();
     if (name === 'logo') return;
-    if (name === 'logo-limpio') { this.grid.visible = false; return; }
+    if (name === 'logo-limpio') return;
     this.textRig.visible = false;
     this.tagState.p = 0;
-    this.grid.visible = name !== 'seccion';
     if (name === 'bancada') {
       this.goToStructure(true);
       this.ui.resetStatements();
@@ -966,12 +958,6 @@ export class App {
     this.asm.scan.uScanY.value = this.scanState.y;
     this.asm.scan.uScanGain.value = this.scanState.gain;
     this.asm.scanPlane.constant = -this.scanState.y;
-
-    const g = this.grid;
-    g.material.uniforms.uOpacity.value = this.gridState.o;
-    g.position.y = this.gridState.y;
-    g.material.uniforms.uRadius.value = this.gridState.r;
-    g.material.uniforms.uCenter.value.set(MathUtils.lerp(1.5, 38, this.cam.k4), 0, MathUtils.lerp(1.5, 38, this.cam.k4));
 
     // Cobot: postura animada + movimiento lento de trabajo
     if (this.bench.root.visible) {

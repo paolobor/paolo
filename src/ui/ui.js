@@ -1,28 +1,14 @@
 import gsap from 'gsap';
 
-// Capa de interfaz: indicaciones, botones, lema bajo el rótulo 3D, textos de la
-// escena de estructura, fundido a negro y sección del catálogo.
-const STEPS = {
-  intro: { n: '01', label: 'Inicio' },
-  building: { n: '02', label: 'Unión' },
-  logo: { n: '02', label: 'Unión' },
-  structuring: { n: '03', label: 'Estructura' },
-  structure: { n: '03', label: 'Estructura' },
-  diving: { n: '04', label: 'Catálogo' },
-  catalog: { n: '04', label: 'Catálogo' },
-};
+// Capa de interfaz: lemas bajo los rótulos 3D, textos de la escena de
+// estructura, fundido a negro y sección del catálogo.
 const STAGGER = [0.12, 0.5, 0.16];
 
 export class UI {
   constructor(root = document) {
     this.stage = root.getElementById('stage');
-    this.hint = root.getElementById('hint');
     this.tagline = root.getElementById('tagline');
     this.tagline2 = root.getElementById('tagline-brand');
-    this.stepN = root.getElementById('step-n');
-    this.stepLabel = root.getElementById('step-label');
-    this.skipBtn = root.getElementById('btn-skip');
-    this.replayBtn = root.getElementById('btn-replay');
     this.fade = root.getElementById('fade');
     this.statements = [...root.querySelectorAll('.statement')];
     this.body = document.body;
@@ -33,11 +19,6 @@ export class UI {
 
   setState(state) {
     this.body.dataset.state = state;
-    const s = STEPS[state] || STEPS.intro;
-    this.stepN.textContent = s.n;
-    this.stepLabel.textContent = s.label;
-    this.skipBtn.hidden = state === 'catalog' || state === 'diving';
-    this.replayBtn.hidden = state === 'intro';
   }
 
   // iOS pide permiso para el giroscopio tras un gesto del usuario

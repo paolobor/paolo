@@ -47,14 +47,6 @@ body[data-state='logo'] #stage { cursor: default; }
   text-transform: uppercase;
 }
 
-/* Marco técnico en las esquinas */
-.frame { position: fixed; inset: clamp(14px, 2.2vw, 28px); pointer-events: none; opacity: 0; transition: opacity 1.6s var(--ease) 0.4s; }
-.frame i { position: absolute; width: 18px; height: 18px; border: 0 solid rgba(232, 234, 237, 0.28); }
-.frame i:nth-child(1) { left: 0; top: 0; border-left-width: 1px; border-top-width: 1px; }
-.frame i:nth-child(2) { right: 0; top: 0; border-right-width: 1px; border-top-width: 1px; }
-.frame i:nth-child(3) { left: 0; bottom: 0; border-left-width: 1px; border-bottom-width: 1px; }
-.frame i:nth-child(4) { right: 0; bottom: 0; border-right-width: 1px; border-bottom-width: 1px; }
-
 .topbar {
   position: fixed; left: 0; right: 0; top: 0;
   display: flex; justify-content: space-between; align-items: center;
@@ -67,22 +59,6 @@ body[data-state='logo'] #stage { cursor: default; }
   font-size: 11px; letter-spacing: 0.34em; color: rgba(232, 234, 237, 0.78);
 }
 .company { font-size: 10.5px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); }
-
-.hint {
-  position: fixed; left: 50%; bottom: clamp(96px, 14vh, 150px); margin: 0;
-  transform: translateX(-50%);
-  font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase; text-indent: 0.42em;
-  color: rgba(236, 238, 241, 0.8);
-  pointer-events: none; white-space: nowrap;
-  opacity: 0; transition: opacity 1.2s var(--ease);
-}
-.hint::after {
-  content: ''; display: block; height: 1px; margin: 14px auto 0; width: 64px;
-  background: linear-gradient(90deg, transparent, rgba(236, 238, 241, 0.7), transparent);
-  animation: hintline 3.2s var(--ease) infinite;
-}
-@keyframes hintline { 0%, 100% { transform: scaleX(0.35); opacity: 0.35; } 50% { transform: scaleX(1); opacity: 1; } }
-body.ready[data-state='intro'] .hint { opacity: 1; transition-delay: 1.2s; }
 
 .tagline {
   position: fixed; left: 0; top: 0; margin: 0;
@@ -101,22 +77,6 @@ body.ready[data-state='intro'] .hint { opacity: 1; transition-delay: 1.2s; }
   -webkit-background-clip: text; background-clip: text;
 }
 
-.hud {
-  position: fixed; left: 0; right: 0; bottom: 0;
-  display: flex; justify-content: space-between; align-items: flex-end; gap: 16px;
-  padding: clamp(26px, 3.4vw, 46px) clamp(30px, 4vw, 56px);
-  pointer-events: none;
-  opacity: 0; transition: opacity 1.4s var(--ease) 0.8s;
-}
-.step { display: flex; align-items: center; gap: 14px; font-size: 10.5px; letter-spacing: 0.28em; text-transform: uppercase; color: var(--muted); }
-.step-n { font-family: var(--display); font-stretch: 125%; font-weight: 600; color: var(--ink); letter-spacing: 0.12em; }
-.step-bar { display: inline-flex; gap: 5px; }
-.step-bar i { display: block; width: 18px; height: 1px; background: var(--faint); transition: background 0.8s var(--ease); }
-body[data-state='intro'] .step-bar i:nth-child(1),
-body[data-state='building'] .step-bar i:nth-child(-n + 2),
-body[data-state='logo'] .step-bar i:nth-child(-n + 2) { background: rgba(232, 234, 237, 0.85); }
-
-.controls { display: flex; gap: 10px; pointer-events: auto; }
 .btn {
   appearance: none; cursor: pointer;
   font: 500 10.5px/1 var(--sans); letter-spacing: 0.24em; text-transform: uppercase;
@@ -133,7 +93,7 @@ body[data-state='logo'] .step-bar i:nth-child(-n + 2) { background: rgba(232, 23
 .btn[hidden] { display: none; }
 .btn { white-space: nowrap; }
 
-body.ready .frame, body.ready .topbar, body.ready .hud { opacity: 1; }
+body.ready .topbar { opacity: 1; }
 
 .loader {
   position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px;
@@ -152,16 +112,15 @@ body.ready .loader, body.no-webgl .loader { opacity: 0; visibility: hidden; }
 .fallback { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; padding: 6vw; background: var(--bg); }
 .fallback img { max-width: min(1200px, 100%); height: auto; -webkit-mask-image: radial-gradient(ellipse at center, #000 62%, transparent 100%); mask-image: radial-gradient(ellipse at center, #000 62%, transparent 100%); }
 body.no-webgl .fallback { display: flex; }
-body.no-webgl #stage, body.no-webgl .hint, body.no-webgl .hud .step, body.no-webgl .controls { display: none; }
+body.no-webgl #stage { display: none; }
 
 .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 @media (max-width: 640px) {
-  .company { display: none; }
-  .step-label, .step-bar { display: none; }
-  .hud { padding-left: 20px; padding-right: 16px; }
+  .topbar { padding-left: 20px; padding-right: 20px; }
+  .brand-mini { letter-spacing: 0.24em; }
+  .company { letter-spacing: 0.16em; font-size: 9.5px; }
   .btn { padding: 11px 14px 11px 16px; letter-spacing: 0.18em; }
-  .hint { font-size: 10px; letter-spacing: 0.34em; }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -169,7 +128,7 @@ body.no-webgl #stage, body.no-webgl .hint, body.no-webgl .hud .step, body.no-web
 }
 
 /* Modo render de diseño (?design=...) */
-body[data-design] .topbar, body[data-design] .hud, body[data-design] .frame, body[data-design] .hint { display: none; }
+body[data-design] .topbar { display: none; }
 
 /* ---------- Escena 3: textos por líneas ---------- */
 .statements { position: fixed; inset: 0; pointer-events: none; }
@@ -209,9 +168,6 @@ body[data-state='catalog'] { overflow: auto; height: auto; }
 html:has(body[data-state='catalog']) { height: auto; }
 body[data-state='catalog'] .catalog { display: block; }
 body[data-state='catalog'] #stage,
-body[data-state='catalog'] .hud,
-body[data-state='catalog'] .frame,
-body[data-state='catalog'] .hint,
 body[data-state='catalog'] .statements { display: none; }
 
 .reveal { opacity: 0; transform: translateY(36px); transition: opacity 1.2s var(--ease), transform 1.2s var(--ease); }
@@ -329,7 +285,6 @@ body.no-webgl .reveal { opacity: 1; transform: none; }
   .statement-spec { font-size: clamp(14px, 4.2vw, 20px); }
   .top-links a:not(.btn), .top-links a.btn { display: none; }
   .btn, .brand-mini { white-space: nowrap; }
-  .controls { gap: 8px; }
   .btn { padding: 10px 12px 10px 14px; letter-spacing: 0.14em; font-size: 9.5px; }
 }
 @media (max-aspect-ratio: 19/20) and (min-width: 641px) {

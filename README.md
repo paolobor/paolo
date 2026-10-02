@@ -22,7 +22,9 @@ brillos, profundidad de campo, oclusión ambiental, sombras de contacto y grano 
 4. **Catálogo:** la cámara entra por la ranura de una viga y funde a la sección del catálogo,
    que ya funciona con scroll normal.
 
-Botones "Saltar intro" (va directo al catálogo) y "Volver a ver".
+Pantalla limpia sobre negro puro: durante el recorrido solo se ven "FDI MODULAR" y
+"FDI Quality Import" arriba (sin marco, sin rejilla, sin indicador de paso ni botones).
+Se avanza con clic, scroll, teclado o toque; en el catálogo, "Volver a ver" repite la intro.
 
 ## Realismo
 
@@ -98,7 +100,7 @@ cuando se fusione), carpeta **`/docs`** → Save. La web queda en
 
 ```
 src/model/        modelo 3D (geometría CAD, materiales PBR, composición del logo, bancada, cobot)
-src/gl/           renderizador, postproceso, entorno de estudio, rejilla, rótulo
+src/gl/           renderizador, postproceso, entorno de estudio, aluminio cepillado, rótulo
 src/scenes/       virutas (escena 1), montaje (escena 2) y bancada (escena 3)
 src/ui/           cotas técnicas SVG, textos e interfaz
 tools/            exportador del modelo a .glb, importador de Higgsfield, compresor del PDF y extractor de glifos

@@ -74,8 +74,6 @@ async function start() {
     return;
   }
 
-  document.getElementById('btn-skip').addEventListener('click', (e) => { e.stopPropagation(); app.skip(); });
-  document.getElementById('btn-replay').addEventListener('click', (e) => { e.stopPropagation(); app.replay(); });
   document.getElementById('btn-replay-top').addEventListener('click', (e) => { e.stopPropagation(); app.replay(); });
 
   if (params.has('capture')) {
