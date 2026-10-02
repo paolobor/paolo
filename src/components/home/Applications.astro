@@ -1,6 +1,6 @@
 ---
 import Icon from '../ui/Icon.astro';
-import Placeholder from '../ui/Placeholder.astro';
+import SmartImage from '../ui/SmartImage.astro';
 import SectionHeading from '../ui/SectionHeading.astro';
 import { applications } from '../../data/applications';
 import { url } from '../../lib/url';
@@ -27,11 +27,7 @@ import { url } from '../../lib/url';
           <li data-reveal style={`--reveal-delay:${(i % 4) * 70}ms`}>
             <a href={url(`aplicaciones/${a.slug}/`)} class="app group relative block aspect-[4/5] overflow-hidden rounded-[var(--radius-card)] bg-navy">
               <div class="app-bg absolute inset-0">
-                {a.image ? (
-                  <img src={url(a.image)} alt="" loading="lazy" class="size-full object-cover" />
-                ) : (
-                  <Placeholder label={a.imageHint} tone="dark" align="top" />
-                )}
+                <SmartImage src={a.image} alt="" hint={a.imageHint} tone="dark" align="top" widths={[320, 480, 720]} sizes="(min-width: 1024px) 25vw, 50vw" />
               </div>
               <div class="absolute inset-0 bg-[linear-gradient(180deg,transparent_30%,rgba(10,22,38,0.94))]" />
               <div class="absolute inset-x-0 bottom-0 grid gap-2 p-4 text-white sm:p-5">

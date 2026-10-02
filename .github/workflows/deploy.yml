@@ -1,46 +1,47 @@
-# Publica la web en GitHub Pages.
-# Requisito: Settings → Pages → Source: "GitHub Actions".
-# Variables opcionales del repositorio (Settings → Secrets and variables → Actions → Variables):
-#   SITE_URL  p. ej. https://fairino.es          (por defecto https://<usuario>.github.io)
-#   BASE_PATH p. ej. /                            (por defecto /<repositorio>/)
-name: Desplegar en GitHub Pages
+# Publica la web en GitHub Pages (rama gh-pages) cada vez que se sube algo a main.
+# Solo se ejecuta en el repositorio de la web, nunca en copias o forks.
+#
+# Primera vez: Settings → Pages → Build and deployment → Source: "Deploy from a branch" → gh-pages / (root).
+# Dominio propio (cuando toque): variables del repositorio SITE_URL=https://fairino.es y BASE_PATH=/,
+# y CNAME=fairino.es (Settings → Secrets and variables → Actions → Variables).
+name: Publicar en GitHub Pages
 
 on:
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: write
 
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 jobs:
-  build:
+  deploy:
+    if: github.repository == 'paolobor/fairino-web'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
+
       - run: npm ci
-      - run: npm run build
+
+      - name: Compilar
+        run: npm run build
         env:
           SITE: ${{ vars.SITE_URL || format('https://{0}.github.io', github.repository_owner) }}
           BASE: ${{ vars.BASE_PATH || format('/{0}/', github.event.repository.name) }}
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: dist
 
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+      - name: Publicar en gh-pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          cname: ${{ vars.CNAME }}
+          commit_message: 'Publicar ${{ github.sha }}'

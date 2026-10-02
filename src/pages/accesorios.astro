@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import CatalogListing from '../components/CatalogListing.astro';
+import ContactBand from '../components/home/ContactBand.astro';
+import { getProducts, accessoryGroups, applicationOptions } from '../lib/catalog';
+
+const products = await getProducts('accesorio');
+const filters = [
+  { key: 'tipo', label: 'Tipo', options: Object.entries(accessoryGroups).map(([value, label]) => ({ value, label })) },
+  { key: 'aplicacion', label: 'Aplicación', options: applicationOptions },
+];
+---
+
+<BaseLayout
+  title="Accesorios para cobots FAIRINO"
+  description="Accesorios oficiales FAIRINO: cámara 3D Orbbec Gemini 2, gripper EPG40-050, sensores de fuerza GZCX-6F-75MM y XJC-6F-D80-H28-A, Safety Box, Smart Tool y Teach Pendant."
+>
+  <PageHero
+    crumbs={[{ label: 'Accesorios' }]}
+    eyebrow="Catálogo"
+    title="Accesorios"
+    lead="Visión, garras, sensores de fuerza y mandos del ecosistema FAIRINO. Se integran con el cobot y su software sin adaptaciones."
+  />
+  <CatalogListing
+    products={products}
+    filters={filters}
+    noun={{ one: 'accesorio', many: 'accesorios' }}
+    tags={(p) => ({ tipo: p.data.group ? [p.data.group] : [], aplicacion: p.data.applications })}
+  />
+  <ContactBand />
+</BaseLayout>

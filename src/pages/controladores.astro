@@ -1,0 +1,38 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import CatalogListing from '../components/CatalogListing.astro';
+import ContactBand from '../components/home/ContactBand.astro';
+import { getProducts } from '../lib/catalog';
+
+const products = await getProducts('controlador');
+const cobots = await getProducts('cobot');
+const filters = [
+  { key: 'alimentacion', label: 'Alimentación', options: [{ value: 'ac', label: 'Alterna (AC)' }, { value: 'dc', label: 'Continua (DC)' }] },
+  { key: 'potencia', label: 'Potencia', options: [{ value: '2kw', label: '2 kW' }, { value: '5kw', label: '5 kW' }] },
+  { key: 'cobot', label: 'Compatible con', options: cobots.map((c) => ({ value: c.id, label: c.data.name })) },
+];
+---
+
+<BaseLayout
+  title="Controladores para cobots FAIRINO"
+  description="Controladores FAIRINO AC y DC de 2 kW y 5 kW: DC Mini Controller 2KW, DC Controller 5KW, AC Mini Controller 2KW y AC Controller 5KW. Compatibilidad con cada cobot."
+>
+  <PageHero
+    crumbs={[{ label: 'Controladores' }]}
+    eyebrow="Catálogo"
+    title="Controladores"
+    lead="Cuatro controladores para alimentar tu cobot a red o en continua. Los de 2 kW mueven los modelos de hasta 16 kg y los de 5 kW, el FR20 y el FR30."
+  />
+  <CatalogListing
+    products={products}
+    filters={filters}
+    noun={{ one: 'controlador', many: 'controladores' }}
+    tags={(p) => ({
+      alimentacion: p.data.group ? [p.data.group] : [],
+      potencia: [p.id.includes('5kw') ? '5kw' : '2kw'],
+      cobot: p.data.compatibleWith,
+    })}
+  />
+  <ContactBand />
+</BaseLayout>

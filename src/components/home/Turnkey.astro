@@ -1,6 +1,6 @@
 ---
 import Icon from '../ui/Icon.astro';
-import Placeholder from '../ui/Placeholder.astro';
+import SmartImage from '../ui/SmartImage.astro';
 import SectionHeading from '../ui/SectionHeading.astro';
 import { solutions } from '../../data/solutions';
 import { url } from '../../lib/url';
@@ -19,7 +19,7 @@ import { url } from '../../lib/url';
         solutions.map((s, i) => (
           <article class="card card-hover flex flex-col overflow-hidden" data-reveal style={`--reveal-delay:${i * 90}ms`}>
             <div class="aspect-[16/11]">
-              {s.image ? <img src={url(s.image)} alt={s.imageHint} loading="lazy" class="size-full object-cover" /> : <Placeholder label={s.imageHint} />}
+              <SmartImage src={s.image} alt={s.imageHint} widths={[400, 640, 900]} sizes="(min-width: 768px) 33vw, 100vw" />
             </div>
             <div class="flex flex-1 flex-col gap-4 p-6">
               <span class="chip w-fit">Solución llave en mano</span>

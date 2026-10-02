@@ -1,13 +1,12 @@
 ---
 import Icon from '../ui/Icon.astro';
-import Placeholder from '../ui/Placeholder.astro';
+import SmartImage from '../ui/SmartImage.astro';
 import { testimonial } from '../../data/home';
-import { url } from '../../lib/url';
 ---
 
 <section class="relative isolate overflow-hidden bg-ink text-white" aria-label="Testimonio de cliente">
   <div class="absolute inset-0 -z-10">
-    {testimonial.image ? <img src={url(testimonial.image)} alt="" loading="lazy" class="size-full object-cover opacity-50" /> : <Placeholder label={testimonial.imageHint} kind="RENDER" tone="dark" />}
+    <SmartImage src={testimonial.image} alt="" hint={testimonial.imageHint} kind="RENDER" tone="dark" class="opacity-60" />
     <div class="absolute inset-0 bg-[linear-gradient(100deg,rgba(10,22,38,0.95)_30%,rgba(10,22,38,0.55))]"></div>
   </div>
   <div class="container-x section">

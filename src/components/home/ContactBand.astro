@@ -1,20 +1,27 @@
 ---
 import Icon from '../ui/Icon.astro';
-import Placeholder from '../ui/Placeholder.astro';
+import SmartImage from '../ui/SmartImage.astro';
 import { contactBand } from '../../data/home';
 import { site } from '../../data/site';
 import { url, whatsappLink } from '../../lib/url';
 
+interface Props {
+  // En la home el configurador está en la misma página.
+  configuratorHref?: string;
+  whatsappMessage?: string;
+}
+const { configuratorHref = url('configurador/'), whatsappMessage = site.whatsapp.defaultMessage } = Astro.props;
+
 const options = [
   { icon: 'circle-help', title: '¿Tienes dudas?', text: 'Escríbenos o llámanos y te orientamos.', cta: 'Contactar', href: url('contacto/') },
   { icon: 'calendar', title: 'Ven a vernos', text: 'Reserva una visita a nuestras instalaciones.', cta: 'Reservar cita', href: url('reservar-cita/') },
-  { icon: 'send', title: 'Pide presupuesto', text: 'Configura tu célula o cuéntanos tu proyecto.', cta: 'Configurar', href: '#configurador' },
+  { icon: 'send', title: 'Pide presupuesto', text: 'Configura tu célula o cuéntanos tu proyecto.', cta: 'Configurar', href: configuratorHref },
 ];
 ---
 
 <section class="relative isolate overflow-hidden bg-ink text-white" aria-labelledby="contact-band-title">
   <div class="absolute inset-0 -z-10">
-    {contactBand.image ? <img src={url(contactBand.image)} alt="" loading="lazy" class="size-full object-cover" /> : <Placeholder label={contactBand.imageHint} tone="dark" />}
+    <SmartImage src={contactBand.image} alt="" hint={contactBand.imageHint} tone="dark" />
     <div class="absolute inset-0 bg-[linear-gradient(180deg,rgba(10,22,38,0.75),rgba(10,22,38,0.95))]"></div>
   </div>
   <div class="container-x section">
@@ -44,7 +51,7 @@ const options = [
     </div>
     <p class="mt-8 text-sm text-mist" data-reveal>
       ¿Prefieres WhatsApp?
-      <a href={whatsappLink(site.whatsapp.number, site.whatsapp.defaultMessage)} target="_blank" rel="noopener" class="font-semibold text-white underline underline-offset-4">Escríbenos aquí</a>.
+      <a href={whatsappLink(site.whatsapp.number, whatsappMessage)} target="_blank" rel="noopener" class="font-semibold text-white underline underline-offset-4">Escríbenos aquí</a>.
     </p>
   </div>
 </section>

@@ -1,0 +1,38 @@
+import { getCollection, type CollectionEntry } from 'astro:content';
+import { applications } from '../data/applications';
+
+export type Product = CollectionEntry<'products'>;
+
+export async function getProducts(category?: Product['data']['category']) {
+  const all = (await getCollection('products')).sort((a, b) => a.data.order - b.data.order);
+  return category ? all.filter((p) => p.data.category === category) : all;
+}
+
+export const categoryMeta = {
+  cobot: { label: 'Cobots', singular: 'Cobot', href: 'cobots/' },
+  controlador: { label: 'Controladores', singular: 'Controlador', href: 'controladores/' },
+  accesorio: { label: 'Accesorios', singular: 'Accesorio', href: 'accesorios/' },
+} as const;
+
+export const accessoryGroups: Record<string, string> = {
+  vision: 'Visión',
+  garra: 'Garras',
+  fuerza: 'Sensores de fuerza',
+  control: 'Control y seguridad',
+};
+
+export const applicationOptions = applications.map((a) => ({ value: a.slug, label: a.name }));
+
+export function payloadBucket(kg: number | null): string[] {
+  if (kg == null) return [];
+  if (kg <= 5) return ['hasta-5'];
+  if (kg <= 16) return ['6-16'];
+  return ['20-30'];
+}
+
+export function reachBucket(mm: number | null): string[] {
+  if (mm == null) return [];
+  if (mm < 800) return ['hasta-800'];
+  if (mm <= 1500) return ['800-1500'];
+  return ['mas-1500'];
+}

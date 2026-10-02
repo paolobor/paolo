@@ -11,7 +11,7 @@ const spec = z.object({
 
 const products = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/products' }),
-  schema: z.object({
+  schema: ({ image }) => z.object({
     name: z.string(),
     category: z.enum(['cobot', 'controlador', 'accesorio']),
     // Accesorios: visión, garra, fuerza, control. Controladores: ac, dc.
@@ -20,7 +20,7 @@ const products = defineCollection({
     tagline: z.string(),
     description: z.string(),
     highlights: z.array(z.string()).default([]),
-    images: z.array(z.object({ src: z.string(), alt: z.string() })).default([]),
+    images: z.array(z.object({ src: image(), alt: z.string() })).default([]),
     // Campos normalizados para filtros y tarjetas.
     payloadKg: z.number().nullable().default(null),
     reachMm: z.number().nullable().default(null),
@@ -58,6 +58,7 @@ const blog = defineCollection({
     description: z.string(),
     date: z.coerce.date(),
     category: z.string(),
+    // Ruta relativa a src/assets/images (p. ej. 'blog/cobot-soldando.jpg').
     cover: z.string().nullable().default(null),
     coverAlt: z.string().default(''),
     draft: z.boolean().default(false),

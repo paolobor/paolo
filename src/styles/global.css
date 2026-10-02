@@ -143,6 +143,80 @@
     @apply inline-flex items-center rounded-md border border-dashed border-todo-line bg-todo px-1.5 py-0.5 font-mono text-[0.72em] font-medium leading-snug text-todo-text;
   }
 
+  /* Formularios sobre fondo claro */
+  .form-grid {
+    @apply grid gap-4 sm:grid-cols-2;
+  }
+  .form-field {
+    @apply grid content-start gap-1.5;
+  }
+  .form-field > label,
+  .form-label {
+    @apply text-sm font-medium text-text;
+  }
+  .form-field input:not([type='checkbox']):not([type='radio']),
+  .form-field select,
+  .form-field textarea {
+    @apply w-full rounded-[10px] border border-line bg-white px-3.5 py-2.5 text-text transition-[border-color,box-shadow] placeholder:text-muted/70;
+  }
+  .form-field input:focus,
+  .form-field select:focus,
+  .form-field textarea:focus {
+    @apply border-brand outline-none;
+    box-shadow: 0 0 0 3px rgb(21 87 192 / 0.15);
+  }
+  .form-field .help {
+    @apply text-xs text-muted;
+  }
+  .form-check {
+    @apply flex items-start gap-2.5 text-sm text-muted;
+  }
+  .form-check input {
+    @apply mt-0.5 size-4 shrink-0 accent-[var(--color-brand)];
+  }
+
+  /* Texto largo (legales, blog) */
+  .prose-fairino {
+    @apply max-w-[72ch] text-[1.05rem] leading-[1.75] text-text;
+  }
+  .prose-fairino > * + * {
+    margin-top: 1.1em;
+  }
+  .prose-fairino h2 {
+    @apply mt-12 text-2xl font-bold;
+    font-stretch: 112%;
+  }
+  .prose-fairino h3 {
+    @apply mt-8 text-xl font-bold;
+    font-stretch: 108%;
+  }
+  .prose-fairino a {
+    @apply font-medium text-brand underline underline-offset-2;
+  }
+  .prose-fairino ul,
+  .prose-fairino ol {
+    @apply grid gap-1.5 pl-6;
+  }
+  .prose-fairino ul {
+    list-style: disc;
+  }
+  .prose-fairino ol {
+    list-style: decimal;
+  }
+  .prose-fairino li::marker {
+    color: var(--color-brand);
+  }
+  .prose-fairino table {
+    @apply w-full border-collapse text-sm;
+  }
+  .prose-fairino th,
+  .prose-fairino td {
+    @apply border border-line px-3 py-2 text-left align-top;
+  }
+  .prose-fairino th {
+    @apply bg-paper font-semibold;
+  }
+
   /* Lectura técnica de specs */
   .readout {
     @apply grid overflow-hidden rounded-[10px] border border-line;

@@ -1,0 +1,43 @@
+---
+import Icon from './Icon.astro';
+import { url } from '../../lib/url';
+
+export interface Crumb {
+  label: string;
+  href?: string;
+}
+interface Props {
+  items: Crumb[];
+  tone?: 'light' | 'dark';
+}
+const { items, tone = 'dark' } = Astro.props;
+const all: Crumb[] = [{ label: 'Inicio', href: '/' }, ...items];
+const schema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: all.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.label,
+    ...(c.href ? { item: new URL(url(c.href), Astro.site).toString() } : {}),
+  })),
+};
+---
+
+<nav aria-label="Migas de pan" class:list={['font-mono text-xs tracking-wide', tone === 'dark' ? 'text-mist' : 'text-muted']}>
+  <ol class="flex flex-wrap items-center gap-1.5">
+    {
+      all.map((c, i) => (
+        <li class="inline-flex items-center gap-1.5">
+          {i > 0 && <Icon name="chevron-right" size={13} class="opacity-60" />}
+          {c.href && i < all.length - 1 ? (
+            <a href={url(c.href)} class:list={['hover:underline', tone === 'dark' ? 'hover:text-white' : 'hover:text-brand']}>{c.label}</a>
+          ) : (
+            <span aria-current="page" class={tone === 'dark' ? 'text-white' : 'text-text'}>{c.label}</span>
+          )}
+        </li>
+      ))
+    }
+  </ol>
+</nav>
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

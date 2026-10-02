@@ -1,0 +1,23 @@
+---
+import Breadcrumbs, { type Crumb } from './Breadcrumbs.astro';
+
+// Cabecera de páginas interiores: fondo técnico oscuro, migas de pan, título y entradilla.
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lead?: string;
+  crumbs: Crumb[];
+  compact?: boolean;
+}
+const { eyebrow, title, lead, crumbs, compact = false } = Astro.props;
+---
+
+<section class="blueprint on-dark relative overflow-hidden text-white">
+  <div class:list={['container-x grid gap-5', compact ? 'py-12 md:py-14' : 'py-14 md:py-20']}>
+    <Breadcrumbs items={crumbs} />
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1 class="max-w-[22ch] text-[clamp(2.1rem,4.8vw,3.6rem)] font-extrabold" style="font-stretch:120%">{title}</h1>
+    {lead && <p class="lead">{lead}</p>}
+    <slot />
+  </div>
+</section>

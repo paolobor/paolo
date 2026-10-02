@@ -1,0 +1,87 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Icon from './ui/Icon.astro';
+import SmartImage from './ui/SmartImage.astro';
+import { applications } from '../data/applications';
+import { url, formatNumber } from '../lib/url';
+
+interface Props {
+  product: CollectionEntry<'products'>;
+  headingLevel?: 'h2' | 'h3';
+}
+const { product, headingLevel: H = 'h3' } = Astro.props;
+const d = product.data;
+const categoryLabel = { cobot: 'Cobot', controlador: 'Controlador', accesorio: 'Accesorio' }[d.category];
+const appNames = d.applications
+  .map((slug) => applications.find((a) => a.slug === slug)?.name)
+  .filter(Boolean)
+  .slice(0, 3);
+// Lectura rápida: para cobots carga/alcance/repetibilidad; para el resto, las tres primeras specs con dato.
+const readout =
+  d.category === 'cobot'
+    ? [
+        { k: 'Carga', v: d.payloadKg != null ? `${formatNumber(d.payloadKg)} kg` : null },
+        { k: 'Alcance', v: d.reachMm != null ? `${formatNumber(d.reachMm)} mm` : null },
+        { k: 'Repet.', v: d.repeatabilityMm != null ? `±${formatNumber(d.repeatabilityMm)}` : null },
+      ]
+    : d.specs
+        .filter((s) => s.value != null)
+        .slice(0, 2)
+        .map((s) => ({ k: s.label, v: `${s.value}${s.unit ? ` ${s.unit}` : ''}` }));
+---
+
+<article class="card card-hover group flex h-full flex-col overflow-hidden">
+  <a href={url(`productos/${product.id}/`)} class="block aspect-[4/3] bg-[radial-gradient(circle_at_50%_40%,#fff,var(--color-paper)_70%)]" tabindex="-1" aria-hidden="true">
+    <SmartImage
+      src={d.images[0]?.src}
+      alt=""
+      hint={`${d.name}, imagen de fairino.es`}
+      fit="contain"
+      widths={[320, 480, 640]}
+      sizes="(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw"
+      class="p-5"
+    />
+  </a>
+  <div class="flex flex-1 flex-col gap-4 p-5">
+    <div class="flex items-baseline justify-between gap-3">
+      <H class="font-display text-2xl font-extrabold leading-tight" style="font-stretch:120%">
+        <a href={url(`productos/${product.id}/`)} class="hover:text-brand">{d.name}</a>
+      </H>
+      <span class="chip shrink-0">{categoryLabel}</span>
+    </div>
+    <p class="text-sm text-muted">{d.tagline}</p>
+    {
+      readout.length > 0 && (
+        <dl class="readout" style={`--cols:${readout.length}`}>
+          {readout.map((r) => (
+            <div>
+              <dt>{r.k}</dt>
+              <dd>{r.v ?? <span class="todo">[DATO]</span>}</dd>
+            </div>
+          ))}
+        </dl>
+      )
+    }
+    {appNames.length > 0 && (
+      <ul class="flex flex-wrap gap-1.5" aria-label="Aplicaciones">
+        {appNames.map((n) => <li class="rounded-md bg-paper px-2 py-1 text-xs text-muted">{n}</li>)}
+      </ul>
+    )}
+    <div class="mt-auto flex flex-wrap gap-2 pt-1">
+      <a href={url(`productos/${product.id}/`)} class="btn btn-primary btn-sm">Ver ficha</a>
+      {d.configurator && (
+        <button
+          type="button"
+          class="btn btn-secondary btn-sm"
+          data-add-config={product.id}
+          data-slot={d.configurator.slot}
+          data-compat={d.category === 'cobot' ? d.compatibleWith.join(',') : undefined}
+          aria-label={`Añadir ${d.name} al configurador`}
+        >
+          <Icon name="plus" size={16} />
+          Configurador
+        </button>
+      )}
+    </div>
+  </div>
+</article>

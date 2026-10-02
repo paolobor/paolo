@@ -1,0 +1,33 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import CatalogListing from '../components/CatalogListing.astro';
+import ContactBand from '../components/home/ContactBand.astro';
+import { getProducts, applicationOptions, payloadBucket, reachBucket } from '../lib/catalog';
+
+const products = await getProducts('cobot');
+const filters = [
+  { key: 'carga', label: 'Carga útil', options: [{ value: 'hasta-5', label: 'Hasta 5 kg' }, { value: '6-16', label: '10–16 kg' }, { value: '20-30', label: '20–30 kg' }] },
+  { key: 'alcance', label: 'Alcance', options: [{ value: 'hasta-800', label: 'Hasta 800 mm' }, { value: '800-1500', label: '800–1500 mm' }, { value: 'mas-1500', label: 'Más de 1500 mm' }] },
+  { key: 'aplicacion', label: 'Aplicación', options: applicationOptions },
+];
+---
+
+<BaseLayout
+  title="Cobots FAIRINO: de 3 a 30 kg de carga"
+  description="Toda la gama de robots colaborativos FAIRINO: FR3, FR3C, FR3WMS, FR3WML, FR5, FR10, FR16, FR20 y FR30. Filtra por carga útil, alcance y aplicación y pide presupuesto."
+>
+  <PageHero
+    crumbs={[{ label: 'Cobots' }]}
+    eyebrow="Catálogo"
+    title="Cobots FAIRINO"
+    lead="Nueve modelos de seis ejes, de 3 a 30 kg de carga útil y hasta 1854 mm de alcance. Filtra por lo que necesita tu proceso o déjanos aconsejarte."
+  />
+  <CatalogListing
+    products={products}
+    filters={filters}
+    noun={{ one: 'cobot', many: 'cobots' }}
+    tags={(p) => ({ carga: payloadBucket(p.data.payloadKg), alcance: reachBucket(p.data.reachMm), aplicacion: p.data.applications })}
+  />
+  <ContactBand />
+</BaseLayout>

@@ -1,0 +1,215 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import ProductCard from './ProductCard.astro';
+import Icon from './ui/Icon.astro';
+import { url } from '../lib/url';
+
+export interface FilterGroup {
+  key: string;
+  label: string;
+  options: { value: string; label: string }[];
+}
+interface Props {
+  products: CollectionEntry<'products'>[];
+  filters: FilterGroup[];
+  // Etiquetas de filtro de cada producto: { carga: ['hasta-5'], aplicacion: ['soldadura', …] }.
+  tags: (p: CollectionEntry<'products'>) => Record<string, string[]>;
+  noun: { one: string; many: string };
+}
+const { products, filters, tags, noun } = Astro.props;
+
+const tagged = products.map((p) => ({ p, t: tags(p) }));
+// Solo se ofrecen opciones que tengan algún producto.
+const groups = filters
+  .map((g) => ({ ...g, options: g.options.filter((o) => tagged.some(({ t }) => t[g.key]?.includes(o.value))) }))
+  .filter((g) => g.options.length > 1);
+
+const sections = [
+  { href: 'cobots/', label: 'Cobots' },
+  { href: 'controladores/', label: 'Controladores' },
+  { href: 'accesorios/', label: 'Accesorios' },
+];
+const current = Astro.url.pathname;
+---
+
+<div class="container-x section" data-catalog>
+  <nav aria-label="Categorías del catálogo" class="-mt-4 mb-10 flex flex-wrap gap-2 md:-mt-8">
+    {
+      sections.map((s) => {
+        const active = current.endsWith(`/${s.href}`);
+        return (
+          <a
+            href={url(s.href)}
+            aria-current={active ? 'page' : undefined}
+            class:list={[
+              'rounded-full border px-4 py-2 text-sm font-semibold transition-colors',
+              active ? 'border-brand bg-brand text-white' : 'border-line bg-white text-text hover:border-brand hover:text-brand',
+            ]}
+          >
+            {s.label}
+          </a>
+        );
+      })
+    }
+    <a href={url('configurador/')} class="ml-auto inline-flex items-center gap-1.5 rounded-full px-4 py-2 text-sm font-semibold text-brand hover:bg-brand-50">
+      <Icon name="sliders-horizontal" size={17} />
+      Configurar una célula
+    </a>
+  </nav>
+
+  <div class:list={['grid items-start gap-8', groups.length > 0 && 'lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-10']}>
+    {
+      groups.length > 0 && (
+        <details class="filters group/f rounded-[var(--radius-card)] border border-line bg-white lg:sticky lg:top-24" open data-filters-panel>
+          <summary class="flex cursor-pointer items-center justify-between gap-3 px-5 py-4 font-display text-lg font-bold lg:cursor-default" style="font-stretch:112%">
+            <span class="inline-flex items-center gap-2">
+              <Icon name="sliders-horizontal" size={19} class="text-brand" />
+              Filtrar
+            </span>
+            <Icon name="chevron-down" size={18} class="transition-transform group-open/f:rotate-180 lg:hidden" />
+          </summary>
+          <form class="grid gap-6 border-t border-line px-5 pb-5 pt-4" data-filters role="search" aria-label={`Filtrar ${noun.many}`}>
+            {groups.map((g) => (
+              <fieldset class="grid gap-2.5">
+                <legend class="mb-2 font-mono text-[0.7rem] font-medium uppercase tracking-[0.12em] text-muted">{g.label}</legend>
+                <div class="flex flex-wrap gap-2">
+                  {g.options.map((o) => (
+                    <label class="fchip">
+                      <input type="checkbox" name={g.key} value={o.value} class="sr-only" />
+                      <span>{o.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            ))}
+            <button type="reset" class="justify-self-start text-sm font-semibold text-brand hover:underline" data-filters-reset>
+              Borrar filtros
+            </button>
+          </form>
+        </details>
+      )
+    }
+
+    <div class="min-w-0">
+      <p class="mb-5 font-mono text-xs uppercase tracking-[0.12em] text-muted" aria-live="polite" data-count data-one={noun.one} data-many={noun.many}>
+        {products.length} {products.length === 1 ? noun.one : noun.many}
+      </p>
+      <ul class="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+        {
+          tagged.map(({ p, t }) => (
+            <li data-item {...Object.fromEntries(Object.entries(t).map(([k, v]) => [`data-f-${k}`, v.join(' ')]))}>
+              <ProductCard product={p} headingLevel="h2" />
+            </li>
+          ))
+        }
+      </ul>
+      <div class="card mt-2 grid justify-items-start gap-3 p-8" data-empty hidden>
+        <p class="font-display text-xl font-bold" style="font-stretch:112%">Ningún producto cumple todos los filtros</p>
+        <p class="text-muted">Quita algún filtro o cuéntanos qué necesitas y te recomendamos el modelo adecuado.</p>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" class="btn btn-secondary btn-sm" data-filters-reset>Borrar filtros</button>
+          <a href={url('contacto/')} class="btn btn-primary btn-sm">Pedir asesoramiento</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .fchip span {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    border: 1px solid var(--color-line);
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition:
+      background-color 0.2s,
+      border-color 0.2s,
+      color 0.2s;
+  }
+  .fchip:hover span {
+    border-color: var(--color-brand);
+  }
+  .fchip input:checked + span {
+    background: var(--color-brand);
+    border-color: var(--color-brand);
+    color: #fff;
+  }
+  .fchip input:focus-visible + span {
+    outline: 3px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+  @media (min-width: 1024px) {
+    .filters summary {
+      pointer-events: none;
+    }
+  }
+  .filters summary::-webkit-details-marker {
+    display: none;
+  }
+</style>
+
+<script>
+  // Filtros: OR dentro de cada grupo, AND entre grupos. Estado en la URL para poder compartir el enlace.
+  const root = document.querySelector<HTMLElement>('[data-catalog]');
+  const form = root?.querySelector<HTMLFormElement>('[data-filters]');
+  if (root && form) {
+    const items = [...root.querySelectorAll<HTMLElement>('[data-item]')];
+    const count = root.querySelector<HTMLElement>('[data-count]');
+    const empty = root.querySelector<HTMLElement>('[data-empty]');
+    const panel = root.querySelector<HTMLDetailsElement>('[data-filters-panel]');
+    const one = count?.dataset.one ?? '';
+    const many = count?.dataset.many ?? '';
+
+    // En móvil el panel empieza plegado.
+    if (panel && window.matchMedia('(max-width: 1023px)').matches) panel.open = false;
+
+    const selected = () => {
+      const map = new Map<string, string[]>();
+      new FormData(form).forEach((v, k) => map.set(k, [...(map.get(k) || []), String(v)]));
+      return map;
+    };
+
+    const apply = () => {
+      const sel = selected();
+      let visible = 0;
+      items.forEach((it) => {
+        const ok = [...sel].every(([k, vals]) => {
+          const tags = (it.dataset[`f${k[0].toUpperCase()}${k.slice(1)}`] || '').split(' ');
+          return vals.some((v) => tags.includes(v));
+        });
+        it.hidden = !ok;
+        if (ok) visible++;
+      });
+      if (count) count.textContent = `${visible} ${visible === 1 ? one : many}`;
+      if (empty) empty.hidden = visible > 0;
+      const u = new URL(location.href);
+      new Set(Array.from(form.querySelectorAll<HTMLInputElement>('input'), (i) => i.name)).forEach((k) => u.searchParams.delete(k));
+      sel.forEach((vals, k) => u.searchParams.set(k, vals.join(',')));
+      try {
+        history.replaceState(null, '', u);
+      } catch {
+        /* sin historial */
+      }
+    };
+
+    // Estado inicial desde la URL.
+    const params = new URLSearchParams(location.search);
+    form.querySelectorAll<HTMLInputElement>('input').forEach((i) => {
+      i.checked = (params.get(i.name) || '').split(',').includes(i.value);
+    });
+
+    form.addEventListener('change', apply);
+    root.querySelectorAll('[data-filters-reset]').forEach((b) =>
+      b.addEventListener('click', (e) => {
+        e.preventDefault();
+        form.reset();
+        apply();
+      }),
+    );
+    apply();
+  }
+</script>

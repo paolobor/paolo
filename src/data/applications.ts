@@ -4,7 +4,7 @@ export interface Application {
   name: string;
   short: string;
   icon: string;
-  image: string | null; // ruta en /public o null → placeholder visible
+  image: string | null; // ruta relativa a src/assets/images (p. ej. 'aplicaciones/soldadura.jpg'); null → placeholder visible
   imageHint: string;
 }
 

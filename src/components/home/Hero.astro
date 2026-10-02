@@ -1,7 +1,9 @@
 ---
 import { getEntry } from 'astro:content';
 import Icon from '../ui/Icon.astro';
-import Placeholder from '../ui/Placeholder.astro';
+import { getImage } from 'astro:assets';
+import { findImage } from '../../lib/images';
+import SmartImage from '../ui/SmartImage.astro';
 import { hero } from '../../data/home';
 import { url, formatNumber } from '../../lib/url';
 
@@ -9,13 +11,15 @@ const { video, slides } = hero;
 const featured = hero.featuredSlug ? await getEntry('products', hero.featuredSlug) : undefined;
 const spec = (v: number | null | undefined, unit: string) => (v == null ? null : `${formatNumber(v)} ${unit}`);
 const hasVideo = Boolean(video.mp4 || video.webm);
+const posterImg = findImage(video.poster);
+const poster = posterImg ? (await getImage({ src: posterImg, format: 'webp', width: Math.min(1920, posterImg.width) })).src : undefined;
 ---
 
 <section class="hero relative isolate flex min-h-[640px] items-end overflow-hidden bg-ink text-white md:min-h-[100svh]" aria-roledescription="carrusel" aria-label="Destacados" data-hero>
   <div class="absolute inset-0 -z-10">
     {
       hasVideo ? (
-        <video class="size-full object-cover" autoplay muted loop playsinline preload="metadata" poster={video.poster ? url(video.poster) : undefined} data-hero-video>
+        <video class="size-full object-cover" autoplay muted loop playsinline preload="metadata" poster={poster} data-hero-video>
           {video.webm && <source src={url(video.webm)} type="video/webm" />}
           {video.mp4 && <source src={url(video.mp4)} type="video/mp4" />}
         </video>
@@ -70,11 +74,16 @@ const hasVideo = Boolean(video.mp4 || video.webm);
                 tabindex="-1"
               >
                 <div class="aspect-[4/3]">
-                  {featured.data.images[0] ? (
-                    <img src={url(featured.data.images[0].src)} alt={featured.data.images[0].alt} class="size-full object-contain p-4" />
-                  ) : (
-                    <Placeholder label={`${featured.data.name}, imagen de fairino.es`} tone="dark" />
-                  )}
+                  <SmartImage
+                    src={featured.data.images[0]?.src}
+                    alt={featured.data.images[0]?.alt ?? featured.data.name}
+                    hint={`${featured.data.name}, imagen de fairino.es`}
+                    tone="dark"
+                    fit="contain"
+                    widths={[300, 600]}
+                    sizes="300px"
+                    class="p-4"
+                  />
                 </div>
                 <div class="grid gap-3 p-4">
                   <div class="flex items-baseline justify-between">

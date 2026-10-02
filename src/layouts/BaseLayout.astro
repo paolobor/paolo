@@ -33,7 +33,7 @@ const {
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
 const ogImage = new URL(url(image), Astro.site);
-const fullTitle = title.includes('FAIRINO') ? title : `${title} | ${site.name}`;
+const fullTitle = title.includes(site.name) ? title : `${title} | ${site.name}`;
 
 // Configuración que necesitan los scripts de cliente (formularios, WhatsApp, configurador).
 const clientConfig = {
@@ -91,6 +91,7 @@ const clientConfig = {
     <script>
       import '../scripts/reveal';
       import '../scripts/forms';
+      import '../scripts/add-to-config';
     </script>
   </body>
 </html>

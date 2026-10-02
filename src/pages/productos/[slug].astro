@@ -1,0 +1,379 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { Picture } from 'astro:assets';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import Icon from '../../components/ui/Icon.astro';
+import Placeholder from '../../components/ui/Placeholder.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import ContactBand from '../../components/home/ContactBand.astro';
+import { applications } from '../../data/applications';
+import { site } from '../../data/site';
+import { getProducts, categoryMeta, accessoryGroups, type Product } from '../../lib/catalog';
+import { url, whatsappLink, formatNumber } from '../../lib/url';
+
+export const getStaticPaths = (async () => {
+  const products = await getProducts();
+  return products.map((product) => ({ params: { slug: product.id }, props: { product } }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  product: Product;
+}
+const { product } = Astro.props;
+const d = product.data;
+const meta = categoryMeta[d.category];
+const all = await getProducts();
+
+// Productos relacionados según la categoría.
+const byId = (ids: string[]) => all.filter((p) => ids.includes(p.id));
+let compatible: { title: string; items: Product[] }[] = [];
+if (d.category === 'cobot') {
+  compatible = [
+    { title: 'Controladores compatibles', items: byId(d.compatibleWith) },
+    { title: 'Accesorios compatibles', items: all.filter((p) => p.data.category === 'accesorio' && p.data.compatibleWith.includes(product.id)) },
+  ];
+} else {
+  compatible = [{ title: 'Cobots compatibles', items: byId(d.compatibleWith) }];
+}
+compatible = compatible.filter((c) => c.items.length > 0);
+
+const apps = d.applications.map((s) => applications.find((a) => a.slug === s)).filter((a) => a !== undefined);
+
+const fmt = (v: string | number | null, unit?: string) =>
+  v == null ? null : `${typeof v === 'number' ? formatNumber(v) : v}${unit ? ` ${unit}` : ''}`;
+const keySpecs =
+  d.category === 'cobot'
+    ? [
+        { k: 'Carga útil', v: fmt(d.payloadKg, 'kg') },
+        { k: 'Alcance', v: fmt(d.reachMm, 'mm') },
+        { k: 'Repetibilidad', v: d.repeatabilityMm != null ? `±${formatNumber(d.repeatabilityMm)} mm` : null },
+      ]
+    : d.specs.filter((s) => s.value != null).slice(0, 3).map((s) => ({ k: s.label, v: fmt(s.value, s.unit) }));
+
+const subtitle = d.category === 'accesorio' && d.group ? accessoryGroups[d.group] : meta.singular;
+const waMessage = `Hola, me interesa el ${d.name}. ¿Me podéis dar más información?`;
+const quoteHref = url(`contacto/?asunto=presupuesto&producto=${encodeURIComponent(d.name)}`);
+const downloadIcon: Record<string, string> = { ficha: 'newspaper', manual: 'layers', cad: 'box', certificado: 'award', software: 'cpu' };
+
+const title = d.seo.title ?? `${d.name}: ${meta.singular.toLowerCase()} FAIRINO`;
+const description = (d.seo.description ?? `${d.tagline} Ficha técnica, descargas, aplicaciones y presupuesto con FAIRINO España.`).slice(0, 160);
+
+const productSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: `FAIRINO ${d.name.replace(/^FAIRINO\s+/i, '')}`,
+  description: d.description,
+  category: meta.singular,
+  brand: { '@type': 'Brand', name: 'FAIRINO' },
+  url: new URL(url(`productos/${product.id}/`), Astro.site).toString(),
+  ...(d.images.length ? { image: d.images.map((i) => new URL(i.src.src, Astro.site).toString()) } : {}),
+  additionalProperty: d.specs
+    .filter((s) => s.value != null)
+    .map((s) => ({ '@type': 'PropertyValue', name: s.label, value: String(s.value), ...(s.unit ? { unitText: s.unit } : {}) })),
+  seller: { '@type': 'Organization', name: site.legalName },
+};
+
+const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en aplicación'];
+---
+
+<BaseLayout title={title} description={description} jsonLd={[productSchema]} whatsappMessage={waMessage}>
+  <section class="border-b border-line bg-paper">
+    <div class="container-x grid gap-10 py-8 md:py-12 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
+      <div class="lg:col-span-2">
+        <Breadcrumbs tone="light" items={[{ label: meta.label, href: meta.href }, { label: d.name }]} />
+      </div>
+
+      <!-- Galería -->
+      <div class="grid content-start gap-3" data-gallery>
+        <div class="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] border border-line bg-[radial-gradient(circle_at_50%_40%,#fff,var(--color-paper)_75%)]">
+          {
+            d.images.length ? (
+              d.images.map((img, i) => (
+                <div class="absolute inset-0 p-6" data-slide={i} hidden={i !== 0}>
+                  <Picture
+                    src={img.src}
+                    alt={img.alt}
+                    widths={[480, 800, 1200]}
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    formats={['avif', 'webp']}
+                    loading={i === 0 ? 'eager' : 'lazy'}
+                    class="size-full object-contain"
+                    pictureAttributes={{ class: 'block size-full' }}
+                  />
+                </div>
+              ))
+            ) : (
+              <Placeholder label={`${d.name}, ${placeholderViews[0]} (de fairino.es)`} />
+            )
+          }
+        </div>
+        <div class="grid grid-cols-4 gap-3">
+          {
+            d.images.length > 1
+              ? d.images.map((img, i) => (
+                  <button
+                    type="button"
+                    class="thumb aspect-square overflow-hidden rounded-xl border border-line bg-white p-2"
+                    aria-label={`Ver imagen ${i + 1}: ${img.alt}`}
+                    aria-pressed={i === 0 ? 'true' : 'false'}
+                    data-thumb={i}
+                  >
+                    <Picture src={img.src} alt="" widths={[160]} sizes="160px" formats={['avif', 'webp']} class="size-full object-contain" pictureAttributes={{ class: 'block size-full' }} />
+                  </button>
+                ))
+              : d.images.length === 0 &&
+                placeholderViews.slice(1).map((v) => (
+                  <div class="aspect-square overflow-hidden rounded-xl">
+                    <Placeholder label={v} />
+                  </div>
+                ))
+          }
+        </div>
+      </div>
+
+      <!-- Información -->
+      <div class="grid content-start gap-6">
+        <div class="flex flex-wrap items-center gap-2">
+          <span class="chip">{subtitle}</span>
+          <span class="font-mono text-xs uppercase tracking-[0.12em] text-muted">FAIRINO</span>
+        </div>
+        <div class="grid gap-3">
+          <h1 class="text-[clamp(2.6rem,6vw,4rem)] font-extrabold leading-none" style="font-stretch:125%">{d.name}</h1>
+          <p class="text-xl text-muted">{d.tagline}</p>
+        </div>
+
+        {
+          keySpecs.length > 0 && (
+            <dl class="readout bg-white" style={`--cols:${keySpecs.length}`}>
+              {keySpecs.map((s) => (
+                <div class="!py-3">
+                  <dt>{s.k}</dt>
+                  <dd class="!text-lg">{s.v ?? <span class="todo">[DATO]</span>}</dd>
+                </div>
+              ))}
+            </dl>
+          )
+        }
+
+        <p class="text-[1.05rem] leading-relaxed">{d.description}</p>
+
+        {
+          d.highlights.length > 0 && (
+            <ul class="grid gap-2">
+              {d.highlights.map((h) => (
+                <li class="flex items-start gap-3">
+                  <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-brand text-white">
+                    <Icon name="check" size={14} strokeWidth={3} />
+                  </span>
+                  {h}
+                </li>
+              ))}
+            </ul>
+          )
+        }
+
+        <div class="flex flex-wrap gap-3 pt-1">
+          <a href={quoteHref} class="btn btn-primary">
+            <Icon name="send" size={18} />
+            Solicitar presupuesto
+          </a>
+          {
+            d.configurator && (
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-add-config={product.id}
+                data-slot={d.configurator.slot}
+                data-compat={d.category === 'cobot' ? d.compatibleWith.join(',') : undefined}
+              >
+                <Icon name="plus" size={18} />
+                Añadir al configurador
+              </button>
+            )
+          }
+        </div>
+        <a href={whatsappLink(site.whatsapp.number, waMessage)} target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-sm font-semibold text-text hover:text-brand">
+          <Icon name="si:whatsapp" size={18} class="text-[#1fa855]" />
+          Preguntar por WhatsApp
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Navegación de la ficha -->
+  <nav aria-label="Secciones de la ficha" class="sticky top-16 z-30 border-b border-line bg-white/95 backdrop-blur lg:top-[72px]">
+    <ul class="container-x flex gap-1 overflow-x-auto py-2 text-sm font-medium">
+      <li><a href="#especificaciones" class="tab">Especificaciones</a></li>
+      <li><a href="#descargas" class="tab">Descargas</a></li>
+      {apps.length > 0 && <li><a href="#aplicaciones" class="tab">Aplicaciones</a></li>}
+      {compatible.length > 0 && <li><a href="#compatibles" class="tab">Compatibles</a></li>}
+    </ul>
+  </nav>
+
+  <!-- Especificaciones -->
+  <section id="especificaciones" class="section scroll-mt-32" aria-labelledby="spec-title">
+    <div class="container-x grid gap-10 lg:grid-cols-[1fr_2fr]">
+      <div class="grid content-start gap-4">
+        <p class="eyebrow">Ficha técnica</p>
+        <h2 id="spec-title" class="h-section">Especificaciones del {d.name}</h2>
+        <p class="text-muted">
+          Datos de la documentación de FAIRINO. Si un valor es crítico para tu célula, confírmalo con nuestro equipo antes de cerrar el diseño.
+        </p>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full border-collapse text-left">
+          <caption class="sr-only">Especificaciones técnicas del {d.name}</caption>
+          <tbody>
+            {
+              d.specs.map((s) => (
+                <tr class="border-b border-line">
+                  <th scope="row" class="w-1/2 py-3.5 pr-4 align-top text-[0.95rem] font-medium text-muted">{s.label}</th>
+                  <td class="py-3.5 align-top font-mono text-[0.95rem] text-text">
+                    {s.value != null ? fmt(s.value, s.unit) : <span class="todo">[DATO: {s.label.toLowerCase()}]</span>}
+                  </td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- Descargas -->
+  <section id="descargas" class="section scroll-mt-32 bg-paper" aria-labelledby="dl-title">
+    <div class="container-x grid gap-8">
+      <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+        <div class="grid gap-3">
+          <p class="eyebrow">Documentación</p>
+          <h2 id="dl-title" class="h-section">Descargas del {d.name}</h2>
+        </div>
+        <a href={url('descargas/')} class="link-arrow">Centro de descargas <Icon name="arrow-right" size={17} /></a>
+      </div>
+      <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          d.downloads.map((dl) => (
+            <li>
+              {dl.href ? (
+                <a href={dl.href.startsWith('http') ? dl.href : url(dl.href)} class="card card-hover flex h-full items-center gap-4 p-5" download>
+                  <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand">
+                    <Icon name={downloadIcon[dl.type] ?? 'download'} size={22} />
+                  </span>
+                  <span class="grid">
+                    <span class="font-semibold">{dl.label}</span>
+                    <span class="font-mono text-xs text-muted">{d.name}</span>
+                  </span>
+                  <Icon name="download" size={18} class="ml-auto text-brand" />
+                </a>
+              ) : (
+                <div class="card flex h-full items-center gap-4 p-5">
+                  <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-paper text-muted">
+                    <Icon name={downloadIcon[dl.type] ?? 'download'} size={22} />
+                  </span>
+                  <span class="grid gap-1">
+                    <span class="font-semibold">{dl.label}</span>
+                    <span class="todo w-fit">[DATO: archivo]</span>
+                    <a
+                      href={`mailto:${site.contacts[0].email}?subject=${encodeURIComponent(`${dl.label} ${d.name}`)}`}
+                      class="text-xs font-semibold text-brand hover:underline"
+                    >
+                      Pedir por correo
+                    </a>
+                  </span>
+                </div>
+              )}
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Aplicaciones -->
+  {
+    apps.length > 0 && (
+      <section id="aplicaciones" class="section scroll-mt-32" aria-labelledby="apps-title">
+        <div class="container-x grid gap-8">
+          <div class="grid gap-3">
+            <p class="eyebrow">Aplicaciones recomendadas</p>
+            <h2 id="apps-title" class="h-section">Dónde rinde el {d.name}</h2>
+          </div>
+          <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {apps.map((a) => (
+              <li>
+                <a href={url(`aplicaciones/${a.slug}/`)} class="card card-hover group grid h-full content-start gap-3 p-6">
+                  <span class="grid size-11 place-items-center rounded-xl bg-brand-50 text-brand transition-colors group-hover:bg-brand group-hover:text-white">
+                    <Icon name={a.icon} size={22} />
+                  </span>
+                  <span class="font-display text-lg font-bold" style="font-stretch:112%">{a.name}</span>
+                  <span class="text-sm text-muted">{a.short}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  <!-- Compatibles -->
+  {
+    compatible.length > 0 && (
+      <section id="compatibles" class="section scroll-mt-32 bg-paper" aria-labelledby="compat-title">
+        <div class="container-x grid gap-12">
+          <div class="grid gap-3">
+            <p class="eyebrow">Ecosistema FAIRINO</p>
+            <h2 id="compat-title" class="h-section">Compatible con el {d.name}</h2>
+          </div>
+          {compatible.map((group) => (
+            <div class="grid gap-5">
+              <h3 class="text-xl font-bold" style="font-stretch:112%">{group.title}</h3>
+              <ul class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                {group.items.map((p) => (
+                  <li>
+                    <ProductCard product={p} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <ContactBand whatsappMessage={waMessage} />
+</BaseLayout>
+
+<style>
+  .tab {
+    display: inline-flex;
+    white-space: nowrap;
+    padding: 0.5rem 0.85rem;
+    border-radius: 8px;
+    color: var(--color-muted);
+  }
+  .tab:hover {
+    background: var(--color-paper);
+    color: var(--color-brand);
+  }
+  .thumb[aria-pressed='true'] {
+    border-color: var(--color-brand);
+    box-shadow: 0 0 0 2px var(--color-brand);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((g) => {
+    const slides = [...g.querySelectorAll<HTMLElement>('[data-slide]')];
+    const thumbs = [...g.querySelectorAll<HTMLButtonElement>('[data-thumb]')];
+    thumbs.forEach((t) =>
+      t.addEventListener('click', () => {
+        const i = Number(t.dataset.thumb);
+        slides.forEach((s, n) => (s.hidden = n !== i));
+        thumbs.forEach((b, n) => b.setAttribute('aria-pressed', String(n === i)));
+      }),
+    );
+  });
+</script>
