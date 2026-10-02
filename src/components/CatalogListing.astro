@@ -43,7 +43,7 @@ const current = Astro.url.pathname;
             aria-current={active ? 'page' : undefined}
             class:list={[
               'rounded-full border px-4 py-2 text-sm font-semibold transition-colors',
-              active ? 'border-brand bg-brand text-white' : 'border-line bg-white text-text hover:border-brand hover:text-brand',
+              active ? 'border-signal bg-signal text-ink' : 'border-line bg-surface text-text hover:border-signal hover:text-signal',
             ]}
           >
             {s.label}
@@ -60,7 +60,7 @@ const current = Astro.url.pathname;
   <div class:list={['grid items-start gap-8', groups.length > 0 && 'lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-10']}>
     {
       groups.length > 0 && (
-        <details class="filters group/f rounded-[var(--radius-card)] border border-line bg-white lg:sticky lg:top-24" open data-filters-panel>
+        <details class="filters group/f rounded-[var(--radius-card)] border border-line bg-surface lg:sticky lg:top-24" open data-filters-panel>
           <summary class="flex cursor-pointer items-center justify-between gap-3 px-5 py-4 font-display text-lg font-bold lg:cursor-default" style="font-stretch:112%">
             <span class="inline-flex items-center gap-2">
               <Icon name="sliders-horizontal" size={19} class="text-brand" />
@@ -134,9 +134,9 @@ const current = Astro.url.pathname;
     border-color: var(--color-brand);
   }
   .fchip input:checked + span {
-    background: var(--color-brand);
-    border-color: var(--color-brand);
-    color: #fff;
+    background: var(--color-signal);
+    border-color: var(--color-signal);
+    color: var(--color-ink);
   }
   .fchip input:focus-visible + span {
     outline: 3px solid var(--color-signal);

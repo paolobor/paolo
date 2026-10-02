@@ -86,7 +86,7 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
 
       <!-- Galería -->
       <div class="grid content-start gap-3" data-gallery>
-        <div class="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] border border-line bg-[radial-gradient(circle_at_50%_40%,#fff,var(--color-paper)_75%)]">
+        <div class="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] border border-line bg-[radial-gradient(ellipse_at_50%_85%,rgba(255,106,19,0.22),transparent_60%),radial-gradient(circle_at_50%_40%,#1a110c,#0b0705_75%)]">
           {
             d.images.length ? (
               d.images.map((img, i) => (
@@ -114,7 +114,7 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
               ? d.images.map((img, i) => (
                   <button
                     type="button"
-                    class="thumb aspect-square overflow-hidden rounded-xl border border-line bg-white p-2"
+                    class="thumb aspect-square overflow-hidden rounded-xl border border-line bg-surface p-2"
                     aria-label={`Ver imagen ${i + 1}: ${img.alt}`}
                     aria-pressed={i === 0 ? 'true' : 'false'}
                     data-thumb={i}
@@ -145,7 +145,7 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
 
         {
           keySpecs.length > 0 && (
-            <dl class="readout bg-white" style={`--cols:${keySpecs.length}`}>
+            <dl class="readout bg-surface" style={`--cols:${keySpecs.length}`}>
               {keySpecs.map((s) => (
                 <div class="!py-3">
                   <dt>{s.k}</dt>
@@ -202,7 +202,7 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
   </section>
 
   <!-- Navegación de la ficha -->
-  <nav aria-label="Secciones de la ficha" class="sticky top-16 z-30 border-b border-line bg-white/95 backdrop-blur lg:top-[72px]">
+  <nav aria-label="Secciones de la ficha" class="sticky top-16 z-30 border-b border-line bg-surface/90 backdrop-blur lg:top-[72px]">
     <ul class="container-x flex gap-1 overflow-x-auto py-2 text-sm font-medium">
       <li><a href="#especificaciones" class="tab">Especificaciones</a></li>
       <li><a href="#descargas" class="tab">Descargas</a></li>

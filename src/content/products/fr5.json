@@ -5,7 +5,12 @@
   "tagline": "El más versátil de la gama: 5 kg de carga y 922 mm de alcance.",
   "description": "Flexible, eficiente y de aplicación muy amplia. Fue el primer cobot en obtener la certificación CR y funciona con un sistema de control en tiempo real de desarrollo propio, con precisión y estabilidad de nivel industrial. Ideal para pick and place, atornillado y manipulación ligera.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/fr5/fr5-provisional-3d.png",
+      "alt": "Cobot FAIRINO FR5 (imagen provisional del modelo 3D oficial)"
+    }
+  ],
   "payloadKg": 5,
   "reachMm": 922,
   "repeatabilityMm": 0.02,

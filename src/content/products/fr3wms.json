@@ -5,7 +5,12 @@
   "tagline": "Cobot portátil de 3 kg pensado para soldadura y producción flexible.",
   "description": "Cobot ligero diseñado para producción flexible y escenarios de soldadura complejos. Portátil, rápido de desplegar, duradero y fácil de usar, y resistente al polvo, al aceite y a los chorros de agua.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/fr3wms/fr3wms-provisional-3d.png",
+      "alt": "Cobot FAIRINO FR3WMS (imagen provisional del modelo 3D oficial)"
+    }
+  ],
   "payloadKg": 3,
   "reachMm": 622,
   "repeatabilityMm": 0.02,

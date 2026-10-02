@@ -5,7 +5,12 @@
   "tagline": "10 kg de carga y 1400 mm de alcance para fabricación flexible.",
   "description": "Combina flexibilidad, seguridad y facilidad de uso con precisión y estabilidad de nivel industrial. Una solución sólida para la fabricación inteligente y flexible.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/fr10/fr10-provisional-3d.png",
+      "alt": "Cobot FAIRINO FR10 (imagen provisional del modelo 3D oficial)"
+    }
+  ],
   "payloadKg": 10,
   "reachMm": 1400,
   "repeatabilityMm": 0.05,

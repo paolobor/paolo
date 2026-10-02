@@ -5,7 +5,12 @@
   "tagline": "Cobot ultraligero de 922 mm para soldadura de alta precisión.",
   "description": "Cobot ultraligero para soldadura de alta precisión y fabricación flexible. Lo maneja una sola persona, incorpora detección de colisiones y su sexto eje gira ±360° para soldar superficies curvas complejas.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/fr3wml/fr3wml-provisional-3d.png",
+      "alt": "Cobot FAIRINO FR3WML (imagen provisional del modelo 3D oficial)"
+    }
+  ],
   "payloadKg": 3,
   "reachMm": 922,
   "repeatabilityMm": 0.05,

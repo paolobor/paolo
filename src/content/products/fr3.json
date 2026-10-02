@@ -5,7 +5,12 @@
   "tagline": "Cobot compacto de 3 kg para fabricación flexible.",
   "description": "Cobot de seis ejes de nueva generación, basado en la colaboración entre persona y robot. Pensado para fabricación inteligente y flexible en electrónica (3C), semiconductores, procesado de metal, encolado industrial o retail.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/fr3/fr3-provisional-3d.png",
+      "alt": "Cobot FAIRINO FR3 (imagen provisional del modelo 3D oficial)"
+    }
+  ],
   "payloadKg": 3,
   "reachMm": 622,
   "repeatabilityMm": 0.02,

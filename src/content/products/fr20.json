@@ -5,7 +5,12 @@
   "tagline": "El mayor alcance de la gama: 1854 mm con 20 kg de carga.",
   "description": "Plataforma potente y escalable que da a integradores y usuarios finales una solución eficaz. Con los componentes propios de FAIRINO, lleva la robótica flexible a escenarios que piden mucho alcance.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/fr20/fr20-provisional-3d.png",
+      "alt": "Cobot FAIRINO FR20 (imagen provisional del modelo 3D oficial)"
+    }
+  ],
   "payloadKg": 20,
   "reachMm": 1854,
   "repeatabilityMm": 0.1,

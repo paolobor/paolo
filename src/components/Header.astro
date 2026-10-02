@@ -30,7 +30,7 @@ const accessoryGroups = [
   data-overlay={overlay ? '' : undefined}
   data-solid={overlay ? undefined : ''}
 >
-  <a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:text-ink">
+  <a href="#contenido" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-md focus:bg-surface focus:px-4 focus:py-2 focus:text-ink">
     Saltar al contenido
   </a>
   <div class="hdr-bar">
@@ -201,22 +201,22 @@ const accessoryGroups = [
 
 <style>
   .hdr {
-    --hdr-fg: var(--color-ink);
-    --hdr-muted: var(--color-muted);
-    --logo-main: var(--color-ink);
-    --logo-sub: var(--color-brand);
+    --hdr-fg: #fff;
+    --hdr-muted: rgb(255 255 255 / 0.75);
+    --logo-main: #fff;
+    --logo-sub: var(--color-signal);
   }
   .hdr-bar {
     transition:
       background-color 0.3s,
       box-shadow 0.3s;
-    background: rgb(255 255 255 / 0.96);
-    box-shadow: 0 1px 0 var(--color-line);
+    background: rgb(7 5 4 / 0.94);
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.06);
     color: var(--hdr-fg);
   }
   @supports (backdrop-filter: blur(1px)) {
     .hdr-bar {
-      background: rgb(255 255 255 / 0.96);
+      background: rgb(7 5 4 / 0.8);
       backdrop-filter: saturate(1.4) blur(14px);
     }
   }
@@ -260,10 +260,10 @@ const accessoryGroups = [
     position: absolute;
     inset-inline: 0;
     top: 100%;
-    background: #fff;
+    background: var(--color-surface);
     color: var(--color-text);
     border-top: 1px solid var(--color-line);
-    box-shadow: 0 30px 60px -30px rgb(7 5 4 / 0.35);
+    box-shadow: 0 40px 80px -30px rgb(0 0 0 / 0.8);
     animation: mega-in 0.22s var(--ease-out-soft);
   }
   @keyframes mega-in {
@@ -293,13 +293,13 @@ const accessoryGroups = [
     border-radius: 6px;
   }
   .mega-link:hover {
-    background: var(--color-paper);
-    color: var(--color-brand);
+    background: var(--color-surface-2);
+    color: var(--color-signal);
   }
   .drawer {
     position: fixed;
     inset: 64px 0 0 0;
-    background: #fff;
+    background: var(--color-ink);
     color: var(--color-text);
     border-top: 1px solid var(--color-line);
   }

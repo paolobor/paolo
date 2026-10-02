@@ -5,7 +5,12 @@
   "tagline": "La máxima carga de la gama: 30 kg para paletizado y alto par.",
   "description": "Cobot de seis ejes de nueva generación para paletizado, manipulación y aplicaciones de alto par, con la seguridad de la colaboración entre persona y robot.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/fr30/fr30-provisional-3d.png",
+      "alt": "Cobot FAIRINO FR30 (imagen provisional del modelo 3D oficial)"
+    }
+  ],
   "payloadKg": 30,
   "reachMm": 1403,
   "repeatabilityMm": 0.1,
