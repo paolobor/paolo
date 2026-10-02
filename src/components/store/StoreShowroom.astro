@@ -110,7 +110,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
         slides.map((s) => (
           <li class="robot" data-robot={s.i} data-active={s.i === 0 ? '' : undefined} style={`--size:${s.scale};--i:${s.i}`}>
             <span class="contact" aria-hidden="true" />
-            <button type="button" class="robot-btn" tabindex="-1" aria-label={`Ver ${s.name}`} data-goto={s.i}>
+            <span class="robot-btn">
               {s.img ? (
                 <>
                   <img class="robot-img" src={s.img} alt={s.i === 0 ? s.alt : ''} width={s.imgW} height={s.imgH} loading={s.i < 3 || s.i === total - 1 ? 'eager' : 'lazy'} decoding="async" />
@@ -120,12 +120,19 @@ const pad = (n: number) => String(n).padStart(2, '0');
               ) : (
                 <span class="robot-missing">[FOTO: {s.name}]</span>
               )}
-            </button>
+            </span>
           </li>
         ))
       }
     </ul>
 
+    <!-- Zonas laterales: clic a la izquierda = modelo anterior, a la derecha = siguiente. -->
+    <button type="button" class="side side-prev" data-side="-1" aria-label="Modelo anterior">
+      <span class="side-label"><span class="side-k">Anterior</span><span class="side-name" data-side-name></span></span>
+    </button>
+    <button type="button" class="side side-next" data-side="1" aria-label="Modelo siguiente">
+      <span class="side-label"><span class="side-k">Siguiente</span><span class="side-name" data-side-name></span></span>
+    </button>
   </div>
 
   <!-- Datos del cobot activo -->
@@ -352,12 +359,16 @@ const pad = (n: number) => String(n).padStart(2, '0');
       stroke-dashoffset: -200;
     }
   }
+  .stage {
+    touch-action: pan-y;
+  }
   .robots {
     position: absolute;
     inset: 0;
     margin: 0;
     padding: 0;
     list-style: none;
+    pointer-events: none;
   }
   .robot {
     --x: 0px;
@@ -387,7 +398,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
     position: relative;
     display: block;
     height: 100%;
-    cursor: pointer;
     animation: float 6s ease-in-out infinite;
     animation-delay: calc(var(--i, 0) * -0.8s);
   }
@@ -460,8 +470,97 @@ const pad = (n: number) => String(n).padStart(2, '0');
       stroke-width: 3;
     }
   }
-  .robot[data-active] .robot-btn {
-    cursor: default;
+  .side {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    width: 36%;
+    padding: 0 clamp(16px, 3vw, 48px);
+    border: 0;
+    background: none;
+    color: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .side-prev {
+    left: 0;
+    justify-content: flex-start;
+  }
+  .side-next {
+    right: 0;
+    justify-content: flex-end;
+    text-align: right;
+  }
+  .side::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.4s;
+    pointer-events: none;
+  }
+  .side-prev::before {
+    background: radial-gradient(ellipse 60% 55% at 0% 55%, rgb(255 106 19 / 0.16), transparent 70%);
+  }
+  .side-next::before {
+    background: radial-gradient(ellipse 60% 55% at 100% 55%, rgb(255 106 19 / 0.16), transparent 70%);
+  }
+  .side-label {
+    position: relative;
+    display: grid;
+    gap: 2px;
+    opacity: 0;
+    transform: translateX(var(--nudge, 0));
+    transition:
+      opacity 0.35s,
+      transform 0.5s var(--ease-out-soft);
+  }
+  .side-prev .side-label {
+    --nudge: -10px;
+  }
+  .side-next .side-label {
+    --nudge: 10px;
+  }
+  .side-k {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-signal);
+  }
+  .side-name {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    font-stretch: 112%;
+    color: var(--color-text);
+  }
+  .side:active::before,
+  .side:focus-visible::before,
+  .side:focus-visible .side-label {
+    opacity: 1;
+    transform: none;
+  }
+  .side:focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: -6px;
+    border-radius: 16px;
+  }
+  @media (hover: hover) {
+    .side:hover::before,
+    .side:hover .side-label {
+      opacity: 1;
+      transform: none;
+    }
+    /* El robot hacia el que vas se ilumina un poco. */
+    .stage:has(.side-prev:hover) .robot[data-off='-1'],
+    .stage:has(.side-next:hover) .robot[data-off='1'] {
+      opacity: 0.9;
+      filter: blur(0) brightness(0.95);
+    }
   }
   .robot-img {
     position: relative;
@@ -646,6 +745,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     const n = robots.length;
     const names = infos.map((i) => i.querySelector('.model-name')?.textContent?.trim() ?? '');
     const ids = infos.map((i) => i.id.replace('cobot-', ''));
+    const sides = [...root.querySelectorAll<HTMLButtonElement>('[data-side]')];
     let index = 0;
     let lastFocus: HTMLElement | null = null;
 
@@ -665,7 +765,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
         r.style.setProperty('--blur', `${a === 0 ? 0 : a === 1 ? 1.5 : 3}px`);
         r.style.setProperty('--bright', String(a === 0 ? 1 : 0.6));
         r.style.setProperty('--z', String(10 - a));
-        r.style.pointerEvents = visible && a > 0 ? 'auto' : a === 0 ? 'auto' : 'none';
+        r.dataset.off = String(o);
         r.toggleAttribute('data-active', a === 0);
         const img = r.querySelector('img');
         if (img) img.alt = a === 0 ? `Cobot FAIRINO ${names[i]}` : '';
@@ -678,6 +778,13 @@ const pad = (n: number) => String(n).padStart(2, '0');
       infos.forEach((el, k) => (el.hidden = k !== index));
       dots.forEach((d, k) => d.setAttribute('aria-selected', String(k === index)));
       if (count) count.textContent = String(index + 1).padStart(2, '0');
+      sides.forEach((b) => {
+        const dir = Number(b.dataset.side);
+        const name = names[(index + dir + n) % n];
+        const label = b.querySelector('[data-side-name]');
+        if (label) label.textContent = name;
+        b.setAttribute('aria-label', `${dir < 0 ? 'Modelo anterior' : 'Modelo siguiente'}: ${name}`);
+      });
       if (ghost) {
         ghost.classList.add('is-changing');
         window.setTimeout(() => {
@@ -712,10 +819,11 @@ const pad = (n: number) => String(n).padStart(2, '0');
     };
 
     dots.forEach((d) => d.addEventListener('click', () => show(Number(d.dataset.dot))));
-    root.querySelectorAll<HTMLElement>('[data-goto]').forEach((b) =>
+    // Si el gesto fue un deslizamiento, no cuenta también como clic en la zona lateral.
+    let swiped = false;
+    sides.forEach((b) =>
       b.addEventListener('click', () => {
-        const i = Number(b.dataset.goto);
-        if (i !== index) show(i);
+        if (!swiped) show(index + Number(b.dataset.side));
       }),
     );
     root.querySelectorAll<HTMLElement>('[data-specs-open]').forEach((b) => b.addEventListener('click', openSpecs));
@@ -737,10 +845,16 @@ const pad = (n: number) => String(n).padStart(2, '0');
     // Deslizar en móvil.
     let startX = 0;
     const stage = root.querySelector<HTMLElement>('[data-stage]');
-    stage?.addEventListener('pointerdown', (e) => (startX = e.clientX));
+    stage?.addEventListener('pointerdown', (e) => {
+      startX = e.clientX;
+      swiped = false;
+    });
     stage?.addEventListener('pointerup', (e) => {
       const dx = e.clientX - startX;
-      if (Math.abs(dx) > 50) show(index + (dx < 0 ? 1 : -1));
+      if (Math.abs(dx) > 50) {
+        swiped = true;
+        show(index + (dx < 0 ? 1 : -1));
+      }
     });
     window.addEventListener('resize', layout, { passive: true });
 
