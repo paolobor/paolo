@@ -197,6 +197,14 @@
     halo.lookAt(camera.position.x, halo.position.y, camera.position.z);
   }
 
+  if (alpha) {
+    document.documentElement.style.background = document.body.style.background = 'transparent';
+    // Recorte con transparencia: render directo (el postproceso no conserva el canal alfa).
+    renderer.setClearColor(0x000000, 0);
+    renderer.render(scene, camera);
+    window.__info = { size: size.toArray(), center: center.toArray() };
+    window.__done = true;
+  } else {
   const composer = new EffectComposer(renderer);
   composer.setPixelRatio(1);
   composer.setSize(W, H);
@@ -206,6 +214,7 @@
   composer.render();
   window.__info = { size: size.toArray(), center: center.toArray() };
   window.__done = true;
+  }
 </script>
 </body>
 </html>
