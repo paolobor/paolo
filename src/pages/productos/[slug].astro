@@ -90,17 +90,22 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
           {
             d.images.length ? (
               d.images.map((img, i) => (
-                <div class="absolute inset-0 p-6" data-slide={i} hidden={i !== 0}>
+                <div class:list={['absolute inset-0', !img.illustrative && 'p-6']} data-slide={i} hidden={i !== 0}>
                   <Picture
                     src={img.src}
                     alt={img.alt}
-                    widths={[480, 800, 1200]}
+                    widths={img.illustrative ? [800, 1200, 1800] : [480, 800, 1200]}
                     sizes="(min-width: 1024px) 50vw, 100vw"
                     formats={['avif', 'webp']}
                     loading={i === 0 ? 'eager' : 'lazy'}
-                    class="size-full object-contain"
+                    class:list={['size-full', img.illustrative ? 'object-cover' : 'object-contain']}
                     pictureAttributes={{ class: 'block size-full' }}
                   />
+                  {img.illustrative && (
+                    <span class="absolute bottom-3 right-3 rounded-full bg-black/55 px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-white/85 backdrop-blur">
+                      Imagen ilustrativa
+                    </span>
+                  )}
                 </div>
               ))
             ) : (
@@ -119,7 +124,15 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
                     aria-pressed={i === 0 ? 'true' : 'false'}
                     data-thumb={i}
                   >
-                    <Picture src={img.src} alt="" widths={[160]} sizes="160px" formats={['avif', 'webp']} class="size-full object-contain" pictureAttributes={{ class: 'block size-full' }} />
+                    <Picture
+                      src={img.src}
+                      alt=""
+                      widths={[160, 320]}
+                      sizes="160px"
+                      formats={['avif', 'webp']}
+                      class:list={['size-full', img.illustrative ? 'rounded-lg object-cover' : 'object-contain']}
+                      pictureAttributes={{ class: 'block size-full' }}
+                    />
                   </button>
                 ))
               : d.images.length === 0 &&

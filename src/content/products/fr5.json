@@ -9,6 +9,21 @@
     {
       "src": "../../assets/products/fr5/fr5-provisional-3d.png",
       "alt": "Cobot FAIRINO FR5 (imagen provisional del modelo 3D oficial)"
+    },
+    {
+      "src": "../../assets/products/fr5/fairino-fr5-escena-producto.webp",
+      "alt": "Cobot FAIRINO FR5 sobre una peana en una sala de exposición con luz naranja de fondo",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fr5/fairino-fr5-escena-pick-and-place.webp",
+      "alt": "Cobot FAIRINO FR5 con garra eléctrica cogiendo piezas mecanizadas de una bandeja en una célula de montaje",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fr5/fairino-fr5-escena-celda.webp",
+      "alt": "Cobot FAIRINO FR5 en una mesa de trabajo iluminada, con transportadores al fondo",
+      "illustrative": true
     }
   ],
   "payloadKg": 5,

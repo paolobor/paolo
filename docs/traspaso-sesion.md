@@ -47,9 +47,18 @@ Estado a 2 de octubre de 2026 (tarde). Léelo entero antes de tocar nada.
 - Trabajo `efbe8dff` (piloto FR5 antiguo): **descartado**. Se generó con la referencia vieja, robot todo blanco sin
   aros ni brida; la escena es buena.
 - Trabajo `268e7452` (FR3 sin fondo): correcto, pero a 386 px, solo vale de referencia.
-- **Pendiente del OK del usuario** (se le dio la tabla de material y la estimación):
-  - piloto FR5 ≈ 8 créditos, partiendo del recorte nuevo con aros;
-  - resto de modelos ≈ 100 créditos.
+- **Piloto FR5 hecho** con la referencia nueva con aros (medio `a1f4b956-1506-4d45-957a-abb0b037ee57`, importado
+  desde `src/assets/products/fr5/fr5-provisional-3d.png`). El usuario dijo «sigue con la web añadiendo esas fotos».
+  - Coste: 8 créditos; quedan 941.
+  - Tres escenas válidas, ya en la ficha del FR5 (`src/content/products/fr5.json`, `illustrative: true`, pie
+    «Imagen ilustrativa»).
+  - Hoja de control: `docs/control-calidad-fotos.md`.
+- **Pendiente: aprobación del piloto** antes de hacer el resto de modelos (≈ 6 créditos por modelo, 3 escenas cada
+  uno; ≈ 50 créditos para los 8 restantes, más repeticiones). Mismos prompts que el piloto, adaptando la aplicación:
+  - FR3: pick & place;
+  - FR3WMS, FR3WML y FR5WML: soldadura;
+  - FR10 y FR16: carga de máquinas;
+  - FR20 y FR30: paletizado.
 
 ## Lo que pidió el usuario (referencia)
 
@@ -59,7 +68,7 @@ Estado a 2 de octubre de 2026 (tarde). Léelo entero antes de tocar nada.
 3. Menos brillo. **Hecho.**
 4. Mantener: clic a izquierda/derecha, nombre al pasar el ratón, panel de compatibles, carrito, movimiento,
    iluminación cálida. **Mantenido.**
-5. Higgsfield para escenas: **pendiente del OK** (ver arriba).
+5. Higgsfield para escenas: piloto FR5 hecho y en la web; **pendiente su aprobación** para el resto.
 
 ## Higgsfield (contexto)
 

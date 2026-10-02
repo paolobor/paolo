@@ -20,7 +20,8 @@ const products = defineCollection({
     tagline: z.string(),
     description: z.string(),
     highlights: z.array(z.string()).default([]),
-    images: z.array(z.object({ src: image(), alt: z.string() })).default([]),
+    // illustrative: escena generada a partir del render oficial (se muestra a sangre y con el pie «Imagen ilustrativa»).
+    images: z.array(z.object({ src: image(), alt: z.string(), illustrative: z.boolean().default(false) })).default([]),
     // Campos normalizados para filtros y tarjetas.
     payloadKg: z.number().nullable().default(null),
     reachMm: z.number().nullable().default(null),
