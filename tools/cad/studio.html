@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<title>Estudio FAIRINO</title>
+<style>
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  canvas { display: block; }
+</style>
+<script type="importmap">
+  { "imports": { "three": "/node_modules/three/build/three.module.js", "three/addons/": "/node_modules/three/examples/jsm/" } }
+</script>
+</head>
+<body>
+<script type="module">
+  // Estudio virtual para renders de producto con la estética del catálogo FAIRINO Spain:
+  // negro profundo, halo naranja, plataforma luminosa y luz de estudio. Parámetros por la URL:
+  //   ?model=fr5&w=2400&h=1600&pose=0.5,-1.9,1.7,-1.4,-1.57,0&cam=az,el,dist&alpha=0&platform=1
+  import * as THREE from 'three';
+  import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+  import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+  import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+  import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+  import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+  import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+  import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+
+  const q = new URLSearchParams(location.search);
+  const W = Number(q.get('w') || 1600), H = Number(q.get('h') || 1000);
+  const alpha = q.get('alpha') === '1';
+  const platform = q.get('platform') !== '0';
+  const pose = (q.get('pose') || '0.55,-1.95,1.75,-1.35,-1.57,0').split(',').map(Number);
+  const [az, el, dist] = (q.get('cam') || '-28,14,2.6').split(',').map(Number);
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(1);
+  renderer.setSize(W, H);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.0;
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  document.body.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  if (!alpha) scene.background = new THREE.Color(0x030201);
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 0.3;
+
+  // Luces: principal cálida-neutra, relleno frío suave y dos contraluces naranja como en el catálogo.
+  const key = new THREE.DirectionalLight(0xfff4ea, 1.25);
+  key.position.set(-2.2, 3.2, 2.6);
+  key.castShadow = true;
+  key.shadow.mapSize.set(2048, 2048);
+  key.shadow.camera.left = -1.5; key.shadow.camera.right = 1.5; key.shadow.camera.top = 1.5; key.shadow.camera.bottom = -1.5;
+  key.shadow.bias = -0.0004; key.shadow.radius = 6;
+  scene.add(key);
+  const fill = new THREE.DirectionalLight(0xdfe8ff, 0.18);
+  fill.position.set(2.5, 1.2, 2.0);
+  scene.add(fill);
+  const rimL = new THREE.SpotLight(0xff6a1a, 7, 9, 0.38, 0.6, 2);
+  rimL.position.set(-1.6, 2.4, -2.0);
+  rimL.target.position.set(0, 0.55, 0);
+  scene.add(rimL, rimL.target);
+  const rimR = new THREE.SpotLight(0xffa040, 5, 9, 0.38, 0.6, 2);
+  rimR.position.set(1.8, 2.0, -1.6);
+  rimR.target.position.set(0, 0.6, 0);
+  scene.add(rimR, rimR.target);
+  const under = new THREE.PointLight(0xff5a14, 0.05, 0.8, 2);
+  under.position.set(0, 0.06, 0.15);
+  scene.add(under);
+
+  // Suelo negro que se funde con el fondo en los bordes (sin horizonte visible) y recibe la sombra.
+  function floorMaterial() {
+    const c = document.createElement('canvas');
+    c.width = c.height = 256;
+    const g = c.getContext('2d');
+    const grad = g.createRadialGradient(128, 128, 0, 128, 128, 128);
+    grad.addColorStop(0, '#fff');
+    grad.addColorStop(0.35, '#888');
+    grad.addColorStop(1, '#000');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, 256, 256);
+    return new THREE.MeshStandardMaterial({ color: 0x0a0604, roughness: 0.6, metalness: 0, envMapIntensity: 0.0, alphaMap: new THREE.CanvasTexture(c), transparent: true });
+  }
+  const floor = new THREE.Mesh(
+    new THREE.CircleGeometry(2.2, 96),
+    floorMaterial(),
+  );
+  floor.rotation.x = -Math.PI / 2;
+  floor.receiveShadow = true;
+  if (!alpha) scene.add(floor);
+
+  // Halo naranja detrás del robot.
+  if (!alpha) {
+    const c = document.createElement('canvas');
+    c.width = c.height = 512;
+    const g = c.getContext('2d');
+    const grad = g.createRadialGradient(256, 256, 0, 256, 256, 256);
+    grad.addColorStop(0, 'rgba(255,120,36,0.30)');
+    grad.addColorStop(0.3, 'rgba(230,80,20,0.10)');
+    grad.addColorStop(0.65, 'rgba(90,26,6,0.025)');
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    g.fillStyle = grad;
+    g.fillRect(0, 0, 512, 512);
+    const halo = new THREE.Mesh(
+      new THREE.PlaneGeometry(3.0, 3.0),
+      new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), transparent: true, depthWrite: false, toneMapped: false }),
+    );
+    halo.name = 'halo';
+    scene.add(halo);
+  }
+
+  // Plataforma: disco oscuro con anillo emisivo y puntos, como en el carrusel del catálogo.
+  if (platform) {
+    const plat = new THREE.Group();
+    const disc = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.34, 0.36, 0.018, 128),
+      new THREE.MeshStandardMaterial({ color: 0x0c0705, roughness: 0.8, metalness: 0.1, envMapIntensity: 0.2 }),
+    );
+    disc.position.y = 0.009;
+    disc.receiveShadow = true;
+    plat.add(disc);
+    const ring = new THREE.Mesh(
+      new THREE.TorusGeometry(0.355, 0.0045, 16, 256),
+      new THREE.MeshBasicMaterial({ color: new THREE.Color(1.0, 0.42, 0.12).multiplyScalar(4), toneMapped: false }),
+    );
+    ring.rotation.x = Math.PI / 2;
+    ring.position.y = 0.019;
+    plat.add(ring);
+    const ring2 = new THREE.Mesh(
+      new THREE.TorusGeometry(0.52, 0.002, 8, 256),
+      new THREE.MeshBasicMaterial({ color: new THREE.Color(1.0, 0.36, 0.1).multiplyScalar(1.6), toneMapped: false }),
+    );
+    ring2.rotation.x = Math.PI / 2;
+    ring2.position.y = 0.002;
+    plat.add(ring2);
+    const dotGeo = new THREE.SphereGeometry(0.0045, 8, 8);
+    const dotMat = new THREE.MeshBasicMaterial({ color: new THREE.Color(1.0, 0.45, 0.15).multiplyScalar(2.4), toneMapped: false });
+    for (let i = 0; i < 48; i++) {
+      const a = (i / 48) * Math.PI * 2;
+      const d = new THREE.Mesh(dotGeo, dotMat);
+      d.position.set(Math.cos(a) * 0.44, 0.004, Math.sin(a) * 0.44);
+      plat.add(d);
+    }
+    scene.add(plat);
+  }
+
+  const camera = new THREE.PerspectiveCamera(Number(q.get('fov') || 30), W / H, 0.05, 50);
+
+  const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+  const gltf = await loader.loadAsync(`/public/models/${q.get('model') || 'fr5'}.glb`);
+  const robot = gltf.scene;
+
+  // Pintura blanca satinada de fundición, como el color oficial del URDF.
+  robot.traverse((o) => {
+    if (o.isMesh) {
+      const base = o.material.color.clone();
+      o.material = new THREE.MeshPhysicalMaterial({
+        color: base,
+        roughness: 0.38,
+        metalness: 0.0,
+        clearcoat: 0.35,
+        clearcoatRoughness: 0.3,
+        sheen: 0.0,
+      });
+      o.castShadow = true;
+      o.receiveShadow = true;
+    }
+  });
+
+  // Postura: ángulo de cada articulación sobre su eje real.
+  let idx = 0;
+  robot.traverse((o) => {
+    if (o.name.endsWith('_rot') && o.userData.axis) {
+      const ang = pose[idx++] ?? 0;
+      o.quaternion.setFromAxisAngle(new THREE.Vector3(...o.userData.axis).normalize(), ang);
+    }
+  });
+  robot.rotation.y = Number(q.get('yaw') || 0);
+  scene.add(robot);
+  robot.updateMatrixWorld(true);
+
+  // Encuadre automático sobre la caja del robot.
+  const box = new THREE.Box3().setFromObject(robot);
+  const center = box.getCenter(new THREE.Vector3());
+  const size = box.getSize(new THREE.Vector3());
+  const target = new THREE.Vector3(center.x, center.y * Number(q.get('ty') || 0.92), center.z);
+  const r = Math.max(size.x, size.y, size.z) * dist;
+  const azr = THREE.MathUtils.degToRad(az), elr = THREE.MathUtils.degToRad(el);
+  camera.position.set(target.x + r * Math.cos(elr) * Math.sin(azr), target.y + r * Math.sin(elr), target.z + r * Math.cos(elr) * Math.cos(azr));
+  camera.lookAt(target);
+  const halo = scene.getObjectByName('halo');
+  if (halo) {
+    const dir = new THREE.Vector3().subVectors(target, camera.position).setY(0).normalize();
+    halo.position.copy(target).addScaledVector(dir, 1.3).setY(target.y * 0.95);
+    halo.lookAt(camera.position.x, halo.position.y, camera.position.z);
+  }
+
+  const composer = new EffectComposer(renderer);
+  composer.setPixelRatio(1);
+  composer.setSize(W, H);
+  composer.addPass(new RenderPass(scene, camera));
+  if (!alpha) composer.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), 0.42, 0.35, 1.3));
+  composer.addPass(new OutputPass());
+  composer.render();
+  window.__info = { size: size.toArray(), center: center.toArray() };
+  window.__done = true;
+</script>
+</body>
+</html>
