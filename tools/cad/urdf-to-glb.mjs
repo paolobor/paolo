@@ -22,6 +22,7 @@ const MODELS = {
   fr3wms: 'FR3WMS',
   fr3wml: 'FR3WML',
   fr5: 'fairino5_v6',
+  fr5wml: 'FR5WML',
   fr10: 'fairino10_v6',
   fr16: 'fairino16_v6',
   fr20: 'fairino20_v6',

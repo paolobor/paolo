@@ -1,0 +1,15 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Configurator from '../components/home/Configurator.astro';
+import ContactBand from '../components/home/ContactBand.astro';
+---
+
+<BaseLayout
+  title="Configurador de célula robotizada"
+  description="Elige cobot FAIRINO, versión, controlador y accesorios y pide presupuesto de tu célula en un minuto, por formulario o WhatsApp."
+  overlayHeader
+>
+  <div class="pt-10"></div>
+  <Configurator standalone />
+  <ContactBand configuratorHref="#configurador" />
+</BaseLayout>

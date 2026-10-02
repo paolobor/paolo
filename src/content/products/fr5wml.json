@@ -1,33 +1,33 @@
 {
-  "name": "FR20",
+  "name": "FR5WML",
   "category": "cobot",
-  "order": 9,
-  "tagline": "El mayor alcance de la gama: 1854 mm con 20 kg de carga.",
-  "description": "Plataforma potente y escalable que da a integradores y usuarios finales una solución eficaz. Con los componentes propios de FAIRINO, lleva la robótica flexible a escenarios que piden mucho alcance.",
+  "order": 6,
+  "tagline": "El mayor alcance de la serie FR: 1900 mm con 5 kg de carga.",
+  "description": "Versión de largo alcance de la familia FR5, con 1900 mm de radio de trabajo, uno de los mayores del mercado de cobots. Pensado para soldadura y aplicaciones que necesitan cubrir piezas grandes o varias estaciones desde un mismo punto.",
   "highlights": [],
   "images": [
     {
-      "src": "../../assets/products/fr20/fr20-provisional-3d.png",
-      "alt": "Cobot FAIRINO FR20 (imagen provisional del modelo 3D oficial)"
+      "src": "../../assets/products/fr5wml/fr5wml-provisional-3d.png",
+      "alt": "Cobot FAIRINO FR5WML (imagen provisional del modelo 3D oficial)"
     }
   ],
-  "payloadKg": 20,
-  "reachMm": 1854,
+  "payloadKg": 5,
+  "reachMm": 1900,
   "repeatabilityMm": 0.1,
   "specs": [
     {
       "label": "Carga útil",
-      "value": 20,
+      "value": 5,
       "unit": "kg"
     },
     {
       "label": "Carga máxima",
-      "value": 25,
+      "value": null,
       "unit": "kg"
     },
     {
       "label": "Alcance",
-      "value": 1854,
+      "value": 1900,
       "unit": "mm"
     },
     {
@@ -37,7 +37,7 @@
     },
     {
       "label": "Peso",
-      "value": "≈ 85",
+      "value": "≤ 45",
       "unit": "kg"
     },
     {
@@ -49,8 +49,8 @@
       "value": "IP54 (IP65 opcional)"
     },
     {
-      "label": "Velocidad TCP típica",
-      "value": "2",
+      "label": "Velocidad TCP máxima",
+      "value": 2,
       "unit": "m/s"
     },
     {
@@ -59,25 +59,25 @@
     },
     {
       "label": "Temperatura de trabajo",
-      "value": "0–45 °C"
+      "value": null
     },
     {
       "label": "Consumo medio típico",
-      "value": 620,
+      "value": null,
       "unit": "W"
     },
     {
       "label": "Controlador",
-      "value": "AC/DC Controller 5KW"
+      "value": "AC/DC Mini Controller 2KW"
     }
   ],
   "applications": [
-    "paletizado",
+    "soldadura",
     "manipulacion"
   ],
   "compatibleWith": [
-    "ac-controller-5kw",
-    "dc-controller-5kw"
+    "ac-mini-controller-2kw",
+    "dc-mini-controller-2kw"
   ],
   "downloads": [
     {
@@ -117,13 +117,8 @@
     ],
     "price": 0
   },
-  "source": {
-    "url": "https://fairino.es/ https://www.frtech.fr/FR/1.html https://fairino.info/cobots/fairino-fr20",
-    "verified": false
-  },
-  "seo": {},
   "store": {
-    "sku": "FR20",
+    "sku": "FR5 WML",
     "price": 0,
     "shipping": 0,
     "versions": [
@@ -139,5 +134,10 @@
       }
     ],
     "shopifyVariantId": null
-  }
+  },
+  "source": {
+    "url": "https://www.fairino.us/collaborative-robot/fairino/fr5-wml https://www.fairino.info/en/cobots/fairino-fr5-wml https://rbtx.sg/en-SG/components/cobots/fairino-fr5-wml-6dof-1900mm-5kg",
+    "verified": false
+  },
+  "seo": {}
 }

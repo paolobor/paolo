@@ -49,7 +49,7 @@ export const valueCards = [
   {
     icon: 'layers',
     title: 'Toda la gama FAIRINO',
-    text: 'Nueve cobots, cuatro controladores y los accesorios oficiales. Eliges lo que necesitas y nada más.',
+    text: 'Diez cobots, cuatro controladores y los accesorios oficiales. Eliges lo que necesitas y nada más.',
     cta: { label: 'Ver productos', href: 'cobots/' },
   },
   {
