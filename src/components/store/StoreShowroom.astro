@@ -205,16 +205,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
         </div>
       ))
     }
-
-    <div class="mt-7 flex items-center justify-center gap-2" role="tablist" aria-label="Elegir cobot">
-      {
-        slides.map((s) => (
-          <button type="button" role="tab" class="dot" aria-label={s.name} aria-selected={s.i === 0 ? 'true' : 'false'} data-dot={s.i}>
-            <span class="sr-only">{s.name}</span>
-          </button>
-        ))
-      }
-    </div>
   </div>
 
   <div class="container-x flex flex-col gap-1 border-t border-white/10 py-4 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-mist/70 md:flex-row md:justify-between">
@@ -718,20 +708,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
     outline: 3px solid var(--color-signal);
     outline-offset: 2px;
   }
-  .dot {
-    width: 0.55rem;
-    height: 0.55rem;
-    border-radius: 999px;
-    background: rgb(255 255 255 / 0.2);
-    transition:
-      width 0.3s,
-      background-color 0.3s;
-  }
-  .dot[aria-selected='true'] {
-    width: 2rem;
-    background: var(--color-signal);
-    box-shadow: 0 0 12px var(--color-signal);
-  }
   .info:not([hidden]) {
     animation: info-in 0.5s var(--ease-out-soft);
   }
@@ -809,7 +785,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
   if (root) {
     const robots = [...root.querySelectorAll<HTMLElement>('[data-robot]')];
     const infos = [...root.querySelectorAll<HTMLElement>('[data-info]')];
-    const dots = [...root.querySelectorAll<HTMLButtonElement>('[data-dot]')];
     const ghost = root.querySelector<HTMLElement>('[data-ghost]');
     const count = root.querySelector<HTMLElement>('[data-count]');
     const specs = document.querySelector<HTMLElement>('[data-specs]');
@@ -850,7 +825,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
       index = (i + n) % n;
       layout();
       infos.forEach((el, k) => (el.hidden = k !== index));
-      dots.forEach((d, k) => d.setAttribute('aria-selected', String(k === index)));
       if (count) count.textContent = String(index + 1).padStart(2, '0');
       sides.forEach((b) => {
         const dir = Number(b.dataset.side);
@@ -892,7 +866,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
       lastFocus?.focus();
     };
 
-    dots.forEach((d) => d.addEventListener('click', () => show(Number(d.dataset.dot))));
     // Si el gesto fue un deslizamiento, no cuenta también como clic en la zona lateral.
     let swiped = false;
     sides.forEach((b) =>
