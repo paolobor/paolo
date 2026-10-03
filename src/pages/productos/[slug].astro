@@ -11,6 +11,7 @@ import { applications } from '../../data/applications';
 import { site } from '../../data/site';
 import { getProducts, categoryMeta, accessoryGroups, type Product } from '../../lib/catalog';
 import { url, whatsappLink, formatNumber } from '../../lib/url';
+import { SCENE_WIDTHS } from '../../lib/images';
 
 export const getStaticPaths = (async () => {
   const products = await getProducts();
@@ -94,9 +95,10 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
                   <Picture
                     src={img.src}
                     alt={img.alt}
-                    widths={img.illustrative ? [800, 1200, 1800] : [480, 800, 1200]}
+                    widths={img.illustrative ? SCENE_WIDTHS : [480, 800, 1200]}
                     sizes="(min-width: 1024px) 50vw, 100vw"
-                    formats={['avif', 'webp']}
+                    formats={img.illustrative ? ['webp'] : ['avif', 'webp']}
+                    fallbackFormat={img.illustrative ? 'webp' : undefined}
                     loading={i === 0 ? 'eager' : 'lazy'}
                     class:list={['size-full', img.illustrative ? 'object-cover' : 'object-contain']}
                     pictureAttributes={{ class: 'block size-full' }}
@@ -127,9 +129,10 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
                     <Picture
                       src={img.src}
                       alt=""
-                      widths={[160, 320]}
+                      widths={img.illustrative ? SCENE_WIDTHS.slice(0, 1) : [160, 320]}
                       sizes="160px"
-                      formats={['avif', 'webp']}
+                      formats={img.illustrative ? ['webp'] : ['avif', 'webp']}
+                      fallbackFormat={img.illustrative ? 'webp' : undefined}
                       class:list={['size-full', img.illustrative ? 'rounded-lg object-cover' : 'object-contain']}
                       pictureAttributes={{ class: 'block size-full' }}
                     />
@@ -269,15 +272,19 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
           d.downloads.map((dl) => (
             <li>
               {dl.href ? (
-                <a href={dl.href.startsWith('http') ? dl.href : url(dl.href)} class="card card-hover flex h-full items-center gap-4 p-5" download>
+                <a
+                  href={dl.href.startsWith('http') ? dl.href : url(dl.href)}
+                  class="card card-hover flex h-full items-center gap-4 p-5"
+                  {...(dl.href.startsWith('http') ? { target: '_blank', rel: 'noopener' } : { download: true })}
+                >
                   <span class="grid size-11 shrink-0 place-items-center rounded-xl bg-brand-50 text-brand">
                     <Icon name={downloadIcon[dl.type] ?? 'download'} size={22} />
                   </span>
                   <span class="grid">
                     <span class="font-semibold">{dl.label}</span>
-                    <span class="font-mono text-xs text-muted">{d.name}</span>
+                    <span class="font-mono text-xs text-muted">{dl.href.startsWith('http') ? 'Documentación oficial FAIRINO' : d.name}</span>
                   </span>
-                  <Icon name="download" size={18} class="ml-auto text-brand" />
+                  <Icon name={dl.href.startsWith('http') ? 'arrow-up-right' : 'download'} size={18} class="ml-auto shrink-0 text-brand" />
                 </a>
               ) : (
                 <div class="card flex h-full items-center gap-4 p-5">

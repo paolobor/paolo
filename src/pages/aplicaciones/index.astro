@@ -1,0 +1,95 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import Icon from '../../components/ui/Icon.astro';
+import SmartImage from '../../components/ui/SmartImage.astro';
+import IllustrativeBadge from '../../components/ui/IllustrativeBadge.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import ContactBand from '../../components/home/ContactBand.astro';
+import { applications } from '../../data/applications';
+import { industries } from '../../data/industries';
+import { getProducts } from '../../lib/catalog';
+import { isIllustrative } from '../../lib/images';
+import { url } from '../../lib/url';
+
+const cobots = await getProducts('cobot');
+const cobotsFor = (slug: string) => cobots.filter((c) => c.data.applications.includes(slug)).map((c) => c.data.name);
+---
+
+<BaseLayout
+  title="Aplicaciones de los cobots FAIRINO"
+  description="Soldadura, paletizado, pick & place, carga de máquinas, manipulación, lijado, encolado y pintura con cobots FAIRINO. Qué modelo encaja en cada tarea."
+>
+  <PageHero
+    crumbs={[{ label: 'Aplicaciones' }]}
+    eyebrow="Soluciones"
+    title="Qué puede automatizar un cobot FAIRINO"
+    lead="Ocho tareas en las que un cobot rinde desde el primer turno. En cada una te contamos qué hace, qué modelo recomendamos y con qué accesorios."
+  />
+
+  <section class="section" aria-label="Aplicaciones">
+    <div class="container-x">
+      <ul class="grid gap-5 md:grid-cols-2">
+        {
+          applications.map((a, i) => {
+            const names = cobotsFor(a.slug);
+            return (
+              <li data-reveal style={`--reveal-delay:${(i % 2) * 80}ms`}>
+                <a href={url(`aplicaciones/${a.slug}/`)} class="card card-hover group grid h-full overflow-hidden sm:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)]">
+                  <div class="relative aspect-[16/10] overflow-hidden sm:aspect-auto sm:min-h-[15rem]">
+                    <SmartImage src={a.image} alt="" hint={a.imageHint} tone="dark" position={a.imagePosition} widths={[400, 640, 900]} sizes="(min-width: 768px) 25vw, 100vw" class="transition-transform duration-500 group-hover:scale-105" />
+                    {a.image && isIllustrative(a.image) && <IllustrativeBadge class="bottom-2 left-2 text-[0.55rem]!" />}
+                  </div>
+                  <div class="flex flex-col gap-3 p-6">
+                    <span class="grid size-10 place-items-center rounded-lg bg-signal/10 text-signal">
+                      <Icon name={a.icon} size={20} />
+                    </span>
+                    <h2 class="text-xl font-bold group-hover:text-brand" style="font-stretch:115%">{a.name}</h2>
+                    <p class="text-sm text-muted">{a.short}</p>
+                    {names.length > 0 && (
+                      <p class="flex flex-wrap gap-1.5">
+                        {names.map((n) => <span class="chip">{n}</span>)}
+                      </p>
+                    )}
+                    <span class="link-arrow mt-auto pt-1 text-sm">Ver aplicación <Icon name="arrow-right" size={16} /></span>
+                  </div>
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section bg-paper" aria-labelledby="ind-title">
+    <div class="container-x">
+      <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <SectionHeading id="ind-title" eyebrow="Industrias" title="Por sector" lead="Las mismas aplicaciones se repiten en sectores muy distintos." />
+        <a href={url('industrias/')} class="link-arrow shrink-0" data-reveal>Ver industrias <Icon name="arrow-right" size={17} /></a>
+      </div>
+      <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {
+          industries.map((ind, i) => (
+            <li data-reveal style={`--reveal-delay:${i * 70}ms`}>
+              <a href={url(`industrias/#${ind.slug}`)} class="card card-hover grid h-full content-start gap-3 p-6">
+                <Icon name={ind.icon} size={26} class="text-signal" />
+                <span class="font-display text-lg font-bold" style="font-stretch:115%">{ind.name}</span>
+                <span class="text-sm text-muted">{ind.scenarios.slice(0, 3).join(' · ')}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="card mt-10 flex flex-col items-start gap-4 p-6 md:flex-row md:items-center md:justify-between" data-reveal>
+        <div class="grid gap-1">
+          <p class="font-display text-xl font-bold" style="font-stretch:115%">¿Tu tarea no está en la lista?</p>
+          <p class="text-muted">Cuéntanos qué quieres automatizar y te decimos si un cobot encaja y con qué equipo.</p>
+        </div>
+        <a href={url('contacto/?asunto=aplicacion')} class="btn btn-primary shrink-0">Consultar mi caso</a>
+      </div>
+    </div>
+  </section>
+
+  <ContactBand />
+</BaseLayout>

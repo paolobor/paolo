@@ -3,8 +3,8 @@ title: 'Cómo elegir la carga útil y el alcance de un cobot sin quedarte corto'
 description: 'Qué incluir en la carga útil, cómo medir el alcance real que necesitas y por qué conviene dejar margen al elegir modelo.'
 date: 2026-09-22
 category: 'Guías'
-cover: null
-coverAlt: 'Brazo robótico con garra sujetando una pieza'
+cover: 'products/fr16/fairino-fr16-escena-manipulacion.webp'
+coverAlt: 'Cobot FAIRINO FR16 con garra cogiendo piezas mecanizadas de una bandeja sobre un palé'
 ---
 
 Elegir modelo por el nombre (3, 5, 10, 16, 20 o 30) es tentador, pero la cifra que importa es la **carga real en la muñeca** y el **alcance real del trabajo**.

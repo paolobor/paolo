@@ -1,0 +1,77 @@
+---
+import LegalPage from '../components/legal/LegalPage.astro';
+import LegalHolder from '../components/legal/LegalHolder.astro';
+import { site } from '../data/site';
+import { url } from '../lib/url';
+
+const l = site.legal;
+---
+
+<LegalPage title="Política de privacidad" description="Cómo trata FAIRINO España los datos personales que nos facilitas en la web: finalidades, base legal, plazos y derechos." updated="3 de octubre de 2026">
+  <p>
+    Esta política explica cómo tratamos los datos personales que nos facilitas a través de esta web, conforme al Reglamento (UE) 2016/679
+    (RGPD) y a la Ley Orgánica 3/2018 de Protección de Datos Personales y garantía de los derechos digitales (LOPDGDD).
+  </p>
+
+  <h2>1. Responsable del tratamiento</h2>
+  <LegalHolder />
+
+  <h2>2. Qué datos tratamos y para qué</h2>
+  <table>
+    <thead>
+      <tr><th>Formulario</th><th>Datos</th><th>Finalidad</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Contacto</td><td>Nombre, apellidos, correo, teléfono, empresa, población y mensaje</td><td>Responder a tu consulta.</td></tr>
+      <tr><td>Configurador y presupuesto</td><td>Datos de contacto y configuración elegida</td><td>Prepararte un presupuesto.</td></tr>
+      <tr><td>Pedido de la tienda</td><td>Datos de facturación y entrega, y productos</td><td>Gestionar el pedido, la entrega y la facturación.</td></tr>
+      <tr><td>Reservar cita</td><td>Datos de contacto, fecha y franja preferidas</td><td>Organizar la visita o la videollamada.</td></tr>
+      <tr><td>Validar garantía</td><td>Datos del titular, CIF, número de serie, fecha de compra y vendedor</td><td>Registrar y gestionar la garantía del cobot.</td></tr>
+      <tr><td>Boletín</td><td>Correo electrónico</td><td>Enviarte novedades de FAIRINO España, si te suscribes.</td></tr>
+    </tbody>
+  </table>
+  <p>Los campos marcados con asterisco son necesarios para atender tu solicitud. No tomamos decisiones automatizadas ni elaboramos perfiles.</p>
+
+  <h2>3. Base legal</h2>
+  <ul>
+    <li><b>Consentimiento</b>: consultas, citas y boletín. Puedes retirarlo cuando quieras.</li>
+    <li><b>Medidas precontractuales y contrato</b>: presupuestos, pedidos y garantía.</li>
+    <li><b>Obligación legal</b>: conservación de facturas y documentación contable y fiscal.</li>
+  </ul>
+
+  <h2>4. Cuánto tiempo los conservamos</h2>
+  <p>
+    Mientras dure la relación o el tiempo necesario para atender tu solicitud y, después, durante los plazos legales de prescripción.
+    Los datos de facturación se conservan el tiempo que exige la normativa fiscal y mercantil. Los del boletín, hasta que te des de baja.
+  </p>
+
+  <h2>5. Destinatarios</h2>
+  <p>No cedemos tus datos a terceros salvo obligación legal. Para prestar el servicio usamos estos proveedores, que actúan como encargados del tratamiento:</p>
+  <ul>
+    <li>servicio de envío de formularios <span class="todo">[DATO: proveedor elegido, p. ej. Web3Forms]</span>;</li>
+    <li>alojamiento de la web <span class="todo">[DATO: proveedor de alojamiento]</span>;</li>
+    <li>correo electrónico <span class="todo">[DATO: proveedor de correo]</span>.</li>
+  </ul>
+  <p>
+    Si alguno de ellos trata datos fuera del Espacio Económico Europeo, lo hace con las garantías del RGPD (decisión de adecuación o
+    cláusulas contractuales tipo). Si decides escribirnos por WhatsApp, ese servicio lo presta Meta Platforms Ireland Ltd. con sus propias
+    condiciones.
+  </p>
+
+  <h2>6. Tus derechos</h2>
+  <p>
+    Puedes ejercer tus derechos de acceso, rectificación, supresión, oposición, limitación del tratamiento y portabilidad escribiendo a
+    <a href={`mailto:${l.email}`}>{l.email}</a> o al domicilio del responsable, indicando qué derecho quieres ejercer. Si consideras que no
+    hemos tratado bien tus datos, puedes reclamar ante la Agencia Española de Protección de Datos
+    (<a href="https://www.aepd.es" target="_blank" rel="noopener">www.aepd.es</a>).
+  </p>
+
+  <h2>7. Seguridad</h2>
+  <p>
+    Aplicamos medidas técnicas y organizativas adecuadas para proteger tus datos frente a pérdida, uso indebido o acceso no autorizado. La
+    web se sirve por conexión cifrada (HTTPS).
+  </p>
+
+  <h2>8. Cookies</h2>
+  <p>Consulta la <a href={url('politica-de-cookies/')}>política de cookies</a>.</p>
+</LegalPage>

@@ -9,6 +9,21 @@
     {
       "src": "../../assets/products/fr30/fr30-provisional-3d.png",
       "alt": "Cobot FAIRINO FR30 (imagen provisional del modelo 3D oficial)"
+    },
+    {
+      "src": "../../assets/products/fr30/fairino-fr30-escena-producto.webp",
+      "alt": "Cobot FAIRINO FR30 sobre una peana en una sala de exposición con luz naranja de fondo",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fr30/fairino-fr30-escena-paletizado.webp",
+      "alt": "Cobot FAIRINO FR30 con pinza de ventosas paletizando sacos desde una cinta de rodillos",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fr30/fairino-fr30-escena-manipulacion.webp",
+      "alt": "Cobot FAIRINO FR30 con garra levantando una pieza de fundición en una nave",
+      "illustrative": true
     }
   ],
   "payloadKg": 30,
@@ -88,17 +103,17 @@
     {
       "label": "Manual de usuario",
       "type": "manual",
-      "href": null
+      "href": "https://fairino-doc-en.readthedocs.io/latest/"
     },
     {
       "label": "Plano acotado",
       "type": "cad",
-      "href": null
+      "href": "https://fairino-doc-en.readthedocs.io/latest/_downloads/acac4f18e462155ccb5485aa2cbb5f75/FR30%20Drawings.zip"
     },
     {
       "label": "Modelo 3D (STEP)",
       "type": "cad",
-      "href": null
+      "href": "https://fairino-doc-en.readthedocs.io/latest/_downloads/49cdf31534d0899683fd176e86a223d1/FRCobots-V6.0%20STEP%20Models.zip"
     }
   ],
   "configurator": {

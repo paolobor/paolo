@@ -23,6 +23,18 @@ export const site = {
       'https://www.google.com/maps/search/?api=1&query=Avenida+de+la+Estaci%C3%B3n+12+45520+Villaluenga+de+la+Sagra+Toledo',
   },
 
+  // Titular del sitio para el aviso legal y la privacidad. Datos tomados del aviso legal actual de fairino.es,
+  // que no coinciden con legalName: confirmar con FAIRINO España y poner confirmed: true.
+  legal: {
+    holder: 'FDI QUALITY IMPORT S.L.',
+    taxId: 'B13956479',
+    address: 'Calle Málaga, 3, nave 13 (Pol. Ind. La Carrehuela), 28343 Valdemoro (Madrid)',
+    email: 'info@fdi-qi.com',
+    phone: '630 832 586',
+    registry: null as string | null, // [DATO: datos del Registro Mercantil]
+    confirmed: false,
+  },
+
   contacts: [
     { email: 'po@fairino.es', phone: '+34 627 775 294', tel: '+34627775294' },
     { email: 'fd@fairino.es', phone: '+34 630 832 586', tel: '+34630832586' },

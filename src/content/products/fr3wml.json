@@ -9,6 +9,21 @@
     {
       "src": "../../assets/products/fr3wml/fr3wml-provisional-3d.png",
       "alt": "Cobot FAIRINO FR3WML (imagen provisional del modelo 3D oficial)"
+    },
+    {
+      "src": "../../assets/products/fr3wml/fairino-fr3wml-escena-producto.webp",
+      "alt": "Cobot FAIRINO FR3WML sobre una peana en una sala de exposición con luz naranja de fondo",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fr3wml/fairino-fr3wml-escena-soldadura-tuberia.webp",
+      "alt": "Cobot FAIRINO FR3WML soldando con TIG un codo de tubo de acero inoxidable montado en un posicionador",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fr3wml/fairino-fr3wml-escena-soldadura.webp",
+      "alt": "Cobot FAIRINO FR3WML soldando una pieza de chapa en una mesa de soldadura con aspiración de humos",
+      "illustrative": true
     }
   ],
   "payloadKg": 3,
@@ -87,7 +102,7 @@
     {
       "label": "Manual de usuario",
       "type": "manual",
-      "href": null
+      "href": "https://fairino-doc-en.readthedocs.io/latest/"
     },
     {
       "label": "Plano acotado",

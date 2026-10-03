@@ -9,6 +9,21 @@
     {
       "src": "../../assets/products/fr5wml/fr5wml-provisional-3d.png",
       "alt": "Cobot FAIRINO FR5WML (imagen provisional del modelo 3D oficial)"
+    },
+    {
+      "src": "../../assets/products/fr5wml/fairino-fr5wml-escena-producto.webp",
+      "alt": "Cobot FAIRINO FR5WML sobre una peana en una sala de exposición con luz naranja de fondo",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fr5wml/fairino-fr5wml-escena-soldadura.webp",
+      "alt": "Cobot FAIRINO FR5WML soldando un bastidor de tubo de acero en una mesa de soldadura grande",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fr5wml/fairino-fr5wml-escena-manipulacion.webp",
+      "alt": "Cobot FAIRINO FR5WML con garra eléctrica cogiendo perfiles de aluminio de un estante junto a una tronzadora",
+      "illustrative": true
     }
   ],
   "payloadKg": 5,
@@ -88,7 +103,7 @@
     {
       "label": "Manual de usuario",
       "type": "manual",
-      "href": null
+      "href": "https://fairino-doc-en.readthedocs.io/latest/"
     },
     {
       "label": "Plano acotado",

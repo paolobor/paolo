@@ -1,0 +1,97 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/ui/PageHero.astro';
+import Icon from '../../components/ui/Icon.astro';
+import SmartImage from '../../components/ui/SmartImage.astro';
+import IllustrativeBadge from '../../components/ui/IllustrativeBadge.astro';
+import ContactBand from '../../components/home/ContactBand.astro';
+import { isIllustrative } from '../../lib/images';
+import { url } from '../../lib/url';
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const categories = [...new Set(posts.map((p) => p.data.category))];
+const df = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+const [first, ...rest] = posts;
+---
+
+<BaseLayout title="Blog: guías y novedades sobre cobots" description="Guías prácticas para elegir, configurar y poner en marcha cobots FAIRINO, y novedades de FAIRINO España.">
+  <PageHero crumbs={[{ label: 'Blog' }]} eyebrow="Blog" title="Guías y novedades" lead="Lo que conviene saber para elegir, configurar y sacar partido a un cobot." compact>
+    {
+      categories.length > 1 && (
+        <div class="flex flex-wrap gap-2 pt-2" role="group" aria-label="Filtrar por categoría">
+          <button type="button" class="btn btn-ghost btn-sm" aria-pressed="true" data-cat="">Todo</button>
+          {categories.map((c) => <button type="button" class="btn btn-ghost btn-sm" aria-pressed="false" data-cat={c}>{c}</button>)}
+        </div>
+      )
+    }
+  </PageHero>
+
+  <section class="section">
+    <div class="container-x grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {
+        first && (
+          <article class="card card-hover group overflow-hidden md:col-span-2 lg:col-span-3" data-post data-category={first.data.category}>
+            <a href={url(`blog/${first.id}/`)} class="grid lg:grid-cols-[1.4fr_1fr]">
+              <div class="relative aspect-[16/9] overflow-hidden">
+                <SmartImage src={first.data.cover} alt={first.data.coverAlt} widths={[640, 960, 1400]} sizes="(min-width: 1024px) 60vw, 100vw" class="transition-transform duration-500 group-hover:scale-105" eager />
+                {isIllustrative(first.data.cover) && <IllustrativeBadge />}
+              </div>
+              <div class="flex flex-col gap-4 p-6 md:p-8">
+                <p class="flex items-center gap-3 font-mono text-[0.7rem] uppercase tracking-[0.1em] text-muted">
+                  <span class="text-brand">{first.data.category}</span>
+                  <time datetime={first.data.date.toISOString()}>{df.format(first.data.date)}</time>
+                </p>
+                <h2 class="text-2xl font-bold leading-tight group-hover:text-brand md:text-3xl" style="font-stretch:112%">{first.data.title}</h2>
+                <p class="text-muted">{first.data.description}</p>
+                <span class="link-arrow mt-auto pt-2">Leer el artículo <Icon name="arrow-right" size={17} /></span>
+              </div>
+            </a>
+          </article>
+        )
+      }
+      {
+        rest.map((p) => (
+          <article class="card card-hover group flex flex-col overflow-hidden" data-post data-category={p.data.category}>
+            <a href={url(`blog/${p.id}/`)} class="flex flex-1 flex-col">
+              <div class="relative aspect-[16/9] overflow-hidden">
+                <SmartImage src={p.data.cover} alt={p.data.coverAlt} widths={[400, 640, 900]} sizes="(min-width: 768px) 33vw, 100vw" class="transition-transform duration-500 group-hover:scale-105" />
+                {isIllustrative(p.data.cover) && <IllustrativeBadge class="bottom-2 right-2 text-[0.55rem]!" />}
+              </div>
+              <div class="flex flex-1 flex-col gap-3 p-6">
+                <p class="flex items-center gap-3 font-mono text-[0.7rem] uppercase tracking-[0.1em] text-muted">
+                  <span class="text-brand">{p.data.category}</span>
+                  <time datetime={p.data.date.toISOString()}>{df.format(p.data.date)}</time>
+                </p>
+                <h2 class="text-lg font-bold leading-snug group-hover:text-brand" style="font-stretch:108%">{p.data.title}</h2>
+                <p class="text-sm text-muted">{p.data.description}</p>
+                <span class="link-arrow mt-auto pt-2 text-sm">Leer más <Icon name="arrow-right" size={16} /></span>
+              </div>
+            </a>
+          </article>
+        ))
+      }
+    </div>
+  </section>
+
+  <ContactBand />
+</BaseLayout>
+
+<script>
+  // Filtro por categoría sin recargar.
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-cat]');
+  buttons.forEach((b) =>
+    b.addEventListener('click', () => {
+      const cat = b.dataset.cat;
+      buttons.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      document.querySelectorAll<HTMLElement>('[data-post]').forEach((p) => (p.hidden = !!cat && p.dataset.category !== cat));
+    }),
+  );
+</script>
+
+<style>
+  [data-cat][aria-pressed='true'] {
+    border-color: var(--color-signal);
+    background: color-mix(in srgb, var(--color-signal) 18%, transparent);
+  }
+</style>

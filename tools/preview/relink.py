@@ -10,7 +10,7 @@ open(SOON, 'w').write('''<!doctype html><html lang="es"><head><meta charset="utf
 <style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#070504;color:#f5eee8;font:16px/1.6 system-ui,sans-serif;padding:24px}
 .c{max-width:520px;text-align:center}h1{font-size:2rem;margin:.2em 0}a{color:#ff7a1a}</style></head>
 <body><div class="c"><p style="color:#ff7a1a;letter-spacing:.2em;font-size:.75rem">FAIRINO SPAIN</p><h1>Página en construcción</h1>
-<p>Esta sección forma parte de la siguiente fase de la web. En la vista previa de momento están el inicio, la tienda, el catálogo, las fichas de producto, el configurador y el pedido.</p>
+<p>Esta página todavía no existe en la vista previa.</p>
 <p><a href="javascript:history.back()">Volver</a> · <a href="index.html">Inicio</a> · <a href="tienda/index.html">Tienda</a></p></div></body></html>''')
 
 def target(path):

@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import Icon from '../components/ui/Icon.astro';
+import { site } from '../data/site';
+import { organizationSchema } from '../lib/schema';
+import { url, whatsappLink } from '../lib/url';
+
+const subjects = [
+  { value: 'informacion', label: 'Información general' },
+  { value: 'presupuesto', label: 'Presupuesto' },
+  { value: 'aplicacion', label: 'Automatizar una tarea concreta' },
+  { value: 'soporte', label: 'Soporte técnico' },
+  { value: 'distribucion', label: 'Ser distribuidor o integrador' },
+  { value: 'otro', label: 'Otro' },
+];
+const a = site.address;
+---
+
+<BaseLayout
+  title="Contacto"
+  description={`Contacta con FAIRINO España: ${site.contacts[0].phone}, ${site.contacts[0].email}. ${a.street}, ${a.postalCode} ${a.city} (${a.region}).`}
+  jsonLd={organizationSchema(Astro.site!)}
+>
+  <PageHero
+    crumbs={[{ label: 'Contacto' }]}
+    eyebrow="Contacto"
+    title="Hablemos de tu proyecto"
+    lead="Cuéntanos qué quieres automatizar o qué producto te interesa. Te responde una persona del equipo técnico-comercial."
+  />
+
+  <section class="section">
+    <div class="container-x grid items-start gap-10 lg:grid-cols-[1fr_380px]">
+      <form class="card grid gap-6 p-6 md:p-8" data-form="contact" data-success={url('gracias/')} data-contact-form novalidate>
+        <h2 class="text-2xl font-bold" style="font-stretch:112%">Escríbenos</h2>
+        <div class="form-grid">
+          <div class="form-field"><label for="c-nombre">Nombre *</label><input id="c-nombre" name="nombre" required autocomplete="given-name" /></div>
+          <div class="form-field"><label for="c-apellidos">Apellidos</label><input id="c-apellidos" name="apellidos" autocomplete="family-name" /></div>
+          <div class="form-field"><label for="c-email">Correo electrónico *</label><input id="c-email" name="email" type="email" required autocomplete="email" /></div>
+          <div class="form-field"><label for="c-tel">Teléfono</label><input id="c-tel" name="telefono" type="tel" autocomplete="tel" /></div>
+          <div class="form-field"><label for="c-empresa">Empresa</label><input id="c-empresa" name="empresa" autocomplete="organization" /></div>
+          <div class="form-field"><label for="c-dir">Población o dirección de la empresa</label><input id="c-dir" name="direccion" autocomplete="address-level2" /></div>
+          <div class="form-field">
+            <label for="c-asunto">Asunto *</label>
+            <select id="c-asunto" name="asunto" required>
+              {subjects.map((s) => <option value={s.value}>{s.label}</option>)}
+            </select>
+          </div>
+          <div class="form-field"><label for="c-producto">Producto o aplicación</label><input id="c-producto" name="producto" placeholder="Ej.: FR5, soldadura, paletizado…" /></div>
+          <div class="form-field sm:col-span-2"><label for="c-msg">Mensaje *</label><textarea id="c-msg" name="mensaje" rows="5" required placeholder="Qué pieza o tarea, cuántas unidades, plazos…"></textarea></div>
+        </div>
+        <label class="form-check"><input type="checkbox" name="privacidad" required /><span>He leído y acepto la <a href={url('politica-de-privacidad/')} class="text-brand underline">política de privacidad</a>. *</span></label>
+        <input type="hidden" name="subject" value="Consulta web: Información general" />
+        <button type="submit" class="btn btn-primary justify-self-start"><Icon name="send" size={18} />Enviar mensaje</button>
+        <p class="text-sm text-muted" data-form-status aria-live="polite">Te responderemos lo antes posible, en horario laboral.</p>
+      </form>
+
+      <aside class="grid gap-4 lg:sticky lg:top-24" aria-label="Datos de contacto">
+        <div class="card grid gap-4 p-6">
+          <h2 class="flex items-center gap-2 font-display text-lg font-bold" style="font-stretch:112%"><Icon name="map-pin" size={20} class="text-signal" />Dónde estamos</h2>
+          <address class="not-italic leading-relaxed text-mist">
+            {site.legalName}<br />
+            {a.street}<br />
+            {a.postalCode} {a.city}<br />
+            {a.region} ({a.country})
+          </address>
+          <a href={a.mapsUrl} target="_blank" rel="noopener" class="link-arrow text-sm">Cómo llegar <Icon name="arrow-up-right" size={16} /></a>
+        </div>
+        <div class="card grid gap-4 p-6">
+          <h2 class="flex items-center gap-2 font-display text-lg font-bold" style="font-stretch:112%"><Icon name="phone" size={20} class="text-signal" />Teléfono y correo</h2>
+          <ul class="grid gap-3">
+            {
+              site.contacts.map((c) => (
+                <li class="grid gap-1">
+                  <a href={`tel:${c.tel}`} class="font-mono text-white hover:text-brand">{c.phone}</a>
+                  <a href={`mailto:${c.email}`} class="text-sm text-mist hover:text-brand">{c.email}</a>
+                </li>
+              ))
+            }
+          </ul>
+          <p class="text-sm text-muted"><Icon name="clock" size={15} class="mr-1 inline align-[-2px]" />Horario: <span class="todo">[DATO: horario de atención]</span></p>
+          <a href={whatsappLink(site.whatsapp.number, site.whatsapp.defaultMessage)} target="_blank" rel="noopener" class="btn btn-wa btn-sm justify-self-start"><Icon name="si:whatsapp" size={17} />WhatsApp</a>
+        </div>
+        <a href={url('reservar-cita/')} class="card card-hover grid gap-2 p-6">
+          <span class="flex items-center gap-2 font-display text-lg font-bold" style="font-stretch:112%"><Icon name="calendar" size={20} class="text-signal" />Ven a verlos funcionar</span>
+          <span class="text-sm text-muted">Reserva una visita a nuestras instalaciones o una videollamada.</span>
+        </a>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  // Rellena el formulario con lo que llega en la URL (?asunto=presupuesto&producto=FR5 o &aplicacion=Soldadura).
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+  if (form) {
+    const q = new URLSearchParams(location.search);
+    const asunto = form.querySelector<HTMLSelectElement>('[name="asunto"]')!;
+    const producto = form.querySelector<HTMLInputElement>('[name="producto"]')!;
+    const subject = form.querySelector<HTMLInputElement>('[name="subject"]')!;
+    const syncSubject = () => (subject.value = `Consulta web: ${asunto.selectedOptions[0]?.textContent ?? ''}`);
+    const a = q.get('asunto');
+    if (a && [...asunto.options].some((o) => o.value === a)) asunto.value = a;
+    const p = q.get('producto') || q.get('aplicacion');
+    if (p) producto.value = p;
+    syncSubject();
+    asunto.addEventListener('change', syncSubject);
+  }
+</script>

@@ -1,0 +1,49 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../ui/PageHero.astro';
+
+// Plantilla de las páginas legales: cabecera compacta y texto en columna de lectura.
+interface Props {
+  title: string;
+  description: string;
+  updated: string;
+}
+const { title, description, updated } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <PageHero crumbs={[{ label: title }]} eyebrow="Legal" title={title} compact>
+    <p class="font-mono text-xs uppercase tracking-[0.12em] text-mist">Última actualización: {updated}</p>
+  </PageHero>
+  <section class="section">
+    <div class="container-x">
+      <div class="prose-fairino legal">
+        <slot />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .legal :global(dl) {
+    display: grid;
+    gap: 0.5rem 1.5rem;
+    grid-template-columns: minmax(9rem, max-content) 1fr;
+  }
+  /* Las tablas se desplazan dentro de su caja en móvil, sin mover la página. */
+  .legal :global(table) {
+    display: block;
+    overflow-x: auto;
+  }
+  .legal :global(dt) {
+    color: var(--color-muted);
+  }
+  @media (max-width: 640px) {
+    .legal :global(dl) {
+      grid-template-columns: 1fr;
+    }
+    .legal :global(dd) {
+      margin-bottom: 0.5rem;
+    }
+  }
+</style>

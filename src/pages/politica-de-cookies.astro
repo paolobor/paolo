@@ -1,0 +1,45 @@
+---
+import LegalPage from '../components/legal/LegalPage.astro';
+import { url } from '../lib/url';
+---
+
+<LegalPage title="Política de cookies" description="Qué cookies y qué almacenamiento del navegador usa la web de FAIRINO España, para qué sirven y cómo cambiar tu elección." updated="3 de octubre de 2026">
+  <p>
+    Las cookies y tecnologías similares (como el almacenamiento local del navegador) son pequeños archivos o datos que una web guarda en tu
+    dispositivo. Esta política explica cuáles usamos, conforme al artículo 22.2 de la LSSI-CE y a la guía de la Agencia Española de
+    Protección de Datos.
+  </p>
+
+  <h2>1. Qué usamos</h2>
+  <p>Hoy la web solo usa almacenamiento técnico, propio y necesario para que funcione. No usamos cookies de análisis ni de publicidad.</p>
+  <table>
+    <thead>
+      <tr><th>Nombre</th><th>Tipo</th><th>Para qué</th><th>Duración</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>fairino-consent</code></td><td>Técnica, propia (almacenamiento local)</td><td>Recordar tu elección sobre cookies.</td><td>Hasta que la borres o cambies tu elección</td></tr>
+      <tr><td><code>fairino-cart</code></td><td>Técnica, propia (almacenamiento local)</td><td>Guardar los productos del carrito de la tienda.</td><td>Hasta que vacíes el carrito o lo borres</td></tr>
+      <tr><td><code>fairino-config</code></td><td>Técnica, propia (almacenamiento local)</td><td>Recordar la célula que has preparado en el configurador.</td><td>Hasta que la borres</td></tr>
+    </tbody>
+  </table>
+  <p>
+    Si en el futuro añadimos una herramienta de análisis o de marketing, se indicará aquí y solo se activará si la aceptas en el aviso de
+    cookies. <span class="todo">[DATO: herramienta de análisis, si se instala]</span>
+  </p>
+
+  <h2>2. Servicios de terceros</h2>
+  <p>
+    Algunos enlaces llevan a servicios externos (Google Maps, YouTube, WhatsApp, documentación de FAIRINO en Google Drive o GitHub). La web
+    no los incrusta: solo se cargan si haces clic, y entonces se aplican sus propias políticas de cookies.
+  </p>
+
+  <h2>3. Cómo cambiar tu elección</h2>
+  <p>
+    Puedes cambiar tu elección cuando quieras desde el enlace «Configurar cookies» del pie de página
+    <button type="button" class="font-semibold text-brand underline" data-cookie-settings>o desde aquí</button>. También puedes borrar el
+    almacenamiento y las cookies desde la configuración de tu navegador.
+  </p>
+
+  <h2>4. Más información</h2>
+  <p>Consulta la <a href={url('politica-de-privacidad/')}>política de privacidad</a> y el <a href={url('aviso-legal/')}>aviso legal</a>.</p>
+</LegalPage>

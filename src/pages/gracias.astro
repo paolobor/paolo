@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import Icon from '../components/ui/Icon.astro';
+import { url } from '../lib/url';
+
+const next = [
+  { icon: 'box', title: 'Ver los cobots', text: 'De 3 a 30 kg de carga útil.', href: 'cobots/' },
+  { icon: 'workflow', title: 'Aplicaciones', text: 'Qué puede automatizar un cobot.', href: 'aplicaciones/' },
+  { icon: 'newspaper', title: 'Blog', text: 'Guías para elegir y poner en marcha tu cobot.', href: 'blog/' },
+];
+---
+
+<BaseLayout title="Gracias" description="Hemos recibido tu mensaje. FAIRINO España te responderá lo antes posible." noindex>
+  <PageHero crumbs={[{ label: 'Gracias' }]} eyebrow="Recibido" title="Gracias, ya tenemos tu mensaje" lead="Te responderemos lo antes posible. Si es urgente, llámanos o escríbenos por WhatsApp." compact>
+    <p class="hidden text-mist" data-warranty-note>Te confirmaremos el registro de la garantía por correo.</p>
+  </PageHero>
+
+  <section class="section">
+    <div class="container-x grid gap-4 md:grid-cols-3">
+      {
+        next.map((n) => (
+          <a href={url(n.href)} class="card card-hover grid content-start gap-3 p-6">
+            <Icon name={n.icon} size={26} class="text-signal" />
+            <span class="font-display text-lg font-bold" style="font-stretch:115%">{n.title}</span>
+            <span class="text-sm text-muted">{n.text}</span>
+          </a>
+        ))
+      }
+    </div>
+    <div class="container-x mt-10">
+      <a href={url('/')} class="link-arrow">Volver al inicio <Icon name="arrow-right" size={17} /></a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  if (new URLSearchParams(location.search).get('origen') === 'garantia') document.querySelector('[data-warranty-note]')?.classList.remove('hidden');
+</script>

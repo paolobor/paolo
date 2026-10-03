@@ -59,6 +59,11 @@
       "label": "Manual de usuario",
       "type": "manual",
       "href": null
+    },
+    {
+      "label": "Modelo 3D",
+      "type": "cad",
+      "href": "https://drive.google.com/file/d/1KT3mn9AZTwHsZv8udhDRmrUmTsnMh2_I/view"
     }
   ],
   "configurator": {

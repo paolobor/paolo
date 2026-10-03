@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import Icon from '../components/ui/Icon.astro';
+import { site } from '../data/site';
+import { getProducts } from '../lib/catalog';
+import { url } from '../lib/url';
+
+const cobots = await getProducts('cobot');
+---
+
+<BaseLayout
+  title="Validar garantía"
+  description="Registra tu cobot FAIRINO comprado en España, Portugal o Italia para activar su garantía de 1 año."
+>
+  <PageHero
+    crumbs={[{ label: 'Validar garantía' }]}
+    eyebrow="Garantía"
+    title="Activa la garantía de tu cobot"
+    lead="Si has comprado un cobot FAIRINO en España, Portugal o Italia, registra aquí la compra para activar su garantía de 1 año."
+  />
+
+  <section class="section">
+    <div class="container-x grid items-start gap-10 lg:grid-cols-[1fr_380px]">
+      <form class="card grid gap-6 p-6 md:p-8" data-form="warranty" data-success={url('gracias/?origen=garantia')} novalidate>
+        <h2 class="text-2xl font-bold" style="font-stretch:112%">Datos del titular</h2>
+        <div class="form-grid">
+          <div class="form-field"><label for="g-nombre">Nombre *</label><input id="g-nombre" name="nombre" required autocomplete="given-name" /></div>
+          <div class="form-field"><label for="g-apellidos">Apellidos *</label><input id="g-apellidos" name="apellidos" required autocomplete="family-name" /></div>
+          <div class="form-field"><label for="g-empresa">Empresa *</label><input id="g-empresa" name="empresa" required autocomplete="organization" /></div>
+          <div class="form-field"><label for="g-cif">CIF / NIF *</label><input id="g-cif" name="cif" required /></div>
+          <div class="form-field sm:col-span-2"><label for="g-dir">Dirección *</label><input id="g-dir" name="direccion" required autocomplete="street-address" /></div>
+          <div class="form-field"><label for="g-email">Correo electrónico *</label><input id="g-email" name="email" type="email" required autocomplete="email" /></div>
+          <div class="form-field"><label for="g-tel">Teléfono de contacto *</label><input id="g-tel" name="telefono" type="tel" required autocomplete="tel" /></div>
+        </div>
+
+        <h2 class="text-2xl font-bold" style="font-stretch:112%">Datos del cobot</h2>
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="g-modelo">Modelo</label>
+            <select id="g-modelo" name="modelo">
+              <option value="">Selecciona…</option>
+              {cobots.map((c) => <option>{c.data.name}</option>)}
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="g-serie">Número de serie *</label>
+            <input id="g-serie" name="numero_serie" required />
+            <span class="help">Viene en la etiqueta del robot.</span>
+          </div>
+          <div class="form-field"><label for="g-fecha">Fecha de compra *</label><input id="g-fecha" name="fecha_compra" type="date" required data-max-today /></div>
+          <div class="form-field">
+            <label for="g-vendedor">¿Quién te lo vendió? *</label>
+            <input id="g-vendedor" name="vendedor" required />
+            <span class="help">Nombre de la empresa o colaborador que te vendió el cobot.</span>
+          </div>
+        </div>
+        <label class="form-check"><input type="checkbox" name="privacidad" required /><span>He leído y acepto la <a href={url('politica-de-privacidad/')} class="text-brand underline">política de privacidad</a>. *</span></label>
+        <input type="hidden" name="subject" value="Registro de garantía desde la web" />
+        <button type="submit" class="btn btn-primary justify-self-start"><Icon name="shield-check" size={18} />Validar garantía</button>
+        <p class="text-sm text-muted" data-form-status aria-live="polite">Te confirmaremos el registro por correo.</p>
+      </form>
+
+      <aside class="grid gap-4 lg:sticky lg:top-24" aria-label="Sobre la garantía">
+        <div class="card grid gap-4 p-6">
+          <span class="chip w-fit">1 año de garantía</span>
+          <h2 class="font-display text-lg font-bold" style="font-stretch:112%">Qué necesitas</h2>
+          <ul class="grid gap-2 text-sm">
+            <li class="flex gap-2"><Icon name="check" size={16} class="mt-0.5 shrink-0 text-brand" />Número de serie del robot.</li>
+            <li class="flex gap-2"><Icon name="check" size={16} class="mt-0.5 shrink-0 text-brand" />Fecha de compra.</li>
+            <li class="flex gap-2"><Icon name="check" size={16} class="mt-0.5 shrink-0 text-brand" />Empresa o colaborador que te lo vendió.</li>
+          </ul>
+          <p class="text-sm text-muted">Válido para cobots comprados en España, Portugal o Italia.</p>
+          <p class="text-sm text-muted">Condiciones: <span class="todo">[DATO: qué cubre la garantía y exclusiones]</span></p>
+        </div>
+        <div class="card grid gap-3 p-6">
+          <h2 class="flex items-center gap-2 font-display text-lg font-bold" style="font-stretch:112%"><Icon name="life-buoy" size={20} class="text-signal" />¿Necesitas asistencia?</h2>
+          <p class="text-sm text-muted">Si tu cobot tiene una incidencia, escríbenos con el número de serie y una descripción del problema.</p>
+          <a href={url('contacto/?asunto=soporte')} class="btn btn-secondary btn-sm justify-self-start">Contactar con soporte</a>
+          <p class="text-sm text-muted"><a href={`mailto:${site.contacts[0].email}`} class="hover:text-brand">{site.contacts[0].email}</a></p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const today = new Date();
+  const iso = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  document.querySelectorAll<HTMLInputElement>('[data-max-today]').forEach((i) => (i.max = iso));
+</script>

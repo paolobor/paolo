@@ -1,11 +1,21 @@
 import type { ImageMetadata } from 'astro';
 
-// Todas las imágenes de src/assets/images, para optimizarlas con astro:assets a partir de una ruta en los datos.
-const files = import.meta.glob<{ default: ImageMetadata }>('/src/assets/images/**/*.{jpg,jpeg,png,webp,avif}', {
+// Imágenes de src/assets para optimizarlas con astro:assets a partir de una ruta en los datos.
+// La ruta es relativa a src/assets/images (p. ej. 'blog/portada.jpg') o a src/assets (p. ej. 'products/fr5/…webp').
+const files = import.meta.glob<{ default: ImageMetadata }>('/src/assets/**/*.{jpg,jpeg,png,webp,avif}', {
   eager: true,
 });
 
 export function findImage(path: string | null | undefined): ImageMetadata | null {
   if (!path) return null;
-  return files[`/src/assets/images/${path.replace(/^\/+/, '')}`]?.default ?? null;
+  const clean = path.replace(/^\/+/, '');
+  return (files[`/src/assets/images/${clean}`] ?? files[`/src/assets/${clean}`])?.default ?? null;
 }
+
+// Las escenas generadas a partir del render oficial llevan «escena» en el nombre y se marcan como ilustrativas.
+export function isIllustrative(path: string | null | undefined): boolean {
+  return !!path && /fairino-[a-z0-9]+-escena-/.test(path);
+}
+
+// Las escenas se sirven siempre en estos anchos y solo en WebP: así cada escena genera 3 archivos y no decenas.
+export const SCENE_WIDTHS = [480, 960, 1600];

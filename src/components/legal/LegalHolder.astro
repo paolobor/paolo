@@ -1,0 +1,24 @@
+---
+import { site } from '../../data/site';
+
+// Datos identificativos del titular (LSSI-CE, art. 10). Mientras no estén confirmados se marcan como pendientes.
+const l = site.legal;
+const a = site.address;
+---
+
+<dl>
+  <dt>Titular</dt>
+  <dd>{l.holder}{!l.confirmed && <> <span class="todo">[DATO: confirmar titular; la web usa «{site.legalName}»]</span></>}</dd>
+  <dt>NIF</dt>
+  <dd>{l.taxId}</dd>
+  <dt>Domicilio social</dt>
+  <dd>{l.address}</dd>
+  <dt>Datos registrales</dt>
+  <dd>{l.registry ?? <span class="todo">[DATO: Registro Mercantil, tomo, folio, hoja]</span>}</dd>
+  <dt>Correo electrónico</dt>
+  <dd><a href={`mailto:${l.email}`}>{l.email}</a></dd>
+  <dt>Teléfono</dt>
+  <dd>{l.phone}</dd>
+  <dt>Instalaciones</dt>
+  <dd>{site.legalName}, {a.street}, {a.postalCode} {a.city} ({a.region})</dd>
+</dl>

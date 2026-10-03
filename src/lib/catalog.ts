@@ -39,3 +39,12 @@ export function reachBucket(mm: number | null): string[] {
   if (mm <= 1500) return ['800-1500'];
   return ['mas-1500'];
 }
+
+// Texto alternativo de una escena del catálogo a partir de su ruta (p. ej. 'products/fr3/fairino-fr3-escena-dosificacion.webp').
+export async function sceneAlt(path: string | null | undefined): Promise<string> {
+  if (!path) return '';
+  const name = path.split('/').pop()!.replace(/\.[a-z0-9]+$/i, '');
+  for (const p of await getCollection('products'))
+    for (const img of p.data.images) if (img.src.src.includes(`${name}.`)) return img.alt;
+  return '';
+}

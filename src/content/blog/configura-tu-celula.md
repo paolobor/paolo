@@ -3,8 +3,8 @@ title: 'Configura tu célula robotizada en cinco pasos'
 description: 'Cobot, versión, controlador y accesorios: cómo usar el configurador de FAIRINO España para pedir un presupuesto ajustado a tu aplicación.'
 date: 2026-09-15
 category: 'Producto'
-cover: null
-coverAlt: 'Resumen de una célula con cobot, controlador y accesorios'
+cover: 'products/fr5/fairino-fr5-escena-celda.webp'
+coverAlt: 'Cobot FAIRINO FR5 en una mesa de trabajo iluminada, con transportadores al fondo'
 ---
 
 Hemos creado un **configurador de célula** para que nos cuentes en un minuto qué necesitas y te devolvamos una propuesta concreta.

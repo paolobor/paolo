@@ -55,6 +55,9 @@ document.querySelectorAll<HTMLFormElement>('form[data-form]:not([data-form="conf
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (!form.reportValidity()) return;
-    submitForm(form);
+    // data-success: página a la que ir cuando el envío automático funciona (p. ej. /gracias/).
+    submitForm(form).then((r) => {
+      if (r === 'sent' && form.dataset.success) window.location.href = form.dataset.success;
+    });
   });
 });

@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import Icon from '../components/ui/Icon.astro';
+import SmartImage from '../components/ui/SmartImage.astro';
+import IllustrativeBadge from '../components/ui/IllustrativeBadge.astro';
+import ContactBand from '../components/home/ContactBand.astro';
+import { industries } from '../data/industries';
+import { applications } from '../data/applications';
+import { sceneAlt } from '../lib/catalog';
+import { isIllustrative } from '../lib/images';
+import { url } from '../lib/url';
+
+const items = await Promise.all(industries.map(async (ind) => ({ ...ind, alt: (await sceneAlt(ind.image)) || ind.imageHint })));
+const appBySlug = (slug: string) => applications.find((a) => a.slug === slug);
+---
+
+<BaseLayout
+  title="Industrias: cobots FAIRINO por sector"
+  description="Cobots FAIRINO en automoción, electrónica, alimentación y bebidas y salud: tareas típicas de cada sector y aplicaciones que encajan."
+>
+  <PageHero
+    crumbs={[{ label: 'Industrias' }]}
+    eyebrow="Soluciones"
+    title="Cobots para cada sector"
+    lead="Automoción, electrónica, alimentación y salud: sectores muy distintos con el mismo problema, tareas repetitivas que cuesta cubrir."
+  >
+    <nav aria-label="Sectores" class="flex flex-wrap gap-2 pt-2">
+      {industries.map((i) => <a href={`#${i.slug}`} class="btn btn-ghost btn-sm"><Icon name={i.icon} size={16} />{i.name}</a>)}
+    </nav>
+  </PageHero>
+
+  {
+    items.map((ind, n) => (
+      <section id={ind.slug} class:list={['section scroll-mt-24', n % 2 === 1 && 'bg-paper']} aria-labelledby={`${ind.slug}-title`}>
+        <div class="container-x grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+          <div class:list={['relative aspect-[16/10] overflow-hidden rounded-[var(--radius-card)] border border-line', n % 2 === 1 && 'lg:order-2']} data-reveal>
+            <SmartImage src={ind.image} alt={ind.alt} hint={ind.imageHint} tone="dark" position={ind.imagePosition} widths={[640, 960, 1400]} sizes="(min-width: 1024px) 50vw, 100vw" />
+            {ind.image && isIllustrative(ind.image) && <IllustrativeBadge />}
+          </div>
+          <div class="grid content-start gap-5" data-reveal>
+            <p class="eyebrow flex items-center gap-2"><Icon name={ind.icon} size={16} />Industria</p>
+            <h2 id={`${ind.slug}-title`} class="h-section">{ind.name}</h2>
+            <p class="text-[1.05rem] leading-relaxed text-mist">{ind.intro}</p>
+            <div class="grid gap-3">
+              <p class="font-mono text-[0.7rem] uppercase tracking-[0.12em] text-muted">Tareas habituales</p>
+              <ul class="flex flex-wrap gap-2">
+                {ind.scenarios.map((s) => <li class="chip">{s}</li>)}
+              </ul>
+            </div>
+            {ind.solutions && (
+              <div class="grid gap-4 sm:grid-cols-2">
+                {ind.solutions.map((s) => (
+                  <div class="card grid content-start gap-2 p-5">
+                    <h3 class="font-display text-lg font-bold" style="font-stretch:112%">{s.name}</h3>
+                    <p class="text-sm text-muted">{s.text}</p>
+                    <ul class="grid gap-1.5 pt-1 text-sm">
+                      {s.claims.map((c) => (
+                        <li class="flex gap-2"><Icon name="check" size={16} class="mt-0.5 shrink-0 text-brand" />{c}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+                <p class="text-xs text-muted sm:col-span-2">Cifras publicadas por FAIRINO.</p>
+              </div>
+            )}
+            <div class="grid gap-3">
+              <p class="font-mono text-[0.7rem] uppercase tracking-[0.12em] text-muted">Aplicaciones relacionadas</p>
+              <ul class="flex flex-wrap gap-2">
+                {ind.applications.map((slug) => {
+                  const a = appBySlug(slug);
+                  return a ? (
+                    <li>
+                      <a href={url(`aplicaciones/${a.slug}/`)} class="btn btn-secondary btn-sm"><Icon name={a.icon} size={16} />{a.name}</a>
+                    </li>
+                  ) : null;
+                })}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    ))
+  }
+
+  <ContactBand />
+</BaseLayout>

@@ -3,6 +3,8 @@ import { getCollection } from 'astro:content';
 import Icon from '../ui/Icon.astro';
 import SmartImage from '../ui/SmartImage.astro';
 import SectionHeading from '../ui/SectionHeading.astro';
+import IllustrativeBadge from '../ui/IllustrativeBadge.astro';
+import { isIllustrative } from '../../lib/images';
 import { url } from '../../lib/url';
 
 const posts = (await getCollection('blog', ({ data }) => !data.draft))
@@ -22,8 +24,9 @@ const df = new Intl.DateTimeFormat('es-ES', { day: 'numeric', month: 'long', yea
         posts.map((p, i) => (
           <article class="card card-hover group flex flex-col overflow-hidden" data-reveal style={`--reveal-delay:${i * 90}ms`}>
             <a href={url(`blog/${p.id}/`)} class="flex flex-1 flex-col">
-              <div class="aspect-[16/9] overflow-hidden">
+              <div class="relative aspect-[16/9] overflow-hidden">
                 <SmartImage src={p.data.cover} alt={p.data.coverAlt} widths={[400, 640, 900]} sizes="(min-width: 768px) 33vw, 100vw" class="transition-transform duration-500 group-hover:scale-105" />
+                {isIllustrative(p.data.cover) && <IllustrativeBadge class="bottom-2 right-2 text-[0.55rem]!" />}
               </div>
               <div class="flex flex-1 flex-col gap-3 p-6">
                 <p class="flex items-center gap-3 font-mono text-[0.7rem] uppercase tracking-[0.1em] text-muted">

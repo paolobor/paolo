@@ -1,0 +1,199 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
+import Icon from '../../components/ui/Icon.astro';
+import SmartImage from '../../components/ui/SmartImage.astro';
+import IllustrativeBadge from '../../components/ui/IllustrativeBadge.astro';
+import SectionHeading from '../../components/ui/SectionHeading.astro';
+import ProductCard from '../../components/ProductCard.astro';
+import ContactBand from '../../components/home/ContactBand.astro';
+import { applications, type Application } from '../../data/applications';
+import { industries } from '../../data/industries';
+import { getProducts, sceneAlt } from '../../lib/catalog';
+import { isIllustrative } from '../../lib/images';
+import { url } from '../../lib/url';
+
+export const getStaticPaths = (() => applications.map((app) => ({ params: { slug: app.slug }, props: { app } }))) satisfies GetStaticPaths;
+
+interface Props {
+  app: Application;
+}
+const { app } = Astro.props;
+
+const all = await getProducts();
+const cobots = all.filter((p) => p.data.category === 'cobot' && p.data.applications.includes(app.slug));
+const accessories = all.filter((p) => p.data.category === 'accesorio' && p.data.applications.includes(app.slug));
+const relatedIndustries = industries.filter((i) => i.applications.includes(app.slug));
+const others = applications.filter((a) => a.slug !== app.slug);
+const heroAlt = (await sceneAlt(app.image)) || app.imageHint;
+const gallery = await Promise.all(app.gallery.map(async (src) => ({ src, alt: await sceneAlt(src) })));
+
+const quoteHref = url(`contacto/?asunto=presupuesto&aplicacion=${encodeURIComponent(app.name)}`);
+const waMessage = `Hola, quiero automatizar una tarea de ${app.name.toLowerCase()} con un cobot FAIRINO.`;
+---
+
+<BaseLayout
+  title={`${app.name} con cobots FAIRINO`}
+  description={`${app.short} Modelos recomendados, accesorios y propuesta a medida con FAIRINO España.`.slice(0, 160)}
+  whatsappMessage={waMessage}
+>
+  <section class="blueprint on-dark relative overflow-hidden text-white">
+    <div class="container-x grid items-center gap-10 py-12 md:py-16 lg:grid-cols-[1fr_1.1fr]">
+      <div class="grid content-start gap-5">
+        <Breadcrumbs items={[{ label: 'Aplicaciones', href: 'aplicaciones/' }, { label: app.name }]} />
+        <p class="eyebrow flex items-center gap-2"><Icon name={app.icon} size={16} />Aplicación</p>
+        <h1 class="text-[clamp(2.3rem,5vw,3.8rem)] font-extrabold" style="font-stretch:120%">{app.name}</h1>
+        <p class="lead">{app.short}</p>
+        <div class="flex flex-wrap gap-3 pt-1">
+          <a href={quoteHref} class="btn btn-primary"><Icon name="send" size={18} />Pedir propuesta</a>
+          <a href={url('configurador/')} class="btn btn-secondary">Configurar mi célula</a>
+        </div>
+      </div>
+      <div class="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-card)] border border-white/10">
+        <SmartImage src={app.image} alt={heroAlt} hint={app.imageHint} tone="dark" widths={[640, 960, 1400]} sizes="(min-width: 1024px) 52vw, 100vw" eager />
+        {app.image && isIllustrative(app.image) && <IllustrativeBadge />}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="que-title">
+    <div class="container-x grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
+      <div class="grid content-start gap-5" data-reveal>
+        <p class="eyebrow">Cómo funciona</p>
+        <h2 id="que-title" class="h-section">Qué hace el cobot</h2>
+        <p class="text-[1.05rem] leading-relaxed text-mist">{app.intro}</p>
+      </div>
+      <div class="card grid content-start gap-4 p-6 md:p-8" data-reveal>
+        <p class="font-mono text-[0.7rem] uppercase tracking-[0.12em] text-muted">Tareas habituales</p>
+        <ul class="grid gap-3">
+          {
+            app.tasks.map((t) => (
+              <li class="flex items-start gap-3">
+                <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-brand text-ink">
+                  <Icon name="check" size={14} strokeWidth={3} />
+                </span>
+                {t}
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <div class="container-x mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {
+        app.benefits.map((b, i) => (
+          <div class="card grid content-start gap-2 p-6" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+            <h3 class="font-display text-lg font-bold" style="font-stretch:112%">{b.title}</h3>
+            <p class="text-sm text-muted">{b.text}</p>
+          </div>
+        ))
+      }
+    </div>
+
+    {
+      app.claims && (
+        <div class="container-x mt-14">
+          <div class="card grid gap-5 border-signal/30 bg-[radial-gradient(ellipse_at_0%_0%,rgba(255,122,26,0.12),transparent_60%)] p-6 md:grid-cols-[14rem_1fr] md:p-8" data-reveal>
+            <div class="grid content-start gap-2">
+              <p class="eyebrow">Datos de FAIRINO</p>
+              <p class="text-sm text-muted">Cifras que publica el fabricante para esta aplicación.</p>
+            </div>
+            <ul class="grid gap-3">
+              {app.claims.map((c) => (
+                <li class="flex items-start gap-3 text-[1.05rem]">
+                  <Icon name="zap" size={18} class="mt-1 shrink-0 text-signal" />
+                  {c}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      )
+    }
+  </section>
+
+  {
+    gallery.length > 0 && (
+      <section class="section pt-0" aria-labelledby="gal-title">
+        <div class="container-x">
+          <SectionHeading id="gal-title" eyebrow="En la práctica" title={`${app.name} con distintos modelos`} />
+          <ul class:list={['mt-10 grid gap-4', gallery.length === 1 ? 'md:grid-cols-1 lg:max-w-4xl' : 'md:grid-cols-2']}>
+            {gallery.map((g, i) => (
+              <li data-reveal style={`--reveal-delay:${(i % 2) * 80}ms`}>
+                <figure class="grid gap-2">
+                  <div class="relative aspect-[16/9] overflow-hidden rounded-[var(--radius-card)] border border-line">
+                    <SmartImage src={g.src} alt={g.alt} widths={[640, 960, 1400]} sizes="(min-width: 768px) 50vw, 100vw" />
+                    <IllustrativeBadge />
+                  </div>
+                  <figcaption class="text-sm text-muted">{g.alt}</figcaption>
+                </figure>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    cobots.length > 0 && (
+      <section class="section bg-paper" aria-labelledby="cob-title">
+        <div class="container-x">
+          <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <SectionHeading id="cob-title" eyebrow="Modelos" title="Cobots recomendados" lead="Elige por carga útil y alcance. Si dudas, te ayudamos a calcularlo." />
+            <a href={url('blog/elegir-carga-y-alcance/')} class="link-arrow shrink-0" data-reveal>Cómo elegir carga y alcance <Icon name="arrow-right" size={17} /></a>
+          </div>
+          <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {cobots.map((p) => <ProductCard product={p} />)}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    accessories.length > 0 && (
+      <section class="section" aria-labelledby="acc-title">
+        <div class="container-x">
+          <SectionHeading id="acc-title" eyebrow="Equipamiento" title="Accesorios útiles" />
+          <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {accessories.map((p) => <ProductCard product={p} />)}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class:list={['section', accessories.length > 0 ? 'bg-paper' : '']} aria-labelledby="more-title">
+    <div class="container-x grid gap-10 lg:grid-cols-2">
+      {
+        relatedIndustries.length > 0 && (
+          <div class="grid content-start gap-5" data-reveal>
+            <h2 id="more-title" class="font-display text-2xl font-bold" style="font-stretch:115%">Se usa en</h2>
+            <ul class="flex flex-wrap gap-2">
+              {relatedIndustries.map((ind) => (
+                <li>
+                  <a href={url(`industrias/#${ind.slug}`)} class="btn btn-secondary btn-sm"><Icon name={ind.icon} size={16} />{ind.name}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )
+      }
+      <div class="grid content-start gap-5" data-reveal>
+        <h2 class="font-display text-2xl font-bold" style="font-stretch:115%">Otras aplicaciones</h2>
+        <ul class="flex flex-wrap gap-2">
+          {others.map((a) => (
+            <li>
+              <a href={url(`aplicaciones/${a.slug}/`)} class="btn btn-secondary btn-sm"><Icon name={a.icon} size={16} />{a.name}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <ContactBand whatsappMessage={waMessage} />
+</BaseLayout>

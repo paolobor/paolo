@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import Icon from '../components/ui/Icon.astro';
+import SmartImage from '../components/ui/SmartImage.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import ContactBand from '../components/home/ContactBand.astro';
+import { site } from '../data/site';
+import { organizationSchema } from '../lib/schema';
+import { url } from '../lib/url';
+
+// Contenido basado en fairino.es/sobre-nosotros, redactado de nuevo.
+const pillars = [
+  { icon: 'award', title: 'Experiencia demostrada', text: 'Décadas de trabajo en automatización industrial, robótica y líneas de producción.' },
+  { icon: 'workflow', title: 'Soluciones integrales', text: 'De la consultoría técnica a la implantación llave en mano.' },
+  { icon: 'life-buoy', title: 'Soporte local y cercano', text: 'Asistencia técnica directa, repuestos y formación en España.' },
+  { icon: 'zap', title: 'Innovación accesible', text: 'Cobots FAIRINO con tecnología avanzada a un precio realmente competitivo.' },
+  { icon: 'timer', title: 'Productividad', text: 'Ayudamos a reducir tiempos, mejorar la seguridad y ganar eficiencia.' },
+];
+const team = [
+  { value: '25+', label: 'años diseñando y fabricando estructuras modulares de aluminio e inoxidable para la industria' },
+  { value: '40+', label: 'años automatizando procesos de envase, final de línea, paletizado y robótica aplicada' },
+];
+---
+
+<BaseLayout
+  title="Sobre nosotros"
+  description="FAIRINO España, distribuidor oficial de los cobots FAIRINO para el sur de Europa: equipo con décadas de experiencia en robótica colaborativa, automatización e intralogística."
+  jsonLd={organizationSchema(Astro.site!)}
+>
+  <PageHero
+    crumbs={[{ label: 'Sobre nosotros' }]}
+    eyebrow="Quiénes somos"
+    title="Automatización colaborativa, con soporte de aquí"
+    lead="Somos el distribuidor oficial de FAIRINO para el sur de Europa. Un equipo de ingenieros, programadores y técnicos con décadas de experiencia en automatización industrial."
+  />
+
+  <section class="section" aria-labelledby="who-title">
+    <div class="container-x grid items-center gap-10 lg:grid-cols-2 lg:gap-16">
+      <div class="grid content-start gap-5" data-reveal>
+        <p class="eyebrow">FAIRINO Cobot</p>
+        <h2 id="who-title" class="h-section">Un equipo multidisciplinar</h2>
+        <p class="text-[1.05rem] leading-relaxed text-mist">
+          FAIRINO Cobot nace de la unión de profesionales con una larga trayectoria en robótica colaborativa, automatización industrial e
+          intralogística modular. Ingenieros, programadores y técnicos especializados trabajan junto a especialistas en estructuras
+          modulares y en automatización de procesos.
+        </p>
+        <p class="text-[1.05rem] leading-relaxed text-mist">
+          Esa mezcla de conocimiento técnico, experiencia práctica y visión de futuro nos permite ofrecer soluciones completas, fiables y
+          competitivas para la industria actual.
+        </p>
+        <dl class="grid gap-4 pt-2 sm:grid-cols-2">
+          {
+            team.map((t) => (
+              <div class="card grid content-start gap-1 p-5">
+                <dt class="order-2 text-sm text-muted">{t.label}</dt>
+                <dd class="order-1 font-display text-4xl font-extrabold text-glow" style="font-stretch:120%">{t.value}</dd>
+              </div>
+            ))
+          }
+        </dl>
+      </div>
+      <div class="aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] border border-line" data-reveal>
+        <SmartImage src={null} alt="" hint={`instalaciones de ${site.name} en ${site.address.city}`} tone="dark" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-paper" aria-labelledby="mision-title">
+    <div class="container-x grid gap-10 lg:grid-cols-2 lg:gap-16">
+      <div class="card grid content-start gap-4 p-6 md:p-8" data-reveal>
+        <Icon name="handshake" size={28} class="text-signal" />
+        <h2 id="mision-title" class="font-display text-2xl font-bold" style="font-stretch:115%">Nuestra misión</h2>
+        <p class="leading-relaxed text-mist">
+          Acompañar a las empresas europeas en su paso a una automatización inteligente y accesible: tecnología colaborativa de alto
+          rendimiento, soporte técnico local y un enfoque <i>plug &amp; play</i> que facilita la integración en cualquier planta.
+        </p>
+      </div>
+      <div class="card grid content-start gap-4 p-6 md:p-8" data-reveal style="--reveal-delay:90ms">
+        <Icon name="shield-check" size={28} class="text-signal" />
+        <h2 class="font-display text-2xl font-bold" style="font-stretch:115%">Distribuidor oficial FAIRINO</h2>
+        <p class="leading-relaxed text-mist">
+          Como distribuidor oficial de FAIRINO para el sur de Europa, ofrecemos la gama completa de cobots junto con formación, asistencia
+          técnica y asesoramiento en aplicaciones industriales. Una alternativa real a las marcas más conocidas: precisión, seguridad y
+          fiabilidad con un coste que pone la automatización al alcance de empresas de cualquier tamaño.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="pillars-title">
+    <div class="container-x">
+      <SectionHeading id="pillars-title" eyebrow="Qué aportamos" title="Lo que encuentras al trabajar con nosotros" />
+      <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        {
+          pillars.map((p, i) => (
+            <li class="card grid content-start gap-3 p-6" data-reveal style={`--reveal-delay:${i * 60}ms`}>
+              <Icon name={p.icon} size={26} class="text-signal" />
+              <h3 class="font-display text-lg font-bold" style="font-stretch:112%">{p.title}</h3>
+              <p class="text-sm text-muted">{p.text}</p>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="mt-12 flex flex-wrap gap-3" data-reveal>
+        <a href={url('reservar-cita/')} class="btn btn-primary"><Icon name="calendar" size={18} />Visítanos en {site.address.city}</a>
+        <a href={url('soluciones-llave-en-mano/')} class="btn btn-secondary">Soluciones llave en mano</a>
+      </div>
+    </div>
+  </section>
+
+  <ContactBand />
+</BaseLayout>

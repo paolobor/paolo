@@ -1,0 +1,113 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import Icon from '../components/ui/Icon.astro';
+import { site } from '../data/site';
+import { url } from '../lib/url';
+
+const types = [
+  { value: 'visita', label: 'Visita a nuestras instalaciones', text: `Ves los cobots funcionando en ${site.address.city} (${site.address.region}).`, icon: 'building-2' },
+  { value: 'videollamada', label: 'Videollamada', text: 'Revisamos tu caso a distancia, sin desplazarte.', icon: 'users' },
+];
+const steps = [
+  { title: 'Eliges día y hora', text: 'Nos dices cuándo te viene bien y qué quieres ver.' },
+  { title: 'Te confirmamos', text: 'Te escribimos o llamamos para cerrar la cita.' },
+  { title: 'Vemos tu caso', text: 'Trae tu pieza o tus planos: así la respuesta es concreta.' },
+];
+---
+
+<BaseLayout
+  title="Reservar cita"
+  description="Reserva una visita a las instalaciones de FAIRINO España en Villaluenga de la Sagra (Toledo) o una videollamada con nuestro equipo."
+>
+  <PageHero
+    crumbs={[{ label: 'Reservar cita' }]}
+    eyebrow="Cita"
+    title="Ven a ver los cobots funcionando"
+    lead="Reserva una visita a nuestras instalaciones o una videollamada con el equipo. Sin compromiso."
+  />
+
+  <section class="section">
+    <div class="container-x grid items-start gap-10 lg:grid-cols-[1fr_380px]">
+      <form class="card grid gap-6 p-6 md:p-8" data-form="booking" data-success={url('gracias/')} novalidate>
+        <fieldset class="grid gap-3">
+          <legend class="mb-3 text-2xl font-bold" style="font-stretch:112%">Tipo de cita</legend>
+          <div class="grid gap-3 sm:grid-cols-2">
+            {
+              types.map((t, i) => (
+                <label class="booking-type card grid cursor-pointer content-start gap-2 p-4">
+                  <input type="radio" name="tipo" value={t.label} checked={i === 0} required class="sr-only" />
+                  <Icon name={t.icon} size={22} class="text-signal" />
+                  <span class="font-semibold">{t.label}</span>
+                  <span class="text-sm text-muted">{t.text}</span>
+                </label>
+              ))
+            }
+          </div>
+        </fieldset>
+        <div class="form-grid">
+          <div class="form-field"><label for="r-nombre">Nombre *</label><input id="r-nombre" name="nombre" required autocomplete="given-name" /></div>
+          <div class="form-field"><label for="r-apellidos">Apellidos</label><input id="r-apellidos" name="apellidos" autocomplete="family-name" /></div>
+          <div class="form-field"><label for="r-email">Correo electrónico *</label><input id="r-email" name="email" type="email" required autocomplete="email" /></div>
+          <div class="form-field"><label for="r-tel">Teléfono *</label><input id="r-tel" name="telefono" type="tel" required autocomplete="tel" /></div>
+          <div class="form-field"><label for="r-empresa">Empresa</label><input id="r-empresa" name="empresa" autocomplete="organization" /></div>
+          <div class="form-field"><label for="r-dir">Población o dirección</label><input id="r-dir" name="direccion" autocomplete="address-level2" /></div>
+          <div class="form-field"><label for="r-fecha">Fecha preferida *</label><input id="r-fecha" name="fecha" type="date" required data-min-today /></div>
+          <div class="form-field">
+            <label for="r-hora">Franja preferida</label>
+            <select id="r-hora" name="franja">
+              <option>Mañana</option>
+              <option>Mediodía</option>
+              <option>Tarde</option>
+            </select>
+          </div>
+          <div class="form-field sm:col-span-2"><label for="r-msg">Qué te gustaría ver</label><textarea id="r-msg" name="comentario" rows="4" placeholder="Modelo, aplicación, tu pieza…"></textarea></div>
+        </div>
+        <label class="form-check"><input type="checkbox" name="privacidad" required /><span>He leído y acepto la <a href={url('politica-de-privacidad/')} class="text-brand underline">política de privacidad</a>. *</span></label>
+        <input type="hidden" name="subject" value="Solicitud de cita desde la web" />
+        <button type="submit" class="btn btn-primary justify-self-start"><Icon name="calendar-check" size={18} />Solicitar cita</button>
+        <p class="text-sm text-muted" data-form-status aria-live="polite">La cita queda reservada cuando te la confirmamos.</p>
+      </form>
+
+      <aside class="grid gap-4 lg:sticky lg:top-24" aria-label="Cómo funciona">
+        <div class="card grid gap-5 p-6">
+          <h2 class="font-display text-lg font-bold" style="font-stretch:112%">Cómo funciona</h2>
+          <ol class="grid gap-4">
+            {
+              steps.map((s, i) => (
+                <li class="grid grid-cols-[2rem_1fr] gap-3">
+                  <span class="grid size-8 place-items-center rounded-full bg-signal/15 font-mono text-sm text-signal">{i + 1}</span>
+                  <span class="grid gap-0.5"><b>{s.title}</b><span class="text-sm text-muted">{s.text}</span></span>
+                </li>
+              ))
+            }
+          </ol>
+        </div>
+        <div class="card grid gap-3 p-6">
+          <h2 class="flex items-center gap-2 font-display text-lg font-bold" style="font-stretch:112%"><Icon name="map-pin" size={20} class="text-signal" />Instalaciones</h2>
+          <p class="text-mist">{site.address.street}<br />{site.address.postalCode} {site.address.city} ({site.address.region})</p>
+          <a href={site.address.mapsUrl} target="_blank" rel="noopener" class="link-arrow text-sm">Cómo llegar <Icon name="arrow-up-right" size={16} /></a>
+          <p class="text-sm text-muted">¿Prefieres llamar? <a href={`tel:${site.contacts[0].tel}`} class="font-mono text-white hover:text-brand">{site.contacts[0].phone}</a></p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .booking-type:has(input:checked) {
+    border-color: var(--color-signal);
+    background: color-mix(in srgb, var(--color-signal) 10%, var(--color-surface));
+  }
+  .booking-type:has(input:focus-visible) {
+    outline: 3px solid var(--color-signal);
+    outline-offset: 2px;
+  }
+</style>
+
+<script>
+  // No se pueden pedir citas en el pasado.
+  const today = new Date();
+  const iso = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  document.querySelectorAll<HTMLInputElement>('[data-min-today]').forEach((i) => (i.min = iso));
+</script>

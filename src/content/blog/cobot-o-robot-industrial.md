@@ -3,8 +3,8 @@ title: 'Cobot o robot industrial: cómo saber cuál necesita tu proceso'
 description: 'Las diferencias que importan al decidir entre un robot colaborativo y uno industrial: espacio, velocidad, seguridad, programación e inversión.'
 date: 2026-09-29
 category: 'Guías'
-cover: null
-coverAlt: 'Cobot trabajando junto a un operario'
+cover: 'products/fr10/fairino-fr10-escena-manipulacion.webp'
+coverAlt: 'Cobot FAIRINO FR10 con garra eléctrica moviendo piezas torneadas entre bandejas sobre una cinta'
 ---
 
 Un **cobot** (robot colaborativo) está pensado para trabajar en el mismo espacio que las personas. Un **robot industrial** clásico está pensado para trabajar rápido y fuerte, normalmente dentro de un vallado. Los dos automatizan; la pregunta es cuál encaja con tu proceso.

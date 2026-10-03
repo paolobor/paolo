@@ -9,6 +9,21 @@
     {
       "src": "../../assets/products/fr3/fr3-provisional-3d.png",
       "alt": "Cobot FAIRINO FR3 (imagen provisional del modelo 3D oficial)"
+    },
+    {
+      "src": "../../assets/products/fr3/fairino-fr3-escena-producto.webp",
+      "alt": "Cobot FAIRINO FR3 sobre una peana en una sala de exposición con luz naranja de fondo",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fr3/fairino-fr3-escena-pick-and-place.webp",
+      "alt": "Cobot FAIRINO FR3 con garra eléctrica cogiendo una placa electrónica en una célula de montaje",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fr3/fairino-fr3-escena-dosificacion.webp",
+      "alt": "Cobot FAIRINO FR3 aplicando un cordón de adhesivo en una carcasa de aluminio con un dosificador",
+      "illustrative": true
     }
   ],
   "payloadKg": 3,
@@ -89,17 +104,17 @@
     {
       "label": "Manual de usuario",
       "type": "manual",
-      "href": null
+      "href": "https://fairino-doc-en.readthedocs.io/latest/"
     },
     {
       "label": "Plano acotado",
       "type": "cad",
-      "href": null
+      "href": "https://fairino-doc-en.readthedocs.io/latest/_downloads/676bc180d9c94bdd97a18355a4b83ee8/FR3%20Drawings.zip"
     },
     {
       "label": "Modelo 3D (STEP)",
       "type": "cad",
-      "href": null
+      "href": "https://fairino-doc-en.readthedocs.io/latest/_downloads/49cdf31534d0899683fd176e86a223d1/FRCobots-V6.0%20STEP%20Models.zip"
     }
   ],
   "configurator": {

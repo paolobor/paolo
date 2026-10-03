@@ -1,11 +1,11 @@
 # Traspaso de sesión — Web y tienda FAIRINO España
 
-Estado a 2 de octubre de 2026 (tarde). Léelo entero antes de tocar nada.
+Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
 
 ## Dónde está el trabajo
 
 - Repositorio `paolobor/paolo`, rama **`claude/festive-pascal-qvt6oq`**. `main` solo tiene un README.
-  La sesión del 2/10 por la tarde trabajó en `claude/dazzling-brown-fhhro6` y subió lo mismo a las dos ramas.
+  Las sesiones del 2 y 3/10 trabajaron en `claude/dazzling-brown-fhhro6` y subieron lo mismo a las dos ramas.
 - Web en Astro 7 + Tailwind 4, estática. `npm install && npm run build`; `npx astro check` debe dar 0 errores.
 - Vista previa navegable (privada del usuario): https://claude.ai/artifact/4jto5oMVMn7yimjgeq64PG
   - Se regenera con `npm run build && bash tools/preview/build-preview.sh <carpeta>` y se publica
@@ -37,28 +37,40 @@ Estado a 2 de octubre de 2026 (tarde). Léelo entero antes de tocar nada.
   - menos brillo en el fondo, el contraluz, el suelo, el haz, los halos, el tinte `.rim`, el barrido y las brasas;
   - lo demás, igual.
 
+## Hecho en la sesión del 3 de octubre
+
+- **Fotos de los 8 modelos restantes** (el usuario aprobó el piloto con «continúa haciendo la web»): 24 escenas + 1
+  repetida (soldadura del FR5WML, la primera tenía la muñeca sin aros). 50 créditos; quedan 891. Todas pasan el
+  control (`docs/control-calidad-fotos.md`); en dos se difuminó un rótulo inventado de una máquina del fondo.
+  Están en `src/assets/products/<modelo>/fairino-<modelo>-escena-<tipo>.webp` y en cada ficha con `illustrative: true`.
+  El FR3C sigue sin fotos (no hay modelo 3D oficial).
+- **Imágenes de escenas**: `SmartImage` y la ficha sirven las escenas solo en WebP y a 480/960/1600 px
+  (`SCENE_WIDTHS` en `src/lib/images.ts`). Antes cada escena generaba ~30 archivos y `dist` pesaba 216 MB; ahora 37 MB.
+  `findImage()` acepta rutas relativas a `src/assets/images` o a `src/assets` (p. ej. `products/fr3/…webp`), e
+  `isIllustrative()` decide si poner el pie «Imagen ilustrativa» (`components/ui/IllustrativeBadge.astro`).
+- **Páginas de la fase 3**, todas con contenido de fairino.es redactado de nuevo y `[DATO: …]` donde falta:
+  - `/aplicaciones/` y `/aplicaciones/<slug>/` (8). Datos en `src/data/applications.ts` (intro, tareas, ventajas,
+    cifras publicadas por FAIRINO, galería). Cobots y accesorios recomendados salen del campo `applications` de cada
+    producto. Lijado y pintura siguen con `[FOTO]`.
+  - `/industrias/` (`src/data/industries.ts`): automoción, electrónica (3C), alimentación y bebidas, salud.
+  - `/soluciones-llave-en-mano/`: proceso en 5 pasos y las 3 células con anclas; «Incluye» y plazo como `[DATO]`.
+  - `/descargas/` (`src/data/downloads.ts`): los ~75 enlaces oficiales de fairino.es/descargas por categoría.
+    Las fichas de los cobots enlazan ya manual, plano acotado y STEP oficiales.
+  - `/sobre-nosotros/`, `/blog/` (con filtro por categoría) y `/blog/<slug>/` (portadas = escenas del catálogo).
+  - `/contacto/` (rellena asunto y producto desde `?asunto=…&producto=…`), `/reservar-cita/` (visita o
+    videollamada), `/garantia/` (campos de fairino.es + modelo), `/gracias/` (noindex).
+    Los formularios con `data-success` van a `/gracias/` cuando el envío automático funciona.
+  - `/aviso-legal/`, `/politica-de-privacidad/`, `/politica-de-cookies/` (`components/legal/`). El titular sale de
+    `site.legal` (datos del aviso legal actual de fairino.es) con un aviso `[DATO]` mientras `confirmed` sea `false`.
+
 ## Higgsfield: estado
 
-- Saldo: 949 créditos, plan Plus.
-- Coste medido con `get_cost`:
-  - nano_banana_2: 2 créditos (2k) y 3 (4k);
-  - gpt_image_2_5 alta: 2,75 (2k);
-  - flux_3_image: 3 (2k).
-- Trabajo `efbe8dff` (piloto FR5 antiguo): **descartado**. Se generó con la referencia vieja, robot todo blanco sin
-  aros ni brida; la escena es buena.
-- Trabajo `268e7452` (FR3 sin fondo): correcto, pero a 386 px, solo vale de referencia.
-- **Piloto FR5 hecho** con la referencia nueva con aros (medio `a1f4b956-1506-4d45-957a-abb0b037ee57`, importado
-  desde `src/assets/products/fr5/fr5-provisional-3d.png`). El usuario dijo «sigue con la web añadiendo esas fotos».
-  - Coste: 8 créditos; quedan 941.
-  - Tres escenas válidas, ya en la ficha del FR5 (`src/content/products/fr5.json`, `illustrative: true`, pie
-    «Imagen ilustrativa»).
-  - Hoja de control: `docs/control-calidad-fotos.md`.
-- **Pendiente: aprobación del piloto** antes de hacer el resto de modelos (≈ 6 créditos por modelo, 3 escenas cada
-  uno; ≈ 50 créditos para los 8 restantes, más repeticiones). Mismos prompts que el piloto, adaptando la aplicación:
-  - FR3: pick & place;
-  - FR3WMS, FR3WML y FR5WML: soldadura;
-  - FR10 y FR16: carga de máquinas;
-  - FR20 y FR30: paletizado.
+- Saldo: 891 créditos, plan Plus. nano_banana_2 a 2k = 2 créditos por imagen.
+- Referencias: un recorte con aros por modelo (`<modelo>-provisional-3d.png`), importado con `media_import_url`.
+  FR5: `a1f4b956-1506-4d45-957a-abb0b037ee57`; FR5WML: `abd6c253-150e-4a73-973f-bccd56a17d81`.
+- Hechas y en la web: 3 escenas por modelo en los 9 modelos con modelo 3D (todos menos el FR3C).
+- Propuesta pendiente de OK: 2 escenas para las aplicaciones sin foto (lijado y pulido, pintura), 4 créditos.
+- Descartados: `efbe8dff` (piloto antiguo sin aros) y `503e8cb1` (soldadura FR5WML con la muñeca cambiada).
 
 ## Lo que pidió el usuario (referencia)
 
@@ -68,7 +80,8 @@ Estado a 2 de octubre de 2026 (tarde). Léelo entero antes de tocar nada.
 3. Menos brillo. **Hecho.**
 4. Mantener: clic a izquierda/derecha, nombre al pasar el ratón, panel de compatibles, carrito, movimiento,
    iluminación cálida. **Mantenido.**
-5. Higgsfield para escenas: piloto FR5 hecho y en la web; **pendiente su aprobación** para el resto.
+5. Higgsfield para escenas: piloto FR5 aprobado; **hechas** las de los otros 8 modelos.
+6. «Continúa haciendo la web»: páginas de la fase 3 **hechas**.
 
 ## Higgsfield (contexto)
 
@@ -129,16 +142,9 @@ Estado a 2 de octubre de 2026 (tarde). Léelo entero antes de tocar nada.
   - Alcance del FR3WML: 922 o 1000 mm.
   - Nombre exacto del sensor GZCX.
   - Tensión de entrada del AC Mini.
-- Páginas de la fase 3:
-  - aplicaciones (+8);
-  - industrias;
-  - llave en mano;
-  - descargas;
-  - sobre nosotros;
-  - blog;
-  - reservar cita;
-  - contacto;
-  - garantía;
-  - gracias;
-  - legales.
+  - Titular legal: fairino.es dice FDI QUALITY IMPORT S.L. (Valdemoro) y la web usa Fairino Cobot S.L.
+    (Villaluenga). ¿Cuál es el titular de la web?
+  - ¿Hacéis demostraciones en casa del cliente? (la cita solo ofrece visita y videollamada).
+  - Horario de atención, condiciones de la garantía, componentes y plazos de las células llave en mano.
+  - Clave de Web3Forms (sin ella los formularios ofrecen correo y WhatsApp).
 - Fase 4: lista final de marcadores pendientes.

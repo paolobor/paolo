@@ -1,0 +1,67 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import Icon from '../components/ui/Icon.astro';
+import ContactBand from '../components/home/ContactBand.astro';
+import { downloadGroups } from '../data/downloads';
+import { site } from '../data/site';
+
+const total = downloadGroups.reduce((n, g) => n + g.items.length, 0);
+---
+
+<BaseLayout
+  title="Descargas: planos, CAD, manuales y software"
+  description="Planos acotados, modelos CAD 3D, manuales, SDK, protocolos de comunicación, software y certificados de los cobots FAIRINO."
+>
+  <PageHero
+    crumbs={[{ label: 'Descargas' }]}
+    eyebrow="Documentación"
+    title="Centro de descargas"
+    lead={`${total} enlaces a la documentación oficial de FAIRINO: planos, CAD, manuales, SDK, software y certificados.`}
+  >
+    <nav aria-label="Categorías de descarga" class="flex flex-wrap gap-2 pt-2">
+      {downloadGroups.map((g) => <a href={`#${g.id}`} class="btn btn-ghost btn-sm"><Icon name={g.icon} size={16} />{g.title}</a>)}
+    </nav>
+  </PageHero>
+
+  <section class="section">
+    <div class="container-x grid gap-6">
+      <p class="card flex items-start gap-3 p-5 text-sm text-muted">
+        <Icon name="info" size={18} class="mt-0.5 shrink-0 text-signal" />
+        <span>
+          Los enlaces llevan a la documentación oficial de FAIRINO (en inglés) y a sus carpetas de descarga. ¿No encuentras un archivo o lo
+          necesitas en español? Escríbenos a <a href={`mailto:${site.contacts[0].email}?subject=${encodeURIComponent('Documentación FAIRINO')}`} class="font-semibold text-brand hover:underline">{site.contacts[0].email}</a>.
+        </span>
+      </p>
+
+      {
+        downloadGroups.map((g) => (
+          <section id={g.id} class="card scroll-mt-24 grid gap-5 p-6 md:grid-cols-[16rem_1fr] md:gap-8 md:p-8" aria-labelledby={`${g.id}-title`} data-reveal>
+            <div class="grid content-start gap-3">
+              <span class="grid size-12 place-items-center rounded-xl bg-brand-50 text-brand">
+                <Icon name={g.icon} size={24} />
+              </span>
+              <h2 id={`${g.id}-title`} class="font-display text-xl font-bold" style="font-stretch:115%">{g.title}</h2>
+              <p class="text-sm text-muted">{g.text}</p>
+            </div>
+            <ul class="grid content-start gap-2 sm:grid-cols-2 xl:grid-cols-3">
+              {g.items.map((it) => (
+                <li>
+                  <a href={it.href} target="_blank" rel="noopener" class="group flex h-full items-center gap-3 rounded-xl border border-line bg-paper px-4 py-3 transition-colors hover:border-signal/50">
+                    <span class="grid flex-1 gap-0.5">
+                      <span class="font-semibold group-hover:text-brand">{it.label}</span>
+                      {it.note && <span class="font-mono text-[0.65rem] uppercase tracking-[0.12em] text-muted">{it.note}</span>}
+                    </span>
+                    <Icon name="arrow-up-right" size={17} class="shrink-0 text-brand" />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+  </section>
+
+  <ContactBand />
+</BaseLayout>

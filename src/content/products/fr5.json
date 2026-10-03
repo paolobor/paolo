@@ -103,17 +103,17 @@
     {
       "label": "Manual de usuario",
       "type": "manual",
-      "href": null
+      "href": "https://fairino-doc-en.readthedocs.io/latest/"
     },
     {
       "label": "Plano acotado",
       "type": "cad",
-      "href": null
+      "href": "https://fairino-doc-en.readthedocs.io/latest/_downloads/d0aec4a78c7e5520e502d33d18425649/FR5%20Drawings.zip"
     },
     {
       "label": "Modelo 3D (STEP)",
       "type": "cad",
-      "href": null
+      "href": "https://fairino-doc-en.readthedocs.io/latest/_downloads/49cdf31534d0899683fd176e86a223d1/FRCobots-V6.0%20STEP%20Models.zip"
     }
   ],
   "configurator": {

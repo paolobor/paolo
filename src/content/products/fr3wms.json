@@ -9,6 +9,21 @@
     {
       "src": "../../assets/products/fr3wms/fr3wms-provisional-3d.png",
       "alt": "Cobot FAIRINO FR3WMS (imagen provisional del modelo 3D oficial)"
+    },
+    {
+      "src": "../../assets/products/fr3wms/fairino-fr3wms-escena-producto.webp",
+      "alt": "Cobot FAIRINO FR3WMS sobre una peana en una sala de exposición con luz naranja de fondo",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fr3wms/fairino-fr3wms-escena-soldadura.webp",
+      "alt": "Cobot FAIRINO FR3WMS soldando con antorcha MIG en una mesa de taller",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fr3wms/fairino-fr3wms-escena-soldadura-movil.webp",
+      "alt": "Cobot FAIRINO FR3WMS sobre un carro con el equipo de soldadura, soldando en una nave de calderería",
+      "illustrative": true
     }
   ],
   "payloadKg": 3,
@@ -87,7 +102,7 @@
     {
       "label": "Manual de usuario",
       "type": "manual",
-      "href": null
+      "href": "https://fairino-doc-en.readthedocs.io/latest/"
     },
     {
       "label": "Plano acotado",

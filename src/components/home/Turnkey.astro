@@ -2,6 +2,8 @@
 import Icon from '../ui/Icon.astro';
 import SmartImage from '../ui/SmartImage.astro';
 import SectionHeading from '../ui/SectionHeading.astro';
+import IllustrativeBadge from '../ui/IllustrativeBadge.astro';
+import { isIllustrative } from '../../lib/images';
 import { solutions } from '../../data/solutions';
 import { url } from '../../lib/url';
 ---
@@ -18,8 +20,9 @@ import { url } from '../../lib/url';
       {
         solutions.map((s, i) => (
           <article class="card card-hover flex flex-col overflow-hidden" data-reveal style={`--reveal-delay:${i * 90}ms`}>
-            <div class="aspect-[16/11]">
-              <SmartImage src={s.image} alt={s.imageHint} widths={[400, 640, 900]} sizes="(min-width: 768px) 33vw, 100vw" />
+            <div class="relative aspect-[16/11]">
+              <SmartImage src={s.image} alt={s.imageHint} position={s.imagePosition} widths={[400, 640, 900]} sizes="(min-width: 768px) 33vw, 100vw" />
+              {s.image && isIllustrative(s.image) && <IllustrativeBadge class="bottom-2 right-2 text-[0.55rem]!" />}
             </div>
             <div class="flex flex-1 flex-col gap-4 p-6">
               <span class="chip w-fit">Solución llave en mano</span>

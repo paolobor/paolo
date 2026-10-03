@@ -9,6 +9,21 @@
     {
       "src": "../../assets/products/fr10/fr10-provisional-3d.png",
       "alt": "Cobot FAIRINO FR10 (imagen provisional del modelo 3D oficial)"
+    },
+    {
+      "src": "../../assets/products/fr10/fairino-fr10-escena-producto.webp",
+      "alt": "Cobot FAIRINO FR10 sobre una peana en una sala de exposición con luz naranja de fondo",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fr10/fairino-fr10-escena-carga-de-maquinas.webp",
+      "alt": "Cobot FAIRINO FR10 cargando un bloque de aluminio en un centro de mecanizado CNC",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fr10/fairino-fr10-escena-manipulacion.webp",
+      "alt": "Cobot FAIRINO FR10 con garra eléctrica moviendo piezas torneadas entre bandejas sobre una cinta",
+      "illustrative": true
     }
   ],
   "payloadKg": 10,
@@ -88,17 +103,17 @@
     {
       "label": "Manual de usuario",
       "type": "manual",
-      "href": null
+      "href": "https://fairino-doc-en.readthedocs.io/latest/"
     },
     {
       "label": "Plano acotado",
       "type": "cad",
-      "href": null
+      "href": "https://fairino-doc-en.readthedocs.io/latest/_downloads/834fdc8d52dec00b13468df60e177010/FR10%20Drawings.zip"
     },
     {
       "label": "Modelo 3D (STEP)",
       "type": "cad",
-      "href": null
+      "href": "https://fairino-doc-en.readthedocs.io/latest/_downloads/49cdf31534d0899683fd176e86a223d1/FRCobots-V6.0%20STEP%20Models.zip"
     }
   ],
   "configurator": {

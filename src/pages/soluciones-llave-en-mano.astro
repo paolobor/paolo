@@ -1,0 +1,125 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import Icon from '../components/ui/Icon.astro';
+import SmartImage from '../components/ui/SmartImage.astro';
+import IllustrativeBadge from '../components/ui/IllustrativeBadge.astro';
+import SectionHeading from '../components/ui/SectionHeading.astro';
+import ContactBand from '../components/home/ContactBand.astro';
+import { solutions } from '../data/solutions';
+import { applications } from '../data/applications';
+import { getProducts, sceneAlt } from '../lib/catalog';
+import { isIllustrative } from '../lib/images';
+import { url } from '../lib/url';
+
+const cobots = await getProducts('cobot');
+const items = await Promise.all(
+  solutions.map(async (s) => ({
+    ...s,
+    alt: (await sceneAlt(s.image)) || s.imageHint,
+    app: applications.find((a) => a.slug === s.application),
+    cobots: cobots.filter((c) => c.data.applications.includes(s.application)),
+  })),
+);
+
+// Proceso: de la idea a la célula funcionando.
+const steps = [
+  { icon: 'circle-help', title: 'Análisis', text: 'Vemos tu pieza, tu proceso y tus objetivos de producción.' },
+  { icon: 'pencil-ruler', title: 'Diseño', text: 'Elegimos cobot, herramienta, visión y seguridad, y dibujamos la célula.' },
+  { icon: 'wrench', title: 'Montaje y programación', text: 'Montamos la célula y la programamos con tu pieza.' },
+  { icon: 'graduation-cap', title: 'Puesta en marcha y formación', text: 'La dejamos produciendo en tu planta y formamos a tu equipo.' },
+  { icon: 'life-buoy', title: 'Soporte', text: 'Asistencia técnica, repuestos y ajustes cuando cambie tu producción.' },
+];
+---
+
+<BaseLayout
+  title="Soluciones llave en mano"
+  description="Células robotizadas completas con cobots FAIRINO: soldadura, paletizado y carga de máquinas. Diseño, montaje, programación, formación y soporte."
+>
+  <PageHero
+    crumbs={[{ label: 'Soluciones llave en mano' }]}
+    eyebrow="Llave en mano"
+    title="Células completas, listas para producir"
+    lead="Te entregamos la célula montada, programada y con tu equipo formado: cobot, herramienta, visión y seguridad de un solo proveedor."
+  >
+    <nav aria-label="Soluciones" class="flex flex-wrap gap-2 pt-2">
+      {solutions.map((s) => <a href={`#${s.slug}`} class="btn btn-ghost btn-sm">{s.name}</a>)}
+    </nav>
+  </PageHero>
+
+  <section class="section" aria-labelledby="proc-title">
+    <div class="container-x">
+      <SectionHeading id="proc-title" eyebrow="Cómo trabajamos" title="De la idea a la célula funcionando" />
+      <ol class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        {
+          steps.map((s, i) => (
+            <li class="card relative grid content-start gap-3 p-6" data-reveal style={`--reveal-delay:${i * 60}ms`}>
+              <span class="absolute right-5 top-5 font-mono text-sm text-muted">0{i + 1}</span>
+              <Icon name={s.icon} size={26} class="text-signal" />
+              <h3 class="font-display text-lg font-bold" style="font-stretch:112%">{s.title}</h3>
+              <p class="text-sm text-muted">{s.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  {
+    items.map((s, n) => (
+      <section id={s.slug} class:list={['section scroll-mt-24', n % 2 === 0 && 'bg-paper']} aria-labelledby={`${s.slug}-title`}>
+        <div class="container-x grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
+          <div class:list={['relative aspect-[16/10] overflow-hidden rounded-[var(--radius-card)] border border-line', n % 2 === 1 && 'lg:order-2']} data-reveal>
+            <SmartImage src={s.image} alt={s.alt} hint={s.imageHint} tone="dark" position={s.imagePosition} widths={[640, 960, 1400]} sizes="(min-width: 1024px) 50vw, 100vw" />
+            {s.image && isIllustrative(s.image) && <IllustrativeBadge />}
+          </div>
+          <div class="grid content-start gap-5" data-reveal>
+            <span class="chip w-fit">Solución llave en mano</span>
+            <h2 id={`${s.slug}-title`} class="h-section">{s.name}</h2>
+            <p class="text-[1.05rem] leading-relaxed text-mist">{s.summary}</p>
+            <div class="grid gap-2">
+              <p class="font-mono text-[0.7rem] uppercase tracking-[0.12em] text-muted">Incluye</p>
+              {s.includes ? (
+                <ul class="grid gap-2">
+                  {s.includes.map((x) => (
+                    <li class="flex gap-2"><Icon name="check" size={16} class="mt-1 text-brand" />{x}</li>
+                  ))}
+                </ul>
+              ) : (
+                <span class="todo w-fit">[DATO: componentes incluidos en la {s.name.toLowerCase()}]</span>
+              )}
+            </div>
+            <dl class="grid gap-3 sm:grid-cols-2">
+              <div class="card grid gap-1 p-4">
+                <dt class="font-mono text-[0.65rem] uppercase tracking-[0.12em] text-muted">Plazo de entrega</dt>
+                <dd><span class="todo">[DATO: plazo]</span></dd>
+              </div>
+              <div class="card grid gap-1 p-4">
+                <dt class="font-mono text-[0.65rem] uppercase tracking-[0.12em] text-muted">Cobots habituales</dt>
+                <dd class="flex flex-wrap gap-1.5 pt-0.5">{s.cobots.map((c) => <a href={url(`productos/${c.id}/`)} class="chip hover:border-signal">{c.data.name}</a>)}</dd>
+              </div>
+            </dl>
+            <div class="flex flex-wrap gap-3 pt-1">
+              <a href={url(`contacto/?asunto=presupuesto&producto=${encodeURIComponent(s.name)}`)} class="btn btn-primary"><Icon name="send" size={18} />Pedir propuesta</a>
+              {s.app && <a href={url(`aplicaciones/${s.app.slug}/`)} class="btn btn-secondary">Aplicación: {s.app.name}</a>}
+            </div>
+          </div>
+        </div>
+      </section>
+    ))
+  }
+
+  <section class="section" aria-label="Otra célula">
+    <div class="container-x">
+      <div class="card flex flex-col items-start gap-4 p-6 md:flex-row md:items-center md:justify-between" data-reveal>
+        <div class="grid gap-1">
+          <p class="font-display text-xl font-bold" style="font-stretch:115%">¿Necesitas otra célula?</p>
+          <p class="text-muted">Lijado, encolado, pintura, pick & place con visión… La diseñamos a partir de tu pieza.</p>
+        </div>
+        <a href={url('configurador/')} class="btn btn-primary shrink-0">Configurar mi célula</a>
+      </div>
+    </div>
+  </section>
+
+  <ContactBand />
+</BaseLayout>

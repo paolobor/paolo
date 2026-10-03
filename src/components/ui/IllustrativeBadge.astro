@@ -1,0 +1,9 @@
+---
+// Pie obligatorio en las escenas generadas a partir del render oficial.
+interface Props {
+  class?: string;
+}
+const { class: className = 'bottom-3 right-3' } = Astro.props;
+---
+
+<span class:list={['pointer-events-none absolute rounded-full bg-black/55 px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-white/85 backdrop-blur', className]}>Imagen ilustrativa</span>

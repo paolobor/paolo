@@ -72,7 +72,7 @@ const blog = defineCollection({
     description: z.string(),
     date: z.coerce.date(),
     category: z.string(),
-    // Ruta relativa a src/assets/images (p. ej. 'blog/cobot-soldando.jpg').
+    // Ruta relativa a src/assets/images (p. ej. 'blog/cobot-soldando.jpg') o a src/assets (escenas del catálogo).
     cover: z.string().nullable().default(null),
     coverAlt: z.string().default(''),
     draft: z.boolean().default(false),
