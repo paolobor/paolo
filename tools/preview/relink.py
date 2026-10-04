@@ -37,7 +37,7 @@ def rel(page, path):
 
 for page in pages:
     s = open(page).read()
-    s = re.sub(r'(href|src|poster|action)="(/[^"/][^"]*|/)"', lambda m: f'{m.group(1)}="{rel(page, m.group(2))}"', s)
+    s = re.sub(r'(href|src|poster|action|data-success)="(/[^"/][^"]*|/)"', lambda m: f'{m.group(1)}="{rel(page, m.group(2))}"', s)
     s = re.sub(r'srcset="([^"]+)"', lambda m: 'srcset="' + ', '.join(
         (rel(page, part.strip().split(' ')[0]) + (' ' + ' '.join(part.strip().split(' ')[1:]) if len(part.strip().split(' ')) > 1 else ''))
         if part.strip().startswith('/') else part.strip() for part in m.group(1).split(',')) + '"', s)

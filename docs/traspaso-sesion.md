@@ -9,7 +9,7 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
 - Web en Astro 7 + Tailwind 4, estática. `npm install && npm run build`; `npx astro check` debe dar 0 errores.
 - Vista previa navegable (privada del usuario): https://claude.ai/artifact/4jto5oMVMn7yimjgeq64PG
   - Se regenera con `npm run build && bash tools/preview/build-preview.sh <carpeta>` y se publica
-    `<carpeta>/site-dist/index.html` (que es la tienda) con `root` = `<carpeta>/site-dist` y los archivos de
+    `<carpeta>/site-dist/index.html` (el inicio de la web; la tienda está en `tienda/index.html`) con `root` = `<carpeta>/site-dist` y los archivos de
     `<carpeta>/site-files-final.json`. Antes de publicar desde otra sesión hay que leer el artefacto.
 - Despliegue previsto en el repo nuevo `paolobor/fairino-web` (el usuario tiene que crearlo y decir «creado»);
   `.github/workflows/deploy.yml` ya está preparado.
@@ -48,6 +48,8 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
   (`SCENE_WIDTHS` en `src/lib/images.ts`). Antes cada escena generaba ~30 archivos y `dist` pesaba 216 MB; ahora 37 MB.
   `findImage()` acepta rutas relativas a `src/assets/images` o a `src/assets` (p. ej. `products/fr3/…webp`), e
   `isIllustrative()` decide si poner el pie «Imagen ilustrativa» (`components/ui/IllustrativeBadge.astro`).
+- **Vista previa**: desde el 4/10 empieza en el inicio de la web, no en la tienda (el usuario quiere la web
+  completa, con la estructura de la de Inlux, y la tienda como una sección más).
 - **Páginas de la fase 3**, todas con contenido de fairino.es redactado de nuevo y `[DATO: …]` donde falta:
   - `/aplicaciones/` y `/aplicaciones/<slug>/` (8). Datos en `src/data/applications.ts` (intro, tareas, ventajas,
     cifras publicadas por FAIRINO, galería). Cobots y accesorios recomendados salen del campo `applications` de cada
