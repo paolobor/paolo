@@ -8,6 +8,8 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
   Las sesiones del 2 y 3/10 trabajaron en `claude/dazzling-brown-fhhro6` y subieron lo mismo a las dos ramas.
 - Web en Astro 7 + Tailwind 4, estática. `npm install && npm run build`; `npx astro check` debe dar 0 errores.
 - Vista previa navegable (privada del usuario): https://claude.ai/artifact/4jto5oMVMn7yimjgeq64PG
+- Enlace directo a la tienda (misma web, entra por la tienda): https://claude.ai/artifact/EZZZLUUr69PCVJvcZyNGHM
+  Se genera con `bash tools/preview/build-preview.sh <carpeta> tienda`.
   - Se regenera con `npm run build && bash tools/preview/build-preview.sh <carpeta>` y se publica
     `<carpeta>/site-dist/index.html` (el inicio de la web; la tienda está en `tienda/index.html`) con `root` = `<carpeta>/site-dist` y los archivos de
     `<carpeta>/site-files-final.json`. Antes de publicar desde otra sesión hay que leer el artefacto.
