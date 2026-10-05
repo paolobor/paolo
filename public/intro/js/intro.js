@@ -24,12 +24,14 @@
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var coarse = window.matchMedia('(pointer: coarse)').matches;
   var mobile = coarse || Math.min(window.innerWidth, window.innerHeight) < 700;
-  // Móvil en vertical: vídeo montado en vertical (cada plano reencuadrado), no el apaisado recortado.
+  // Móvil en vertical: el vídeo se ve entero (encajado y fundido en negro arriba y abajo), sin recortarlo.
   var portrait = window.innerHeight > window.innerWidth * 1.15;
+  var FIT = portrait ? 'contain' : 'cover';
+  if (portrait) intro.classList.add('is-portrait');
 
-  // Anillo naranja en el fotograma congelado del vídeo (proporciones del encuadre; cap = radio de la tapa
+  // Anillo naranja en el fotograma congelado del vídeo (proporciones del encuadre 16:9; cap = radio de la tapa
   // respecto al ancho) y momento del zoom.
-  var RING = portrait ? { x: 0.5, y: 0.279, cap: 0.177, at: 2.44 } : { x: 0.518, y: 0.279, cap: 0.056, at: 2.44 };
+  var RING = { x: 0.518, y: 0.279, cap: 0.056, at: 2.44 };
 
   var $ = function (s) {
     return intro.querySelector(s);
@@ -55,7 +57,7 @@
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var small = mobile || Math.max(window.innerWidth, window.innerHeight) * dpr <= 1400;
   var webm = !isSafari && video.canPlayType('video/webm; codecs="vp9"') === 'probably';
-  var src = ASSETS + 'fairino-intro' + (portrait ? '-vertical' : small ? '-720' : '') + (webm ? '.webm' : '.mp4');
+  var src = ASSETS + 'fairino-intro' + (small ? '-720' : '') + (webm ? '.webm' : '.mp4');
   var setSrc = function (u) {
     video.src = u;
     video.load();
@@ -392,8 +394,8 @@
     var H = window.innerHeight;
     var VW = video.videoWidth || 1920;
     var VH = video.videoHeight || 1080;
-    // Dónde queda el anillo en pantalla con object-fit: cover.
-    var s = Math.max(W / VW, H / VH);
+    // Dónde queda el anillo en pantalla (object-fit: cover en horizontal, contain en el móvil en vertical).
+    var s = FIT === 'contain' ? Math.min(W / VW, H / VH) : Math.max(W / VW, H / VH);
     var dw = VW * s;
     var dh = VH * s;
     var rx = (W - dw) / 2 + RING.x * dw;
