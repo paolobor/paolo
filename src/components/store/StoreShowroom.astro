@@ -90,6 +90,21 @@ const pad = (n: number) => String(n).padStart(2, '0');
     <span class="floor" aria-hidden="true"></span>
 
     <span class="beam" aria-hidden="true"></span>
+    <!-- Foco de techo: aro naranja arriba y un cono de luz cálida que baja hasta la peana. -->
+    <svg class="lamp" viewBox="0 0 400 90" aria-hidden="true">
+      <defs>
+        <radialGradient id="lamp-fill" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#ffe2c2" stop-opacity="0.32" />
+          <stop offset="45%" stop-color="#ff7a26" stop-opacity="0.16" />
+          <stop offset="80%" stop-color="#3a1206" stop-opacity="0.2" />
+          <stop offset="100%" stop-color="#000" stop-opacity="0" />
+        </radialGradient>
+      </defs>
+      <ellipse cx="200" cy="45" rx="190" ry="38" fill="url(#lamp-fill)" />
+      <ellipse cx="200" cy="45" rx="150" ry="28" fill="none" stroke="#ff8a3d" stroke-width="2.4" filter="url(#plat-glow)" class="lamp-ring" />
+      <ellipse cx="200" cy="45" rx="174" ry="33" fill="none" stroke="#ff5a1f" stroke-width="1.8" stroke-dasharray="1 9" stroke-linecap="round" filter="url(#plat-glow)" class="plat-dots" />
+    </svg>
+    <span class="spot" aria-hidden="true"></span>
     <svg class="platform" viewBox="0 0 400 90" aria-hidden="true">
       <defs>
         <radialGradient id="plat-fill" cx="50%" cy="50%" r="50%">
@@ -515,6 +530,56 @@ const pad = (n: number) => String(n).padStart(2, '0');
       opacity: 1;
     }
   }
+  /* Foco de techo (más tenue que la peana) y su cono de luz, por delante del robot en modo «pantalla». */
+  .lamp {
+    --lamp-top: -7%;
+    position: absolute;
+    left: 50%;
+    top: var(--lamp-top);
+    width: min(300px, 50vw);
+    transform: translateX(-50%);
+    overflow: visible;
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .spot {
+    position: absolute;
+    left: 50%;
+    top: calc(var(--lamp-top, -7%) + min(34px, 5.6vw));
+    bottom: 5%;
+    width: min(560px, 92vw);
+    transform: translateX(-50%);
+    background: linear-gradient(180deg, rgb(255 230 200 / 0.15), rgb(255 186 130 / 0.07) 42%, rgb(255 140 70 / 0.025) 78%, transparent);
+    clip-path: polygon(30% 0, 70% 0, 97% 100%, 3% 100%);
+    filter: blur(10px);
+    mix-blend-mode: screen;
+    z-index: 12;
+    animation: spot 6s ease-in-out infinite;
+    pointer-events: none;
+  }
+  /* En móvil el contador va encima del escenario: el foco baja un poco para no taparlo. */
+  @media (max-width: 767px) {
+    .stage {
+      --lamp-top: 1%;
+    }
+    .lamp {
+      --lamp-top: 1%;
+      width: 44vw;
+    }
+  }
+  @keyframes spot {
+    0%,
+    100% {
+      opacity: 0.8;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  .lamp-ring {
+    animation: ring 3s ease-in-out infinite;
+    animation-delay: -1.5s;
+  }
   .plat-ring {
     animation: ring 3s ease-in-out infinite;
   }
@@ -770,7 +835,9 @@ const pad = (n: number) => String(n).padStart(2, '0');
     .contact,
     .robot[data-active] .scan,
     .beam,
+    .spot,
     .backlight,
+    .lamp-ring,
     .plat-ring {
       animation: none;
     }
