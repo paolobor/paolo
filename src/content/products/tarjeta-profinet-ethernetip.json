@@ -4,11 +4,53 @@
   "category": "accesorio",
   "group": "control",
   "order": 41,
-  "tagline": "Tarjeta para conectar el controlador FAIRINO a redes PROFINET o EtherNet/IP.",
-  "description": "Tarjeta para conectar el controlador FAIRINO a redes PROFINET o EtherNet/IP. Ficha técnica, compatibilidad y precio a consultar.",
-  "highlights": [],
-  "images": [],
-  "specs": [],
+  "tagline": "Tarjeta opcional para conectar el cobot FAIRINO a un PLC por PROFINET o EtherNet/IP.",
+  "description": "Placa de comunicación opcional de FAIRINO en formato MiniPCI Express que se instala dentro de la caja de control del robot y añade un puerto de red RJ45 para buses de campo industriales. Con ella el cobot actúa como esclavo de un PLC por PROFINET o EtherNet/IP (según la versión de la placa, también CC-Link IE Field Basic y EtherCAT), de modo que el PLC puede enviar órdenes al robot y leer su estado. La integración se realiza importando el archivo de descripción del dispositivo (GSD o EDS) en el software del PLC.",
+  "highlights": [
+    "Conecta el cobot a un PLC por PROFINET o EtherNet/IP",
+    "Se instala dentro de la caja de control",
+    "Configuración con los archivos GSD o EDS"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/tarjeta-profinet-ethernetip/tarjeta-profinet-ethernetip-oficial.png",
+      "alt": "Placa de comunicación MiniPCI Express de FAIRINO con su tarjeta RJ45 (foto del manual oficial)"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Formato",
+      "value": "MiniPCI Express (real-time Ethernet PC Board)"
+    },
+    {
+      "label": "Protocolos opcionales del controlador",
+      "value": "CC-Link, PROFINET, EtherNet/IP, EtherCAT"
+    },
+    {
+      "label": "Modo de funcionamiento",
+      "value": "Robot como esclavo del PLC"
+    },
+    {
+      "label": "Conexión",
+      "value": "Puerto Ethernet RJ45 en tarjeta de expansión"
+    },
+    {
+      "label": "Controladores compatibles",
+      "value": "Cajas de control DC MINI 2 kW, AC MINI 2 kW, DC 5 kW y AC 5 kW"
+    },
+    {
+      "label": "Versiones de placa",
+      "value": "V10: PROFINET, EtherNet/IP y CC-Link IE Field Basic; V20: añade EtherCAT"
+    },
+    {
+      "label": "Software del robot requerido",
+      "value": "V3.8.4 o superior (V10) / V3.9.6 o superior (V20)"
+    },
+    {
+      "label": "Archivos de configuración",
+      "value": "GSD (PROFINET) y EDS (EtherNet/IP)"
+    }
+  ],
   "applications": [],
   "shopCategories": [
     "accesorios-fairino"
@@ -16,9 +58,9 @@
   "compatibleWith": [],
   "downloads": [
     {
-      "label": "Ficha técnica",
-      "type": "ficha",
-      "href": null
+      "label": "Manual de FAIRINO: el robot como esclavo de bus de campo (inglés)",
+      "type": "manual",
+      "href": "https://fairino-doc-en.readthedocs.io/latest/CobotsManual/custom_protocol_slave.html"
     }
   ],
   "store": {
@@ -29,8 +71,8 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": null,
-    "verified": false
+    "url": "https://www.fairino.com/Robotcontrolsystem",
+    "verified": true
   },
   "seo": {}
 }

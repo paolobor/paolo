@@ -39,6 +39,17 @@ que todavía no está en la tienda.
 Confirmar con el proveedor del kit qué variante exacta de ifm lleva cada kit de visión. El peso de la AIROS no se
 pone: la web dice 1,4 kg y el folleto 1,3 kg. Originales en `assets-src/fabricantes/mirka/` e `ifm/`.
 
+## Delta, IDEC y FAIRINO
+
+| Producto (id)               | Modelo y origen de la foto                                                         |
+| --------------------------- | ---------------------------------------------------------------------------------- |
+| kit-hmi-delta               | Delta DOP-100 L Type (DOP-107L1-01 7" / DOP-110L1-01 10,1"), filecenter.deltaww.com |
+| kit-escaner-seguridad-idec  | IDEC SE2L-H05LP (protección 5 m), almacén de imágenes de IDEC (apem.asset.akeneo.cloud) |
+| tarjeta-profinet-ethernetip | Placa MiniPCIe de FAIRINO (FRJ-PCIeN-…-V10/V20); foto de banco del manual oficial (fairino-doc-en.readthedocs.io) |
+
+Pendiente: confirmar el tamaño de pantalla del kit HMI (7" o 10,1"). No se pone el PFHd del SE2L porque la web y
+el catálogo de IDEC no coinciden.
+
 ## Sin foto de fabricante
 
 - pinza-vacio-area y las pinzas IR: son de marca Inlux Robotics; su foto solo está en la web de Inlux. No se copia.

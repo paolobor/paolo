@@ -1,14 +1,108 @@
 {
-  "name": "Kit HMI para FAIRINO",
+  "name": "Pantalla HMI Delta DOP-100L para FAIRINO",
   "brand": "Delta",
   "category": "accesorio",
   "group": "control",
   "order": 36,
-  "tagline": "Pantalla HMI de Delta preparada para manejar el cobot FAIRINO.",
-  "description": "Pantalla HMI de Delta preparada para manejar el cobot FAIRINO. Ficha técnica, compatibilidad y precio a consultar.",
-  "highlights": [],
-  "images": [],
-  "specs": [],
+  "tagline": "Pantalla táctil panorámica de Delta para manejar la célula del cobot.",
+  "description": "Panel HMI táctil de la serie DOP-100L de Delta con pantalla TFT panorámica de tecnología IPS, pensado para supervisar y operar la máquina desde el frontal del armario. Incorpora puerto Ethernet, puertos serie y USB host, y admite servidor VNC, MQTT y cliente OPC UA para integrarse con otros sistemas. El frontal está sellado con grado IP66 para uso en interiores y se alimenta a 24 V CC.",
+  "highlights": [
+    "Pantalla IPS panorámica de 7\" o 10,1\"",
+    "Ethernet, USB y puertos serie",
+    "Frontal IP66"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/kit-hmi-delta/kit-hmi-delta-oficial.png",
+      "alt": "Pantalla táctil Delta DOP-100L"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Tamaño de pantalla",
+      "value": "7 (DOP-107L1-01) / 10,1 (DOP-110L1-01)",
+      "unit": "pulgadas"
+    },
+    {
+      "label": "Tipo de pantalla",
+      "value": "TFT LCD de 24 bits, IPS, retroiluminación LED"
+    },
+    {
+      "label": "Resolución",
+      "value": "1024 × 600",
+      "unit": "píxeles"
+    },
+    {
+      "label": "Brillo",
+      "value": "400 (típico)",
+      "unit": "cd/m²"
+    },
+    {
+      "label": "Pantalla táctil",
+      "value": "Resistiva de 4 hilos"
+    },
+    {
+      "label": "Procesador",
+      "value": "ARM Cortex-A7 de doble núcleo a 1,2 GHz"
+    },
+    {
+      "label": "Memoria",
+      "value": "256 MB Flash ROM / 256 MB RAM"
+    },
+    {
+      "label": "Ethernet",
+      "value": "1 puerto 10/100 Mbps con autodetección"
+    },
+    {
+      "label": "USB",
+      "value": "1 USB Host 2.0"
+    },
+    {
+      "label": "Puertos serie",
+      "value": "COM1: RS-232 (con control de flujo) / RS-485; COM2: RS-422 / RS-485"
+    },
+    {
+      "label": "Conectividad de software",
+      "value": "Servidor VNC, MQTT, cliente OPC UA y Web API"
+    },
+    {
+      "label": "Protección del frontal",
+      "value": "IP66 (solo uso en interiores)"
+    },
+    {
+      "label": "Alimentación",
+      "value": "24 V CC (−15 % a +20 %), fuente aislada"
+    },
+    {
+      "label": "Consumo máximo",
+      "value": "10,08 (7\") / 11,28 (10,1\")",
+      "unit": "W"
+    },
+    {
+      "label": "Temperatura de funcionamiento",
+      "value": "0 a 50",
+      "unit": "°C"
+    },
+    {
+      "label": "Dimensiones (An × Al × P)",
+      "value": "208,7 × 154,7 × 40,8 (7\") / 271,3 × 213,3 × 42,2 (10,1\")",
+      "unit": "mm"
+    },
+    {
+      "label": "Recorte de montaje (L1)",
+      "value": "196,9 × 142,9 (7\") / 261,3 × 189,3 (10,1\")",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": "aprox. 536 (7\") / aprox. 1034,2 (10,1\")",
+      "unit": "g"
+    },
+    {
+      "label": "Certificación",
+      "value": "CE"
+    }
+  ],
   "applications": [],
   "shopCategories": [
     "ihm"
@@ -16,9 +110,9 @@
   "compatibleWith": [],
   "downloads": [
     {
-      "label": "Ficha técnica",
+      "label": "Página del producto en Delta (fichas y manuales)",
       "type": "ficha",
-      "href": null
+      "href": "https://www.deltaww.com/en-US/products/touch-panel-hmi-human-machine-interfaces/l-type"
     }
   ],
   "store": {
@@ -29,8 +123,8 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": null,
-    "verified": false
+    "url": "https://www.deltaww.com/en-US/products/touch-panel-hmi-human-machine-interfaces/l-type",
+    "verified": true
   },
   "seo": {}
 }

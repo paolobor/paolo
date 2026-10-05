@@ -1,14 +1,105 @@
 {
-  "name": "Kit de escáner láser de seguridad",
+  "name": "Escáner láser de seguridad IDEC SE2L",
   "brand": "IDEC",
   "category": "accesorio",
   "group": "control",
   "order": 37,
-  "tagline": "Escáner láser de seguridad de IDEC para vigilar la zona de trabajo del cobot.",
-  "description": "Escáner láser de seguridad de IDEC para vigilar la zona de trabajo del cobot. Ficha técnica, compatibilidad y precio a consultar.",
-  "highlights": [],
-  "images": [],
-  "specs": [],
+  "tagline": "Escáner láser de seguridad IDEC para vigilar el área de trabajo del cobot.",
+  "description": "Escáner láser de seguridad de la serie SE2L de IDEC que vigila un abanico de 270° y detiene o ralentiza la máquina cuando una persona entra en la zona configurada. Combina zonas de protección de seguridad con zonas de aviso no seguras, permite conmutar áreas, enlazar varios equipos en maestro/esclavo y dispone de salidas OSSD dobles. Se configura desde el PC por USB con el software SLS Project Designer y su carcasa ofrece protección IP65.",
+  "highlights": [
+    "Campo de protección de hasta 5 m y aviso hasta 20 m",
+    "Barrido de 270°",
+    "PL d, categoría 3 y SIL 2"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/kit-escaner-seguridad-idec/kit-escaner-seguridad-idec-oficial.png",
+      "alt": "Escáner láser de seguridad IDEC SE2L"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Zona de protección",
+      "value": "5,0 (máx.)",
+      "unit": "m"
+    },
+    {
+      "label": "Zona de aviso",
+      "value": "20 (máx., no de seguridad)",
+      "unit": "m"
+    },
+    {
+      "label": "Ángulo de detección",
+      "value": "270",
+      "unit": "°"
+    },
+    {
+      "label": "Tiempo de respuesta",
+      "value": "ON→OFF: 60 a 2010; OFF→ON: 270 a 2010",
+      "unit": "ms"
+    },
+    {
+      "label": "Ciclo de escaneo",
+      "value": "30",
+      "unit": "ms"
+    },
+    {
+      "label": "Nivel de seguridad",
+      "value": "PL d, categoría 3; SIL 2 (IEC 61508); Tipo 3 (IEC 61496-3)"
+    },
+    {
+      "label": "Salidas de seguridad",
+      "value": "OSSD1/2 (hasta 500 mA) y OSSD3/4 (hasta 250 mA), conmutación lado alto"
+    },
+    {
+      "label": "Otras salidas",
+      "value": "WARNING1/2 (no de seguridad), RES_REQ, MUT_OUT y AUX_OUT (PNP)"
+    },
+    {
+      "label": "Patrones de área",
+      "value": "32 (128 con entrada de encoder)"
+    },
+    {
+      "label": "Maestro/esclavo",
+      "value": "Hasta 4 escáneres por RS-485"
+    },
+    {
+      "label": "Interfaces",
+      "value": "USB 2.0 micro-B (PC), RS-485 (maestro/esclavo), Ethernet 100BASE-TX (datos de medida)"
+    },
+    {
+      "label": "Grado de protección",
+      "value": "IP65"
+    },
+    {
+      "label": "Alimentación",
+      "value": "24 V CC ±10 % (convertidor) / −30 % +20 % (batería)"
+    },
+    {
+      "label": "Consumo",
+      "value": "6 sin carga; 50 máx.",
+      "unit": "W"
+    },
+    {
+      "label": "Fuente láser",
+      "value": "Diodo láser pulsado de 905 nm, clase 1 (IEC 60825-1)"
+    },
+    {
+      "label": "Dimensiones (An × F × Al)",
+      "value": "80 × 80 × 95",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": "aprox. 0,8 (con cable de 3 m)",
+      "unit": "kg"
+    },
+    {
+      "label": "Temperatura de funcionamiento",
+      "value": "−10 a +50",
+      "unit": "°C"
+    }
+  ],
   "applications": [],
   "shopCategories": [
     "seguridad"
@@ -16,9 +107,9 @@
   "compatibleWith": [],
   "downloads": [
     {
-      "label": "Ficha técnica",
+      "label": "Catálogo SE2L de IDEC (inglés)",
       "type": "ficha",
-      "href": null
+      "href": "https://www.idec.com/en-eu/medias/download/EP1780-SE2L.pdf"
     }
   ],
   "store": {
@@ -29,8 +120,8 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": null,
-    "verified": false
+    "url": "https://www.idec.com/en-eu/safety-explosion-protection/safety-components/safety-laser-scanner/se2l-series/se2l-h05lp",
+    "verified": true
   },
   "seo": {}
 }
