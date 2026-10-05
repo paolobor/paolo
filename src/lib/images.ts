@@ -19,3 +19,10 @@ export function isIllustrative(path: string | null | undefined): boolean {
 
 // Las escenas se sirven siempre en estos anchos y solo en WebP: así cada escena genera 3 archivos y no decenas.
 export const SCENE_WIDTHS = [480, 960, 1600];
+
+// Recortes y fotos de producto con transparencia (…-provisional-3d.png, …-oficial.png): solo WebP (admite
+// transparencia) y en estos anchos, para no multiplicar archivos con AVIF y PNG de respaldo.
+export const CUTOUT_WIDTHS = [320, 640, 960];
+export function isCutout(src: string): boolean {
+  return /-(provisional-3d|oficial)\./.test(src);
+}

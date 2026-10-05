@@ -11,7 +11,7 @@ import { applications } from '../../data/applications';
 import { site } from '../../data/site';
 import { getProducts, categoryMeta, accessoryGroups, type Product } from '../../lib/catalog';
 import { url, whatsappLink, formatNumber } from '../../lib/url';
-import { SCENE_WIDTHS } from '../../lib/images';
+import { SCENE_WIDTHS, CUTOUT_WIDTHS } from '../../lib/images';
 
 export const getStaticPaths = (async () => {
   const products = await getProducts();
@@ -95,10 +95,10 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
                   <Picture
                     src={img.src}
                     alt={img.alt}
-                    widths={img.illustrative ? SCENE_WIDTHS : [480, 800, 1200]}
+                    widths={img.illustrative ? SCENE_WIDTHS : CUTOUT_WIDTHS}
                     sizes="(min-width: 1024px) 50vw, 100vw"
-                    formats={img.illustrative ? ['webp'] : ['avif', 'webp']}
-                    fallbackFormat={img.illustrative ? 'webp' : undefined}
+                    formats={['webp']}
+                    fallbackFormat="webp"
                     loading={i === 0 ? 'eager' : 'lazy'}
                     class:list={['size-full', img.illustrative ? 'object-cover' : 'object-contain']}
                     pictureAttributes={{ class: 'block size-full' }}
@@ -129,10 +129,10 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
                     <Picture
                       src={img.src}
                       alt=""
-                      widths={img.illustrative ? SCENE_WIDTHS.slice(0, 1) : [160, 320]}
+                      widths={img.illustrative ? SCENE_WIDTHS.slice(0, 1) : CUTOUT_WIDTHS.slice(0, 1)}
                       sizes="160px"
-                      formats={img.illustrative ? ['webp'] : ['avif', 'webp']}
-                      fallbackFormat={img.illustrative ? 'webp' : undefined}
+                      formats={['webp']}
+                      fallbackFormat="webp"
                       class:list={['size-full', img.illustrative ? 'rounded-lg object-cover' : 'object-contain']}
                       pictureAttributes={{ class: 'block size-full' }}
                     />
