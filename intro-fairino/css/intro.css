@@ -1,0 +1,340 @@
+/* Intro de FAIRINO España: negro puro, luz como protagonista y el naranja solo de acento. */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../assets/fonts/inter-latin-var.woff2') format('woff2');
+}
+
+:root {
+  --bg: #000;
+  --ink: #eceef1;
+  --muted: rgba(236, 238, 241, 0.56);
+  --faint: rgba(236, 238, 241, 0.14);
+  --orange: #fc5220;
+  --ease: cubic-bezier(0.22, 0.8, 0.22, 1);
+  --fs: clamp(52px, 11.5vw, 176px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow: hidden;
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
+html.is-skipping body {
+  visibility: hidden;
+}
+
+.intro {
+  --heat: 0;
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--bg);
+  isolation: isolate;
+}
+
+/* Viñeta muy suave para dar profundidad al negro */
+.intro::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  background: radial-gradient(ellipse 75% 70% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55));
+  transition: opacity 0.8s var(--ease);
+}
+.intro.is-video::after {
+  opacity: 0.35;
+}
+
+/* ---------- Vídeo (escena 2) ---------- */
+.film {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0;
+  background: #000;
+  will-change: transform;
+}
+.film video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  background: #000;
+}
+
+/* ---------- Chispas y resplandor ---------- */
+.sparks {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.underglow {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + var(--fs) * 0.12);
+  z-index: 1;
+  width: calc(var(--fs) * 7.5);
+  max-width: 140vw;
+  height: calc(var(--fs) * 2.6);
+  transform: translate(-50%, -32%);
+  pointer-events: none;
+  background: radial-gradient(ellipse 50% 50% at 50% 34%, rgba(252, 82, 32, 0.34), rgba(252, 82, 32, 0.1) 42%, transparent 72%);
+  opacity: calc(0.12 + var(--heat) * 0.88);
+  mix-blend-mode: screen;
+}
+
+/* ---------- El nombre ---------- */
+.word {
+  position: relative;
+  z-index: 2;
+  display: inline-block;
+  margin: 0;
+  font-size: var(--fs);
+  font-weight: 200;
+  line-height: 1;
+  letter-spacing: 0.045em;
+  white-space: nowrap;
+  opacity: 0;
+  will-change: transform, filter, opacity;
+  /* el espacio de la última letra no descentra la palabra */
+  margin-right: -0.045em;
+  user-select: none;
+}
+.intro.is-ready .word {
+  visibility: visible;
+}
+.ch {
+  display: inline;
+}
+.baseline {
+  display: inline-block;
+  width: 0;
+  height: 0;
+  vertical-align: baseline;
+}
+
+/* Metal pulido: blanco arriba, gris en el ecuador, blanco abajo */
+.word-base {
+  display: inline-block;
+  background-image: linear-gradient(180deg, #ffffff 0%, #f1f2f4 34%, #b9bdc4 56%, #e3e5e8 74%, #ffffff 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.word-heat,
+.word-shine {
+  position: absolute;
+  inset: 0;
+  display: block;
+  pointer-events: none;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Las chispas encienden las letras desde abajo */
+.word-heat {
+  background-image: linear-gradient(180deg, transparent 38%, rgba(255, 150, 70, 0.35) 62%, rgba(252, 82, 32, 0.95) 100%);
+  opacity: calc(var(--heat) * 0.85);
+  mix-blend-mode: plus-lighter;
+}
+
+/* Destello que recorre las letras */
+.word-shine {
+  --shine: -25%;
+  background-image: linear-gradient(
+    104deg,
+    transparent calc(var(--shine) - 14%),
+    rgba(255, 236, 214, 0.55) calc(var(--shine) - 4%),
+    #ffffff var(--shine),
+    rgba(255, 236, 214, 0.55) calc(var(--shine) + 4%),
+    transparent calc(var(--shine) + 14%)
+  );
+  filter: drop-shadow(0 0 0.08em rgba(255, 196, 150, 0.7));
+}
+
+/* ---------- Textos pequeños ---------- */
+.hint {
+  position: absolute;
+  left: 50%;
+  top: calc(50% + var(--fs) * 0.58 + clamp(28px, 6vh, 64px));
+  z-index: 4;
+  margin: 0;
+  transform: translateX(-50%);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--muted);
+  opacity: 0;
+  pointer-events: none;
+}
+.hint span {
+  display: inline-block;
+  padding-left: 0.34em; /* compensa el espaciado de la última letra */
+  animation: pulse 2.8s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.enter {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.enter:focus {
+  outline: none;
+}
+.enter:focus-visible ~ .hint span {
+  color: #fff;
+}
+.intro.is-entering .enter {
+  cursor: default;
+  pointer-events: none;
+}
+
+.skip {
+  position: absolute;
+  top: max(clamp(20px, 3.2vw, 44px), env(safe-area-inset-top));
+  right: max(clamp(20px, 3.4vw, 48px), env(safe-area-inset-right));
+  z-index: 6;
+  padding: 11px 16px 10px;
+  border: 1px solid var(--faint);
+  border-radius: 999px;
+  font: 500 10.5px/1 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: rgba(236, 238, 241, 0.74);
+  background: rgba(0, 0, 0, 0.25);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transition:
+    border-color 0.5s var(--ease),
+    color 0.5s var(--ease);
+}
+.skip:hover,
+.skip:focus-visible {
+  border-color: rgba(252, 82, 32, 0.75);
+  color: #fff;
+  outline: none;
+}
+
+/* ---------- Grano de película ---------- */
+.grain {
+  position: absolute;
+  inset: -50%;
+  z-index: 5;
+  pointer-events: none;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.4 -0.2'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  animation: grain 0.9s steps(6) infinite;
+}
+@keyframes grain {
+  0% { transform: translate(0, 0); }
+  20% { transform: translate(-3%, 2%); }
+  40% { transform: translate(2%, -3%); }
+  60% { transform: translate(-2%, -1%); }
+  80% { transform: translate(3%, 3%); }
+  100% { transform: translate(0, 0); }
+}
+
+/* ---------- Escena 3 ---------- */
+.whiteout {
+  position: absolute;
+  inset: 0;
+  z-index: 8;
+  display: grid;
+  place-items: center;
+  background: #fff;
+  opacity: 0;
+  pointer-events: none;
+}
+.whiteout-link {
+  display: none;
+  font: 400 12px/1 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #111;
+  padding: 14px 20px;
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 999px;
+}
+.whiteout.is-fallback {
+  pointer-events: auto;
+}
+.whiteout.is-fallback .whiteout-link {
+  display: inline-block;
+}
+
+.noscript {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 12vh;
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+}
+.noscript a {
+  color: var(--ink);
+}
+
+/* ---------- Movimiento reducido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .sparks,
+  .grain {
+    display: none;
+  }
+  .hint span {
+    animation: none;
+    opacity: 0.8;
+  }
+}
