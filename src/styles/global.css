@@ -19,8 +19,8 @@
   --color-paper: #0f0a07;
   --color-line: #2a1f18;
   --color-text: #f5eee8;
-  --color-muted: #b3a498;
-  --color-mist: #c9bdb3;
+  --color-muted: #c4b7ac;
+  --color-mist: #d8cdc4;
   --color-wa: #25d366;
   --color-surface: #0b0705;
   --color-surface-2: #140d09;
@@ -280,4 +280,13 @@
     opacity: 1;
     transform: none;
   }
+}
+
+/* El visor de la vista previa (y cualquier plantilla que envuelva la página) puede poner su propio fondo y color de
+   letra al body, y esos estilos sin capa ganan a los de @layer base. Así la web siempre manda: fondo negro cálido y
+   texto claro, también en lo que hereda el color. */
+html,
+body {
+  background-color: var(--color-ink) !important;
+  color: var(--color-text) !important;
 }
