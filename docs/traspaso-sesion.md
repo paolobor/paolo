@@ -86,6 +86,9 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
   Duplicados resueltos: Smart Tool = «botones de control rápido»; EPG40-050 = IR40-50 (misma foto en fairino.es).
   Sin nombre en las capturas, no añadidos: cable, regleta de bornas y fundas de protección (azul y blanca).
 
+- Portada: vídeo oficial de fairino.es (`video-portada.mp4`, 38 s) como fondo del hero, sin audio, en
+  `public/media/fairino-portada.{webm,mp4}` (1,8 y 3,5 MB); póster = primer fotograma.
+
 ## Higgsfield: estado
 
 - Saldo: 891 créditos, plan Plus. nano_banana_2 a 2k = 2 créditos por imagen.

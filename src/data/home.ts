@@ -3,10 +3,12 @@
 export const hero = {
   // Vídeo de fondo: guardar en /public/media/ (MP4 H.264 + WebM, 10–15 s, sin audio, ≤ 3 MB) y poner las rutas aquí
   // (p. ej. 'media/hero.mp4'). El póster es una foto en src/assets/images (p. ej. 'home/hero-poster.jpg').
+  // Vídeo oficial de la portada de fairino.es (wp-content/uploads/2025/10/video-portada.mp4), sin audio y comprimido
+  // para la web (1080p, 38 s). El póster es su primer fotograma.
   video: {
-    mp4: null as string | null,
-    webm: null as string | null,
-    poster: null as string | null,
+    mp4: 'media/fairino-portada.mp4' as string | null,
+    webm: 'media/fairino-portada.webm' as string | null,
+    poster: 'home/fairino-portada-poster.jpg' as string | null,
     hint: 'cobot FAIRINO trabajando en una célula real, 10–15 s en bucle, sin audio',
   },
   // Modelo destacado de la primera diapositiva (slug de producto). Confirmar con FAIRINO España.
