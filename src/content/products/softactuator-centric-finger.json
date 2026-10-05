@@ -7,7 +7,12 @@
   "tagline": "Dedos flexibles céntricos sobre perfiles ajustables.",
   "description": "Dedos flexibles céntricos sobre perfiles ajustables. Ficha técnica, compatibilidad y precio a consultar.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/softactuator-centric-finger/softactuator-centric-finger-oficial.png",
+      "alt": "Actuador flexible céntrico SoftActuator, foto oficial de Soft Gripping"
+    }
+  ],
   "specs": [],
   "applications": [
     "pick-and-place",

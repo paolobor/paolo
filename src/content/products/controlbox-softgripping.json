@@ -7,7 +7,12 @@
   "tagline": "Caja de control para las pinzas flexibles SoftGripping.",
   "description": "Caja de control para las pinzas flexibles SoftGripping. Ficha técnica, compatibilidad y precio a consultar.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/controlbox-softgripping/controlbox-softgripping-oficial.png",
+      "alt": "Caja de control Controlbox P, foto oficial de Soft Gripping"
+    }
+  ],
   "specs": [],
   "applications": [
     "pick-and-place",

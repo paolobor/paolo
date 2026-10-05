@@ -23,6 +23,9 @@ interface Props {
 }
 const { product } = Astro.props;
 const d = product.data;
+// «del FR5» o «del DC Mini Controller» va bien; los accesorios tienen nombres en español con género («la pinza»),
+// así que en ellos el título va sin el nombre.
+const delName = d.category === 'accesorio' ? '' : ` del ${d.name}`;
 const meta = categoryMeta[d.category];
 const all = await getProducts();
 
@@ -232,19 +235,19 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
     <div class="container-x grid gap-10 lg:grid-cols-[1fr_2fr]">
       <div class="grid content-start gap-4">
         <p class="eyebrow">Ficha técnica</p>
-        <h2 id="spec-title" class="h-section">Especificaciones del {d.name}</h2>
+        <h2 id="spec-title" class="h-section">Especificaciones{delName}</h2>
         <p class="text-muted">
           Datos de la documentación de FAIRINO. Si un valor es crítico para tu célula, confírmalo con nuestro equipo antes de cerrar el diseño.
         </p>
       </div>
       <div class="overflow-x-auto">
         <table class="w-full border-collapse text-left">
-          <caption class="sr-only">Especificaciones técnicas del {d.name}</caption>
+          <caption class="sr-only">Especificaciones técnicas: {d.name}</caption>
           <tbody>
             {d.specs.length === 0 && (
               <tr class="border-b border-line">
                 <th scope="row" class="w-1/2 py-3.5 pr-4 align-top text-[0.95rem] font-medium text-muted">Ficha técnica</th>
-                <td class="py-3.5 align-top"><span class="todo">[DATO: especificaciones del {d.name}]</span></td>
+                <td class="py-3.5 align-top"><span class="todo">[DATO: especificaciones: {d.name}]</span></td>
               </tr>
             )}
             {
@@ -269,7 +272,7 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
       <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div class="grid gap-3">
           <p class="eyebrow">Documentación</p>
-          <h2 id="dl-title" class="h-section">Descargas del {d.name}</h2>
+          <h2 id="dl-title" class="h-section">Descargas{delName}</h2>
         </div>
         <a href={url('descargas/')} class="link-arrow">Centro de descargas <Icon name="arrow-right" size={17} /></a>
       </div>

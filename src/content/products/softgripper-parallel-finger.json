@@ -7,7 +7,12 @@
   "tagline": "Pinza de dedos flexibles en paralelo para piezas delicadas.",
   "description": "Pinza de dedos flexibles en paralelo para piezas delicadas. Ficha técnica, compatibilidad y precio a consultar.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/softgripper-parallel-finger/softgripper-parallel-finger-oficial.png",
+      "alt": "Pinza flexible paralela SoftGripper, foto oficial de Soft Gripping"
+    }
+  ],
   "specs": [],
   "applications": [
     "pick-and-place",

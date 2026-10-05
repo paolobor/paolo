@@ -80,7 +80,9 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
 - Accesorios: el usuario pasó capturas de la tienda de Inlux con nombres y fotos. **Fotos de Inlux no** (llevan su
   logo; regla de no copiar de inluxrobotics.es ni quitar marcas de agua). Se usan solo los nombres, traducidos, con
   campo `brand` (Inlux Robotics, Schmalz, Soft Gripping, IFM, Delta, IDEC, Mirka). Fotos oficiales de fairino.es
-  (`<id>-oficial.png`) en los accesorios FAIRINO, los 4 controladores y el FR3C. Los de terceros siguen con [FOTO].
+  (`<id>-oficial.png`) en los accesorios FAIRINO, los 4 controladores y el FR3C. Soft Gripping (4 productos) con
+  foto de soft-gripping.com sin fondo; Schmalz pendiente de que la red deje bajar `media.schmalz.com`. Origen de
+  cada foto y lo que falta en `assets-src/fabricantes/LEEME.md`. El resto de terceros sigue con [FOTO].
   Duplicados resueltos: Smart Tool = «botones de control rápido»; EPG40-050 = IR40-50 (misma foto en fairino.es).
   Sin nombre en las capturas, no añadidos: cable, regleta de bornas y fundas de protección (azul y blanca).
 
