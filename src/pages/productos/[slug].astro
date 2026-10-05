@@ -1,6 +1,6 @@
 ---
 import type { GetStaticPaths } from 'astro';
-import { Picture } from 'astro:assets';
+import { Picture, getImage } from 'astro:assets';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Breadcrumbs from '../../components/ui/Breadcrumbs.astro';
 import Icon from '../../components/ui/Icon.astro';
@@ -11,7 +11,7 @@ import { applications } from '../../data/applications';
 import { site } from '../../data/site';
 import { getProducts, categoryMeta, accessoryGroups, type Product } from '../../lib/catalog';
 import { url, whatsappLink, formatNumber } from '../../lib/url';
-import { SCENE_WIDTHS, CUTOUT_WIDTHS } from '../../lib/images';
+import { SCENE_WIDTHS, CUTOUT_WIDTHS, findImage } from '../../lib/images';
 
 export const getStaticPaths = (async () => {
   const products = await getProducts();
@@ -23,6 +23,12 @@ interface Props {
 }
 const { product } = Astro.props;
 const d = product.data;
+// Si el producto tiene vídeo, va el primero en la galería y las fotos se corren un puesto.
+const posterImg = d.video ? findImage(d.video.poster) : null;
+const videoPoster = posterImg ? (await getImage({ src: posterImg, format: 'webp', width: Math.min(1280, posterImg.width) })).src : undefined;
+const videoThumb = posterImg ? (await getImage({ src: posterImg, format: 'webp', width: 320 })).src : undefined;
+const off = d.video ? 1 : 0;
+const mediaCount = d.images.length + off;
 // «del FR5» o «del DC Mini Controller» va bien; los accesorios tienen nombres en español con género («la pinza»),
 // así que en ellos el título va sin el nombre.
 const delName = d.category === 'accesorio' ? '' : ` del ${d.name}`;
@@ -92,9 +98,39 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
       <div class="grid content-start gap-3" data-gallery>
         <div class="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] border border-line bg-[radial-gradient(ellipse_at_50%_85%,rgba(255,106,19,0.22),transparent_60%),radial-gradient(circle_at_50%_40%,#1a110c,#0b0705_75%)]">
           {
+            d.video && (
+              <div class="absolute inset-0" data-slide={0}>
+                <video
+                  class="size-full object-cover"
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                  preload="metadata"
+                  poster={videoPoster}
+                  aria-label={d.video.alt}
+                  data-gallery-video
+                >
+                  {d.video.webm && <source src={url(d.video.webm)} type="video/webm" />}
+                  <source src={url(d.video.mp4)} type="video/mp4" />
+                </video>
+                <button
+                  type="button"
+                  class="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-black/55 px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-white/90 backdrop-blur transition-colors hover:bg-black/75"
+                  aria-label="Pausar el vídeo"
+                  data-video-toggle
+                >
+                  <Icon name="pause" size={14} class="i-pause" />
+                  <Icon name="play" size={14} class="i-play hidden" />
+                  <span data-video-label>Pausa</span>
+                </button>
+              </div>
+            )
+          }
+          {
             d.images.length ? (
               d.images.map((img, i) => (
-                <div class:list={['absolute inset-0', !img.illustrative && 'p-6']} data-slide={i} hidden={i !== 0}>
+                <div class:list={['absolute inset-0', !img.illustrative && 'p-6']} data-slide={i + off} hidden={i + off !== 0}>
                   <Picture
                     src={img.src}
                     alt={img.alt}
@@ -102,7 +138,7 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
                     sizes="(min-width: 1024px) 50vw, 100vw"
                     formats={['webp']}
                     fallbackFormat="webp"
-                    loading={i === 0 ? 'eager' : 'lazy'}
+                    loading={i + off === 0 ? 'eager' : 'lazy'}
                     class:list={['size-full', img.illustrative ? 'object-cover' : 'object-contain']}
                     pictureAttributes={{ class: 'block size-full' }}
                   />
@@ -114,20 +150,36 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
                 </div>
               ))
             ) : (
-              <Placeholder label={`${d.name}, ${placeholderViews[0]} (de fairino.es)`} />
+              !d.video && <Placeholder label={`${d.name}, ${placeholderViews[0]} (de fairino.es)`} />
             )
           }
         </div>
-        <div class="grid grid-cols-4 gap-3">
+        <div class:list={['grid gap-3', mediaCount > 4 ? 'grid-cols-5' : 'grid-cols-4']}>
           {
-            d.images.length > 1
+            mediaCount > 1 && d.video && (
+              <button
+                type="button"
+                class="thumb relative aspect-square overflow-hidden rounded-xl border border-line bg-surface"
+                aria-label={`Ver el vídeo: ${d.video.alt}`}
+                aria-pressed="true"
+                data-thumb={0}
+              >
+                <img src={videoThumb} alt="" class="size-full object-cover" loading="lazy" />
+                <span class="absolute inset-0 grid place-items-center bg-black/25">
+                  <span class="grid size-9 place-items-center rounded-full bg-signal text-ink shadow-lg"><Icon name="play" size={16} /></span>
+                </span>
+              </button>
+            )
+          }
+          {
+            mediaCount > 1
               ? d.images.map((img, i) => (
                   <button
                     type="button"
                     class="thumb aspect-square overflow-hidden rounded-xl border border-line bg-surface p-2"
                     aria-label={`Ver imagen ${i + 1}: ${img.alt}`}
-                    aria-pressed={i === 0 ? 'true' : 'false'}
-                    data-thumb={i}
+                    aria-pressed={i + off === 0 ? 'true' : 'false'}
+                    data-thumb={i + off}
                   >
                     <Picture
                       src={img.src}
@@ -141,7 +193,7 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
                     />
                   </button>
                 ))
-              : d.images.length === 0 &&
+              : mediaCount === 0 &&
                 placeholderViews.slice(1).map((v) => (
                   <div class="aspect-square overflow-hidden rounded-xl">
                     <Placeholder label={v} />
@@ -397,11 +449,35 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
   document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((g) => {
     const slides = [...g.querySelectorAll<HTMLElement>('[data-slide]')];
     const thumbs = [...g.querySelectorAll<HTMLButtonElement>('[data-thumb]')];
+    const video = g.querySelector<HTMLVideoElement>('[data-gallery-video]');
+    const toggle = g.querySelector<HTMLButtonElement>('[data-video-toggle]');
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    // El vídeo se para si se elige otra foto y vuelve a arrancar al volver a él (salvo que el usuario lo pausara).
+    let userPaused = reduce;
+    const setPlaying = (play: boolean) => {
+      if (!video) return;
+      if (play) video.play().catch(() => {});
+      else video.pause();
+      toggle?.setAttribute('aria-label', play ? 'Pausar el vídeo' : 'Reproducir el vídeo');
+      toggle?.querySelector('.i-pause')?.classList.toggle('hidden', !play);
+      toggle?.querySelector('.i-play')?.classList.toggle('hidden', play);
+      const label = toggle?.querySelector('[data-video-label]');
+      if (label) label.textContent = play ? 'Pausa' : 'Ver vídeo';
+    };
+    if (video && reduce) {
+      video.removeAttribute('autoplay');
+      setPlaying(false);
+    }
+    toggle?.addEventListener('click', () => {
+      userPaused = !video!.paused;
+      setPlaying(video!.paused);
+    });
     thumbs.forEach((t) =>
       t.addEventListener('click', () => {
         const i = Number(t.dataset.thumb);
-        slides.forEach((s, n) => (s.hidden = n !== i));
-        thumbs.forEach((b, n) => b.setAttribute('aria-pressed', String(n === i)));
+        slides.forEach((s) => (s.hidden = Number(s.dataset.slide) !== i));
+        thumbs.forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.thumb) === i)));
+        if (video) setPlaying(i === 0 && !userPaused);
       }),
     );
   });

@@ -26,6 +26,12 @@
       "illustrative": true
     }
   ],
+  "video": {
+    "mp4": "media/fairino-fr3.mp4",
+    "webm": "media/fairino-fr3.webm",
+    "poster": "videos/fairino-fr3-poster.jpg",
+    "alt": "Vídeo oficial de FAIRINO con cobots de la serie FR en movimiento"
+  },
   "payloadKg": 3,
   "reachMm": 622,
   "repeatabilityMm": 0.02,

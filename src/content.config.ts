@@ -24,6 +24,9 @@ const products = defineCollection({
     highlights: z.array(z.string()).default([]),
     // illustrative: escena generada a partir del render oficial (se muestra a sangre y con el pie «Imagen ilustrativa»).
     images: z.array(z.object({ src: image(), alt: z.string(), illustrative: z.boolean().default(false) })).default([]),
+    // Vídeo del producto: sale el primero en la galería de la ficha, en bucle y sin sonido.
+    // mp4/webm en /public/media/ (p. ej. 'media/fairino-fr3.mp4'); póster en src/assets/images (p. ej. 'videos/…jpg').
+    video: z.object({ mp4: z.string(), webm: z.string().optional(), poster: z.string(), alt: z.string() }).optional(),
     // Campos normalizados para filtros y tarjetas.
     payloadKg: z.number().nullable().default(null),
     reachMm: z.number().nullable().default(null),

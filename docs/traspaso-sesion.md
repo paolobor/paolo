@@ -97,6 +97,9 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
 - Configurador: tarjetas con la foto oficial de cada producto (como en la tienda).
 - Tienda: filtro de precio (desactivado mientras los precios estén a 0).
 
+- Fichas de producto: campo `video` (mp4/webm en public/media, póster en src/assets/images). Sale el primero en la
+  galería, en bucle y sin sonido, con botón de pausa. FR3: vídeo oficial de FAIRINO (12 s) facilitado por el cliente.
+
 ## Higgsfield: estado
 
 - Saldo: 891 créditos, plan Plus. nano_banana_2 a 2k = 2 créditos por imagen.
