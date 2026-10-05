@@ -10,6 +10,7 @@ import { site } from '../../data/site';
 import { url, formatNumber } from '../../lib/url';
 
 const cobots = await getProducts('cobot');
+const allCount = (await getProducts()).length;
 const maxPayload = Math.max(...cobots.map((c) => c.data.payloadKg ?? 0));
 const maxReach = Math.max(...cobots.map((c) => c.data.reachMm ?? 0));
 const minReach = Math.min(...cobots.map((c) => c.data.reachMm ?? Infinity));
@@ -71,9 +72,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
       <h1 class="text-[clamp(1.8rem,3.4vw,2.7rem)] font-extrabold leading-[1.02]" style="font-stretch:118%">
         Robots colaborativos<br /><span class="text-glow">FAIRINO</span>
       </h1>
-      <a href="#productos" class="inline-flex w-fit items-center gap-2 rounded-full border border-white/20 px-4 py-2 text-sm font-semibold transition-colors hover:border-signal hover:text-signal">
+      <a href="#productos" class="see-all btn btn-primary group mt-1 w-fit gap-3 rounded-full py-3.5 pr-3 pl-6 text-base">
         Ver todos los productos
-        <Icon name="chevron-down" size={16} />
+        <span class="rounded-full bg-ink/15 px-2 py-1 font-mono text-xs tabular-nums">{allCount}</span>
+        <span class="see-all-arrow grid size-8 place-items-center rounded-full bg-ink text-signal"><Icon name="chevron-down" size={18} /></span>
       </a>
     </div>
     <div class="grid justify-items-start gap-1 font-mono md:justify-items-end">
@@ -325,6 +327,52 @@ const pad = (n: number) => String(n).padStart(2, '0');
 </aside>
 
 <style>
+  /* Botón para bajar al catálogo completo: naranja, con brillo que respira y flecha que invita a bajar. */
+  .see-all {
+    position: relative;
+    box-shadow:
+      0 0 0 0 rgb(255 122 26 / 0.55),
+      0 12px 36px -10px rgb(255 122 26 / 0.8);
+    animation: see-all-pulse 2.6s ease-out infinite;
+  }
+  .see-all:hover {
+    animation: none;
+  }
+  .see-all-arrow {
+    animation: see-all-bounce 1.6s ease-in-out infinite;
+  }
+  .see-all:hover .see-all-arrow {
+    animation: none;
+    transform: translateY(2px);
+  }
+  @keyframes see-all-pulse {
+    0% {
+      box-shadow:
+        0 0 0 0 rgb(255 122 26 / 0.55),
+        0 12px 36px -10px rgb(255 122 26 / 0.8);
+    }
+    70%,
+    100% {
+      box-shadow:
+        0 0 0 14px rgb(255 122 26 / 0),
+        0 12px 36px -10px rgb(255 122 26 / 0.8);
+    }
+  }
+  @keyframes see-all-bounce {
+    0%,
+    100% {
+      transform: translateY(-1px);
+    }
+    50% {
+      transform: translateY(3px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .see-all,
+    .see-all-arrow {
+      animation: none;
+    }
+  }
   .showroom-glow {
     background:
       radial-gradient(ellipse 80% 75% at 50% 50%, transparent 50%, rgb(0 0 0 / 0.66)),
