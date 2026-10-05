@@ -9,8 +9,7 @@ export const site = {
   url: 'https://fairino.es',
   locale: 'es_ES',
 
-  // Logo oficial: cuando tengamos el SVG, guardarlo en /public/brand/ y poner aquí la ruta (p. ej. 'brand/logo-fairino.svg').
-  logo: null as string | null,
+  // Logotipo oficial: src/assets/brand/fairino-wordmark.svg (letras de FAIRINO), lo pinta components/ui/Logo.astro.
 
   // Instalaciones en Yuncler (Toledo), dirección confirmada por FAIRINO España. Si street es null sale [DATO: calle y número].
   address: {

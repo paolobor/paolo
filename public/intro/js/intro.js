@@ -1,0 +1,494 @@
+/*
+ * Intro de FAIRINO Spain.
+ *   Escena 1: el logotipo de FAIRINO se enfoca con un destello y chispas alrededor. Clic (o Intro / espacio).
+ *   Escena 2: estallido, las chispas caen dentro de la «O», la cámara la atraviesa y detrás arranca el vídeo;
+ *             después, zoom al anillo naranja de una articulación como si fuera un portal.
+ *   Escena 3: fundido a blanco y
+ *             - página suelta (intro/index.html): salto a la web (data-target en <html>);
+ *             - dentro de la web (inicio y tienda, html.fi-play): la capa se funde y deja ver la página.
+ */
+(function () {
+  'use strict';
+
+  var root = document.documentElement;
+  if (root.classList.contains('is-skipping')) return;
+  var intro = document.querySelector('[data-intro]');
+  if (!intro || !window.gsap) return;
+
+  var script = document.currentScript;
+  var ASSETS = new URL('../assets/', script && script.src ? script.src : location.href).href;
+  var OVERLAY = root.classList.contains('fi-play');
+  var TARGET = root.dataset.target || 'https://fairino.es/';
+  var KEY = 'fairino-intro-vista';
+
+  // Anillo naranja en el fotograma congelado del vídeo (proporciones del encuadre 16:9) y momento del zoom.
+  var RING = { x: 0.518, y: 0.279, cap: 0.056, at: 2.44 };
+
+  var $ = function (s) {
+    return intro.querySelector(s);
+  };
+  var word = $('[data-word]');
+  var mark = $('[data-wordmark]');
+  var shineGrad = $('[data-shine]');
+  var spain = $('[data-spain]');
+  var hint = $('[data-hint]');
+  var skip = $('[data-skip]');
+  var enterBtn = $('[data-enter]');
+  var film = $('[data-film]');
+  var video = $('[data-video]');
+  var whiteout = $('[data-whiteout]');
+  var canvas = $('[data-sparks]');
+  var underglow = $('.fi-underglow');
+  var PATH = document.getElementById('fi-wm');
+
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var coarse = window.matchMedia('(pointer: coarse)').matches;
+  var mobile = coarse || Math.min(window.innerWidth, window.innerHeight) < 700;
+  var state = 'idle';
+
+  // ---------------------------------------------------------------- vídeo (se descarga entero en la escena 1)
+  var isSafari = /^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var small = mobile || Math.max(window.innerWidth, window.innerHeight) * dpr <= 1400;
+  var webm = !isSafari && video.canPlayType('video/webm; codecs="vp9"') === 'probably';
+  var src = ASSETS + 'fairino-intro' + (small ? '-720' : '') + (webm ? '.webm' : '.mp4');
+  var setSrc = function (u) {
+    video.src = u;
+    video.load();
+  };
+  if (!reduce) {
+    if (/^https?:/.test(location.protocol) && window.fetch && window.URL) {
+      fetch(src)
+        .then(function (r) {
+          if (!r.ok) throw new Error(r.status);
+          return r.blob();
+        })
+        .then(function (b) {
+          setSrc(URL.createObjectURL(b));
+        })
+        .catch(function () {
+          setSrc(src);
+        });
+    } else {
+      setSrc(src);
+    }
+  }
+
+  // ---------------------------------------------------------------- medidas del logotipo
+  // Se pinta el logotipo en un lienzo oculto para sacar el borde de las letras (de donde salen las chispas)
+  // y el hueco de la «O» (el portal).
+  var geo = null;
+  var mcan = document.createElement('canvas');
+  var mctx = mcan.getContext('2d', { willReadFrequently: true });
+
+  function measure() {
+    var r = mark.getBoundingClientRect();
+    var w = Math.max(2, Math.round(r.width));
+    var h = Math.max(2, Math.round(r.height));
+    var pad = Math.round(h * 0.5);
+    var fallback = function () {
+      geo = {
+        rect: r,
+        h: h,
+        o: { x: r.right - h * 0.55, y: r.top + h / 2, hx: h * 0.42, hy: h * 0.25, rad: h * 0.2 },
+        points: { x: new Float32Array(0), y: new Float32Array(0), nx: new Float32Array(0), ny: new Float32Array(0), bottom: [] },
+      };
+    };
+    return new Promise(function (resolve) {
+      var svg =
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 622 68.969" width="' + w + '" height="' + h + '">' +
+        '<path fill="#fff" fill-rule="evenodd" transform="translate(-649 -451)" d="' + PATH.getAttribute('d') + '"/></svg>';
+      var img = new Image();
+      img.onload = function () {
+        var W = w + pad * 2;
+        var H = h + pad * 2;
+        mcan.width = W;
+        mcan.height = H;
+        mctx.clearRect(0, 0, W, H);
+        mctx.drawImage(img, pad, pad, w, h);
+        var data = mctx.getImageData(0, 0, W, H).data;
+        var A = function (x, y) {
+          return x < 0 || y < 0 || x >= W || y >= H ? 0 : data[(y * W + x) * 4 + 3];
+        };
+        var ink = function (x, y) {
+          return A(x, y) > 120;
+        };
+
+        // Borde de las letras con su normal hacia fuera
+        var step = Math.max(1, Math.round(h / 60));
+        var px = [], py = [], nx = [], ny = [], bottom = [];
+        for (var y = 1; y < H - 1; y += step) {
+          for (var x = 1; x < W - 1; x += step) {
+            if (!ink(x, y)) continue;
+            if (ink(x + 1, y) && ink(x - 1, y) && ink(x, y + 1) && ink(x, y - 1)) continue;
+            var gx = A(x - 1, y) - A(x + 1, y);
+            var gy = A(x, y - 1) - A(x, y + 1);
+            var gl = Math.sqrt(gx * gx + gy * gy) || 1;
+            px.push(r.left - pad + x);
+            py.push(r.top - pad + y);
+            nx.push(gx / gl);
+            ny.push(gy / gl);
+            if (gy / gl > 0.55) bottom.push(px.length - 1);
+          }
+        }
+
+        // La «O» es la última letra: de su borde derecho hacia la izquierda hasta el hueco con la «N».
+        var colInk = function (x) {
+          for (var yy = pad; yy < pad + h; yy++) if (ink(x, yy)) return true;
+          return false;
+        };
+        var xr = pad + w - 1;
+        while (xr > pad && !colInk(xr)) xr--;
+        var xl = xr;
+        while (xl > pad && colInk(xl - 1)) xl--;
+        var y0 = pad, y1 = pad + h - 1;
+        var cx = Math.round((xl + xr) / 2);
+        var cy = Math.round((y0 + y1) / 2);
+        var ix = 0;
+        while (cx + ix < xr && !ink(cx + ix, cy)) ix++;
+        var sx = Math.round(cx + ix * 0.5); // fuera de la ranura central del estarcido
+        var iy = 0;
+        while (cy - iy > y0 && !ink(sx, cy - iy)) iy++;
+        if (ix < 2 || iy < 2) {
+          fallback();
+        } else {
+          geo = {
+            rect: r,
+            h: h,
+            o: { x: r.left - pad + cx, y: r.top - pad + cy, hx: ix, hy: iy, rad: Math.min(ix, iy) * 0.75 },
+            points: { x: Float32Array.from(px), y: Float32Array.from(py), nx: Float32Array.from(nx), ny: Float32Array.from(ny), bottom: bottom },
+          };
+        }
+        if (sparks) {
+          sparks.setScale(h / 80);
+          sparks.setPoints(geo.points);
+        }
+        resolve();
+      };
+      img.onerror = function () {
+        fallback();
+        resolve();
+      };
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    });
+  }
+
+  // ---------------------------------------------------------------- chispas
+  var sparks = reduce ? null : new window.Sparks(canvas, { mobile: mobile });
+  var lastHeat = -1;
+  function tick(t, deltaMs) {
+    if (!sparks) return;
+    var dt = Math.min(deltaMs / 1000, 1 / 20);
+    sparks.update(dt);
+    sparks.draw();
+    var heat = Math.min(1, sparks.activity + sparks.charge / 60);
+    if (Math.abs(heat - lastHeat) > 0.004) {
+      lastHeat = heat;
+      intro.style.setProperty('--fi-heat', heat.toFixed(3));
+    }
+  }
+
+  // Destello: banda de luz que recorre el logotipo (p de -0,4 a 1,4 sobre su ancho).
+  function setShine(p) {
+    shineGrad.setAttribute('x1', (p - 0.14).toFixed(4));
+    shineGrad.setAttribute('x2', (p + 0.1).toFixed(4));
+  }
+
+  // ---------------------------------------------------------------- escena 1
+  function reveal() {
+    if (reduce) {
+      gsap.to(word, { opacity: 1, duration: 1, ease: 'power1.out' });
+      gsap.to(spain, { opacity: 1, duration: 1, delay: 0.3 });
+      gsap.to([hint, skip], { opacity: 1, duration: 1, delay: 0.6 });
+      intro.style.setProperty('--fi-heat', '0.35');
+      return;
+    }
+    gsap.ticker.add(tick);
+    var r = geo.rect;
+    var sh = { p: -0.4 };
+    var tl = gsap.timeline({ delay: 0.3 });
+    tl.fromTo(word, { opacity: 0 }, { opacity: 1, duration: 1.5, ease: 'power2.out' }, 0)
+      .fromTo(word, { filter: 'blur(16px)', scale: 1.035 }, { filter: 'blur(0px)', scale: 1, duration: 2.6, ease: 'expo.out', clearProps: 'filter' }, 0)
+      .to(
+        sh,
+        {
+          p: 1.4,
+          duration: 2.1,
+          ease: 'power2.inOut',
+          onUpdate: function () {
+            setShine(sh.p);
+            // El «cabezal» que suelta chispas va con el destello, por la base de las letras.
+            sparks.head.on = sh.p > 0.02 && sh.p < 0.98;
+            sparks.head.x = r.left + sh.p * r.width;
+            sparks.head.y = r.bottom + 1;
+          },
+          onComplete: function () {
+            sparks.head.on = false;
+          },
+        },
+        0.4,
+      )
+      .fromTo(spain, { opacity: 0, letterSpacing: '1.1em' }, { opacity: 1, letterSpacing: '0.62em', duration: 1.6, ease: 'expo.out' }, 1.5)
+      .call(function () {
+        sparks.idle.on = true;
+      }, null, 1.5)
+      .to(skip, { opacity: 1, duration: 1.2, ease: 'power2.out' }, 1.3)
+      .to(hint, { opacity: 1, duration: 1.4, ease: 'power2.out' }, 2.2);
+  }
+
+  // Chispas desde el ratón cuando pasa cerca del logotipo.
+  var last = null;
+  window.addEventListener(
+    'pointermove',
+    function (e) {
+      if (!sparks || state !== 'idle' || !geo) return;
+      var now = performance.now();
+      if (last) {
+        var dt = Math.max(8, now - last.t) / 1000;
+        var vx = (e.clientX - last.x) / dt;
+        var vy = (e.clientY - last.y) / dt;
+        var sp = Math.sqrt(vx * vx + vy * vy);
+        var r = geo.rect;
+        var dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right);
+        var dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
+        var prox = 1 - Math.sqrt(dx * dx + dy * dy) / (geo.h * 2.4);
+        if (prox > 0) {
+          var n = Math.min(mobile ? 6 : 14, Math.round((sp / 260) * prox + Math.random() * prox * 1.4));
+          if (n > 0) sparks.emit(e.clientX, e.clientY, Math.atan2(vy, vx), 0.75, 160, 520 + Math.min(sp, 2400) * 0.3, n, { lifeMin: 0.3, lifeMax: 0.85 });
+        }
+      }
+      last = { x: e.clientX, y: e.clientY, t: now };
+    },
+    { passive: true },
+  );
+
+  // ---------------------------------------------------------------- escena 2
+  function enter() {
+    if (state !== 'idle') return;
+    state = 'enter';
+    remember();
+    intro.classList.add('is-entering');
+
+    if (reduce) {
+      gsap
+        .timeline()
+        .to([word, hint, skip], { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 0)
+        .to(whiteout, { opacity: 1, duration: 0.6, ease: 'power1.inOut' }, 0.4)
+        .call(go, null, 1.1);
+      return;
+    }
+
+    gsap.killTweensOf(word);
+    gsap.set(word, { scale: 1, filter: 'none' });
+    measure().then(function () {
+      var o = geo.o;
+      var r = geo.rect;
+      sparks.idle.on = false;
+      sparks.head.on = false;
+
+      // Escala a la que el hueco de la «O» cubre toda la pantalla.
+      var W = window.innerWidth;
+      var H = window.innerHeight;
+      var S = Math.max(Math.max(o.x, W - o.x) / o.hx, Math.max(o.y, H - o.y) / o.hy) * 1.18;
+      var wr = word.getBoundingClientRect();
+      gsap.set(word, { transformOrigin: o.x - wr.left + 'px ' + (o.y - wr.top) + 'px' });
+      var fly = { p: 0 };
+      var portal = function (sc) {
+        var hx = o.hx * sc;
+        var hy = o.hy * sc;
+        film.style.clipPath =
+          'inset(' + Math.max(0, o.y - hy).toFixed(1) + 'px ' + Math.max(0, W - o.x - hx).toFixed(1) + 'px ' +
+          Math.max(0, H - o.y - hy).toFixed(1) + 'px ' + Math.max(0, o.x - hx).toFixed(1) + 'px round ' + (o.rad * sc).toFixed(1) + 'px)';
+      };
+
+      var sh = { p: -0.4 };
+      var tl = gsap.timeline();
+      tl.to([hint, skip], { opacity: 0, duration: 0.35, ease: 'power2.out' }, 0)
+        // Estallido
+        .call(function () {
+          sparks.explode(mobile ? 170 : 360, r.left + r.width / 2, r.top + r.height / 2);
+        }, null, 0)
+        .to(sh, { p: 1.4, duration: 0.62, ease: 'power2.inOut', onUpdate: function () { setShine(sh.p); } }, 0.18)
+        .to(word, { scale: 0.986, duration: 0.24, ease: 'power2.out' }, 0)
+        .to(word, { scale: 1, duration: 0.34, ease: 'power2.inOut' }, 0.24)
+        // Absorción: todas las chispas caen dentro de la «O»
+        .call(function () {
+          sparks.attractTo(o.x, o.y);
+        }, null, 0.2)
+        .to(sparks.attr, { pull: 1, duration: 0.5, ease: 'power2.in' }, 0.2)
+        // La cámara atraviesa la «O»: el vídeo solo se ve por su hueco, que crece con la letra hasta llenar la pantalla.
+        .call(function () {
+          portal(1);
+          film.style.opacity = '1';
+        }, null, 0.5)
+        .to(
+          fly,
+          {
+            p: 1,
+            duration: 0.8,
+            ease: 'power2.in',
+            onUpdate: function () {
+              var sc = 1 / (1 - fly.p * (1 - 1 / S));
+              gsap.set(word, { scale: sc });
+              portal(sc * 0.985);
+            },
+          },
+          0.6,
+        )
+        .to([canvas, underglow], { opacity: 0, duration: 0.3, ease: 'power1.in' }, 0.95)
+        .call(playVideo, null, 1.12)
+        .set(word, { visibility: 'hidden' }, 1.4)
+        .call(function () {
+          film.style.clipPath = '';
+          gsap.ticker.remove(tick);
+        }, null, 1.4);
+    });
+  }
+
+  function playVideo() {
+    state = 'video';
+    intro.classList.add('is-video');
+    var started = performance.now();
+    var done = false;
+    var stop = function (fn) {
+      if (done) return;
+      done = true;
+      fn();
+    };
+    var p = video.play();
+    if (p && p.catch) {
+      p.catch(function () {
+        stop(finish);
+      });
+    }
+    var tooLong = function () {
+      return performance.now() - started > (video.currentTime > 0 ? 4500 : 2600);
+    };
+    var check = function () {
+      if (done) return;
+      if (video.currentTime >= RING.at - 0.01) return stop(zoom);
+      if (tooLong()) return stop(finish);
+      if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(check);
+      else requestAnimationFrame(check);
+    };
+    check();
+    // Si el vídeo no avanza (red lenta o error), se sigue igual.
+    (function watch() {
+      if (done) return;
+      if (tooLong()) stop(finish);
+      else setTimeout(watch, 400);
+    })();
+  }
+
+  function zoom() {
+    state = 'zoom';
+    video.pause();
+    var W = window.innerWidth;
+    var H = window.innerHeight;
+    var VW = video.videoWidth || 1920;
+    var VH = video.videoHeight || 1080;
+    // Dónde queda el anillo en pantalla con object-fit: cover.
+    var s = Math.max(W / VW, H / VH);
+    var dw = VW * s;
+    var dh = VH * s;
+    var rx = (W - dw) / 2 + RING.x * dw;
+    var ry = (H - dh) / 2 + RING.y * dh;
+    var cap = RING.cap * dw;
+    var far = Math.max(Math.hypot(rx, ry), Math.hypot(W - rx, ry), Math.hypot(rx, H - ry), Math.hypot(W - rx, H - ry));
+    var S = (far / cap) * 1.12;
+    gsap.set(film, { transformOrigin: rx + 'px ' + ry + 'px' });
+    var tl = gsap.timeline();
+    tl.to(film, { scale: S, duration: 0.9, ease: 'power3.in' }, 0);
+    if (!mobile) tl.fromTo(video, { filter: 'brightness(1)' }, { filter: 'brightness(1.3)', duration: 0.45, ease: 'power1.in' }, 0.45);
+    tl.to(whiteout, { opacity: 1, duration: 0.36, ease: 'power2.in' }, 0.62).call(go, null, 1.0);
+  }
+
+  // ---------------------------------------------------------------- escena 3
+  function remember() {
+    try {
+      sessionStorage.setItem(KEY, '1');
+    } catch (e) {}
+  }
+
+  function finish() {
+    state = 'out';
+    gsap.to(whiteout, { opacity: 1, duration: 0.45, ease: 'power2.inOut', onComplete: go });
+  }
+
+  // Dentro de la web: la capa (ya en blanco o en negro) se funde y deja la página a la vista.
+  function close(duration) {
+    state = 'done';
+    remember();
+    gsap.ticker.remove(tick);
+    var host = intro.closest('.fi-overlay') || intro;
+    window.scrollTo(0, 0);
+    gsap.to(host, {
+      opacity: 0,
+      duration: duration,
+      ease: 'power2.inOut',
+      onComplete: function () {
+        root.classList.remove('fi-play');
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
+        host.remove();
+      },
+    });
+  }
+
+  function go() {
+    remember();
+    if (OVERLAY) return close(0.9);
+    if (window.top !== window.self) {
+      // Dentro de un iframe (vista previa): enlace por si el marco no deja salir solo.
+      whiteout.classList.add('is-fallback');
+      try {
+        window.top.location.href = TARGET;
+      } catch (e) {}
+      return;
+    }
+    window.location.replace(TARGET);
+  }
+
+  // ---------------------------------------------------------------- eventos
+  enterBtn.addEventListener('click', enter);
+  window.addEventListener('keydown', function (e) {
+    if (state !== 'idle') return;
+    if ((e.key === 'Enter' || e.key === ' ') && document.activeElement !== skip) {
+      e.preventDefault();
+      enter();
+    } else if (e.key === 'Escape' && OVERLAY) {
+      close(0.5);
+    }
+  });
+  skip.addEventListener('click', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (state === 'out' || state === 'done') return;
+    if (OVERLAY) return close(0.5);
+    state = 'out';
+    gsap.to(whiteout, { opacity: 1, duration: 0.35, ease: 'power1.inOut', onComplete: go });
+  });
+  if (!OVERLAY) {
+    whiteout.querySelector('[data-whiteout-link]').href = TARGET;
+    skip.href = TARGET;
+  }
+
+  var resizeT;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(function () {
+      if (sparks) sparks.resize();
+      if (state === 'idle') measure();
+    }, 150);
+  });
+
+  // Arranca cuando el logotipo tiene su tamaño y la fuente de «SPAIN» está lista (sin esperar más de 0,8 s).
+  var fontsReady = document.fonts && document.fonts.load ? document.fonts.load('500 16px Inter') : Promise.resolve();
+  Promise.race([fontsReady, new Promise(function (res) { setTimeout(res, 800); })])
+    .then(measure)
+    .then(function () {
+      intro.classList.add('is-ready');
+      reveal();
+    });
+})();

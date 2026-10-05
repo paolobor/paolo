@@ -1,7 +1,8 @@
 ---
+import Wordmark from '../../assets/brand/fairino-wordmark.svg';
 import { site } from '../../data/site';
 import { url } from '../../lib/url';
-// Logotipo provisional en texto hasta tener el SVG oficial (site.logo).
+// Logotipo: letras oficiales de FAIRINO (SVG de fairino.com, src/assets/brand) con «SPAIN» debajo.
 interface Props {
   // 'inherit' toma los colores de las variables --logo-main y --logo-sub del contenedor (header transparente/sólido).
   tone?: 'dark' | 'light' | 'inherit';
@@ -10,19 +11,13 @@ interface Props {
 const { tone = 'dark', class: className = '' } = Astro.props;
 ---
 
-<a href={url('/')} class:list={['logo inline-flex shrink-0 flex-col leading-none', className]} aria-label={site.logo ? `${site.name}, ir al inicio` : 'FAIRINO Cobot España, ir al inicio'}>
-  {
-    site.logo ? (
-      <img src={url(site.logo)} alt={site.name} width="168" height="36" class="h-9 w-auto" />
-    ) : (
-      <>
-        <span class:list={['font-display text-[1.35rem] font-extrabold tracking-[0.08em]', tone === 'dark' ? 'text-ink' : tone === 'light' ? 'text-white' : 'text-(--logo-main)']} style="font-stretch:125%">
-          FAIRINO
-        </span>
-        <span class:list={['mt-1 self-end font-mono text-[0.6rem] font-medium tracking-[0.42em]', tone === 'dark' ? 'text-brand' : tone === 'light' ? 'text-signal' : 'text-(--logo-sub)']}>
-          SPAIN
-        </span>
-      </>
-    )
-  }
+<a href={url('/')} class:list={['logo inline-flex shrink-0 flex-col items-end leading-none', className]} aria-label={`${site.name}, ir al inicio`}>
+  <Wordmark
+    class:list={['block h-[17px] w-auto', tone === 'dark' ? 'text-ink' : tone === 'light' ? 'text-white' : 'text-(--logo-main)']}
+    fill="currentColor"
+    aria-hidden="true"
+  />
+  <span class:list={['mt-[7px] -mr-[0.42em] font-mono text-[0.6rem] font-medium tracking-[0.42em]', tone === 'dark' ? 'text-brand' : tone === 'light' ? 'text-signal' : 'text-(--logo-sub)']}>
+    SPAIN
+  </span>
 </a>

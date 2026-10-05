@@ -1,0 +1,41 @@
+---
+// La intro de public/intro/ encima de la página (inicio y tienda), una vez por sesión.
+// El marcado se toma de public/intro/index.html para que solo haya una versión de la intro.
+// Sus estilos y scripts solo se descargan si toca verla (html.fi-play, lo decide BaseLayout en el <head>).
+import introHtml from '../../public/intro/index.html?raw';
+import { url } from '../lib/url';
+
+const markup = introHtml.match(/<main class="fi-intro"[\s\S]*?<\/main>/)?.[0] ?? '';
+---
+
+<div class="fi-overlay" set:html={markup} />
+<template data-fi-load>
+  <link rel="stylesheet" href={url('intro/css/intro.css')} />
+  <script is:inline src={url('intro/js/vendor/gsap.min.js')}></script>
+  <script is:inline src={url('intro/js/sparks.js')}></script>
+  <script is:inline src={url('intro/js/intro.js')}></script>
+</template>
+<script is:inline>
+  (function () {
+    var root = document.documentElement;
+    var t = document.querySelector('template[data-fi-load]');
+    if (!root.classList.contains('fi-play') || !t) return;
+    var n = t.content.children;
+    var css = document.createElement('link');
+    css.rel = 'stylesheet';
+    css.href = n[0].getAttribute('href');
+    css.onload = function () {
+      for (var i = 1; i < n.length; i++) {
+        var s = document.createElement('script');
+        s.src = n[i].getAttribute('src');
+        s.async = false;
+        document.body.appendChild(s);
+      }
+    };
+    // Sin estilos no hay intro: se quita la capa y se ve la página.
+    css.onerror = function () {
+      root.classList.remove('fi-play');
+    };
+    document.head.appendChild(css);
+  })();
+</script>

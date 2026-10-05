@@ -1,27 +1,33 @@
-# Intro de FAIRINO España (fairino.es)
+# Intro de FAIRINO Spain
 
-Página de entrada animada que se muestra antes de la web oficial https://fairino.es/.
-HTML, CSS y JavaScript sin compilar: se publica tal cual en cualquier hosting estático.
+Entrada animada con el logotipo oficial de FAIRINO. Funciona de dos formas:
+
+- **Dentro de esta web** (inicio y tienda): `BaseLayout` con `intro` la muestra encima de la página la primera
+  vez de cada sesión; al terminar, la capa se funde y deja la página a la vista (ver `src/components/IntroOverlay.astro`).
+- **Suelta** (esta carpeta tal cual, `index.html`): página propia que al terminar salta a https://fairino.es/,
+  para GitHub Pages, WordPress o cualquier hosting estático. HTML, CSS y JavaScript sin compilar.
 
 ## Recorrido (unos 4,5 s desde el clic)
 
-1. **«fairino.es» y chispas.** El nombre se enfoca desde un desenfoque mientras un destello recorre las letras.
+1. **El logotipo de FAIRINO y chispas.** Las letras oficiales (SVG de fairino.com) se enfocan desde un desenfoque
+   mientras un destello recorre las letras; después aparece «SPAIN» en naranja.
    - Chispas de amoladora salen del borde de las letras: tienen gravedad y rozamiento con el aire, se enfrían de blanco a rojo y algunas revientan en fragmentos.
    - El resplandor naranja ilumina el texto desde abajo según cuántas chispas calientes haya.
    - Al mover el ratón cerca, salen más chispas desde ese punto.
 2. **Clic en cualquier parte** (o Intro / espacio).
-   - Las chispas estallan y caen dentro de la «o».
-   - El texto se acerca a cámara y la cámara cruza por el hueco de la «o». El vídeo solo se ve a través de ese hueco, como un portal.
+   - Las chispas estallan y caen dentro de la «O».
+   - El logotipo se acerca a cámara y la cámara cruza por el hueco de la «O». El vídeo solo se ve a través de ese hueco, como un portal.
    - Al otro lado, el cobot sale de la sombra.
    - Zoom rápido al anillo naranja de una articulación hasta cruzarlo.
 3. **Fundido a blanco** y salto a la web.
 
-Si ya se vio en esta sesión del navegador, la página salta directa a la web.
+Se ve una vez por sesión del navegador; nunca la ven los buscadores ni las fichas de producto. Al final, dentro de
+la web la capa se funde y aparece la página; la página suelta salta a fairino.es.
 
 ## Estructura
 
 ```
-index.html                 la página (destino en <html data-target="https://fairino.es/">)
+index.html                 la página suelta (destino en <html data-target="https://fairino.es/">); la web toma de aquí el marcado
 css/intro.css              estilos
 js/intro.js                guion de las escenas (GSAP)
 js/sparks.js               sistema de chispas (Canvas 2D, mezcla aditiva)
@@ -35,10 +41,12 @@ assets/favicon.svg
 ## Verla en local
 
 ```bash
-cd intro-fairino
+cd public/intro
 python3 -m http.server 8000
 # http://localhost:8000/?intro=1
 ```
+
+Dentro de la web: `npm run build` y abre `/?intro=1` o `/tienda/?intro=1`.
 
 `?intro=1` la fuerza aunque ya se haya visto en la sesión; útil para enseñarla.
 
@@ -49,11 +57,13 @@ Para verla otra vez sin el parámetro, cierra la pestaña: sessionStorage se bor
 - **Precarga:** el vídeo se descarga entero mientras se ve la escena 1, para que arranque al instante tras el clic.
   - Chrome, Edge y Firefox reciben WebM; Safari recibe MP4.
   - Móvil y pantallas pequeñas reciben 720p.
-- **«Saltar intro»** (esquina superior derecha) lleva directo a la web.
+  - Dentro de la web, los estilos, scripts y el vídeo de la intro solo se descargan si toca verla.
+- **«Saltar intro»** (esquina superior derecha) lleva directo a la web (dentro de la web, también la tecla Esc).
 - **Movimiento reducido** (`prefers-reduced-motion`): sin chispas ni vídeo. El texto aparece con un fundido y, al hacer clic, funde a blanco y entra.
 - **Móvil:** menos chispas, sin halos extra y densidad de píxeles limitada a 1,5.
 - **Si el vídeo no carga** (red lenta), la intro no se queda colgada: funde a blanco y entra.
-- **Sin JavaScript:** se ve el nombre y un enlace «Entrar en fairino.es».
+- **Sin JavaScript:** la página suelta muestra el logotipo y un enlace «Entrar en fairino.es»; dentro de la web, la
+  intro no aparece.
 
 ## Cambiar el vídeo
 
@@ -88,6 +98,9 @@ Si cambias el vídeo, actualiza `RING` en `js/intro.js`:
 **Opción B, junto a la web de FDI Modular:** copia esta carpeta dentro de `docs/` de la rama que publica
 paolobor.github.io/paolo/ (como `docs/fairino-intro/`). Queda en `https://paolobor.github.io/paolo/fairino-intro/`.
 
+**Opción C, con esta web:** al publicar la web (Astro) la intro ya va dentro, en el inicio y la tienda, y además
+queda la página suelta en `/intro/`.
+
 Todas las rutas son relativas, así que funciona en cualquier subcarpeta.
 
 ## Integrarla en WordPress (fairino.es)
@@ -115,4 +128,5 @@ Todas las rutas son relativas, así que funciona en cualquier subcarpeta.
 
 - **GSAP:** licencia estándar gratuita de GreenSock (https://gsap.com/standard-license).
 - **Inter:** SIL Open Font License (`assets/fonts/OFL.txt`).
+- **Logotipo de FAIRINO:** marca de FAIRINO, del SVG oficial de fairino.com (original en `assets-src/marca/`).
 - **Vídeo:** montaje del vídeo oficial del FAIRINO FR3.

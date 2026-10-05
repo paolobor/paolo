@@ -7,6 +7,7 @@ import Footer from '../components/Footer.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import CookieBanner from '../components/CookieBanner.astro';
 import CartDrawer from '../components/CartDrawer.astro';
+import IntroOverlay from '../components/IntroOverlay.astro';
 import { site } from '../data/site';
 import { url } from '../lib/url';
 
@@ -19,6 +20,8 @@ interface Props {
   whatsappMessage?: string;
   jsonLd?: Record<string, unknown>[];
   lang?: 'es' | 'en';
+  // Muestra la intro animada (public/intro) encima de la página la primera vez de la sesión.
+  intro?: boolean;
 }
 
 const {
@@ -30,6 +33,7 @@ const {
   whatsappMessage,
   jsonLd = [],
   lang = 'es',
+  intro = false,
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -79,8 +83,32 @@ const clientConfig = {
     {jsonLd.map((data) => <script type="application/ld+json" set:html={JSON.stringify(data)} />)}
     <script type="application/json" id="site-config" set:html={JSON.stringify(clientConfig)} />
     <script is:inline>document.documentElement.classList.add('js');</script>
+    {
+      intro && (
+        <>
+          {/* Intro: se ve si no se ha visto en esta sesión (o con ?intro); nunca a los buscadores. Tapa en negro desde el primer instante. */}
+          <script is:inline>
+            (function () {
+              var seen = false;
+              var force = false;
+              try { seen = sessionStorage.getItem('fairino-intro-vista') === '1'; } catch (e) {}
+              try { force = new URLSearchParams(location.search).has('intro'); } catch (e) {}
+              var bot = /bot|crawl|spider|slurp|lighthouse|headless|preview/i.test(navigator.userAgent);
+              if (force || (!seen && !bot)) document.documentElement.classList.add('fi-play');
+            })();
+          </script>
+          <style is:inline>
+            .fi-overlay{display:none}
+            html.fi-play .fi-overlay{display:block;position:fixed;inset:0;z-index:2147483000;background:#000}
+            html.fi-play .fi-overlay>*{visibility:hidden}
+            html.fi-play,html.fi-play body{overflow:hidden}
+          </style>
+        </>
+      )
+    }
   </head>
   <body class="min-h-dvh">
+    {intro && <IntroOverlay />}
     <Header overlay={overlayHeader} />
     <main id="contenido" class:list={[!overlayHeader && 'pt-16 lg:pt-[72px]']}>
       <slot />
