@@ -68,7 +68,7 @@ export const valueCards = [
 
 // Cifras facilitadas por FAIRINO España (octubre de 2026). Los partners salen de src/data/partners.ts.
 export const counters: { value: number | null; prefix?: string; suffix?: string; label: string; hint: string }[] = [
-  { value: 115, suffix: '+', label: 'Integraciones de FAIRINO España', hint: 'integraciones' },
+  { value: 25, suffix: '+', label: 'Integraciones de FAIRINO España', hint: 'integraciones' },
   { value: partners.length, label: 'Partners en toda España', hint: 'partners' },
   { value: 13000, suffix: '+', label: 'Cobots FAIRINO producidos en 2025', hint: 'cobots producidos' },
   { value: 1, prefix: '#', label: 'Fabricante de cobots del mundo', hint: 'posición mundial' },
