@@ -1,0 +1,38 @@
+{
+  "name": "Kit de lijado para cobot",
+  "brand": "Mirka",
+  "category": "accesorio",
+  "group": "fuerza",
+  "order": 38,
+  "tagline": "Lijadora de Mirka preparada para montarla en el cobot.",
+  "description": "Lijadora de Mirka preparada para montarla en el cobot. Ficha técnica, compatibilidad y precio a consultar.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [
+    "lijado-y-pulido"
+  ],
+  "shopCategories": [
+    "lijado"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": null,
+    "verified": false
+  },
+  "seo": {}
+}

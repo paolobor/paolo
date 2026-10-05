@@ -6,7 +6,12 @@
   "tagline": "Cámara 3D estéreo con imagen RGB, profundidad y nube de puntos.",
   "description": "Captura imágenes RGB de alta resolución y mapas de profundidad, con salida de nube de puntos e infrarrojo. Un único cable USB-C para datos y alimentación: muy práctica para que el cobot localice piezas.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/orbbec-gemini-2/orbbec-gemini-2-oficial.png",
+      "alt": "Cámara Orbbec Gemini 2, foto oficial de FAIRINO"
+    }
+  ],
   "specs": [
     {
       "label": "Tecnología",

@@ -1,10 +1,10 @@
 {
-  "name": "Pinza de vacío eléctrica",
+  "name": "Ventosa eléctrica de vacío para cobot",
   "category": "accesorio",
   "group": "garra",
   "order": 10,
-  "tagline": "Pinza de vacío eléctrica para cobots FAIRINO.",
-  "description": "Pinza de vacío eléctrica para cobots FAIRINO. Ficha técnica, compatibilidad y precio a consultar. El modelo 3D oficial está en las descargas.",
+  "tagline": "Ventosa de vacío eléctrica para cobots FAIRINO.",
+  "description": "Ventosa de vacío eléctrica para cobots FAIRINO. Ficha técnica, compatibilidad y precio a consultar. El modelo 3D oficial está en las descargas.",
   "highlights": [],
   "images": [],
   "specs": [],
@@ -14,7 +14,7 @@
     "manipulacion"
   ],
   "shopCategories": [
-    "pinzas-vacio"
+    "ventosas-vacio"
   ],
   "compatibleWith": [],
   "downloads": [
@@ -40,5 +40,6 @@
     "url": "https://fairino.es/descargas/",
     "verified": false
   },
-  "seo": {}
+  "seo": {},
+  "brand": "Schmalz"
 }

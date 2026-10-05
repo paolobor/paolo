@@ -6,7 +6,12 @@
   "tagline": "Sensor de fuerza y par de seis ejes con integración nativa en la WebApp.",
   "description": "Sensor de fuerza y par de seis ejes de XJC, con configuración nativa en la WebApp de FAIRINO para aplicaciones que necesitan controlar la fuerza de contacto.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/xjc-6f-d80-h28-a/xjc-6f-d80-h28-a-oficial.png",
+      "alt": "Sensor de fuerza XJC-6F-D80-H28-A, foto oficial de FAIRINO"
+    }
+  ],
   "specs": [
     {
       "label": "Rango Fx / Fy",

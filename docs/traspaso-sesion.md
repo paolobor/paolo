@@ -77,6 +77,12 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
   `shopCategories` de cada ficha). Se añadieron 12 accesorios oficiales que fairino.es publica en descargas (solo
   nombre y modelo 3D, sin foto ni ficha; `source.verified: false`). Las categorías sin productos muestran una
   tarjeta de consulta. «Soluciones» muestra las 3 células llave en mano.
+- Accesorios: el usuario pasó capturas de la tienda de Inlux con nombres y fotos. **Fotos de Inlux no** (llevan su
+  logo; regla de no copiar de inluxrobotics.es ni quitar marcas de agua). Se usan solo los nombres, traducidos, con
+  campo `brand` (Inlux Robotics, Schmalz, Soft Gripping, IFM, Delta, IDEC, Mirka). Fotos oficiales de fairino.es
+  (`<id>-oficial.png`) en los accesorios FAIRINO, los 4 controladores y el FR3C. Los de terceros siguen con [FOTO].
+  Duplicados resueltos: Smart Tool = «botones de control rápido»; EPG40-050 = IR40-50 (misma foto en fairino.es).
+  Sin nombre en las capturas, no añadidos: cable, regleta de bornas y fundas de protección (azul y blanca).
 
 ## Higgsfield: estado
 

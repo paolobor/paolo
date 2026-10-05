@@ -1,0 +1,36 @@
+{
+  "name": "Plataforma de fijación para cobot",
+  "brand": "Inlux Robotics",
+  "category": "accesorio",
+  "group": "montaje",
+  "order": 32,
+  "tagline": "Plataforma de perfil de aluminio para montar el cobot.",
+  "description": "Plataforma de perfil de aluminio para montar el cobot. Ficha técnica, compatibilidad y precio a consultar.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [],
+  "shopCategories": [
+    "montaje"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": null,
+    "verified": false
+  },
+  "seo": {}
+}

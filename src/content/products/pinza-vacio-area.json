@@ -1,0 +1,40 @@
+{
+  "name": "Pinza de vacío de superficie para cobot",
+  "brand": "Inlux Robotics",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 29,
+  "tagline": "Pinza de vacío de superficie para coger piezas planas y cajas.",
+  "description": "Pinza de vacío de superficie para coger piezas planas y cajas. Ficha técnica, compatibilidad y precio a consultar.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [
+    "pick-and-place",
+    "paletizado",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "pinzas-vacio"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": null,
+    "verified": false
+  },
+  "seo": {}
+}

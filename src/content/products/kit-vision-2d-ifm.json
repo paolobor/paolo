@@ -1,0 +1,38 @@
+{
+  "name": "Kit de visión 2D para FAIRINO",
+  "brand": "IFM",
+  "category": "accesorio",
+  "group": "vision",
+  "order": 34,
+  "tagline": "Kit de visión 2D de IFM preparado para cobots FAIRINO.",
+  "description": "Kit de visión 2D de IFM preparado para cobots FAIRINO. Ficha técnica, compatibilidad y precio a consultar.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [
+    "pick-and-place"
+  ],
+  "shopCategories": [
+    "vision"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": null,
+    "verified": false
+  },
+  "seo": {}
+}

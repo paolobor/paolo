@@ -5,7 +5,12 @@
   "tagline": "Cobot ligero de 3 kg para equipos móviles y de sobremesa.",
   "description": "Cobot de seis ejes de última generación con un diseño ligero y flexible que facilita integrarlo en equipos móviles o de sobremesa y ayuda a resolver las limitaciones de espacio.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/fr3c/fr3c-oficial.png",
+      "alt": "FR3C, foto oficial de FAIRINO"
+    }
+  ],
   "payloadKg": 3,
   "reachMm": 622,
   "repeatabilityMm": 0.05,

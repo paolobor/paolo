@@ -1,0 +1,36 @@
+{
+  "name": "Soporte de acero para cobot",
+  "brand": "Inlux Robotics",
+  "category": "accesorio",
+  "group": "montaje",
+  "order": 33,
+  "tagline": "Columna de acero para montar el cobot a la altura de trabajo.",
+  "description": "Columna de acero para montar el cobot a la altura de trabajo. Ficha técnica, compatibilidad y precio a consultar.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [],
+  "shopCategories": [
+    "montaje"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": null,
+    "verified": false
+  },
+  "seo": {}
+}

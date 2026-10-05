@@ -6,7 +6,12 @@
   "tagline": "Pinza eléctrica paralela con fuerza, velocidad y posición ajustables.",
   "description": "Pinza eléctrica paralela de dos dedos, compacta y plug & play para cobots FAIRINO. Ajusta fuerza, velocidad y posición para coger desde piezas delicadas hasta componentes más pesados, y se bloquea mecánicamente si se corta la corriente.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/epg40-050/epg40-050-oficial.png",
+      "alt": "Gripper EPG40-050, foto oficial de FAIRINO"
+    }
+  ],
   "specs": [
     {
       "label": "Carrera",
@@ -81,6 +86,11 @@
       "label": "Manual de usuario",
       "type": "manual",
       "href": null
+    },
+    {
+      "label": "Modelo 3D (IR40-50)",
+      "type": "cad",
+      "href": "https://drive.google.com/file/d/1ytbIz5lZp3ns3GpibJ9rGVi7UesL13FA/view"
     }
   ],
   "configurator": {

@@ -6,7 +6,12 @@
   "tagline": "Controlador en continua de 5 kW para FR20 y FR30.",
   "description": "Controlador de 5 kW alimentado en corriente continua para los cobots de mayor carga de la gama, FR20 y FR30.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/dc-controller-5kw/dc-controller-5kw-oficial.png",
+      "alt": "DC Controller 5KW, foto oficial de FAIRINO"
+    }
+  ],
   "specs": [
     {
       "label": "Potencia",

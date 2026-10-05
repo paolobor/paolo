@@ -6,7 +6,12 @@
   "tagline": "Controlador compacto en continua, ideal para AMR, AGV y plataformas con batería.",
   "description": "Controlador de 2 kW alimentado en corriente continua para los cobots de hasta 16 kg. Su formato compacto lo hace ideal para robots móviles (AMR), AGV y plataformas alimentadas por batería.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/dc-mini-controller-2kw/dc-mini-controller-2kw-oficial.png",
+      "alt": "DC Mini Controller 2KW, foto oficial de FAIRINO"
+    }
+  ],
   "specs": [
     {
       "label": "Potencia",

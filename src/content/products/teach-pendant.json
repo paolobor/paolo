@@ -6,7 +6,12 @@
   "tagline": "Consola táctil de 10,1″ con la misma interfaz que la WebApp.",
   "description": "Complemento pensado para entornos industriales donde no conviene usar un portátil: una consola robusta tipo tableta que muestra la interfaz web para manejar y programar el cobot sin tener que volver a formar al operario.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/teach-pendant/teach-pendant-oficial.png",
+      "alt": "Teach Pendant, foto oficial de FAIRINO"
+    }
+  ],
   "specs": [
     {
       "label": "Pantalla",

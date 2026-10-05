@@ -1,0 +1,38 @@
+{
+  "name": "Aspirador de polvo para lijado con cobot",
+  "brand": "Mirka",
+  "category": "accesorio",
+  "group": "fuerza",
+  "order": 39,
+  "tagline": "Aspirador de Mirka para el lijado con cobot.",
+  "description": "Aspirador de Mirka para el lijado con cobot. Ficha técnica, compatibilidad y precio a consultar.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [
+    "lijado-y-pulido"
+  ],
+  "shopCategories": [
+    "lijado"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": null,
+    "verified": false
+  },
+  "seo": {}
+}

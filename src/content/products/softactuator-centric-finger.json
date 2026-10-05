@@ -1,0 +1,39 @@
+{
+  "name": "Actuador flexible céntrico SoftActuator",
+  "brand": "Soft Gripping",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 26,
+  "tagline": "Dedos flexibles céntricos sobre perfiles ajustables.",
+  "description": "Dedos flexibles céntricos sobre perfiles ajustables. Ficha técnica, compatibilidad y precio a consultar.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [
+    "pick-and-place",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "pinzas-flexibles"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": null,
+    "verified": false
+  },
+  "seo": {}
+}

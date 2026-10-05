@@ -1,0 +1,39 @@
+{
+  "name": "Sensor de fuerza y par",
+  "brand": "Inlux Robotics",
+  "category": "accesorio",
+  "group": "fuerza",
+  "order": 40,
+  "tagline": "Sensor de fuerza y par para el extremo del cobot.",
+  "description": "Sensor de fuerza y par para el extremo del cobot. Ficha técnica, compatibilidad y precio a consultar.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [
+    "lijado-y-pulido",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "lijado"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": null,
+    "verified": false
+  },
+  "seo": {}
+}

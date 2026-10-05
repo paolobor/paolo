@@ -13,6 +13,8 @@ const products = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/products' }),
   schema: ({ image }) => z.object({
     name: z.string(),
+    // Marca que se muestra en la tarjeta y la ficha (accesorios de terceros: Schmalz, IFM, Mirka…).
+    brand: z.string().default('FAIRINO'),
     category: z.enum(['cobot', 'controlador', 'accesorio']),
     // Accesorios: visión, garra, fuerza, control. Controladores: ac, dc.
     group: z.string().optional(),

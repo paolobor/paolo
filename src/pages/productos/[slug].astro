@@ -63,10 +63,10 @@ const description = (d.seo.description ?? `${d.tagline} Ficha técnica, descarga
 const productSchema = {
   '@context': 'https://schema.org',
   '@type': 'Product',
-  name: `FAIRINO ${d.name.replace(/^FAIRINO\s+/i, '')}`,
+  name: d.brand === 'FAIRINO' ? `FAIRINO ${d.name.replace(/^FAIRINO\s+/i, '')}` : `${d.name} (${d.brand})`,
   description: d.description,
   category: meta.singular,
-  brand: { '@type': 'Brand', name: 'FAIRINO' },
+  brand: { '@type': 'Brand', name: d.brand },
   url: new URL(url(`productos/${product.id}/`), Astro.site).toString(),
   ...(d.images.length ? { image: d.images.map((i) => new URL(i.src.src, Astro.site).toString()) } : {}),
   additionalProperty: d.specs
@@ -152,7 +152,7 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
       <div class="grid content-start gap-6">
         <div class="flex flex-wrap items-center gap-2">
           <span class="chip">{subtitle}</span>
-          <span class="font-mono text-xs uppercase tracking-[0.12em] text-muted">FAIRINO</span>
+          <span class="font-mono text-xs uppercase tracking-[0.12em] text-muted">{d.brand}</span>
         </div>
         <div class="grid gap-3">
           <h1 class="text-[clamp(2.6rem,6vw,4rem)] font-extrabold leading-none" style="font-stretch:125%">{d.name}</h1>

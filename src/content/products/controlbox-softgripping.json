@@ -1,0 +1,39 @@
+{
+  "name": "Caja de control SoftGripping",
+  "brand": "Soft Gripping",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 27,
+  "tagline": "Caja de control para las pinzas flexibles SoftGripping.",
+  "description": "Caja de control para las pinzas flexibles SoftGripping. Ficha técnica, compatibilidad y precio a consultar.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [
+    "pick-and-place",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "pinzas-flexibles"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": null,
+    "verified": false
+  },
+  "seo": {}
+}

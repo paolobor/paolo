@@ -1,0 +1,39 @@
+{
+  "name": "Pinza eléctrica IR120-130",
+  "brand": "Inlux Robotics",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 19,
+  "tagline": "Pinza eléctrica para cobots FAIRINO.",
+  "description": "Pinza eléctrica para cobots FAIRINO. Ficha técnica, compatibilidad y precio a consultar.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [
+    "pick-and-place",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "pinzas-electricas"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": null,
+    "verified": false
+  },
+  "seo": {}
+}

@@ -6,7 +6,12 @@
   "tagline": "Sensor de fuerza y par de seis ejes para lijado, pulido y montaje.",
   "description": "Sensor compacto de fuerza y par de seis ejes en aleación de aluminio, con módulo de adquisición integrado. Se monta entre la brida y la herramienta y se configura desde la WebApp de FAIRINO.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/gzcx-6f-75mm/gzcx-6f-75mm-oficial.png",
+      "alt": "Sensor de fuerza GZCX-6F-75MM, foto oficial de FAIRINO"
+    }
+  ],
   "specs": [
     {
       "label": "Rango Fx / Fy",

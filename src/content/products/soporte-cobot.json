@@ -1,10 +1,10 @@
 {
-  "name": "Soporte para cobot",
+  "name": "Soporte para cobot de perfil de aluminio",
   "category": "accesorio",
   "group": "montaje",
   "order": 18,
-  "tagline": "Soporte para montar el cobot a la altura de trabajo.",
-  "description": "Soporte para montar el cobot a la altura de trabajo. Ficha técnica, compatibilidad y precio a consultar. El modelo 3D oficial está en las descargas.",
+  "tagline": "Soporte de perfil de aluminio para montar el cobot a la altura de trabajo.",
+  "description": "Soporte de perfil de aluminio para montar el cobot a la altura de trabajo. Ficha técnica, compatibilidad y precio a consultar. El modelo 3D oficial está en las descargas.",
   "highlights": [],
   "images": [],
   "specs": [],
@@ -36,5 +36,6 @@
     "url": "https://fairino.es/descargas/",
     "verified": false
   },
-  "seo": {}
+  "seo": {},
+  "brand": "Inlux Robotics"
 }

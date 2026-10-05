@@ -6,7 +6,12 @@
   "tagline": "Mando de muñeca con cinco teclas programables para enseñar puntos sin soltar el brazo.",
   "description": "Interfaz compacta que se monta en el extremo del cobot para guiarlo a mano y grabar puntos o trayectorias continuas. Cinco teclas programables (A–E), LED de estado y diseño apto para usar con guantes.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/smart-tool/smart-tool-oficial.png",
+      "alt": "Smart Tool, foto oficial de FAIRINO"
+    }
+  ],
   "specs": [
     {
       "label": "Teclas",
@@ -61,6 +66,11 @@
       "label": "Manual de usuario",
       "type": "manual",
       "href": null
+    },
+    {
+      "label": "Modelo 3D",
+      "type": "cad",
+      "href": "https://drive.google.com/file/d/1tEZTVX52m31NecFEF_L_YEA-esK5PaqZ/view"
     }
   ],
   "configurator": {

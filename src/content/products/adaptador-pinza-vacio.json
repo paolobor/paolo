@@ -1,0 +1,40 @@
+{
+  "name": "Adaptador para pinza de vacío eléctrica",
+  "brand": "Schmalz",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 28,
+  "tagline": "Adaptador para montar la pinza de vacío eléctrica en el cobot.",
+  "description": "Adaptador para montar la pinza de vacío eléctrica en el cobot. Ficha técnica, compatibilidad y precio a consultar.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [
+    "pick-and-place",
+    "paletizado",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "pinzas-vacio"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": null,
+    "verified": false
+  },
+  "seo": {}
+}

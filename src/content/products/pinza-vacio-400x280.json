@@ -1,5 +1,5 @@
 {
-  "name": "Pinza de vacío 400 × 280",
+  "name": "Pinza de vacío para cobot 400 × 280",
   "category": "accesorio",
   "group": "garra",
   "order": 12,
@@ -40,5 +40,6 @@
     "url": "https://fairino.es/descargas/",
     "verified": false
   },
-  "seo": {}
+  "seo": {},
+  "brand": "Schmalz"
 }

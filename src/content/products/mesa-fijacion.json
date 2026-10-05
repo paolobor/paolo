@@ -1,0 +1,36 @@
+{
+  "name": "Mesa de fijación para cobot",
+  "brand": "Inlux Robotics",
+  "category": "accesorio",
+  "group": "montaje",
+  "order": 31,
+  "tagline": "Mesa de perfil de aluminio con tablero para fijar el cobot y las piezas.",
+  "description": "Mesa de perfil de aluminio con tablero para fijar el cobot y las piezas. Ficha técnica, compatibilidad y precio a consultar.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [],
+  "shopCategories": [
+    "montaje"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": null,
+    "verified": false
+  },
+  "seo": {}
+}

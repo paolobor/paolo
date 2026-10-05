@@ -1,0 +1,36 @@
+{
+  "name": "Kit de escáner láser de seguridad",
+  "brand": "IDEC",
+  "category": "accesorio",
+  "group": "control",
+  "order": 37,
+  "tagline": "Escáner láser de seguridad de IDEC para vigilar la zona de trabajo del cobot.",
+  "description": "Escáner láser de seguridad de IDEC para vigilar la zona de trabajo del cobot. Ficha técnica, compatibilidad y precio a consultar.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [],
+  "shopCategories": [
+    "seguridad"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": null,
+    "verified": false
+  },
+  "seo": {}
+}

@@ -6,7 +6,12 @@
   "tagline": "Mando de interacción y seguridad: modo, arrastre, puntos y paro.",
   "description": "Herramienta de interacción entre persona y cobot para controlar su funcionamiento de forma intuitiva y segura: selector manual/automático, arrastre, grabación de puntos, marcha/paro y emparejado del botón de seguridad.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/safety-box/safety-box-oficial.png",
+      "alt": "Safety Box, foto oficial de FAIRINO"
+    }
+  ],
   "specs": [
     {
       "label": "Funciones",

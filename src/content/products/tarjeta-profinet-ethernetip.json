@@ -1,0 +1,36 @@
+{
+  "name": "Tarjeta de comunicación PROFINET / EtherNet/IP",
+  "brand": "FAIRINO",
+  "category": "accesorio",
+  "group": "control",
+  "order": 41,
+  "tagline": "Tarjeta para conectar el controlador FAIRINO a redes PROFINET o EtherNet/IP.",
+  "description": "Tarjeta para conectar el controlador FAIRINO a redes PROFINET o EtherNet/IP. Ficha técnica, compatibilidad y precio a consultar.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [],
+  "shopCategories": [
+    "accesorios-fairino"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": null,
+    "verified": false
+  },
+  "seo": {}
+}

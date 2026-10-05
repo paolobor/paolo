@@ -6,7 +6,12 @@
   "tagline": "Controlador a red de 5 kW para FR20 y FR30.",
   "description": "Controlador de 5 kW alimentado a red de corriente alterna para los cobots de mayor carga de la gama, FR20 y FR30.",
   "highlights": [],
-  "images": [],
+  "images": [
+    {
+      "src": "../../assets/products/ac-controller-5kw/ac-controller-5kw-oficial.png",
+      "alt": "AC Controller 5KW, foto oficial de FAIRINO"
+    }
+  ],
   "specs": [
     {
       "label": "Potencia",

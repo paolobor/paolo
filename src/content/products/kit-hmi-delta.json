@@ -1,0 +1,36 @@
+{
+  "name": "Kit HMI para FAIRINO",
+  "brand": "Delta",
+  "category": "accesorio",
+  "group": "control",
+  "order": 36,
+  "tagline": "Pantalla HMI de Delta preparada para manejar el cobot FAIRINO.",
+  "description": "Pantalla HMI de Delta preparada para manejar el cobot FAIRINO. Ficha técnica, compatibilidad y precio a consultar.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [],
+  "shopCategories": [
+    "ihm"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": null,
+    "verified": false
+  },
+  "seo": {}
+}
