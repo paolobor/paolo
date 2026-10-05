@@ -64,11 +64,12 @@ export const valueCards = [
 
 // La franja de colaboradores de la home sale de src/data/partners.ts.
 
-export const counters: { value: number | null; suffix?: string; label: string; hint: string }[] = [
-  { value: null, suffix: '+', label: 'Células instaladas', hint: 'instalaciones' },
-  { value: null, suffix: '', label: 'Años de experiencia del equipo', hint: 'años de experiencia' },
-  { value: null, suffix: '', label: 'Clientes en España', hint: 'clientes' },
-  { value: null, suffix: '', label: 'Personas formadas', hint: 'personas formadas' },
+// Cifras facilitadas por FAIRINO España (octubre de 2026). Los partners salen de src/data/partners.ts.
+export const counters: { value: number | null; prefix?: string; suffix?: string; label: string; hint: string }[] = [
+  { value: 115, suffix: '+', label: 'Integraciones de FAIRINO España', hint: 'integraciones' },
+  { value: partners.length, label: 'Partners en toda España', hint: 'partners' },
+  { value: 13000, suffix: '+', label: 'Cobots FAIRINO producidos en 2025', hint: 'cobots producidos' },
+  { value: 1, prefix: '#', label: 'Fabricante de cobots del mundo', hint: 'posición mundial' },
 ];
 
 export const advice = {
@@ -91,4 +92,5 @@ export const testimonial = {
 export const contactBand = {
   image: null as string | null,
   imageHint: 'instalaciones de FAIRINO España en Yuncler (Toledo)',
-};
+};import { partners } from './partners';
+

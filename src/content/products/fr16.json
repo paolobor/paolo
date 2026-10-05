@@ -26,6 +26,11 @@
       "illustrative": true
     }
   ],
+  "video": {
+    "youtube": "t8kvBmfZqac",
+    "poster": "videos/yt-t8kvBmfZqac.jpg",
+    "alt": "Solución de paletizado con cobot FAIRINO"
+  },
   "payloadKg": 16,
   "reachMm": 1034,
   "repeatabilityMm": 0.03,

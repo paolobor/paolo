@@ -1,5 +1,6 @@
 ---
 import { counters } from '../../data/home';
+import { formatNumber } from '../../lib/url';
 ---
 
 <section class="relative border-y border-line bg-surface text-white" aria-label="FAIRINO España en cifras">
@@ -10,7 +11,8 @@ import { counters } from '../../data/home';
         <div class="grid content-start gap-2 border-l border-signal/40 pl-5" data-reveal style={`--reveal-delay:${i * 80}ms`}>
           {c.value != null ? (
             <p class="text-glow font-mono text-[clamp(2.4rem,5vw,3.5rem)] font-medium leading-none tracking-tight tabular-nums">
-              <span data-count-to={c.value}>{c.value}</span>
+              {c.prefix}
+              <span data-count-to={c.value}>{formatNumber(c.value)}</span>
               {c.suffix}
             </p>
           ) : (

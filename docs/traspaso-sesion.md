@@ -97,8 +97,13 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
 - Configurador: tarjetas con la foto oficial de cada producto (como en la tienda).
 - Tienda: filtro de precio (desactivado mientras los precios estén a 0).
 
-- Fichas de producto: campo `video` (mp4/webm en public/media, póster en src/assets/images). Sale el primero en la
-  galería, en bucle y sin sonido, con botón de pausa. FR3: vídeo oficial de FAIRINO (12 s) facilitado por el cliente.
+- Fichas de producto: campo `video`, el primero en la galería. Propio (mp4/webm en public/media): en bucle, sin sonido y
+  con pausa. YouTube (id del canal oficial @FAIRINOrobot): miniatura guardada y el vídeo solo se carga al pulsar play.
+  - FR3: vídeo que pasó el cliente. FR3WMS y FR3WML: lanzamiento de ambos (fairino.com, primeros 36 s).
+  - YouTube: FR3C desempaquetado (jYYxfiXPExw), FR5 paletizando (ees0UtTjlfE), FR10 con visión 3D (_zbyX9ZKDn8),
+    FR20 inyectora (p2EVoFe9k9w), FR30 paletizado alimentario (vFznCarJe-0).
+  - Sin vídeo propio del modelo, con vídeo general de FAIRINO: FR16 paletizado (t8kvBmfZqac), FR5WML soldadura (rpG0fAo9oWc).
+  - FR5 Negro y FR10 Negro sin vídeo: los oficiales son del acabado blanco.
 
 ## Higgsfield: estado
 

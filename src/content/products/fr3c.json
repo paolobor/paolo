@@ -11,6 +11,11 @@
       "alt": "FR3C, foto oficial de FAIRINO"
     }
   ],
+  "video": {
+    "youtube": "jYYxfiXPExw",
+    "poster": "videos/yt-jYYxfiXPExw.jpg",
+    "alt": "Desempaquetado y puesta en marcha del FR3-C"
+  },
   "payloadKg": 3,
   "reachMm": 622,
   "repeatabilityMm": 0.05,

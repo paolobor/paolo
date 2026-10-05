@@ -26,6 +26,11 @@
       "illustrative": true
     }
   ],
+  "video": {
+    "youtube": "vFznCarJe-0",
+    "poster": "videos/yt-vFznCarJe-0.jpg",
+    "alt": "FR30 paletizando en la industria alimentaria"
+  },
   "payloadKg": 30,
   "reachMm": 1403,
   "repeatabilityMm": 0.1,

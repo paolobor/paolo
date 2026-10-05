@@ -26,6 +26,11 @@
       "illustrative": true
     }
   ],
+  "video": {
+    "youtube": "ees0UtTjlfE",
+    "poster": "videos/yt-ees0UtTjlfE.jpg",
+    "alt": "FR5 paletizando en una fábrica"
+  },
   "payloadKg": 5,
   "reachMm": 922,
   "repeatabilityMm": 0.02,

@@ -26,6 +26,12 @@
       "illustrative": true
     }
   ],
+  "video": {
+    "mp4": "media/fairino-fr3wms-fr3wml.mp4",
+    "webm": "media/fairino-fr3wms-fr3wml.webm",
+    "poster": "videos/fairino-fr3wms-fr3wml-poster.jpg",
+    "alt": "Vídeo oficial de FAIRINO del lanzamiento del FR3WMS y el FR3WML"
+  },
   "payloadKg": 3,
   "reachMm": 922,
   "repeatabilityMm": 0.05,

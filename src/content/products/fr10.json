@@ -26,6 +26,11 @@
       "illustrative": true
     }
   ],
+  "video": {
+    "youtube": "_zbyX9ZKDn8",
+    "poster": "videos/yt-_zbyX9ZKDn8.jpg",
+    "alt": "FR10 trabajando con visión 3D"
+  },
   "payloadKg": 10,
   "reachMm": 1400,
   "repeatabilityMm": 0.05,

@@ -26,6 +26,11 @@
       "illustrative": true
     }
   ],
+  "video": {
+    "youtube": "p2EVoFe9k9w",
+    "poster": "videos/yt-p2EVoFe9k9w.jpg",
+    "alt": "FR20 atendiendo una máquina de inyección"
+  },
   "payloadKg": 20,
   "reachMm": 1854,
   "repeatabilityMm": 0.1,

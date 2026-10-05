@@ -98,7 +98,24 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
       <div class="grid content-start gap-3" data-gallery>
         <div class="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] border border-line bg-[radial-gradient(ellipse_at_50%_85%,rgba(255,106,19,0.22),transparent_60%),radial-gradient(circle_at_50%_40%,#1a110c,#0b0705_75%)]">
           {
-            d.video && (
+            d.video?.youtube && (
+              <div class="absolute inset-0 bg-black" data-slide={0} data-yt={d.video.youtube} data-yt-title={d.video.alt}>
+                <button type="button" class="group absolute inset-0 block" aria-label={`Reproducir el vídeo: ${d.video.alt}`} data-yt-play>
+                  <img src={videoPoster} alt="" class="size-full object-cover" />
+                  <span class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-black/20 transition-colors group-hover:via-black/0"></span>
+                  <span class="absolute left-1/2 top-1/2 grid size-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-signal text-ink shadow-[0_10px_40px_-6px_rgba(255,106,19,0.7)] transition-transform group-hover:scale-110">
+                    <Icon name="play" size={28} />
+                  </span>
+                  <span class="absolute inset-x-4 bottom-3 grid gap-0.5 text-left">
+                    <span class="text-sm font-semibold text-white">{d.video.alt}</span>
+                    <span class="font-mono text-[0.62rem] uppercase tracking-[0.12em] text-white/75">Vídeo oficial de FAIRINO · se reproduce en YouTube</span>
+                  </span>
+                </button>
+              </div>
+            )
+          }
+          {
+            d.video?.mp4 && (
               <div class="absolute inset-0" data-slide={0}>
                 <video
                   class="size-full object-cover"
@@ -112,7 +129,7 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
                   data-gallery-video
                 >
                   {d.video.webm && <source src={url(d.video.webm)} type="video/webm" />}
-                  <source src={url(d.video.mp4)} type="video/mp4" />
+                  <source src={url(d.video.mp4!)} type="video/mp4" />
                 </video>
                 <button
                   type="button"
@@ -472,12 +489,31 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
       userPaused = !video!.paused;
       setPlaying(video!.paused);
     });
+    // YouTube: no se carga nada de YouTube hasta que se pulsa «play».
+    const yt = g.querySelector<HTMLElement>('[data-yt]');
+    const ytPoster = yt?.innerHTML ?? '';
+    const playYouTube = () => {
+      if (!yt) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${yt.dataset.yt}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+      iframe.title = yt.dataset.ytTitle ?? 'Vídeo de FAIRINO';
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      iframe.allowFullscreen = true;
+      iframe.className = 'absolute inset-0 size-full';
+      yt.replaceChildren(iframe);
+    };
+    const bindYouTube = () => yt?.querySelector('[data-yt-play]')?.addEventListener('click', playYouTube);
+    bindYouTube();
     thumbs.forEach((t) =>
       t.addEventListener('click', () => {
         const i = Number(t.dataset.thumb);
         slides.forEach((s) => (s.hidden = Number(s.dataset.slide) !== i));
         thumbs.forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.thumb) === i)));
         if (video) setPlaying(i === 0 && !userPaused);
+        if (yt && i !== 0 && yt.querySelector('iframe')) {
+          yt.innerHTML = ytPoster;
+          bindYouTube();
+        }
       }),
     );
   });

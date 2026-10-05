@@ -26,6 +26,11 @@
       "illustrative": true
     }
   ],
+  "video": {
+    "youtube": "rpG0fAo9oWc",
+    "poster": "videos/yt-rpG0fAo9oWc.jpg",
+    "alt": "Las cinco soluciones de soldadura de FAIRINO"
+  },
   "payloadKg": 5,
   "reachMm": 1900,
   "repeatabilityMm": 0.1,
