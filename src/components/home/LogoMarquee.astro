@@ -1,30 +1,47 @@
 ---
-import { logos } from '../../data/home';
+import { Image } from 'astro:assets';
+import Icon from '../ui/Icon.astro';
+import { partners } from '../../data/partners';
+import { findImage } from '../../lib/images';
 import { url } from '../../lib/url';
+
+const items = partners.map((p) => ({ ...p, img: findImage(`partners/${p.slug}.png`) }));
 ---
 
-<section class="py-12 md:py-16" aria-labelledby="logos-title">
-  <div class="container-x">
-    <p id="logos-title" class="text-center font-mono text-xs font-medium uppercase tracking-[0.16em] text-muted">
-      Partners, certificaciones y clientes que confían en FAIRINO
-    </p>
+<section class="py-14 md:py-20" aria-labelledby="logos-title">
+  <div class="container-x grid justify-items-center gap-3 text-center">
+    <p class="eyebrow">Red de colaboradores</p>
+    <h2 id="logos-title" class="font-display text-2xl font-extrabold leading-tight md:text-3xl" style="font-stretch:112%">
+      {partners.length} partners de FAIRINO Spain en toda España
+    </h2>
   </div>
-  <div class="marquee group mt-8 overflow-hidden" data-marquee>
-    <ul class="marquee-track flex w-max items-center gap-6 group-hover:[animation-play-state:paused]">
+  <div class="marquee group mt-10 overflow-hidden py-3" data-marquee>
+    <ul class="marquee-track flex w-max items-stretch gap-5 group-hover:[animation-play-state:paused]">
       {
-        [...logos, ...logos].map((l, i) => (
-          <li class="shrink-0" aria-hidden={i >= logos.length ? 'true' : undefined}>
-            {l.src ? (
-              <img src={url(l.src)} alt={l.name} loading="lazy" width="160" height="56" class="h-12 w-auto opacity-60 grayscale transition hover:opacity-100 hover:grayscale-0" />
-            ) : (
-              <span class="grid h-14 w-44 place-items-center rounded-lg border border-dashed border-[#b3a597] bg-paper px-3 text-center font-mono text-[0.62rem] leading-tight text-muted">
-                {l.name}
-              </span>
-            )}
+        [...items, ...items].map((p, i) => (
+          <li class="shrink-0" aria-hidden={i >= items.length ? 'true' : undefined}>
+            <figure class="partner">
+              <div class="partner-logo">
+                {p.img && <Image src={p.img} alt={`Logo de ${p.name}`} width={p.img.width} height={p.img.height} format="webp" loading="lazy" />}
+              </div>
+              <figcaption class="partner-cap">
+                <span class="partner-n">{p.n}</span>
+                <span class="grid min-w-0">
+                  <span class="partner-name">{p.name}</span>
+                  <span class="partner-place">{p.place}</span>
+                </span>
+              </figcaption>
+            </figure>
           </li>
         ))
       }
     </ul>
+  </div>
+  <div class="container-x mt-8 flex justify-center">
+    <a href={url('contacto/?asunto=distribucion')} class="group inline-flex items-center gap-2 text-sm font-semibold text-mist transition-colors hover:text-signal">
+      ¿Integras automatización? Únete a nuestra red de colaboradores
+      <Icon name="arrow-right" size={16} class="transition-transform group-hover:translate-x-0.5" />
+    </a>
   </div>
 </section>
 
@@ -33,19 +50,99 @@ import { url } from '../../lib/url';
     mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
   }
   .marquee-track {
-    animation: marquee 42s linear infinite;
+    animation: marquee 60s linear infinite;
   }
   @keyframes marquee {
     to {
-      transform: translateX(calc(-50% - 0.75rem));
+      transform: translateX(calc(-50% - 0.625rem));
     }
   }
+  /* Ficha como las del vídeo de la red de colaboradores: placa del logo, filo naranja y pie con número, nombre y ciudad. */
+  .partner {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 232px;
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    border: 1px solid var(--color-line);
+    background: #0d0907;
+    box-shadow: 0 20px 40px -26px rgb(0 0 0 / 0.9);
+    transition:
+      transform 0.3s var(--ease-out-soft),
+      border-color 0.3s,
+      box-shadow 0.3s;
+  }
+  .partner::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    z-index: 1;
+    height: 3px;
+    background: linear-gradient(90deg, var(--color-signal), #ffb36b);
+  }
+  .partner:hover {
+    transform: translateY(-4px);
+    border-color: rgb(255 122 26 / 0.5);
+    box-shadow: 0 24px 50px -20px rgb(255 106 19 / 0.35);
+  }
+  .partner-logo {
+    aspect-ratio: 263 / 98;
+    background: #f3f2f0;
+  }
+  .partner-logo :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .partner-cap {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: 0.7rem;
+    padding: 0.7rem 0.85rem 0.8rem;
+  }
+  .partner-n {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: var(--color-signal);
+    font-stretch: 112%;
+  }
+  .partner-name {
+    overflow: hidden;
+    font-family: var(--font-display);
+    font-size: 0.9rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--color-text);
+    font-stretch: 112%;
+  }
+  .partner-place {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    line-height: 1.35;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-mist);
+  }
   @media (prefers-reduced-motion: reduce) {
+    .marquee {
+      mask-image: none;
+    }
     .marquee-track {
       animation: none;
       flex-wrap: wrap;
       justify-content: center;
       width: auto;
+      padding-inline: 1rem;
     }
     .marquee-track > li[aria-hidden='true'] {
       display: none;

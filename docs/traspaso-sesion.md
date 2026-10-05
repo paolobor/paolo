@@ -89,6 +89,13 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
 - Portada: vídeo oficial de fairino.es (`video-portada.mp4`, 38 s) como fondo del hero, sin audio, en
   `public/media/fairino-portada.{webm,mp4}` (1,8 y 3,5 MB); póster = primer fotograma.
 
+- Inicio: la franja de logos es ahora la red de colaboradores (`src/data/partners.ts`): los 13 partners del vídeo
+  de FDI «Únete a nuestra red de colaboradores», con número, nombre y ciudad. Logos recortados de sus fichas en el
+  vídeo (`src/assets/images/partners/`); cambiarlos por los originales cuando los tengamos. En el vídeo la sede de
+  FDI sale en Yuncler (Toledo) y en la web pone Villaluenga de la Sagra: confirmar cuál es la buena.
+- Configurador: tarjetas con la foto oficial de cada producto (como en la tienda).
+- Tienda: filtro de precio (desactivado mientras los precios estén a 0).
+
 ## Higgsfield: estado
 
 - Saldo: 891 créditos, plan Plus. nano_banana_2 a 2k = 2 créditos por imagen.

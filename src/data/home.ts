@@ -62,11 +62,7 @@ export const valueCards = [
   },
 ];
 
-// Franja de logos: rellenar con logos reales (SVG en /public/logos/). null → placeholder.
-export const logos: { name: string; src: string | null }[] = Array.from({ length: 8 }, (_, i) => ({
-  name: `[LOGO: partner, certificación o cliente ${i + 1}]`,
-  src: null,
-}));
+// La franja de colaboradores de la home sale de src/data/partners.ts.
 
 export const counters: { value: number | null; suffix?: string; label: string; hint: string }[] = [
   { value: null, suffix: '+', label: 'Células instaladas', hint: 'instalaciones' },
