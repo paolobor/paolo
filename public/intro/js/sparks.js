@@ -290,11 +290,11 @@
       if (!any) continue;
       // Halo
       ctx.strokeStyle = 'rgba(' + RAMP[b][2] + ',' + (GLOW_ALPHA[b] * flick).toFixed(3) + ')';
-      ctx.lineWidth = (this.mobile ? 2.6 : 3.6) * Math.max(0.8, U);
+      ctx.lineWidth = (this.mobile ? 3.2 : 3.6) * Math.max(0.8, U);
       ctx.stroke();
-      // Núcleo
+      // Núcleo (algo más grueso en el móvil, que tiene menos píxeles de pantalla por chispa)
       ctx.strokeStyle = 'rgba(' + RAMP[b][1] + ',' + (CORE_ALPHA[b] * flick).toFixed(3) + ')';
-      ctx.lineWidth = (b < 2 ? 1.25 : 1.05) * Math.max(0.85, U);
+      ctx.lineWidth = (b < 2 ? 1.25 : 1.05) * Math.max(0.85, U) * (this.mobile ? 1.35 : 1);
       ctx.stroke();
     }
     ctx.globalCompositeOperation = 'source-over';

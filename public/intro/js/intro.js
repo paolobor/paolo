@@ -21,8 +21,15 @@
   var TARGET = root.dataset.target || 'https://fairino.es/';
   var KEY = 'fairino-intro-vista';
 
-  // Anillo naranja en el fotograma congelado del vídeo (proporciones del encuadre 16:9) y momento del zoom.
-  var RING = { x: 0.518, y: 0.279, cap: 0.056, at: 2.44 };
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var coarse = window.matchMedia('(pointer: coarse)').matches;
+  var mobile = coarse || Math.min(window.innerWidth, window.innerHeight) < 700;
+  // Móvil en vertical: vídeo montado en vertical (cada plano reencuadrado), no el apaisado recortado.
+  var portrait = window.innerHeight > window.innerWidth * 1.15;
+
+  // Anillo naranja en el fotograma congelado del vídeo (proporciones del encuadre; cap = radio de la tapa
+  // respecto al ancho) y momento del zoom.
+  var RING = portrait ? { x: 0.5, y: 0.279, cap: 0.177, at: 2.44 } : { x: 0.518, y: 0.279, cap: 0.056, at: 2.44 };
 
   var $ = function (s) {
     return intro.querySelector(s);
@@ -40,18 +47,15 @@
   var canvas = $('[data-sparks]');
   var underglow = $('.fi-underglow');
   var PATH = document.getElementById('fi-wm');
-
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var coarse = window.matchMedia('(pointer: coarse)').matches;
-  var mobile = coarse || Math.min(window.innerWidth, window.innerHeight) < 700;
   var state = 'idle';
+  if (coarse) hint.querySelector('span').textContent = 'Toca para entrar';
 
   // ---------------------------------------------------------------- vídeo (se descarga entero en la escena 1)
   var isSafari = /^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var small = mobile || Math.max(window.innerWidth, window.innerHeight) * dpr <= 1400;
   var webm = !isSafari && video.canPlayType('video/webm; codecs="vp9"') === 'probably';
-  var src = ASSETS + 'fairino-intro' + (small ? '-720' : '') + (webm ? '.webm' : '.mp4');
+  var src = ASSETS + 'fairino-intro' + (portrait ? '-vertical' : small ? '-720' : '') + (webm ? '.webm' : '.mp4');
   var setSrc = function (u) {
     video.src = u;
     video.load();
@@ -160,7 +164,8 @@
           };
         }
         if (sparks) {
-          sparks.setScale(h / 80);
+          // En el móvil el logotipo es pequeño: las chispas no bajan de un tamaño que se vea bien.
+          sparks.setScale(Math.max(h / 80, mobile ? 0.62 : 0));
           sparks.setPoints(geo.points);
         }
         resolve();

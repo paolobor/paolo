@@ -33,7 +33,8 @@ js/intro.js                guion de las escenas (GSAP)
 js/sparks.js               sistema de chispas (Canvas 2D, mezcla aditiva)
 js/vendor/gsap.min.js      GSAP 3.15 (licencia gratuita de GSAP)
 assets/fairino-intro.mp4   vídeo 1080p H.264 (0,5 MB)  · .webm VP9 (0,3 MB)
-assets/fairino-intro-720.* vídeo 720p para móvil (0,26 MB / 0,15 MB)
+assets/fairino-intro-720.* vídeo 720p para pantallas pequeñas en horizontal (0,26 MB / 0,15 MB)
+assets/fairino-intro-vertical.* montaje vertical 720×1280 para el móvil en vertical, con cada plano reencuadrado (0,27 MB / 0,14 MB)
 assets/fonts/              Inter (Google Fonts, licencia OFL), servida desde la propia web
 assets/favicon.svg
 ```
@@ -56,11 +57,12 @@ Para verla otra vez sin el parámetro, cierra la pestaña: sessionStorage se bor
 
 - **Precarga:** el vídeo se descarga entero mientras se ve la escena 1, para que arranque al instante tras el clic.
   - Chrome, Edge y Firefox reciben WebM; Safari recibe MP4.
-  - Móvil y pantallas pequeñas reciben 720p.
+  - El móvil en vertical recibe el montaje vertical; las pantallas pequeñas en horizontal, 720p.
   - Dentro de la web, los estilos, scripts y el vídeo de la intro solo se descargan si toca verla.
 - **«Saltar intro»** (esquina superior derecha) lleva directo a la web (dentro de la web, también la tecla Esc).
 - **Movimiento reducido** (`prefers-reduced-motion`): sin chispas ni vídeo. El texto aparece con un fundido y, al hacer clic, funde a blanco y entra.
-- **Móvil:** menos chispas, sin halos extra y densidad de píxeles limitada a 1,5.
+- **Móvil:** logotipo más grande y algo por encima del centro, chispas de un tamaño mínimo que se vea, «Toca para
+  entrar» en lugar de «Haz clic», menos chispas y densidad de píxeles limitada a 1,5.
 - **Si el vídeo no carga** (red lenta), la intro no se queda colgada: funde a blanco y entra.
 - **Sin JavaScript:** la página suelta muestra el logotipo y un enlace «Entrar en fairino.es»; dentro de la web, la
   intro no aparece.
@@ -81,6 +83,8 @@ FC="[0:v]trim=start=1.44:end=2.12,setpts=PTS-STARTPTS[a];[0:v]trim=start=0.12:en
 ffmpeg -i "$V" -filter_complex "$FC,scale=-2:1080:flags=lanczos[v]" -map "[v]" -an -c:v libx264 -preset slow -crf 23 -profile:v high -g 25 -movflags +faststart assets/fairino-intro.mp4
 ffmpeg -i "$V" -filter_complex "$FC,scale=-2:1080:flags=lanczos[v]" -map "[v]" -an -c:v libvpx-vp9 -crf 33 -b:v 0 -row-mt 1 -g 25 assets/fairino-intro.webm
 # 720p: scale=-2:720 y -crf 24 (MP4) / 35 (WebM), con el sufijo -720
+# Vertical (sufijo -vertical, 720×1280): los mismos planos, recortados a 608×1080 alrededor del sujeto
+#   (x = 771, 790, 656 y 691 en el original de 1920; el último centra el anillo) y escalados a 720×1280.
 ```
 
 Si cambias el vídeo, actualiza `RING` en `js/intro.js`:
