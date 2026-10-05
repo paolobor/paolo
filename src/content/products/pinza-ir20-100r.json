@@ -1,11 +1,11 @@
 {
-  "name": "Pinza eléctrica giratoria HITBOT Z-ERG-20-100",
+  "name": "Pinza eléctrica giratoria IR20-100R",
   "brand": "HITBOT",
   "category": "accesorio",
   "group": "garra",
   "order": 22,
-  "tagline": "Agarra y gira sin límite de vueltas: 20 mm de carrera y hasta 100 N (referencia IR20-100R).",
-  "description": "Pinza eléctrica de HITBOT que, además de agarrar, gira la pieza sin límite de vueltas; equivale a la referencia IR20-100R. Sirve para enroscar, orientar o dar la vuelta a piezas pequeñas. Carrera de 20 mm, fuerza de 30 a 100 N, hasta 1,5 N·m de par y 180 rpm, con el controlador integrado.",
+  "tagline": "Agarra y gira sin límite de vueltas: 20 mm de carrera y hasta 100 N (modelo HITBOT Z-ERG-20-100).",
+  "description": "Pinza eléctrica que, además de agarrar, gira la pieza sin límite de vueltas; es el modelo Z-ERG-20-100 de HITBOT. Sirve para enroscar, orientar o dar la vuelta a piezas pequeñas. Carrera de 20 mm, fuerza de 30 a 100 N, hasta 1,5 N·m de par y 180 rpm, con el controlador integrado.",
   "highlights": [
     "Agarre y giro infinito en una sola herramienta",
     "Hasta 1,5 N·m de par y 180 rpm",

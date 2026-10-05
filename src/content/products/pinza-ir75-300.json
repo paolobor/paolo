@@ -1,10 +1,10 @@
 {
-  "name": "Pinza eléctrica JODELL RG75-300",
+  "name": "Pinza eléctrica IR75-300",
   "category": "accesorio",
   "group": "garra",
   "order": 8,
-  "tagline": "Pinza paralela de 75 mm de carrera y hasta 300 N por dedo, con IP65 (referencia IR75-300).",
-  "description": "Pinza eléctrica de dos dedos paralelos de la serie RG de JODELL; equivale a la referencia IR75-300. Carrera ajustable de 0 a 75 mm, fuerza de 40 a 300 N por dedo y repetibilidad de ±0,02 mm. Mantiene la pieza si se corta la corriente, detecta si se cae y se controla por Modbus RTU (RS485) a 24 V.",
+  "tagline": "Pinza paralela de 75 mm de carrera y hasta 300 N por dedo, con IP65 (modelo JODELL RG75-300).",
+  "description": "Pinza eléctrica de dos dedos paralelos; es el modelo RG75-300 de la serie RG de JODELL. Carrera ajustable de 0 a 75 mm, fuerza de 40 a 300 N por dedo y repetibilidad de ±0,02 mm. Mantiene la pieza si se corta la corriente, detecta si se cae y se controla por Modbus RTU (RS485) a 24 V.",
   "highlights": [
     "75 mm de carrera y hasta 300 N por dedo",
     "IP65: preparada para polvo y salpicaduras",

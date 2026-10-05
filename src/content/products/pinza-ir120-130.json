@@ -1,11 +1,11 @@
 {
-  "name": "Pinza eléctrica HITBOT Z-EFG-130",
+  "name": "Pinza eléctrica adaptativa IR120-130",
   "brand": "HITBOT",
   "category": "accesorio",
   "group": "garra",
   "order": 19,
-  "tagline": "Pinza adaptativa de 120 mm de carrera y hasta 130 N (referencia IR120-130).",
-  "description": "Pinza eléctrica de dos dedos de HITBOT con husillo y bielas, de modo que los dedos se adaptan a la forma de la pieza; equivale a la referencia IR120-130. Carrera total de 120 mm, fuerza ajustable de 40 a 130 N y repetibilidad de ±0,02 mm, con el controlador integrado y control por Modbus RTU o E/S digital.",
+  "tagline": "Pinza adaptativa de 120 mm de carrera y hasta 130 N (modelo HITBOT Z-EFG-130).",
+  "description": "Pinza eléctrica de dos dedos con husillo y bielas, de modo que los dedos se adaptan a la forma de la pieza; es el modelo Z-EFG-130 de HITBOT. Carrera total de 120 mm, fuerza ajustable de 40 a 130 N y repetibilidad de ±0,02 mm, con el controlador integrado y control por Modbus RTU o E/S digital.",
   "highlights": [
     "120 mm de carrera para piezas grandes o variadas",
     "Agarre adaptativo con bielas",

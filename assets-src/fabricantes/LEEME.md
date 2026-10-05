@@ -53,8 +53,8 @@ el catálogo de IDEC no coinciden.
 ## Pinzas eléctricas IR (JODELL, HITBOT, ChangingTek y DH-Robotics)
 
 Las referencias IR son pinzas de otros fabricantes con nombre propio (carrera-fuerza: IR75-300 = 75 mm / 300 N).
-Se ha buscado el fabricante de cada una y la foto y los datos son los suyos. La ficha conserva la URL (el id) y cita
-la referencia IR en el texto.
+Se ha buscado el fabricante de cada una y la foto y los datos son los suyos. Por decisión de FAIRINO España las fichas
+se siguen llamando por la referencia IR; la marca que se muestra es la del fabricante y el texto cita su modelo.
 
 | Producto (id)     | Fabricante y modelo           | Seguridad   | Foto y datos                                                         |
 | ----------------- | ----------------------------- | ----------- | -------------------------------------------------------------------- |
