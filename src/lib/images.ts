@@ -14,7 +14,7 @@ export function findImage(path: string | null | undefined): ImageMetadata | null
 
 // Las escenas generadas a partir del render oficial llevan «escena» en el nombre y se marcan como ilustrativas.
 export function isIllustrative(path: string | null | undefined): boolean {
-  return !!path && /fairino-[a-z0-9]+-escena-/.test(path);
+  return !!path && /fairino-[a-z0-9-]+-escena-/.test(path);
 }
 
 // Las escenas se sirven siempre en estos anchos y solo en WebP: así cada escena genera 3 archivos y no decenas.

@@ -38,7 +38,7 @@ const {
 
 const image = typeof src === 'string' || src == null ? findImage(src as string | null) : src;
 // Escenas generadas: anchos fijos y solo WebP (ver SCENE_WIDTHS).
-const scene = !!image && /fairino-[a-z0-9]+-escena-/.test(image.src);
+const scene = !!image && /fairino-[a-z0-9-]+-escena-/.test(image.src);
 const wanted = scene ? SCENE_WIDTHS : widths;
 const validWidths = image ? wanted.filter((w) => w <= image.width).concat(wanted.some((w) => w > image.width) ? [image.width] : []) : [];
 ---

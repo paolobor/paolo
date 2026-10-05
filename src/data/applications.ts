@@ -27,8 +27,9 @@ export const applications: Application[] = [
     name: 'Soldadura',
     short: 'Cordones repetibles y estables, programados por arrastre en lugar de líneas de código.',
     icon: 'zap',
-    image: scene('fr3wml', 'soldadura'),
-    imagePosition: '62% 50%',
+    // Foto principal: el FR5 negro de FAIRINO España con su equipo de soldadura (escena a partir de su foto real).
+    image: scene('fr5-negro', 'soldadura'),
+    imagePosition: '30% 50%',
     imageHint: 'cobot FAIRINO soldando en mesa de trabajo',
     intro:
       'Con la antorcha montada en la brida, el cobot repite el mismo cordón con la misma velocidad y el mismo ángulo en cada pieza. Se programa llevando el brazo con la mano por la trayectoria, así que un soldador sin experiencia en robótica lo pone a producir en poco tiempo y la formación sale más barata.',
@@ -44,7 +45,14 @@ export const applications: Application[] = [
       'Entre un 10 y un 20 % menos de coste de producción gracias a la enseñanza por arrastre.',
       'Varios paquetes de software de soldadura para empezar rápido.',
     ],
-    gallery: [scene('fr3wms', 'soldadura'), scene('fr3wml', 'soldadura-tuberia'), scene('fr5wml', 'soldadura'), scene('fr3wms', 'soldadura-movil')],
+    gallery: [
+      scene('fr5-negro', 'estacion-soldadura'),
+      scene('fr3wml', 'soldadura'),
+      scene('fr3wms', 'soldadura'),
+      scene('fr3wml', 'soldadura-tuberia'),
+      scene('fr5wml', 'soldadura'),
+      scene('fr3wms', 'soldadura-movil'),
+    ],
   },
   {
     slug: 'paletizado',

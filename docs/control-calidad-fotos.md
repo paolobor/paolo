@@ -60,3 +60,17 @@ Mismo método que el piloto: una referencia por modelo (su recorte con aros) y t
 - **Coste**: 25 imágenes × 2 créditos = 50 créditos (24 de la tanda y 1 repetida). Saldo: 941 → 891.
 - **Retoques**: solo difuminado local de dos rótulos inventados por la IA en máquinas del fondo. El robot no se ha tocado.
 - **FR3C**: sin fotos. No tiene modelo 3D en el repositorio oficial y no se genera nada sin una referencia oficial; sigue el marcador `[FOTO: FR3C]`.
+
+## FR5 negro de soldadura (5 de octubre de 2026)
+
+Referencia: la foto real de FAIRINO España, `assets-src/fotos-reales/fr5-negro-soldadura-real.jpg` (FR5 negro con antorcha
+MIG y su equipo de soldadura), importada en Higgsfield como `839a6c7e-c0ed-45e1-b0d5-0259c2af2b75`. Tres versiones de la
+misma escena (nave oscura soldando, sin rótulos).
+
+| Archivo en la web | Trabajo | Robot | Herramienta | Equipo de soldadura | Limpieza | Veredicto |
+|---|---|---|---|---|---|---|
+| Plano general con mesa y extractor | `c318999a-3818-46c8-a7fe-e76173c04807` | Bien, pero pequeño en el encuadre | Bien | Bien | Bien | No se usa |
+| `fairino-fr5-negro-escena-soldadura.webp`: soldando en primer plano, equipo al fondo | `37e6b80d-6773-4807-ae75-d8d3dd3926f6` | Igual que el real: negro mate, tapas negras con 4 tornillos, banda plateada | Bien: soporte negro, escuadra y antorcha como en la foto | Bien, desenfocado | Bien | **Vale**. Foto principal de /aplicaciones/soldadura/ |
+| `fairino-fr5-negro-escena-estacion-soldadura.webp`: robot y estación completos | `90a04bfe-69a6-45bf-9880-c78dc020057c` | Bien | Bien | Bien | Dos rótulos ilegibles en la máquina: **difuminados** | **Vale** |
+
+- **Coste**: 3 imágenes × 2 créditos = 6 créditos. Saldo: 891 → 885.

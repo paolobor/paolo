@@ -9,6 +9,16 @@
     {
       "src": "../../assets/products/fr5-negro/fr5-negro-provisional-3d.png",
       "alt": "Cobot FAIRINO FR5 en acabado negro (imagen del modelo 3D oficial)"
+    },
+    {
+      "src": "../../assets/products/fr5-negro/fairino-fr5-negro-escena-soldadura.webp",
+      "alt": "Cobot FAIRINO FR5 negro con antorcha MIG soldando una pieza de acero, con su equipo de soldadura al fondo",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fr5-negro/fairino-fr5-negro-escena-estacion-soldadura.webp",
+      "alt": "Cobot FAIRINO FR5 negro soldando un bastidor de tubo junto a su equipo de soldadura sobre carro",
+      "illustrative": true
     }
   ],
   "payloadKg": 5,
