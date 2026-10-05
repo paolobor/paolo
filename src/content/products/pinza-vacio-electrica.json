@@ -1,13 +1,86 @@
 {
-  "name": "Ventosa eléctrica de vacío para cobot",
+  "name": "Pinza de vacío eléctrica ECBPMi para FAIRINO",
   "category": "accesorio",
   "group": "garra",
   "order": 10,
-  "tagline": "Ventosa de vacío eléctrica para cobots FAIRINO.",
-  "description": "Ventosa de vacío eléctrica para cobots FAIRINO. Ficha técnica, compatibilidad y precio a consultar. El modelo 3D oficial está en las descargas.",
-  "highlights": [],
-  "images": [],
-  "specs": [],
+  "tagline": "Pinza de vacío eléctrica y compacta para cobots FAIRINO, sin aire comprimido.",
+  "description": "Set listo para montar de Schmalz que coloca el generador de vacío eléctrico en miniatura ECBPMi directamente sobre la brida del cobot Fairino. Crea el vacío sin compresor ni mangueras y trabaja con una única ventosa intercambiable, plana o de fuelle, pensada para piezas pequeñas y herméticas. Incorpora interfaces IO-Link, RS-485 y NFC para comunicarse con el robot y configurarse desde el smartphone.",
+  "highlights": [
+    "Vacío eléctrico: sin compresor ni mangueras",
+    "Set específico de Schmalz para cobots FAIRINO",
+    "IO-Link, RS-485 y NFC para configurarla desde el móvil"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/pinza-vacio-electrica/pinza-vacio-electrica-oficial.png",
+      "alt": "Set ROB-SET ECBPMi FAIRINO de Schmalz: generador, brida y ventosas, foto oficial"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Grado de evacuación máx.",
+      "value": "60",
+      "unit": "%"
+    },
+    {
+      "label": "Tensión de alimentación",
+      "value": "24",
+      "unit": "V DC"
+    },
+    {
+      "label": "Potencia nominal",
+      "value": "7,2",
+      "unit": "W"
+    },
+    {
+      "label": "Corriente nominal",
+      "value": "0,3",
+      "unit": "A"
+    },
+    {
+      "label": "Peso",
+      "value": "224",
+      "unit": "g"
+    },
+    {
+      "label": "Carga manipulable",
+      "value": "Piezas herméticas de hasta 3 kg"
+    },
+    {
+      "label": "Conexión eléctrica",
+      "value": "Conector acodado M12, 8 polos"
+    },
+    {
+      "label": "Interfaces",
+      "value": "IO-Link, RS-485 y NFC"
+    },
+    {
+      "label": "Grado de protección",
+      "value": "IP 40"
+    },
+    {
+      "label": "Temperatura de servicio",
+      "value": "0 – 40",
+      "unit": "°C"
+    },
+    {
+      "label": "Dimensiones del generador (Ø × L)",
+      "value": "63 × 67,4",
+      "unit": "mm"
+    },
+    {
+      "label": "Rosca para ventosa",
+      "value": "G1/4\" hembra"
+    },
+    {
+      "label": "Contenido del set",
+      "value": "Generador ECBPMi, placa de brida FLAN-PL y ventosas SPB1 30 (fuelle) y SFF 20 (plana)"
+    },
+    {
+      "label": "Robot compatible",
+      "value": "Fairino (Fairino Europe), tipo FR3-30"
+    }
+  ],
   "applications": [
     "pick-and-place",
     "paletizado",
@@ -19,9 +92,9 @@
   "compatibleWith": [],
   "downloads": [
     {
-      "label": "Ficha técnica",
+      "label": "Ficha técnica de Schmalz (inglés)",
       "type": "ficha",
-      "href": null
+      "href": "https://media.schmalz.com/MAM_Library/Dokumente/Datenblatt_Artikel/1/100/10030100987/3f72b6720687_Datasheet_Article_10.03.01.00987_en-EN.pdf"
     },
     {
       "label": "Modelo 3D",
@@ -37,8 +110,8 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": "https://fairino.es/descargas/",
-    "verified": false
+    "url": "https://www.schmalz.com/en/products/automation-743270/vacuum-grippers-746238/gripping-systems-and-end-of-arm-tooling-eoat-746240/handling-sets-312463/handling-sets-ecbpmi-308307/10.03.01.00987",
+    "verified": true
   },
   "seo": {},
   "brand": "Schmalz"

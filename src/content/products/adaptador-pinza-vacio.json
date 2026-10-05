@@ -1,14 +1,63 @@
 {
-  "name": "Adaptador para pinza de vacío eléctrica",
+  "name": "Adaptador multiventosa SLG para ECBPMi",
   "brand": "Schmalz",
   "category": "accesorio",
   "group": "garra",
   "order": 28,
-  "tagline": "Adaptador para montar la pinza de vacío eléctrica en el cobot.",
-  "description": "Adaptador para montar la pinza de vacío eléctrica en el cobot. Ficha técnica, compatibilidad y precio a consultar.",
-  "highlights": [],
-  "images": [],
-  "specs": [],
+  "tagline": "Pinza ligera de varias ventosas para ampliar la pinza eléctrica ECBPMi.",
+  "description": "Pinza ligera de la familia SLG de Schmalz, fabricada mediante impresión 3D, que se acopla directamente bajo el generador de vacío eléctrico ECBPMi. Distribuye el vacío entre varias ventosas de fuelle para sujetar con más estabilidad piezas planas o de mayor superficie, como cartón o bolsas. Se ofrece en versiones de dos, tres y cuatro ventosas.",
+  "highlights": [
+    "Impresa en 3D, muy ligera",
+    "Versiones de 2, 3 y 4 ventosas",
+    "Se monta directamente bajo el ECBPMi"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/adaptador-pinza-vacio/adaptador-pinza-vacio-oficial.png",
+      "alt": "Pinza ligera SLG de 4 ventosas de Schmalz, foto oficial"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Tipo",
+      "value": "Pinza ligera SLG impresa en 3D, lista para conectar"
+    },
+    {
+      "label": "Número de ventosas",
+      "value": "4 ventosas de fuelle FSGA"
+    },
+    {
+      "label": "Dimensiones (L × B × H)",
+      "value": "102 × 75,3 × 57",
+      "unit": "mm"
+    },
+    {
+      "label": "Diámetro de ventosa (Ds)",
+      "value": "17,2",
+      "unit": "mm"
+    },
+    {
+      "label": "Diámetro del círculo de fijación (Dmk)",
+      "value": "46",
+      "unit": "mm"
+    },
+    {
+      "label": "Rosca de fijación",
+      "value": "M4"
+    },
+    {
+      "label": "Compatible con",
+      "value": "Generador eléctrico ECBPMi y sets ROB-SET ECBPMi (incl. ROB-SET ECBPMi FAIRINO)"
+    },
+    {
+      "label": "Variante de 3 ventosas",
+      "value": "SLG 102x102 FSGA 3 (10.01.10.14042), 102 × 102 × 57 mm"
+    },
+    {
+      "label": "Variante de 2 ventosas",
+      "value": "SLG 102x57 FSGA 2 (10.01.10.14043), 102 × 57 × 57 mm"
+    }
+  ],
   "applications": [
     "pick-and-place",
     "paletizado",
@@ -20,9 +69,9 @@
   "compatibleWith": [],
   "downloads": [
     {
-      "label": "Ficha técnica",
+      "label": "Ficha técnica de Schmalz (inglés)",
       "type": "ficha",
-      "href": null
+      "href": "https://media.schmalz.com/MAM_Library/Dokumente/Datenblatt_Produktfamilie/0_/063/06335/5156a39a476b_Datasheet_Lightweight%20Gripping%20Systems%20SLG_en-EN.pdf"
     }
   ],
   "store": {
@@ -33,8 +82,8 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": null,
-    "verified": false
+    "url": "https://www.schmalz.com/en/products/automation-743270/vacuum-grippers-746238/gripping-systems-and-end-of-arm-tooling-eoat-746240/lightweight-gripping-systems-slg-725028/10.01.10.14041",
+    "verified": true
   },
   "seo": {}
 }

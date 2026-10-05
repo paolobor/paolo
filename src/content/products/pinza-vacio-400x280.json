@@ -1,13 +1,97 @@
 {
-  "name": "Pinza de vacío para cobot 400 × 280",
+  "name": "Pinza de vacío de superficie FQE-V 400 × 280",
   "category": "accesorio",
   "group": "garra",
   "order": 12,
-  "tagline": "Pinza de vacío de 400 × 280 mm para cobots FAIRINO.",
-  "description": "Pinza de vacío de 400 × 280 mm para cobots FAIRINO. Ficha técnica, compatibilidad y precio a consultar. El modelo 3D oficial está en las descargas.",
-  "highlights": [],
-  "images": [],
-  "specs": [],
+  "tagline": "Pinza de superficie de gran formato para cajas grandes y paletizado.",
+  "description": "Versión de gran formato de la pinza de superficie FQE-V Xc de Schmalz, con generación de vacío por aire comprimido integrada y sin bomba externa. Las válvulas de aspiración y soplado van dentro de la pinza, y la placa de ventosas de fuelle con filtro cubre una superficie amplia para coger cajas grandes o varias piezas a la vez. Está diseñada para tareas de paletizado y pick & place con cobots.",
+  "highlights": [
+    "Vacío integrado con aire comprimido: sin bomba externa",
+    "45 ventosas de fuelle de 40 mm con filtro",
+    "Coge cajas grandes o varias piezas a la vez"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/pinza-vacio-400x280/pinza-vacio-400x280-oficial.png",
+      "alt": "Pinza de superficie FQE-V Xc 400 × 280 de Schmalz, foto oficial"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Superficie de agarre (L × B)",
+      "value": "400 × 280",
+      "unit": "mm"
+    },
+    {
+      "label": "Altura (H)",
+      "value": "115,3",
+      "unit": "mm"
+    },
+    {
+      "label": "Generación de vacío",
+      "value": "Neumática integrada, 3 eyectores ecoPump SEP"
+    },
+    {
+      "label": "Elemento de sellado",
+      "value": "45 ventosas de fuelle SPB2 Ø 40 mm con filtro"
+    },
+    {
+      "label": "Válvulas de control",
+      "value": "Integradas (aspiración y soplado), normalmente abiertas"
+    },
+    {
+      "label": "Versión de conmutación",
+      "value": "PNP"
+    },
+    {
+      "label": "Peso",
+      "value": "2,9",
+      "unit": "kg"
+    },
+    {
+      "label": "Presión de servicio",
+      "value": "3,0 – 6,0",
+      "unit": "bar"
+    },
+    {
+      "label": "Presión de entrada óptima",
+      "value": "5,0",
+      "unit": "bar"
+    },
+    {
+      "label": "Grado de evacuación máx. (a presión óptima)",
+      "value": "610",
+      "unit": "mbar"
+    },
+    {
+      "label": "Capacidad de carga máx. (casos de carga 1+2)",
+      "value": "375",
+      "unit": "N"
+    },
+    {
+      "label": "Capacidad de carga máx. (caso de carga 3)",
+      "value": "185",
+      "unit": "N"
+    },
+    {
+      "label": "Tensión de control",
+      "value": "24",
+      "unit": "V DC"
+    },
+    {
+      "label": "Conexión eléctrica",
+      "value": "Conector M12, 5 polos (válvulas integradas)"
+    },
+    {
+      "label": "Temperatura ambiente",
+      "value": "5 – 50",
+      "unit": "°C"
+    },
+    {
+      "label": "Robots compatibles",
+      "value": "Robots ligeros y cobots (diseño apto para colaboración según ISO/TS 15066)"
+    }
+  ],
   "applications": [
     "pick-and-place",
     "paletizado",
@@ -19,9 +103,9 @@
   "compatibleWith": [],
   "downloads": [
     {
-      "label": "Ficha técnica",
+      "label": "Ficha técnica de Schmalz (inglés)",
       "type": "ficha",
-      "href": null
+      "href": "https://media.schmalz.com/MAM_Library/Dokumente/Datenblatt_Produktfamilie/0_/063/06317/0f3d58864d5e_Datasheet_Area%20Gripping%20Systems%20FQE-V%20Xc_en-EN.pdf"
     },
     {
       "label": "Modelo 3D",
@@ -37,8 +121,8 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": "https://fairino.es/descargas/",
-    "verified": false
+    "url": "https://www.schmalz.com/en/products/automation-743270/vacuum-grippers-746238/gripping-systems-and-end-of-arm-tooling-eoat-746240/area-gripping-systems-fqe-312036/area-gripping-systems-fqe-v-xc-406632/10.01.44.00560",
+    "verified": true
   },
   "seo": {},
   "brand": "Schmalz"

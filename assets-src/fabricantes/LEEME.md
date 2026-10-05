@@ -15,18 +15,17 @@ se las den a sus distribuidores).
 | softactuator-centric-finger   | soft-gripping/softactuator-centric-finger-original.jpg | soft-gripping.com/assets/products/pictures/renderings/jpg/softactuator/sg.ck_.p4.b1-img1.jpg (página SoftActuator) |
 | controlbox-softgripping       | soft-gripping/controlbox-softgripping-original.jpg     | soft-gripping.com/assets/sg.bp_.1p.c1-img1-1.jpg, Controlbox P (página Pneumatics) |
 
-## Schmalz (schmalz.com), pendiente
+## Schmalz (schmalz.com)
 
-Las fotos están en `media.schmalz.com`, que la red del entorno todavía no deja descargar.
+| Producto (id)          | Artículo de Schmalz                                         | Foto (media.schmalz.com)                                    |
+| ---------------------- | ----------------------------------------------------------- | ----------------------------------------------------------- |
+| pinza-vacio-electrica  | ROB-SET ECBPMi FAIRINO, 10.03.01.00987                      | …/10030100987/252c7644fd32_10.03.01.00987_00.jpg            |
+| adaptador-pinza-vacio  | SLG 102x75.3 FSGA 4, 10.01.10.14041 (también FSGA 3 y 2)    | …/10011014041/6f6cd29480a5_10.01.10.14041_00.jpg            |
+| pinza-vacio-230x120    | FQE-V Xc R 230x120 SW80 SPB2 F, 10.01.44.00580              | …/10014400580/f94292525aec_10.01.44.00580_00.jpg            |
+| pinza-vacio-400x280    | FQE-V Xc R 400x280 SW80 SPB2 F, 10.01.44.00560              | …/10014400560/945cc7dda0a5_10.01.44.00560_00.jpg            |
 
-| Producto (id)          | Artículo de Schmalz                                              |
-| ---------------------- | ---------------------------------------------------------------- |
-| pinza-vacio-electrica  | ROB-SET ECBPi FAIRINO, 10.03.01.00988 (foto `1f94203893ec_10.03.01.00988_00.jpg`) |
-| adaptador-pinza-vacio  | por confirmar en la web de Schmalz                               |
-| pinza-vacio-230x120    | por confirmar (set de vacío para cobot 230 × 120)                |
-| pinza-vacio-400x280    | por confirmar (set de vacío para cobot 400 × 280)                |
-
-Schmalz también tiene el ROB-SET ECBPMi FAIRINO (10.03.01.00987), que todavía no está en la tienda.
+Originales en `assets-src/fabricantes/schmalz/`. Schmalz también tiene el ROB-SET ECBPi FAIRINO (10.03.01.00988),
+que todavía no está en la tienda.
 
 ## Sin foto de fabricante
 
