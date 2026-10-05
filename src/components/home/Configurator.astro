@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import Icon from '../ui/Icon.astro';
+import SmartImage from '../ui/SmartImage.astro';
 import { site } from '../../data/site';
 import { hero } from '../../data/home';
 import { url, formatNumber, formatPrice } from '../../lib/url';
@@ -85,6 +86,11 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
                     data-name={p.data.name}
                     data-price={priceAttr(p)}
                   />
+                  <span class="opt-img" aria-hidden="true">
+                    <span class="absolute inset-0">
+                      <SmartImage src={p.data.images[0]?.src} alt="" hint={`${p.data.name}, foto oficial`} tone="dark" fit="contain" sizes="(min-width: 1024px) 300px, 45vw" class="p-3 transition-transform duration-500" />
+                    </span>
+                  </span>
                   <span class="font-display text-2xl font-extrabold" style="font-stretch:125%">{p.data.name}</span>
                   <span class="opt-meta">
                     {p.data.payloadKg != null ? `${formatNumber(p.data.payloadKg)} kg` : '[DATO: carga]'}
@@ -95,7 +101,7 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
                 </label>
               ))
             }
-            <label class="opt opt-help">
+            <label class="opt opt-help content-center justify-items-start">
               <input type="radio" name="cobot" value="asesoramiento" class="sr-only" data-name="Necesito asesoramiento para elegir cobot" />
               <Icon name="circle-help" size={22} class="text-signal" />
               <span class="font-semibold">No lo tengo claro</span>
@@ -141,7 +147,11 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
                     data-price={priceAttr(p)}
                     data-compat={p.data.compatibleWith.join(',')}
                   />
-                  <Icon name="cpu" size={24} class="shrink-0 text-signal" />
+                  <span class="opt-thumb" aria-hidden="true">
+                    <span class="absolute inset-0">
+                      <SmartImage src={p.data.images[0]?.src} alt="" hint={p.data.name} tone="dark" fit="contain" sizes="72px" class="p-1.5" />
+                    </span>
+                  </span>
                   <span class="grid">
                     <span class="font-semibold">{p.data.name}</span>
                     <span class="opt-meta">{p.data.group === 'dc' ? 'Corriente continua' : 'Corriente alterna'}</span>
@@ -180,6 +190,11 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
                     data-price={priceAttr(p)}
                   />
                   <span class="check" aria-hidden="true"><Icon name="check" size={14} strokeWidth={3} /></span>
+                  <span class="opt-thumb" aria-hidden="true">
+                    <span class="absolute inset-0">
+                      <SmartImage src={p.data.images[0]?.src} alt="" hint={p.data.name} tone="dark" fit="contain" sizes="72px" class="p-1.5" />
+                    </span>
+                  </span>
                   <span class="grid">
                     <span class="opt-meta uppercase tracking-[0.1em]">{slotLabel}</span>
                     <span class="font-semibold">{p.data.name}</span>
@@ -424,6 +439,36 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
     display: flex;
     align-items: center;
     gap: 0.85rem;
+  }
+  /* Fotos de producto con el mismo fondo que las tarjetas de la tienda: brillo naranja abajo y degradado oscuro. */
+  .opt-img,
+  .opt-thumb {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse at 50% 80%, rgb(255 106 19 / 0.2), transparent 60%),
+      radial-gradient(circle at 50% 40%, #1a110c, #0b0705 75%);
+  }
+  .opt-img {
+    aspect-ratio: 4 / 3;
+    margin: -1rem -1rem 0.6rem;
+    border-radius: 12px 12px 0 0;
+  }
+  .opt-thumb {
+    flex-shrink: 0;
+    width: 72px;
+    height: 56px;
+    border-radius: 10px;
+    border: 1px solid rgb(255 255 255 / 0.08);
+  }
+  .opt:hover .opt-img :global(img) {
+    transform: scale(1.05);
+  }
+  .opt:has(input:checked) .opt-img {
+    background:
+      radial-gradient(ellipse at 50% 80%, rgb(255 106 19 / 0.38), transparent 62%),
+      radial-gradient(circle at 50% 40%, #241509, #0b0705 75%);
   }
   .opt-meta {
     font-family: var(--font-mono);
