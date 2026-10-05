@@ -5,12 +5,14 @@ import { getImage } from 'astro:assets';
 import Icon from '../ui/Icon.astro';
 import { getProducts } from '../../lib/catalog';
 import { applications } from '../../data/applications';
+import { solutions } from '../../data/solutions';
 import { formatEUR } from '../../lib/store';
 import { site } from '../../data/site';
 import { url, formatNumber } from '../../lib/url';
 
 const cobots = await getProducts('cobot');
-const allCount = (await getProducts()).length;
+// Mismo número que la pestaña «Todos» de la tienda: productos más soluciones llave en mano.
+const allCount = (await getProducts()).length + solutions.length;
 const maxPayload = Math.max(...cobots.map((c) => c.data.payloadKg ?? 0));
 const maxReach = Math.max(...cobots.map((c) => c.data.reachMm ?? 0));
 const minReach = Math.min(...cobots.map((c) => c.data.reachMm ?? Infinity));
