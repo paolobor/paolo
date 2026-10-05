@@ -28,6 +28,8 @@ const products = defineCollection({
     repeatabilityMm: z.number().nullable().default(null),
     specs: z.array(spec).default([]),
     applications: z.array(z.string()).default([]),
+    // Categorías de la tienda (src/data/shop.ts). Un accesorio puede estar en varias.
+    shopCategories: z.array(z.string()).default([]),
     compatibleWith: z.array(z.string()).default([]),
     downloads: z
       .array(

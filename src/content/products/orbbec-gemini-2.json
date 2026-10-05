@@ -98,5 +98,8 @@
     "shipping": 0,
     "versions": [],
     "shopifyVariantId": null
-  }
+  },
+  "shopCategories": [
+    "vision"
+  ]
 }

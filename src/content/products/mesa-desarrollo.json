@@ -1,0 +1,40 @@
+{
+  "name": "Mesa de desarrollo para cobots",
+  "category": "accesorio",
+  "group": "montaje",
+  "order": 17,
+  "tagline": "Mesa para montar el cobot y desarrollar aplicaciones.",
+  "description": "Mesa para montar el cobot y desarrollar aplicaciones. Ficha técnica, compatibilidad y precio a consultar. El modelo 3D oficial está en las descargas.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [],
+  "shopCategories": [
+    "montaje"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Modelo 3D",
+      "type": "cad",
+      "href": "https://drive.google.com/file/d/17w_pbDCM3NW2H9LanVmA3IFedRL2_11F/view"
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "https://fairino.es/descargas/",
+    "verified": false
+  },
+  "seo": {}
+}

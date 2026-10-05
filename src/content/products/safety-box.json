@@ -84,5 +84,9 @@
     "shipping": 0,
     "versions": [],
     "shopifyVariantId": null
-  }
+  },
+  "shopCategories": [
+    "accesorios-fairino",
+    "seguridad"
+  ]
 }

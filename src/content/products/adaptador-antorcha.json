@@ -1,0 +1,42 @@
+{
+  "name": "Adaptador de antorcha de soldadura",
+  "category": "accesorio",
+  "group": "montaje",
+  "order": 15,
+  "tagline": "Para fijar la antorcha de soldadura a la brida del cobot.",
+  "description": "Para fijar la antorcha de soldadura a la brida del cobot. Ficha técnica, compatibilidad y precio a consultar. El modelo 3D oficial está en las descargas.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [
+    "soldadura"
+  ],
+  "shopCategories": [
+    "montaje"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Modelo 3D",
+      "type": "cad",
+      "href": "https://drive.google.com/file/d/1JfsfDBko1eBGlK6aGRAUZNMe0Y_5Ibvh/view"
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "https://fairino.es/descargas/",
+    "verified": false
+  },
+  "seo": {}
+}

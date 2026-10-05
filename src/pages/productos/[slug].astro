@@ -241,6 +241,12 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
         <table class="w-full border-collapse text-left">
           <caption class="sr-only">Especificaciones técnicas del {d.name}</caption>
           <tbody>
+            {d.specs.length === 0 && (
+              <tr class="border-b border-line">
+                <th scope="row" class="w-1/2 py-3.5 pr-4 align-top text-[0.95rem] font-medium text-muted">Ficha técnica</th>
+                <td class="py-3.5 align-top"><span class="todo">[DATO: especificaciones del {d.name}]</span></td>
+              </tr>
+            )}
             {
               d.specs.map((s) => (
                 <tr class="border-b border-line">

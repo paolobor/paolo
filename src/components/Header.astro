@@ -21,7 +21,10 @@ const accessoryGroups = [
   { key: 'garra', label: 'Garras' },
   { key: 'fuerza', label: 'Sensores de fuerza' },
   { key: 'control', label: 'Control y seguridad' },
+  { key: 'montaje', label: 'Montaje' },
 ].map((g) => ({ ...g, items: accessories.filter((a) => a.data.group === g.key) }));
+// En el menú, como mucho 4 por grupo; el resto, en la página de accesorios.
+const MENU_MAX = 4;
 ---
 
 <header
@@ -126,9 +129,12 @@ const accessoryGroups = [
             <div>
               <p class="font-mono text-[0.68rem] font-medium uppercase tracking-[0.12em] text-muted">{g.label}</p>
               <ul class="mt-1 grid">
-                {g.items.map((p) => (
+                {g.items.slice(0, MENU_MAX).map((p) => (
                   <li><a href={url(`productos/${p.id}/`)} class="mega-link text-sm">{p.data.name}</a></li>
                 ))}
+                {g.items.length > MENU_MAX && (
+                  <li><a href={url('accesorios/')} class="mega-link text-sm text-brand">+{g.items.length - MENU_MAX} más</a></li>
+                )}
               </ul>
             </div>
           ))}

@@ -1,0 +1,40 @@
+{
+  "name": "Adaptador para doble herramienta",
+  "category": "accesorio",
+  "group": "montaje",
+  "order": 14,
+  "tagline": "Para montar dos herramientas a la vez en la brida del cobot.",
+  "description": "Para montar dos herramientas a la vez en la brida del cobot. Ficha técnica, compatibilidad y precio a consultar. El modelo 3D oficial está en las descargas.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [],
+  "shopCategories": [
+    "montaje"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Modelo 3D",
+      "type": "cad",
+      "href": "https://drive.google.com/file/d/1dF_xw-P9szgAjIL-xykjZmBNXAqfT6MD/view"
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "https://fairino.es/descargas/",
+    "verified": false
+  },
+  "seo": {}
+}

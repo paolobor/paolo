@@ -1,0 +1,43 @@
+{
+  "name": "Pinza eléctrica IR20-80C",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 9,
+  "tagline": "Pinza eléctrica para cobots FAIRINO.",
+  "description": "Pinza eléctrica para cobots FAIRINO. Ficha técnica, compatibilidad y precio a consultar. El modelo 3D oficial está en las descargas.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [
+    "pick-and-place",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "pinzas-electricas"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Modelo 3D",
+      "type": "cad",
+      "href": "https://drive.google.com/file/d/1mP4jf4xXucjDjPpU-6k4oy9dyTpBJ30E/view"
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "https://fairino.es/descargas/",
+    "verified": false
+  },
+  "seo": {}
+}

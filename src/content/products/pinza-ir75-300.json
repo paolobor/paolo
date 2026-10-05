@@ -1,0 +1,43 @@
+{
+  "name": "Pinza eléctrica IR75-300",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 8,
+  "tagline": "Pinza eléctrica para cobots FAIRINO.",
+  "description": "Pinza eléctrica para cobots FAIRINO. Ficha técnica, compatibilidad y precio a consultar. El modelo 3D oficial está en las descargas.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [
+    "pick-and-place",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "pinzas-electricas"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Modelo 3D",
+      "type": "cad",
+      "href": "https://drive.google.com/file/d/1QXpIVGG0A7-EtzvUZ2sh10jupeeump_m/view"
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "https://fairino.es/descargas/",
+    "verified": false
+  },
+  "seo": {}
+}

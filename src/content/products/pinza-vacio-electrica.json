@@ -1,0 +1,44 @@
+{
+  "name": "Pinza de vacío eléctrica",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 10,
+  "tagline": "Pinza de vacío eléctrica para cobots FAIRINO.",
+  "description": "Pinza de vacío eléctrica para cobots FAIRINO. Ficha técnica, compatibilidad y precio a consultar. El modelo 3D oficial está en las descargas.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [
+    "pick-and-place",
+    "paletizado",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "pinzas-vacio"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Modelo 3D",
+      "type": "cad",
+      "href": "https://drive.google.com/file/d/1TdkMi5zoGg2qZw2oeqXw7cI2z4nv0qDM/view"
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "https://fairino.es/descargas/",
+    "verified": false
+  },
+  "seo": {}
+}

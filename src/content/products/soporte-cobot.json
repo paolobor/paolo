@@ -1,0 +1,40 @@
+{
+  "name": "Soporte para cobot",
+  "category": "accesorio",
+  "group": "montaje",
+  "order": 18,
+  "tagline": "Soporte para montar el cobot a la altura de trabajo.",
+  "description": "Soporte para montar el cobot a la altura de trabajo. Ficha técnica, compatibilidad y precio a consultar. El modelo 3D oficial está en las descargas.",
+  "highlights": [],
+  "images": [],
+  "specs": [],
+  "applications": [],
+  "shopCategories": [
+    "montaje"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    },
+    {
+      "label": "Modelo 3D",
+      "type": "cad",
+      "href": "https://drive.google.com/file/d/1tQ20fja1sKcT7yrx_xZ-stC7gVKFE5PX/view"
+    }
+  ],
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "https://fairino.es/descargas/",
+    "verified": false
+  },
+  "seo": {}
+}

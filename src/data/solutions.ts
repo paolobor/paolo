@@ -18,8 +18,9 @@ export const solutions: Solution[] = [
     summary: 'Puesto de soldadura colaborativa listo para producir: cobot, equipo de soldadura, mesa y seguridad.',
     application: 'soldadura',
     includes: null,
-    image: 'products/fr5wml/fairino-fr5wml-escena-soldadura.webp',
-    imagePosition: '60% 50%',
+    // El FR5 negro de FAIRINO España con su equipo de soldadura completo (escena a partir de su foto real).
+    image: 'products/fr5-negro/fairino-fr5-negro-escena-estacion-soldadura.webp',
+    imagePosition: '55% 50%',
     imageHint: 'célula de soldadura FAIRINO montada',
   },
   {

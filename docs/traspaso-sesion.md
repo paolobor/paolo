@@ -67,6 +67,17 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
   - `/aviso-legal/`, `/politica-de-privacidad/`, `/politica-de-cookies/` (`components/legal/`). El titular sale de
     `site.legal` (datos del aviso legal actual de fairino.es) con un aviso `[DATO]` mientras `confirmed` sea `false`.
 
+## Hecho el 5 de octubre
+
+- Escaparate: foco de techo (aro naranja) y cono de luz tenue sobre el robot.
+- FR5 Negro y FR10 Negro: productos propios (renders del modelo oficial con `studio.html?paint=black`).
+- Soldadura: escenas a partir de la foto real del FR5 negro (`assets-src/fotos-reales/`); foto principal de
+  /aplicaciones/soldadura/ y de la célula de soldadura llave en mano.
+- Tienda: la pestaña «Accesorios» se sustituye por tipos de producto (`src/data/shop.ts` y el campo
+  `shopCategories` de cada ficha). Se añadieron 12 accesorios oficiales que fairino.es publica en descargas (solo
+  nombre y modelo 3D, sin foto ni ficha; `source.verified: false`). Las categorías sin productos muestran una
+  tarjeta de consulta. «Soluciones» muestra las 3 células llave en mano.
+
 ## Higgsfield: estado
 
 - Saldo: 891 créditos, plan Plus. nano_banana_2 a 2k = 2 créditos por imagen.

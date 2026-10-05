@@ -4,7 +4,12 @@ import StoreShowroom from '../../components/store/StoreShowroom.astro';
 import StoreCard from '../../components/store/StoreCard.astro';
 import Icon from '../../components/ui/Icon.astro';
 import { getProducts, categoryMeta, type Product } from '../../lib/catalog';
+import SmartImage from '../../components/ui/SmartImage.astro';
+import IllustrativeBadge from '../../components/ui/IllustrativeBadge.astro';
 import { applications } from '../../data/applications';
+import { solutions } from '../../data/solutions';
+import { shopCategories } from '../../data/shop';
+import { isIllustrative } from '../../lib/images';
 import { url } from '../../lib/url';
 
 const products = await getProducts();
@@ -57,14 +62,16 @@ for (const p of products) {
   }
   relations[p.id] = { groups: groups.filter((g) => g.items.length) };
 }
+// Pestañas: cobots y controladores por categoría; los accesorios, por tipo de producto (src/data/shop.ts).
+const catsOf = (p: Product) => [p.data.category, ...p.data.shopCategories];
+const countIn = (key: string) => products.filter((p) => catsOf(p).includes(key)).length + (key === 'soluciones' ? solutions.length : 0);
 const tabs = [
-  { key: 'todos', label: 'Todos', count: products.length },
-  ...(['cobot', 'controlador', 'accesorio'] as const).map((c) => ({
-    key: c,
-    label: categoryMeta[c].label,
-    count: products.filter((p) => p.data.category === c).length,
-  })),
+  { key: 'todos', label: 'Todos', count: products.length + solutions.length },
+  { key: 'cobot', label: categoryMeta.cobot.label, count: countIn('cobot') },
+  { key: 'controlador', label: categoryMeta.controlador.label, count: countIn('controlador') },
+  ...shopCategories.map((c) => ({ key: c.key, label: c.label, count: countIn(c.key) })),
 ];
+const emptyCats = shopCategories.filter((c) => countIn(c.key) === 0);
 ---
 
 <BaseLayout
@@ -77,12 +84,12 @@ const tabs = [
   <script type="application/json" id="shop-relations" set:html={JSON.stringify(relations)} />
   <section id="productos" class="section scroll-mt-20" aria-labelledby="all-title" data-shop>
     <div class="container-x grid gap-8">
-      <div class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+      <div class="grid gap-5">
         <div class="grid gap-3">
           <p class="eyebrow">Tienda</p>
           <h2 id="all-title" class="h-section">Todos los productos</h2>
         </div>
-        <div class="flex flex-wrap gap-2" role="tablist" aria-label="Filtrar por categoría">
+        <div class="shop-tabs -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:flex-wrap md:overflow-visible md:px-0" role="tablist" aria-label="Filtrar por tipo de producto">
           {
             tabs.map((t, i) => (
               <button type="button" role="tab" class="shop-tab" aria-selected={i === 0 ? 'true' : 'false'} data-tab={t.key}>
@@ -110,8 +117,44 @@ const tabs = [
         <ul class="grid grid-cols-2 gap-4 md:grid-cols-3" data-shop-grid>
           {
             products.map((p) => (
-              <li data-cat={p.data.category}>
+              <li data-cats={catsOf(p).join(' ')}>
                 <StoreCard product={p} selectable />
+              </li>
+            ))
+          }
+          {
+            solutions.map((sol) => (
+              <li data-cats="soluciones">
+                <article class="group flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface transition-[border-color] hover:border-signal/40">
+                  <a href={url(`soluciones-llave-en-mano/#${sol.slug}`)} class="relative block aspect-square overflow-hidden" tabindex="-1" aria-hidden="true">
+                    <SmartImage src={sol.image} alt="" hint={sol.imageHint} tone="dark" position={sol.imagePosition} widths={[320, 480, 640]} sizes="(min-width: 1024px) 25vw, 50vw" class="transition-transform duration-500 group-hover:scale-105" />
+                    {sol.image && isIllustrative(sol.image) && <IllustrativeBadge class="bottom-2 right-2 text-[0.5rem]!" />}
+                  </a>
+                  <div class="flex flex-1 flex-col gap-2 p-5">
+                    <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-mist">Llave en mano</p>
+                    <h3 class="font-display text-lg font-bold leading-tight" style="font-stretch:112%">
+                      <a href={url(`soluciones-llave-en-mano/#${sol.slug}`)} class="hover:text-signal">{sol.name}</a>
+                    </h3>
+                    <p class="text-sm text-muted">{sol.summary}</p>
+                    <div class="mt-auto flex items-center justify-between gap-3 pt-3">
+                      <span class="font-mono text-lg">A medida</span>
+                      <a href={url(`contacto/?asunto=presupuesto&producto=${encodeURIComponent(sol.name)}`)} class="btn btn-primary btn-sm">Pedir propuesta</a>
+                    </div>
+                  </div>
+                </article>
+              </li>
+            ))
+          }
+          {
+            emptyCats.map((c) => (
+              <li data-cats={c.key} data-only hidden class="col-span-2 md:col-span-3">
+                <div class="card flex flex-col items-start gap-4 p-6 md:flex-row md:items-center md:justify-between">
+                  <div class="grid gap-1">
+                    <p class="font-display text-lg font-bold" style="font-stretch:112%">{c.label}: bajo pedido</p>
+                    <p class="text-sm text-muted">Todavía no hay referencias publicadas. Cuéntanos qué necesitas y te preparamos opciones de {c.empty} compatibles con tu cobot.</p>
+                  </div>
+                  <a href={url(`contacto/?asunto=presupuesto&producto=${encodeURIComponent(c.label)}`)} class="btn btn-primary btn-sm shrink-0">Consultar</a>
+                </div>
               </li>
             ))
           }
@@ -135,7 +178,12 @@ const tabs = [
 </BaseLayout>
 
 <style>
+  .shop-tabs {
+    scrollbar-width: none;
+  }
   .shop-tab {
+    flex-shrink: 0;
+    white-space: nowrap;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -166,7 +214,7 @@ const tabs = [
   const shop = document.querySelector<HTMLElement>('[data-shop]');
   if (shop) {
     const tabs = [...shop.querySelectorAll<HTMLButtonElement>('[data-tab]')];
-    const items = [...shop.querySelectorAll<HTMLElement>('[data-cat]')];
+    const items = [...shop.querySelectorAll<HTMLElement>('[data-cats]')];
     const reco = shop.querySelector<HTMLElement>('[data-reco]')!;
     const empty = reco.querySelector<HTMLElement>('[data-reco-empty]')!;
     const body = reco.querySelector<HTMLElement>('[data-reco-body]')!;
@@ -179,7 +227,8 @@ const tabs = [
 
     const filter = (key: string) => {
       tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.tab === key)));
-      items.forEach((it) => (it.hidden = key !== 'todos' && it.dataset.cat !== key));
+      // «Todos» no muestra las tarjetas de consulta de las categorías vacías (data-only).
+      items.forEach((it) => (it.hidden = key === 'todos' ? 'only' in it.dataset : !it.dataset.cats!.split(' ').includes(key)));
     };
     tabs.forEach((t) => t.addEventListener('click', () => filter(t.dataset.tab!)));
 

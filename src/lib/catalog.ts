@@ -22,6 +22,7 @@ export const accessoryGroups: Record<string, string> = {
   garra: 'Garras',
   fuerza: 'Sensores de fuerza',
   control: 'Control y seguridad',
+  montaje: 'Montaje',
 };
 
 export const applicationOptions = applications.map((a) => ({ value: a.slug, label: a.name }));
