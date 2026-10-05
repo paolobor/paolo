@@ -64,6 +64,11 @@ for (const p of products) {
 }
 // Pestañas: cobots y controladores por categoría; los accesorios, por tipo de producto (src/data/shop.ts).
 const catsOf = (p: Product) => [p.data.category, ...p.data.shopCategories];
+// Filtro de precio: de 0 al producto más caro. Con todos los precios a 0 el filtro se queda desactivado.
+const priceOf = (p: Product) => p.data.store?.price ?? null;
+const priceMax = Math.ceil(Math.max(0, ...products.map(priceOf).filter((v): v is number => v != null)));
+// Sin precios, el deslizador se pinta desactivado con los tiradores en los extremos (0–1).
+const rangeMax = priceMax || 1;
 const countIn = (key: string) => products.filter((p) => catsOf(p).includes(key)).length + (key === 'soluciones' ? solutions.length : 0);
 const tabs = [
   { key: 'todos', label: 'Todos', count: products.length + solutions.length },
@@ -102,8 +107,42 @@ const emptyCats = shopCategories.filter((c) => countIn(c.key) === 0);
       </div>
 
       <div class="grid items-start gap-6 lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-8">
+        <div class="grid content-start gap-4 lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto">
+        <!-- Filtro de precio -->
+        <div class="card" data-price-filter data-max={priceMax}>
+          <button
+            type="button"
+            class="flex w-full items-center justify-between gap-3 px-5 py-4 text-left font-display text-lg font-bold"
+            style="font-stretch:112%"
+            aria-expanded="true"
+            aria-controls="filtro-precio"
+            data-price-toggle
+          >
+            Precio
+            <Icon name="chevron-down" size={20} class="price-chev transition-transform" />
+          </button>
+          <div id="filtro-precio" class="grid gap-5 px-5 pb-5" data-price-panel>
+            <div class="price-range" style="--lo:0;--hi:1" data-disabled={priceMax === 0 ? '' : undefined}>
+              <input type="range" min="0" max={rangeMax} step="1" value="0" aria-label="Precio mínimo" disabled={priceMax === 0} data-range-min />
+              <input type="range" min="0" max={rangeMax} step="1" value={rangeMax} aria-label="Precio máximo" disabled={priceMax === 0} data-range-max />
+            </div>
+            <div class="flex items-center gap-3">
+              <label class="price-box">
+                <span aria-hidden="true">€</span>
+                <input type="number" inputmode="numeric" min="0" max={priceMax} step="1" value="0" aria-label="Precio desde, en euros" disabled={priceMax === 0} data-num-min />
+              </label>
+              <span class="text-sm text-muted">hasta</span>
+              <label class="price-box">
+                <span aria-hidden="true">€</span>
+                <input type="number" inputmode="numeric" min="0" max={priceMax} step="1" value={priceMax} aria-label="Precio hasta, en euros" disabled={priceMax === 0} data-num-max />
+              </label>
+            </div>
+            {priceMax === 0 && <p class="text-xs"><span class="todo">[DATO: precios de venta]</span> El filtro se activa en cuanto los productos tengan precio.</p>}
+          </div>
+        </div>
+
         <!-- Lo que encaja con el producto elegido -->
-        <aside class="reco card lg:sticky lg:top-24 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto" aria-live="polite" aria-label="Productos que encajan con tu elección" data-reco>
+        <aside class="reco card" aria-live="polite" aria-label="Productos que encajan con tu elección" data-reco>
           <div class="grid gap-3 p-6" data-reco-empty>
             <span class="grid size-11 place-items-center rounded-xl bg-signal/10 text-signal"><Icon name="layers" size={22} /></span>
             <p class="font-display text-lg font-bold" style="font-stretch:112%">Elige un producto</p>
@@ -113,11 +152,12 @@ const emptyCats = shopCategories.filter((c) => countIn(c.key) === 0);
           </div>
           <div class="grid gap-5 p-5" data-reco-body hidden></div>
         </aside>
+        </div>
 
         <ul class="grid grid-cols-2 gap-4 md:grid-cols-3" data-shop-grid>
           {
             products.map((p) => (
-              <li data-cats={catsOf(p).join(' ')}>
+              <li data-cats={catsOf(p).join(' ')} data-price={priceOf(p) ?? undefined}>
                 <StoreCard product={p} selectable />
               </li>
             ))
@@ -145,6 +185,12 @@ const emptyCats = shopCategories.filter((c) => countIn(c.key) === 0);
               </li>
             ))
           }
+          <li class="col-span-2 md:col-span-3" data-no-results hidden>
+            <div class="card flex flex-wrap items-center justify-between gap-3 p-6">
+              <p class="text-sm text-muted">No hay productos de esta categoría en ese rango de precio.</p>
+              <button type="button" class="btn btn-ghost btn-sm" data-price-reset>Quitar el filtro de precio</button>
+            </div>
+          </li>
           {
             emptyCats.map((c) => (
               <li data-cats={c.key} data-only hidden class="col-span-2 md:col-span-3">
@@ -205,6 +251,120 @@ const emptyCats = shopCategories.filter((c) => countIn(c.key) === 0);
     border-color: var(--color-signal);
     color: var(--color-ink);
   }
+  [data-price-toggle][aria-expanded='true'] :global(.price-chev) {
+    transform: rotate(180deg);
+  }
+  /* Deslizador de dos tiradores: dos range superpuestos; la barra naranja marca el tramo elegido. */
+  .price-range {
+    --thumb: 20px;
+    position: relative;
+    height: 24px;
+  }
+  .price-range::before,
+  .price-range::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    height: 4px;
+    border-radius: 2px;
+    transform: translateY(-50%);
+  }
+  .price-range::before {
+    inset-inline: 0;
+    background: var(--color-line);
+  }
+  .price-range::after {
+    left: calc(var(--thumb) / 2 + (100% - var(--thumb)) * var(--lo));
+    right: calc(var(--thumb) / 2 + (100% - var(--thumb)) * (1 - var(--hi)));
+    background: var(--color-signal);
+  }
+  .price-range[data-disabled] {
+    opacity: 0.45;
+  }
+  .price-range input {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    background: none;
+    pointer-events: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+  .price-range input::-webkit-slider-runnable-track {
+    background: none;
+    border: 0;
+  }
+  .price-range input::-moz-range-track {
+    background: none;
+    border: 0;
+  }
+  .price-range input::-webkit-slider-thumb {
+    pointer-events: auto;
+    -webkit-appearance: none;
+    width: var(--thumb);
+    height: var(--thumb);
+    border-radius: 50%;
+    border: 2px solid var(--color-text);
+    background: var(--color-ink);
+    cursor: grab;
+  }
+  .price-range input::-moz-range-thumb {
+    pointer-events: auto;
+    width: var(--thumb);
+    height: var(--thumb);
+    border-radius: 50%;
+    border: 2px solid var(--color-text);
+    background: var(--color-ink);
+    cursor: grab;
+  }
+  .price-range input:disabled::-webkit-slider-thumb {
+    cursor: not-allowed;
+  }
+  .price-range input:focus-visible::-webkit-slider-thumb {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-signal) 45%, transparent);
+  }
+  .price-range input:focus-visible::-moz-range-thumb {
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--color-signal) 45%, transparent);
+  }
+  .price-box {
+    display: flex;
+    flex: 1;
+    min-width: 0;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface-2);
+    padding: 0.6rem 1rem;
+    color: var(--color-mist);
+    transition: border-color 0.2s;
+  }
+  .price-box:focus-within {
+    border-color: var(--color-signal);
+  }
+  .price-box input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    background: none;
+    text-align: right;
+    font-family: var(--font-mono);
+    color: var(--color-text);
+    outline: none;
+    appearance: textfield;
+    -moz-appearance: textfield;
+  }
+  .price-box input::-webkit-outer-spin-button,
+  .price-box input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .price-box input:disabled {
+    color: var(--color-muted);
+  }
 </style>
 
 <script>
@@ -225,10 +385,71 @@ const emptyCats = shopCategories.filter((c) => countIn(c.key) === 0);
     const fmt = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
     const price = (id: string) => (data[id]?.price != null ? fmt.format(data[id].price!) : 'Consultar');
 
+    // Filtros: pestaña de categoría + rango de precio. Lo que no tiene precio (soluciones a medida) solo se ve con el
+    // rango completo; las tarjetas de consulta de categorías vacías (data-only) no dependen del precio.
+    const pf = shop.querySelector<HTMLElement>('[data-price-filter]');
+    const max = Number(pf?.dataset.max || 0);
+    const rMin = pf?.querySelector<HTMLInputElement>('[data-range-min]');
+    const rMax = pf?.querySelector<HTMLInputElement>('[data-range-max]');
+    const nMin = pf?.querySelector<HTMLInputElement>('[data-num-min]');
+    const nMax = pf?.querySelector<HTMLInputElement>('[data-num-max]');
+    const noResults = shop.querySelector<HTMLElement>('[data-no-results]');
+    let tab = 'todos';
+    let lo = 0;
+    let hi = max;
+
+    const apply = () => {
+      const full = lo <= 0 && hi >= max;
+      let shown = 0;
+      items.forEach((it) => {
+        const only = 'only' in it.dataset;
+        // «Todos» no muestra las tarjetas de consulta de las categorías vacías.
+        const inTab = tab === 'todos' ? !only : it.dataset.cats!.split(' ').includes(tab);
+        const p = it.dataset.price;
+        const inPrice = full || only || (p !== undefined && Number(p) >= lo && Number(p) <= hi);
+        it.hidden = !(inTab && inPrice);
+        if (!it.hidden) shown++;
+      });
+      if (noResults) noResults.hidden = shown > 0;
+    };
+
+    const setRange = (a: number, b: number) => {
+      const clamp = (v: number) => Math.min(max, Math.max(0, Math.round(Number.isFinite(v) ? v : 0)));
+      lo = clamp(a);
+      hi = clamp(b);
+      if (lo > hi) [lo, hi] = [hi, lo];
+      if (rMin) rMin.value = String(lo);
+      if (rMax) rMax.value = String(hi);
+      if (nMin) nMin.value = String(lo);
+      if (nMax) nMax.value = String(hi);
+      const range = pf?.querySelector<HTMLElement>('.price-range');
+      range?.style.setProperty('--lo', String(max ? lo / max : 0));
+      range?.style.setProperty('--hi', String(max ? hi / max : 1));
+      // Con los dos tiradores juntos al final, el de mínimo tiene que quedar encima para poder moverlo.
+      if (rMin) rMin.style.zIndex = lo >= max ? '2' : '';
+      apply();
+    };
+
+    rMin?.addEventListener('input', () => setRange(Math.min(Number(rMin.value), hi), hi));
+    rMax?.addEventListener('input', () => setRange(lo, Math.max(Number(rMax.value), lo)));
+    nMin?.addEventListener('change', () => setRange(Number(nMin.value), hi));
+    nMax?.addEventListener('change', () => setRange(lo, Number(nMax.value)));
+    shop.querySelector('[data-price-reset]')?.addEventListener('click', () => setRange(0, max));
+
+    const toggle = pf?.querySelector<HTMLButtonElement>('[data-price-toggle]');
+    const panel = pf?.querySelector<HTMLElement>('[data-price-panel]');
+    const setOpen = (open: boolean) => {
+      toggle?.setAttribute('aria-expanded', String(open));
+      if (panel) panel.hidden = !open;
+    };
+    toggle?.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+    // En móvil y tableta el filtro empieza plegado para no empujar los productos hacia abajo.
+    if (window.matchMedia('(max-width: 1023px)').matches) setOpen(false);
+
     const filter = (key: string) => {
+      tab = key;
       tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.tab === key)));
-      // «Todos» no muestra las tarjetas de consulta de las categorías vacías (data-only).
-      items.forEach((it) => (it.hidden = key === 'todos' ? 'only' in it.dataset : !it.dataset.cats!.split(' ').includes(key)));
+      apply();
     };
     tabs.forEach((t) => t.addEventListener('click', () => filter(t.dataset.tab!)));
 

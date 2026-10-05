@@ -4,16 +4,56 @@
   "category": "accesorio",
   "group": "garra",
   "order": 25,
-  "tagline": "Pinza de dedos flexibles en disposición céntrica.",
-  "description": "Pinza de dedos flexibles en disposición céntrica. Ficha técnica, compatibilidad y precio a consultar.",
-  "highlights": [],
+  "tagline": "Pinza de dedos de silicona que cierra hacia el centro, ideal para piezas redondas.",
+  "description": "Versión céntrica de la pinza flexible de Soft Gripping: los dedos neumáticos de silicona se cierran hacia el centro y abrazan piezas redondas como fruta, tapones o envases sin marcarlas. Se monta en el cobot con el adaptador de brida correspondiente.",
+  "highlights": [
+    "Dedos que abrazan la pieza sin dañarla",
+    "Base céntrica para objetos redondos",
+    "Silicona apta para alimentos y diseño higiénico"
+  ],
   "images": [
     {
       "src": "../../assets/products/softgripper-centric-finger/softgripper-centric-finger-oficial.png",
       "alt": "Pinza flexible céntrica SoftGripper, foto oficial de Soft Gripping"
     }
   ],
-  "specs": [],
+  "specs": [
+    {
+      "label": "Material de los dedos",
+      "value": "Silicona apta para alimentos (FDA)"
+    },
+    {
+      "label": "Accionamiento",
+      "value": "Neumático: presión para cerrar, vacío para abrir"
+    },
+    {
+      "label": "Presión de trabajo",
+      "value": "−0,3 a 1,0",
+      "unit": "bar"
+    },
+    {
+      "label": "Fuerza de agarre por dedo",
+      "value": "5",
+      "unit": "N"
+    },
+    {
+      "label": "Peso de producto (dedo ClassicFinger)",
+      "value": "hasta 1",
+      "unit": "kg"
+    },
+    {
+      "label": "Base",
+      "value": "Céntrica, para objetos redondos"
+    },
+    {
+      "label": "Montaje",
+      "value": "Adaptador intercambiable para la brida del robot"
+    },
+    {
+      "label": "Limpieza",
+      "value": "Diseño higiénico; recubrimiento FDA opcional en la base"
+    }
+  ],
   "applications": [
     "pick-and-place",
     "manipulacion"
@@ -24,9 +64,14 @@
   "compatibleWith": [],
   "downloads": [
     {
-      "label": "Ficha técnica",
+      "label": "Manual de SoftGripper y SoftActuator (inglés)",
+      "type": "manual",
+      "href": "https://soft-gripping.com/assets/downloads/instructions/SG.IN.AN_Operating_instructions.pdf"
+    },
+    {
+      "label": "Catálogo Soft Gripping (inglés)",
       "type": "ficha",
-      "href": null
+      "href": "https://soft-gripping.com/assets/downloads/SoftGripping_Catalogue.pdf"
     }
   ],
   "store": {
@@ -37,8 +82,8 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": null,
-    "verified": false
+    "url": "https://soft-gripping.com/softgripper/",
+    "verified": true
   },
   "seo": {}
 }

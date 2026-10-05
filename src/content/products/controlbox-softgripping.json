@@ -4,16 +4,53 @@
   "category": "accesorio",
   "group": "garra",
   "order": 27,
-  "tagline": "Caja de control para las pinzas flexibles SoftGripping.",
-  "description": "Caja de control para las pinzas flexibles SoftGripping. Ficha técnica, compatibilidad y precio a consultar.",
-  "highlights": [],
+  "tagline": "Caja de control con bomba integrada para mover las pinzas flexibles desde el cobot.",
+  "description": "Controlbox P de Soft Gripping (SoftGripping Pump): lleva la bomba dentro, así que no hace falta red de aire comprimido. Se maneja con tres señales digitales del cobot para cerrar, soltar o dejar relajados los dedos, y la presión se ajusta con el regulador del frontal.",
+  "highlights": [
+    "Bomba integrada: sin aire comprimido",
+    "Tres señales digitales de 24 V desde el cobot",
+    "Indicador y regulador de presión en el frontal"
+  ],
   "images": [
     {
       "src": "../../assets/products/controlbox-softgripping/controlbox-softgripping-oficial.png",
       "alt": "Caja de control Controlbox P, foto oficial de Soft Gripping"
     }
   ],
-  "specs": [],
+  "specs": [
+    {
+      "label": "Referencia",
+      "value": "SG.BP.1P.C1 (SoftGripping Pump)"
+    },
+    {
+      "label": "Presión de salida",
+      "value": "−0,5 a 2,0 bar (de fábrica, 1 bar)"
+    },
+    {
+      "label": "Salida neumática",
+      "value": "1 tubo de 6 mm"
+    },
+    {
+      "label": "Señales",
+      "value": "3 entradas digitales de 21,6 a 26,4 V DC, 500 mA"
+    },
+    {
+      "label": "Conector",
+      "value": "M12 de 8 pines (IEC 61076-2-101)"
+    },
+    {
+      "label": "Posiciones de los dedos",
+      "value": "Cerrar, soltar y relajar"
+    },
+    {
+      "label": "Temperatura ambiente",
+      "value": "0 a 50 °C"
+    },
+    {
+      "label": "Uso",
+      "value": "En interior"
+    }
+  ],
   "applications": [
     "pick-and-place",
     "manipulacion"
@@ -24,9 +61,14 @@
   "compatibleWith": [],
   "downloads": [
     {
-      "label": "Ficha técnica",
+      "label": "Manual de las Controlbox (inglés)",
+      "type": "manual",
+      "href": "https://soft-gripping.com/assets/downloads/instructions/OI_SoftGripping_ControlBox.pdf"
+    },
+    {
+      "label": "Catálogo Soft Gripping (inglés)",
       "type": "ficha",
-      "href": null
+      "href": "https://soft-gripping.com/assets/downloads/SoftGripping_Catalogue.pdf"
     }
   ],
   "store": {
@@ -37,8 +79,8 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": null,
-    "verified": false
+    "url": "https://soft-gripping.com/discover/pneumatics/",
+    "verified": true
   },
   "seo": {}
 }

@@ -4,16 +4,56 @@
   "category": "accesorio",
   "group": "garra",
   "order": 26,
-  "tagline": "Dedos flexibles céntricos sobre perfiles ajustables.",
-  "description": "Dedos flexibles céntricos sobre perfiles ajustables. Ficha técnica, compatibilidad y precio a consultar.",
-  "highlights": [],
+  "tagline": "Dedos de silicona sueltos para montar tu propia pinza sobre placas o perfiles.",
+  "description": "Con los SoftActuator de Soft Gripping montas la pinza a medida: los dedos neumáticos se atornillan a las placas de brazos de Soft Gripping o a tus propios perfiles de aluminio y se pueden mover cuando cambia el producto. En la foto, una pinza céntrica de 4 dedos sobre placa de 4 brazos.",
+  "highlights": [
+    "Posición y número de dedos ajustables",
+    "Placas de 2 a 8 brazos o perfiles propios",
+    "Ideal para líneas con cambios de producto frecuentes"
+  ],
   "images": [
     {
       "src": "../../assets/products/softactuator-centric-finger/softactuator-centric-finger-oficial.png",
       "alt": "Actuador flexible céntrico SoftActuator, foto oficial de Soft Gripping"
     }
   ],
-  "specs": [],
+  "specs": [
+    {
+      "label": "Material de los dedos",
+      "value": "Silicona apta para alimentos (FDA)"
+    },
+    {
+      "label": "Accionamiento",
+      "value": "Neumático: presión para cerrar, vacío para abrir"
+    },
+    {
+      "label": "Presión de trabajo",
+      "value": "−0,3 a 1,0",
+      "unit": "bar"
+    },
+    {
+      "label": "Fuerza de agarre por dedo",
+      "value": "5",
+      "unit": "N"
+    },
+    {
+      "label": "Peso de producto (dedo ClassicFinger)",
+      "value": "hasta 1",
+      "unit": "kg"
+    },
+    {
+      "label": "Actuadores",
+      "value": "De 1, 2 y 3 dedos (40, 100 y 120 g)"
+    },
+    {
+      "label": "Placas de montaje",
+      "value": "De 2, 3, 4, 6 y 8 brazos"
+    },
+    {
+      "label": "Montaje",
+      "value": "Sobre placas SoftGripping o perfiles de aluminio propios"
+    }
+  ],
   "applications": [
     "pick-and-place",
     "manipulacion"
@@ -24,9 +64,14 @@
   "compatibleWith": [],
   "downloads": [
     {
-      "label": "Ficha técnica",
+      "label": "Manual de SoftGripper y SoftActuator (inglés)",
+      "type": "manual",
+      "href": "https://soft-gripping.com/assets/downloads/instructions/SG.IN.AN_Operating_instructions.pdf"
+    },
+    {
+      "label": "Catálogo Soft Gripping (inglés)",
       "type": "ficha",
-      "href": null
+      "href": "https://soft-gripping.com/assets/downloads/SoftGripping_Catalogue.pdf"
     }
   ],
   "store": {
@@ -37,8 +82,8 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": null,
-    "verified": false
+    "url": "https://soft-gripping.com/softactuator/",
+    "verified": true
   },
   "seo": {}
 }
