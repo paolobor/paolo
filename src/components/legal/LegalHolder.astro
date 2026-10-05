@@ -20,5 +20,5 @@ const a = site.address;
   <dt>Teléfono</dt>
   <dd>{l.phone}</dd>
   <dt>Instalaciones</dt>
-  <dd>{site.legalName}, {a.street}, {a.postalCode} {a.city} ({a.region})</dd>
+  <dd>{site.legalName}, {a.street ?? <span class="todo">[DATO: calle y número]</span>}, {a.postalCode} {a.city} ({a.region})</dd>
 </dl>

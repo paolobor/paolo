@@ -5,7 +5,7 @@ export function organizationSchema(siteUrl: URL) {
   const id = new URL('#organization', siteUrl).toString();
   const address = {
     '@type': 'PostalAddress',
-    streetAddress: site.address.street,
+    ...(site.address.street ? { streetAddress: site.address.street } : {}),
     postalCode: site.address.postalCode,
     addressLocality: site.address.city,
     addressRegion: site.address.region,

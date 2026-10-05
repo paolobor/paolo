@@ -22,7 +22,7 @@ const columns = [
       <address class="grid gap-3 not-italic text-[0.95rem]">
         <a href={site.address.mapsUrl} target="_blank" rel="noopener" class="inline-flex gap-2.5 hover:text-white">
           <Icon name="map-pin" size={19} class="mt-0.5 shrink-0 text-signal" />
-          <span>{site.address.street}<br />{site.address.postalCode} {site.address.city}, {site.address.region}</span>
+          <span>{site.address.street ?? <span class="todo">[DATO: calle y número]</span>}<br />{site.address.postalCode} {site.address.city}, {site.address.region}</span>
         </a>
         {site.contacts.map((c) => (
           <div class="flex flex-wrap gap-x-5 gap-y-1">

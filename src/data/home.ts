@@ -45,7 +45,7 @@ export const valueCards = [
   {
     icon: 'map-pin',
     title: 'Visítanos en Toledo',
-    text: 'Ven a Villaluenga de la Sagra y mira los cobots FAIRINO funcionando antes de decidir.',
+    text: 'Ven a Yuncler (Toledo) y mira los cobots FAIRINO funcionando antes de decidir.',
     cta: { label: 'Reservar visita', href: 'reservar-cita/' },
   },
   {
@@ -90,5 +90,5 @@ export const testimonial = {
 
 export const contactBand = {
   image: null as string | null,
-  imageHint: 'instalaciones de FAIRINO España en Villaluenga de la Sagra',
+  imageHint: 'instalaciones de FAIRINO España en Yuncler (Toledo)',
 };

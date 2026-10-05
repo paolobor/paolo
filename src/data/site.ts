@@ -12,15 +12,15 @@ export const site = {
   // Logo oficial: cuando tengamos el SVG, guardarlo en /public/brand/ y poner aquí la ruta (p. ej. 'brand/logo-fairino.svg').
   logo: null as string | null,
 
+  // Instalaciones en Yuncler (Toledo), confirmado por FAIRINO España. Falta la calle: null → [DATO: calle y número].
   address: {
-    street: 'Avenida de la Estación, 12',
-    postalCode: '45520',
-    city: 'Villaluenga de la Sagra',
+    street: null as string | null,
+    postalCode: '45529',
+    city: 'Yuncler',
     region: 'Toledo',
     country: 'España',
     countryCode: 'ES',
-    mapsUrl:
-      'https://www.google.com/maps/search/?api=1&query=Avenida+de+la+Estaci%C3%B3n+12+45520+Villaluenga+de+la+Sagra+Toledo',
+    mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Yuncler+45529+Toledo',
   },
 
   // Titular del sitio para el aviso legal y la privacidad. Datos tomados del aviso legal actual de fairino.es,

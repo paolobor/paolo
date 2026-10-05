@@ -18,7 +18,7 @@ const steps = [
 
 <BaseLayout
   title="Reservar cita"
-  description="Reserva una visita a las instalaciones de FAIRINO España en Villaluenga de la Sagra (Toledo) o una videollamada con nuestro equipo."
+  description="Reserva una visita a las instalaciones de FAIRINO España en Yuncler (Toledo) o una videollamada con nuestro equipo."
 >
   <PageHero
     crumbs={[{ label: 'Reservar cita' }]}
@@ -85,7 +85,7 @@ const steps = [
         </div>
         <div class="card grid gap-3 p-6">
           <h2 class="flex items-center gap-2 font-display text-lg font-bold" style="font-stretch:112%"><Icon name="map-pin" size={20} class="text-signal" />Instalaciones</h2>
-          <p class="text-mist">{site.address.street}<br />{site.address.postalCode} {site.address.city} ({site.address.region})</p>
+          <p class="text-mist">{site.address.street ?? <span class="todo">[DATO: calle y número]</span>}<br />{site.address.postalCode} {site.address.city} ({site.address.region})</p>
           <a href={site.address.mapsUrl} target="_blank" rel="noopener" class="link-arrow text-sm">Cómo llegar <Icon name="arrow-up-right" size={16} /></a>
           <p class="text-sm text-muted">¿Prefieres llamar? <a href={`tel:${site.contacts[0].tel}`} class="font-mono text-white hover:text-brand">{site.contacts[0].phone}</a></p>
         </div>

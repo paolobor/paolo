@@ -19,7 +19,7 @@ const a = site.address;
 
 <BaseLayout
   title="Contacto"
-  description={`Contacta con FAIRINO España: ${site.contacts[0].phone}, ${site.contacts[0].email}. ${a.street}, ${a.postalCode} ${a.city} (${a.region}).`}
+  description={`Contacta con FAIRINO España: ${site.contacts[0].phone}, ${site.contacts[0].email}. ${a.street ? `${a.street}, ` : ''}${a.postalCode} ${a.city} (${a.region}).`}
   jsonLd={organizationSchema(Astro.site!)}
 >
   <PageHero
@@ -60,7 +60,7 @@ const a = site.address;
           <h2 class="flex items-center gap-2 font-display text-lg font-bold" style="font-stretch:112%"><Icon name="map-pin" size={20} class="text-signal" />Dónde estamos</h2>
           <address class="not-italic leading-relaxed text-mist">
             {site.legalName}<br />
-            {a.street}<br />
+            {a.street ?? <span class="todo">[DATO: calle y número]</span>}<br />
             {a.postalCode} {a.city}<br />
             {a.region} ({a.country})
           </address>

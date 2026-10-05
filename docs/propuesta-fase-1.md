@@ -85,7 +85,7 @@ Nota: Inlux Robotics también distribuye FAIRINO en Europa. Vendemos el mismo pr
 | 11 | Llave en mano | Tarjetas tipo producto | Célula de soldadura, célula de paletizado… [placeholders] |
 | 12 | Por qué FAIRINO | 6 características | Copy comercial reescrito |
 | 13 | Noticias | 3 últimas del blog | Desde la colección del blog |
-| 14 | Contacto final | Banda con foto | [FOTO: instalaciones Villaluenga de la Sagra] · dudas / cita / presupuesto |
+| 14 | Contacto final | Banda con foto | [FOTO: instalaciones de Yuncler (Toledo)] · dudas / cita / presupuesto |
 | 15 | Footer | 4 columnas + newsletter | Enlaces, contacto, redes, legales |
 | + | WhatsApp | Botón flotante | Todas las páginas |
 
