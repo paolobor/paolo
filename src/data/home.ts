@@ -78,8 +78,8 @@ export const advice = {
   title: 'Asesoramiento gratuito, sin compromiso',
   text: 'Cuéntanos qué quieres automatizar y te decimos con franqueza si un cobot es la solución, qué modelo encaja y qué necesitas alrededor. Si quieres, lo vemos en persona en nuestras instalaciones.',
   points: ['Análisis de tu aplicación', 'Demostración en nuestras instalaciones', 'Propuesta detallada, sin compromiso'],
-  image: null as string | null,
-  imageHint: 'ingeniero de FAIRINO España explicando un cobot a un cliente en el showroom',
+  image: 'home/showroom-yuncler.jpg' as string | null,
+  imageHint: 'Showroom de FAIRINO España en Yuncler (Toledo), con cobots FAIRINO en sus puestos de prueba',
 };
 
 export const testimonial = {
@@ -92,7 +92,7 @@ export const testimonial = {
 };
 
 export const contactBand = {
-  image: null as string | null,
+  image: 'home/showroom-yuncler.jpg' as string | null,
   imageHint: 'instalaciones de FAIRINO España en Yuncler (Toledo)',
 };
 

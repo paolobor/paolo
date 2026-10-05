@@ -37,10 +37,11 @@ const {
 } = Astro.props;
 
 const image = typeof src === 'string' || src == null ? findImage(src as string | null) : src;
-// Escenas generadas: anchos fijos y solo WebP (ver SCENE_WIDTHS).
+// Escenas generadas: anchos fijos (ver SCENE_WIDTHS). Todo sale solo en WebP, que leen todos los navegadores
+// actuales: así cada foto genera pocos archivos.
 const scene = !!image && /fairino-[a-z0-9-]+-escena-/.test(image.src);
 const cutout = !!image && isCutout(image.src);
-const webpOnly = scene || cutout;
+const webpOnly = true;
 const wanted = scene ? SCENE_WIDTHS : cutout ? CUTOUT_WIDTHS : widths;
 const validWidths = image ? wanted.filter((w) => w <= image.width).concat(wanted.some((w) => w > image.width) ? [image.width] : []) : [];
 ---
