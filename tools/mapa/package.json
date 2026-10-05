@@ -1,0 +1,12 @@
+{
+  "name": "fairino-mapa-red",
+  "private": true,
+  "description": "Genera el mapa nocturno de la red de colaboradores (ver generar-mapa.mjs)",
+  "type": "module",
+  "dependencies": {
+    "d3-geo": "^3.1.1",
+    "es-atlas": "^0.6.0",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2"
+  }
+}

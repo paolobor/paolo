@@ -1,26 +1,107 @@
 ---
 import { Image } from 'astro:assets';
 import Icon from '../ui/Icon.astro';
-import { partners } from '../../data/partners';
+import { partners, hq } from '../../data/partners';
+import mapa from '../../data/mapa-espana.json';
+import mapaImg from '../../assets/images/mapa/espana-noche.webp';
 import { findImage } from '../../lib/images';
 import { url } from '../../lib/url';
 
 const items = partners.map((p) => ({ ...p, img: findImage(`partners/${p.slug}.png`) }));
+
+// Mapa de la red, como en el vídeo de FDI: líneas desde la sede de Yuncler hasta cada colaborador y un
+// recorrido que va mostrando uno a uno. La imagen la genera tools/mapa/generar-mapa.mjs (Mercator) y aquí
+// se colocan encima los puntos con la misma proyección.
+const { width: W, height: H, scale: k, translate: [tx, ty] } = mapa;
+const project = (lon: number, lat: number) => {
+  const l = (lon * Math.PI) / 180;
+  const f = (lat * Math.PI) / 180;
+  return [tx + k * l, ty - k * Math.log(Math.tan(Math.PI / 4 + f / 2))] as const;
+};
+const pct = (x: number, y: number) => `left:${((x / W) * 100).toFixed(2)}%;top:${((y / H) * 100).toFixed(2)}%`;
+const [hx, hy] = project(hq.lon, hq.lat);
+const pins = items.map((p, i) => {
+  const [x, y] = project(p.lon, p.lat);
+  // Curva suave de la sede al colaborador, siempre combada hacia arriba.
+  const dx = x - hx;
+  const dy = y - hy;
+  const len = Math.hypot(dx, dy) || 1;
+  let [nx, ny] = [-dy / len, dx / len];
+  if (ny > 0) [nx, ny] = [-nx, -ny];
+  const bend = Math.min(90, len * 0.28);
+  const cx = (hx + x) / 2 + nx * bend;
+  const cy = (hy + y) / 2 + ny * bend;
+  return {
+    ...p,
+    i,
+    style: pct(x, y),
+    d: `M${hx.toFixed(1)} ${hy.toFixed(1)} Q${cx.toFixed(1)} ${cy.toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)}`,
+    side: y / H < 0.33 ? 'below' : 'above',
+    align: x / W > 0.76 ? 'right' : x / W < 0.24 ? 'left' : 'center',
+  };
+});
 ---
 
-<section class="py-14 md:py-20" aria-labelledby="logos-title">
-  <div class="container-x grid justify-items-center gap-3 text-center">
+<section class="net relative isolate overflow-hidden py-14 md:py-20" aria-labelledby="logos-title" data-net>
+  <div class="container-x relative z-10 grid justify-items-center gap-3 text-center">
     <p class="eyebrow">Red de colaboradores</p>
     <h2 id="logos-title" class="font-display text-2xl font-extrabold leading-tight md:text-3xl" style="font-stretch:112%">
       {partners.length} partners de FAIRINO Spain en toda España
     </h2>
+    <p class="max-w-2xl text-sm text-mist md:text-base">Integradores que ya trabajan con FAIRINO, de Galicia a Cataluña y de Navarra a Andalucía.</p>
   </div>
-  <div class="marquee group mt-10 overflow-hidden py-3" data-marquee>
+
+  <!-- Mapa de fondo (decorativo: la lista de colaboradores está en las fichas de debajo) -->
+  <div class="net-map relative z-0 mx-auto -mt-4 w-full max-w-[1000px] px-2 md:-mt-10" aria-hidden="true">
+    <div class="net-canvas relative" style={`aspect-ratio:${W} / ${H}`}>
+      <Image src={mapaImg} alt="" widths={[700, 1000, 1400, 2000]} sizes="(max-width: 1000px) 100vw, 1000px" loading="lazy" class="absolute inset-0 h-full w-full" />
+      <svg class="absolute inset-0 h-full w-full overflow-visible" viewBox={`0 0 ${W} ${H}`} fill="none">
+        <defs>
+          <linearGradient id="net-arc" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2={W} y2="0">
+            <stop offset="0" stop-color="#ffb36b" />
+            <stop offset="1" stop-color="#ff6a13" />
+          </linearGradient>
+        </defs>
+        {pins.map((p) => <path class="net-arc" data-arc={p.slug} d={p.d} pathLength="100" style={`--i:${p.i}`} />)}
+        {pins.map((p) => <path class="net-run" d={p.d} pathLength="100" style={`--i:${p.i}`} />)}
+      </svg>
+
+      <div class="net-hq" style={pct(hx, hy)}>
+        <span class="net-hq-dot"></span>
+        <span class="net-hq-label"><b>{hq.name}</b>Sede · {hq.place}</span>
+      </div>
+
+      {
+        pins.map((p) => (
+          <div class="net-pin" data-pin={p.slug} data-side={p.side} data-align={p.align} style={`${p.style};--i:${p.i}`}>
+            <span class="net-pin-dot" />
+            <div class="net-card">
+              <div class="net-card-logo">{p.img && <Image src={p.img} alt="" width={p.img.width} height={p.img.height} format="webp" loading="lazy" />}</div>
+              <div class="net-card-cap">
+                <span class="net-card-n">{p.n}</span>
+                <span class="grid min-w-0">
+                  <span class="net-card-name">{p.name}</span>
+                  <span class="net-card-place">{p.place}</span>
+                </span>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+
+      <p class="net-legend">
+        <span><i class="net-legend-hq"></i>Sede FAIRINO Spain</span>
+        <span><i class="net-legend-pin"></i>Partner</span>
+      </p>
+    </div>
+  </div>
+
+  <div class="marquee group relative z-10 -mt-[16%] overflow-hidden py-3 md:-mt-36" data-marquee>
     <ul class="marquee-track flex w-max items-stretch gap-5 group-hover:[animation-play-state:paused]">
       {
         [...items, ...items].map((p, i) => (
           <li class="shrink-0" aria-hidden={i >= items.length ? 'true' : undefined}>
-            <figure class="partner">
+            <figure class="partner" data-partner={p.slug}>
               <div class="partner-logo">
                 {p.img && <Image src={p.img} alt={`Logo de ${p.name}`} width={p.img.width} height={p.img.height} format="webp" loading="lazy" />}
               </div>
@@ -37,15 +118,317 @@ const items = partners.map((p) => ({ ...p, img: findImage(`partners/${p.slug}.pn
       }
     </ul>
   </div>
-  <div class="container-x mt-8 flex justify-center">
+  <div class="container-x relative z-10 mt-8 flex justify-center">
     <a href={url('contacto/?asunto=distribucion')} class="group inline-flex items-center gap-2 text-sm font-semibold text-mist transition-colors hover:text-signal">
       ¿Integras automatización? Únete a nuestra red de colaboradores
       <Icon name="arrow-right" size={16} class="transition-transform group-hover:translate-x-0.5" />
     </a>
   </div>
+  <p class="container-x relative z-10 mt-6 text-center font-mono text-[0.6rem] tracking-[0.08em] text-muted">
+    Mapa: límites de España © Instituto Geográfico Nacional (CC BY 4.0) · países vecinos de Natural Earth
+  </p>
 </section>
 
 <style>
+  /* ---------- Mapa ---------- */
+  .net-map {
+    /* Se funde con el fondo por arriba, por abajo (donde entran las fichas) y por los lados. */
+    mask-image:
+      linear-gradient(to bottom, transparent, #000 9%, #000 78%, transparent 97%),
+      linear-gradient(to right, transparent, #000 4%, #000 96%, transparent);
+    mask-composite: intersect;
+    -webkit-mask-composite: source-in;
+  }
+  .net-arc {
+    stroke: url(#net-arc);
+    stroke-width: 1.3;
+    stroke-linecap: round;
+    stroke-opacity: 0.45;
+    stroke-dasharray: 100;
+    stroke-dashoffset: 100;
+    transition:
+      stroke-dashoffset 1.1s var(--ease-out-soft) calc(var(--i) * 110ms),
+      stroke-opacity 0.4s,
+      stroke-width 0.4s;
+  }
+  .net.is-in .net-arc {
+    stroke-dashoffset: 0;
+  }
+  .net-arc.is-active {
+    stroke-opacity: 1;
+    stroke-width: 2.4;
+  }
+  /* Destello que viaja por cada línea, de la sede al colaborador. */
+  .net-run {
+    stroke: #ffe2c2;
+    stroke-width: 2;
+    stroke-linecap: round;
+    /* Un solo destello por línea: periodo de 200 sobre una línea de 100, así no reaparece por el otro extremo. */
+    stroke-dasharray: 5 195;
+    stroke-dashoffset: 5;
+    opacity: 0;
+  }
+  .net.is-in .net-run {
+    opacity: 0.9;
+    animation: net-run 3.4s linear calc(1.6s + var(--i) * 260ms) infinite backwards;
+  }
+  @keyframes net-run {
+    from {
+      stroke-dashoffset: 5;
+    }
+    to {
+      stroke-dashoffset: -100;
+    }
+  }
+
+  .net-hq,
+  .net-pin {
+    position: absolute;
+    width: 0;
+    height: 0;
+  }
+  .net-hq {
+    z-index: 3;
+  }
+  .net-hq-dot {
+    position: absolute;
+    left: -7px;
+    top: -7px;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #fff4e8;
+    box-shadow:
+      0 0 0 3px var(--color-signal),
+      0 0 22px 6px rgb(255 122 26 / 0.75);
+  }
+  .net-hq-dot::before,
+  .net-hq-dot::after {
+    content: '';
+    position: absolute;
+    inset: -3px;
+    border-radius: 50%;
+    border: 1.5px solid var(--color-signal);
+    animation: net-ring 2.4s ease-out infinite;
+  }
+  .net-hq-dot::after {
+    animation-delay: 1.2s;
+  }
+  @keyframes net-ring {
+    from {
+      transform: scale(1);
+      opacity: 0.9;
+    }
+    to {
+      transform: scale(3.6);
+      opacity: 0;
+    }
+  }
+  .net-hq-label {
+    position: absolute;
+    left: 14px;
+    top: 10px;
+    display: grid;
+    white-space: nowrap;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-mist);
+    text-shadow: 0 1px 6px #000;
+  }
+  .net-hq-label b {
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    color: #fff;
+    font-stretch: 112%;
+  }
+
+  .net-pin {
+    --gap: 22px;
+    z-index: 2;
+  }
+  .net-pin.is-active {
+    z-index: 4;
+  }
+  .net-pin-dot {
+    position: absolute;
+    left: -4.5px;
+    top: -4.5px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--color-signal);
+    box-shadow: 0 0 12px 3px rgb(255 122 26 / 0.7);
+    transform: scale(0);
+    transition: transform 0.5s var(--ease-out-soft) calc(0.5s + var(--i) * 110ms);
+  }
+  .net.is-in .net-pin-dot {
+    transform: scale(1);
+  }
+  .net-pin.is-active .net-pin-dot {
+    background: #fff1dc;
+    transform: scale(1.5);
+    transition-delay: 0s;
+    box-shadow:
+      0 0 0 2px var(--color-signal),
+      0 0 18px 6px rgb(255 122 26 / 0.85);
+  }
+  /* Ficha del colaborador sobre su punto: placa blanca del logo y pie con número, nombre y ciudad. */
+  .net-card {
+    position: absolute;
+    left: 0;
+    width: 170px;
+    overflow: hidden;
+    border-radius: 8px;
+    border: 1px solid rgb(255 122 26 / 0.55);
+    background: #0d0907;
+    box-shadow: 0 18px 40px -16px rgb(0 0 0 / 0.95);
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      opacity 0.35s,
+      transform 0.45s var(--ease-out-soft);
+  }
+  .net-pin[data-side='above'] .net-card {
+    bottom: var(--gap);
+    transform: translate(var(--ax, -50%), 8px);
+  }
+  .net-pin[data-side='below'] .net-card {
+    top: var(--gap);
+    transform: translate(var(--ax, -50%), -8px);
+  }
+  .net-pin[data-align='right'] .net-card {
+    --ax: calc(-100% + 18px);
+  }
+  .net-pin[data-align='left'] .net-card {
+    --ax: -18px;
+  }
+  .net-pin.is-active .net-card {
+    opacity: 1;
+    transform: translate(var(--ax, -50%), 0);
+  }
+  /* Hilo de la ficha al punto */
+  .net-pin::after {
+    content: '';
+    position: absolute;
+    left: -0.5px;
+    width: 1px;
+    height: calc(var(--gap) - 6px);
+    background: linear-gradient(var(--color-signal), transparent);
+    opacity: 0;
+    transition: opacity 0.35s;
+  }
+  .net-pin[data-side='above']::after {
+    bottom: 6px;
+    transform: scaleY(-1);
+  }
+  .net-pin[data-side='below']::after {
+    top: 6px;
+  }
+  .net-pin.is-active::after {
+    opacity: 1;
+  }
+  .net-card-logo {
+    aspect-ratio: 263 / 98;
+    background: #f3f2f0;
+  }
+  .net-card-logo :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .net-card-cap {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.55rem 0.45rem;
+  }
+  .net-card-n {
+    font-family: var(--font-display);
+    font-size: 0.85rem;
+    font-weight: 800;
+    color: var(--color-signal);
+    font-stretch: 112%;
+  }
+  .net-card-name {
+    overflow: hidden;
+    font-family: var(--font-display);
+    font-size: 0.68rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--color-text);
+    font-stretch: 112%;
+  }
+  .net-card-place {
+    font-family: var(--font-mono);
+    font-size: 0.5rem;
+    line-height: 1.3;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-mist);
+  }
+  .net-legend {
+    position: absolute;
+    left: 79%;
+    top: 63%;
+    display: none;
+    gap: 0.35rem;
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-mist);
+  }
+  .net-legend span {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+  }
+  .net-legend i {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-signal);
+    box-shadow: 0 0 8px 2px rgb(255 122 26 / 0.6);
+  }
+  .net-legend .net-legend-hq {
+    background: #fff4e8;
+    box-shadow: 0 0 0 2px var(--color-signal);
+  }
+  @media (min-width: 768px) {
+    .net-legend {
+      display: grid;
+    }
+  }
+  @media (max-width: 639px) {
+    .net-arc {
+      stroke-width: 2.4;
+    }
+    .net-arc.is-active {
+      stroke-width: 3.6;
+    }
+    .net-run {
+      stroke-width: 3.4;
+    }
+    .net-hq-label {
+      display: none;
+    }
+    .net-pin {
+      --gap: 16px;
+    }
+    .net-card {
+      width: 124px;
+    }
+  }
+
+  /* ---------- Fichas en movimiento ---------- */
   .marquee {
     mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
   }
@@ -84,7 +467,8 @@ const items = partners.map((p) => ({ ...p, img: findImage(`partners/${p.slug}.pn
     height: 3px;
     background: linear-gradient(90deg, var(--color-signal), #ffb36b);
   }
-  .partner:hover {
+  .partner:hover,
+  .partner.is-active {
     transform: translateY(-4px);
     border-color: rgb(255 122 26 / 0.5);
     box-shadow: 0 24px 50px -20px rgb(255 106 19 / 0.35);
@@ -147,5 +531,80 @@ const items = partners.map((p) => ({ ...p, img: findImage(`partners/${p.slug}.pn
     .marquee-track > li[aria-hidden='true'] {
       display: none;
     }
+    .net-arc,
+    .net-pin-dot,
+    .net-card {
+      transition: none;
+    }
+    .net-run,
+    .net.is-in .net-run,
+    .net-hq-dot::before,
+    .net-hq-dot::after {
+      animation: none;
+      opacity: 0;
+    }
   }
 </style>
+
+<script>
+  // Recorrido por la red: cada pocos segundos se enciende un colaborador (línea, punto y ficha en el mapa).
+  // Al pasar el ratón por una ficha de abajo, el mapa muestra ese colaborador.
+  const net = document.querySelector<HTMLElement>('[data-net]');
+  if (net) {
+    const pins = [...net.querySelectorAll<HTMLElement>('[data-pin]')];
+    const slugs = pins.map((p) => p.dataset.pin!);
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let i = -1;
+    let timer: number | undefined;
+    let inView = false;
+    let hovering = false;
+    let started = false;
+
+    const show = (slug: string | null) => {
+      pins.forEach((p) => p.classList.toggle('is-active', p.dataset.pin === slug));
+      net.querySelectorAll<SVGPathElement>('[data-arc]').forEach((a) => a.classList.toggle('is-active', a.dataset.arc === slug));
+      net.querySelectorAll<HTMLElement>('[data-partner]').forEach((c) => c.classList.toggle('is-active', c.dataset.partner === slug));
+    };
+    const next = () => {
+      i = (i + 1) % slugs.length;
+      show(slugs[i]);
+    };
+    const stop = () => window.clearInterval(timer);
+    const run = () => {
+      stop();
+      if (!reduce && inView && !hovering) timer = window.setInterval(next, 2800);
+    };
+
+    new IntersectionObserver(
+      ([e]) => {
+        inView = e.isIntersecting;
+        if (!inView) return stop();
+        net.classList.add('is-in');
+        if (started) return run();
+        started = true;
+        if (reduce) return;
+        window.setTimeout(() => {
+          if (!hovering) next();
+          run();
+        }, 1900);
+      },
+      { threshold: 0.2 },
+    ).observe(net.querySelector('.net-map')!);
+
+    net.addEventListener('pointerover', (e) => {
+      const card = (e.target as Element).closest<HTMLElement>('[data-partner]');
+      if (!card) return;
+      hovering = true;
+      stop();
+      i = slugs.indexOf(card.dataset.partner!);
+      show(card.dataset.partner!);
+    });
+    net.addEventListener('pointerout', (e) => {
+      const card = (e.target as Element).closest<HTMLElement>('[data-partner]');
+      if (!card || card.contains(e.relatedTarget as Node | null)) return;
+      hovering = false;
+      if (reduce) show(null);
+      run();
+    });
+  }
+</script>
