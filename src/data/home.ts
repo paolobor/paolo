@@ -1,5 +1,7 @@
 // Contenido editable de la home. Los valores null se muestran como placeholders [DATO: …] / [FOTO: …].
 
+import { partners } from './partners';
+
 export const hero = {
   // Vídeo de fondo: guardar en /public/media/ (MP4 H.264 + WebM, 10–15 s, sin audio, ≤ 3 MB) y poner las rutas aquí
   // (p. ej. 'media/hero.mp4'). El póster es una foto en src/assets/images (p. ej. 'home/hero-poster.jpg').
@@ -92,5 +94,5 @@ export const testimonial = {
 export const contactBand = {
   image: null as string | null,
   imageHint: 'instalaciones de FAIRINO España en Yuncler (Toledo)',
-};import { partners } from './partners';
+};
 
