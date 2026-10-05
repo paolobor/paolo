@@ -2,6 +2,7 @@ import { applications } from './applications';
 
 // Menú principal. Los grupos de Productos se rellenan con el catálogo en el Header.
 export const nav = {
+  home: { label: 'Inicio', href: '/' },
   products: {
     label: 'Productos',
     groups: [

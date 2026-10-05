@@ -11,6 +11,7 @@ interface Props {
   overlay?: boolean;
 }
 const { overlay = false } = Astro.props;
+const isHome = Astro.url.pathname === url('/');
 
 const products = (await getCollection('products')).sort((a, b) => a.data.order - b.data.order);
 const cobots = products.filter((p) => p.data.category === 'cobot');
@@ -37,11 +38,14 @@ const MENU_MAX = 4;
     Saltar al contenido
   </a>
   <div class="hdr-bar">
-    <div class="container-x flex h-16 items-center gap-6 lg:h-[72px]">
+    <div class="container-x flex h-16 items-center gap-6 lg:h-[72px] xl:gap-4">
       <Logo tone="inherit" />
 
-      <nav aria-label="Principal" class="ml-4 hidden flex-1 lg:block">
+      <nav aria-label="Principal" class="ml-2 hidden flex-1 xl:block">
         <ul class="flex items-center gap-1 text-[0.95rem] font-medium">
+          <li>
+            <a class="nav-link" href={url(nav.home.href)} aria-current={isHome ? 'page' : undefined}>{nav.home.label}</a>
+          </li>
           <li data-mega-item>
             <button type="button" class="nav-link" aria-expanded="false" aria-controls="mega-productos" data-mega-toggle>
               {nav.products.label}
@@ -68,8 +72,8 @@ const MENU_MAX = 4;
         </ul>
       </nav>
 
-      <div class="ml-auto hidden items-center gap-5 lg:flex">
-        <a href={url(nav.warranty.href)} class="hdr-muted inline-flex items-center gap-1.5 text-sm font-medium">
+      <div class="ml-auto hidden items-center gap-4 xl:flex">
+        <a href={url(nav.warranty.href)} class="hdr-muted inline-flex items-center gap-1.5 whitespace-nowrap text-sm font-medium">
           <Icon name="shield-check" size={17} />
           {nav.warranty.label}
         </a>
@@ -79,14 +83,14 @@ const MENU_MAX = 4;
         </a>
       </div>
 
-      <button type="button" class="cart-btn hdr-fg relative ml-auto inline-flex size-11 items-center justify-center rounded-full lg:ml-0" aria-label="Abrir carrito" data-cart-open>
+      <button type="button" class="cart-btn hdr-fg relative ml-auto inline-flex size-11 items-center justify-center rounded-full xl:ml-0" aria-label="Abrir carrito" data-cart-open>
         <Icon name="package" size={22} />
         <span class="absolute -right-0.5 -top-0.5 grid min-w-5 place-items-center rounded-full bg-signal px-1 font-mono text-[0.65rem] font-bold leading-5 text-ink" data-cart-count hidden>0</span>
       </button>
 
       <button
         type="button"
-        class="hdr-fg -mr-2 inline-flex size-11 items-center justify-center rounded-lg lg:hidden"
+        class="hdr-fg -mr-2 inline-flex size-11 items-center justify-center rounded-lg xl:hidden"
         aria-expanded="false"
         aria-controls="mobile-menu"
         data-drawer-toggle
@@ -182,8 +186,9 @@ const MENU_MAX = 4;
   </div>
 
   <!-- Menú móvil -->
-  <div id="mobile-menu" class="drawer lg:hidden" hidden data-drawer>
+  <div id="mobile-menu" class="drawer xl:hidden" hidden data-drawer>
     <nav aria-label="Principal móvil" class="container-x flex h-full flex-col gap-2 overflow-y-auto pb-6 pt-2">
+      <a href={url(nav.home.href)} class="drawer-link" aria-current={isHome ? 'page' : undefined}>{nav.home.label}</a>
       <a href={url(nav.store.href)} class="drawer-link inline-flex items-center gap-2 text-signal">{nav.store.label}</a>
       <details class="drawer-group">
         <summary>{nav.products.label}<Icon name="chevron-down" size={18} class="chev" /></summary>
@@ -262,13 +267,15 @@ const MENU_MAX = 4;
     display: inline-flex;
     align-items: center;
     gap: 0.3rem;
-    padding: 0.55rem 0.8rem;
+    padding: 0.55rem 0.65rem;
     border-radius: 8px;
+    white-space: nowrap;
     color: var(--hdr-fg);
     cursor: pointer;
   }
   .nav-link:hover,
-  .nav-link[aria-expanded='true'] {
+  .nav-link[aria-expanded='true'],
+  .nav-link[aria-current='page'] {
     background: color-mix(in srgb, var(--hdr-fg) 9%, transparent);
   }
   .nav-link[aria-expanded='true'] :global(.chev) {
