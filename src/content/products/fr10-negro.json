@@ -1,58 +1,43 @@
 {
-  "name": "FR5",
+  "name": "FR10 Negro",
   "category": "cobot",
-  "order": 5,
-  "tagline": "El más versátil de la gama: 5 kg de carga y 922 mm de alcance.",
-  "description": "Flexible, eficiente y de aplicación muy amplia. Fue el primer cobot en obtener la certificación CR y funciona con un sistema de control en tiempo real de desarrollo propio, con precisión y estabilidad de nivel industrial. Ideal para pick and place, atornillado y manipulación ligera.",
+  "order": 7.5,
+  "tagline": "El FR10 en acabado negro: 10 kg de carga y 1400 mm de alcance.",
+  "description": "El mismo FR10, con el brazo y las tapas en negro mate y la brida de aluminio. Mismas prestaciones: 10 kg de carga, 1400 mm de alcance y ±0,05 mm de repetibilidad.",
   "highlights": [],
   "images": [
     {
-      "src": "../../assets/products/fr5/fr5-provisional-3d.png",
-      "alt": "Cobot FAIRINO FR5 (imagen provisional del modelo 3D oficial)"
-    },
-    {
-      "src": "../../assets/products/fr5/fairino-fr5-escena-producto.webp",
-      "alt": "Cobot FAIRINO FR5 sobre una peana en una sala de exposición con luz naranja de fondo",
-      "illustrative": true
-    },
-    {
-      "src": "../../assets/products/fr5/fairino-fr5-escena-pick-and-place.webp",
-      "alt": "Cobot FAIRINO FR5 con garra eléctrica cogiendo piezas mecanizadas de una bandeja en una célula de montaje",
-      "illustrative": true
-    },
-    {
-      "src": "../../assets/products/fr5/fairino-fr5-escena-celda.webp",
-      "alt": "Cobot FAIRINO FR5 en una mesa de trabajo iluminada, con transportadores al fondo",
-      "illustrative": true
+      "src": "../../assets/products/fr10-negro/fr10-negro-provisional-3d.png",
+      "alt": "Cobot FAIRINO FR10 en acabado negro (imagen del modelo 3D oficial)"
     }
   ],
-  "payloadKg": 5,
-  "reachMm": 922,
-  "repeatabilityMm": 0.02,
+  "payloadKg": 10,
+  "reachMm": 1400,
+  "repeatabilityMm": 0.05,
   "specs": [
     {
       "label": "Carga útil",
-      "value": 5,
+      "value": 10,
       "unit": "kg"
     },
     {
       "label": "Carga máxima",
-      "value": 7,
+      "value": 14,
       "unit": "kg"
     },
     {
       "label": "Alcance",
-      "value": 922,
+      "value": 1400,
       "unit": "mm"
     },
     {
       "label": "Repetibilidad",
-      "value": "±0,02",
+      "value": "±0,05",
       "unit": "mm"
     },
     {
       "label": "Peso",
-      "value": "≈ 22",
+      "value": "≈ 40",
       "unit": "kg"
     },
     {
@@ -65,7 +50,7 @@
     },
     {
       "label": "Velocidad TCP típica",
-      "value": "1",
+      "value": "1,5",
       "unit": "m/s"
     },
     {
@@ -78,7 +63,7 @@
     },
     {
       "label": "Consumo medio típico",
-      "value": null,
+      "value": 300,
       "unit": "W"
     },
     {
@@ -87,7 +72,7 @@
     }
   ],
   "applications": [
-    "pick-and-place",
+    "carga-de-maquinas",
     "manipulacion"
   ],
   "compatibleWith": [
@@ -108,7 +93,7 @@
     {
       "label": "Plano acotado",
       "type": "cad",
-      "href": "https://fairino-doc-en.readthedocs.io/latest/_downloads/d0aec4a78c7e5520e502d33d18425649/FR5%20Drawings.zip"
+      "href": "https://fairino-doc-en.readthedocs.io/latest/_downloads/834fdc8d52dec00b13468df60e177010/FR10%20Drawings.zip"
     },
     {
       "label": "Modelo 3D (STEP)",
@@ -123,33 +108,25 @@
         "id": "estandar",
         "label": "Estándar",
         "note": "IP54"
-      },
-      {
-        "id": "ip65",
-        "label": "IP65",
-        "note": "Protección opcional"
       }
     ],
     "price": 0
   },
   "source": {
-    "url": "https://fairino.es/productos/fr5/ https://www.frtech.fr/FR/4.html",
+    "url": "https://fairino.es/ https://www.frtech.fr/FR/3.html https://fairino.info/cobots/fairino-fr10",
     "verified": false
   },
-  "seo": {},
+  "seo": {
+    "title": "FR10 Negro: cobot FAIRINO en acabado negro"
+  },
   "store": {
-    "sku": "FR5",
+    "sku": null,
     "price": 0,
     "shipping": 0,
     "versions": [
       {
         "id": "estandar",
         "label": "Estándar (IP54)",
-        "delta": 0
-      },
-      {
-        "id": "ip65",
-        "label": "IP65",
         "delta": 0
       }
     ],

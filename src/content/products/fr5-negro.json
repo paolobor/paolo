@@ -1,29 +1,14 @@
 {
-  "name": "FR5",
+  "name": "FR5 Negro",
   "category": "cobot",
-  "order": 5,
-  "tagline": "El más versátil de la gama: 5 kg de carga y 922 mm de alcance.",
-  "description": "Flexible, eficiente y de aplicación muy amplia. Fue el primer cobot en obtener la certificación CR y funciona con un sistema de control en tiempo real de desarrollo propio, con precisión y estabilidad de nivel industrial. Ideal para pick and place, atornillado y manipulación ligera.",
+  "order": 5.5,
+  "tagline": "El FR5 en acabado negro: 5 kg de carga y 922 mm de alcance.",
+  "description": "El mismo FR5, con el brazo y las tapas en negro mate y la brida de aluminio. Mismas prestaciones: 5 kg de carga, 922 mm de alcance y ±0,02 mm de repetibilidad. En FAIRINO España lo tenemos montado para soldadura, con antorcha MIG y su equipo de soldadura.",
   "highlights": [],
   "images": [
     {
-      "src": "../../assets/products/fr5/fr5-provisional-3d.png",
-      "alt": "Cobot FAIRINO FR5 (imagen provisional del modelo 3D oficial)"
-    },
-    {
-      "src": "../../assets/products/fr5/fairino-fr5-escena-producto.webp",
-      "alt": "Cobot FAIRINO FR5 sobre una peana en una sala de exposición con luz naranja de fondo",
-      "illustrative": true
-    },
-    {
-      "src": "../../assets/products/fr5/fairino-fr5-escena-pick-and-place.webp",
-      "alt": "Cobot FAIRINO FR5 con garra eléctrica cogiendo piezas mecanizadas de una bandeja en una célula de montaje",
-      "illustrative": true
-    },
-    {
-      "src": "../../assets/products/fr5/fairino-fr5-escena-celda.webp",
-      "alt": "Cobot FAIRINO FR5 en una mesa de trabajo iluminada, con transportadores al fondo",
-      "illustrative": true
+      "src": "../../assets/products/fr5-negro/fr5-negro-provisional-3d.png",
+      "alt": "Cobot FAIRINO FR5 en acabado negro (imagen del modelo 3D oficial)"
     }
   ],
   "payloadKg": 5,
@@ -87,6 +72,7 @@
     }
   ],
   "applications": [
+    "soldadura",
     "pick-and-place",
     "manipulacion"
   ],
@@ -123,11 +109,6 @@
         "id": "estandar",
         "label": "Estándar",
         "note": "IP54"
-      },
-      {
-        "id": "ip65",
-        "label": "IP65",
-        "note": "Protección opcional"
       }
     ],
     "price": 0
@@ -136,20 +117,17 @@
     "url": "https://fairino.es/productos/fr5/ https://www.frtech.fr/FR/4.html",
     "verified": false
   },
-  "seo": {},
+  "seo": {
+    "title": "FR5 Negro: cobot FAIRINO en acabado negro"
+  },
   "store": {
-    "sku": "FR5",
+    "sku": null,
     "price": 0,
     "shipping": 0,
     "versions": [
       {
         "id": "estandar",
         "label": "Estándar (IP54)",
-        "delta": 0
-      },
-      {
-        "id": "ip65",
-        "label": "IP65",
         "delta": 0
       }
     ],

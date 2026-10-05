@@ -9,6 +9,7 @@
 // con el robot en la postura cero (antes de girar las articulaciones).
 // Opciones de depuración: { debug: true } devuelve las tapas candidatas y por qué se descartan las demás;
 // { debug: 'prof' } añade el perfil medido; { all: true } pinta todas las candidatas en colores planos.
+// Acabado negro: { ringColor, screwColor } cambian el color del aro y de los tornillos (studio.html?paint=black).
 // Comprobado en los 9 GLB (fr3, fr3wms, fr3wml, fr5, fr5wml, fr10, fr16, fr20, fr30).
 import * as THREE from 'three';
 
@@ -251,12 +252,13 @@ export function addRealTrim(robot, opts = {}) {
   const base = meshes.find((m) => /^base_link/i.test(m.name));
 
   const ringMat = new THREE.MeshPhysicalMaterial({
-    color: new THREE.Color(RING_COLOR),
-    roughness: 0.5,
+    color: new THREE.Color(opts.ringColor ?? RING_COLOR),
+    roughness: opts.ringColor ? 0.32 : 0.5,
     metalness: 0,
+    clearcoat: opts.ringColor ? 0.4 : 0,
     side: THREE.DoubleSide,
   });
-  const steel = new THREE.MeshPhysicalMaterial({ color: 0xc4c8cc, metalness: 1, roughness: 0.3, envMapIntensity: 1.6 });
+  const steel = new THREE.MeshPhysicalMaterial({ color: opts.screwColor ?? 0xc4c8cc, metalness: 1, roughness: 0.3, envMapIntensity: 1.6 });
   const socketMat = new THREE.MeshBasicMaterial({ color: 0x1a1a1a });
   const report = [];
   const log = [];

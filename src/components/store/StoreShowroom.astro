@@ -86,7 +86,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
   <!-- Escenario -->
   <div class="stage relative mx-auto -mt-4 h-[min(60vh,580px)] min-h-[380px] max-w-[1600px]" data-stage>
     <span class="backlight" aria-hidden="true"></span>
-    <div class="ghost-wrap" data-parallax><p class="ghost" aria-hidden="true" data-ghost>{slides[0].name}</p></div>
+    <div class="ghost-wrap" data-parallax><p class="ghost" aria-hidden="true" data-ghost style={`--chars:${slides[0].name.length}`}>{slides[0].name}</p></div>
     <span class="floor" aria-hidden="true"></span>
 
     <span class="beam" aria-hidden="true"></span>
@@ -344,7 +344,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
     font-family: var(--font-display);
     font-stretch: 125%;
     font-weight: 800;
-    font-size: clamp(6rem, 21vw, 21rem);
+    /* Los nombres largos («FR5 Negro») se encogen para que quepan en el ancho. */
+    font-size: clamp(3rem, min(21vw, calc(118vw / var(--chars, 4))), 21rem);
     line-height: 1;
     letter-spacing: -0.02em;
     background: linear-gradient(180deg, rgb(52 22 10 / 0.95), rgb(26 11 6 / 0.85) 75%);
@@ -904,6 +905,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
         ghost.classList.add('is-changing');
         window.setTimeout(() => {
           ghost.textContent = names[index];
+          ghost.style.setProperty('--chars', String(names[index].length));
           ghost.classList.remove('is-changing');
         }, 220);
       }

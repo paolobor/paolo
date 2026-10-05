@@ -155,16 +155,17 @@
   const gltf = await loader.loadAsync(`/public/models/${q.get('model') || 'fr5'}.glb`);
   const robot = gltf.scene;
 
-  // Pintura blanca satinada de fundición, como el color oficial del URDF.
+  // Pintura blanca satinada de fundición, como el color oficial del URDF; paint=black para el acabado negro mate.
+  const black = q.get('paint') === 'black';
   robot.traverse((o) => {
     if (o.isMesh) {
-      const base = o.material.color.clone();
+      const base = black ? new THREE.Color(0x1e1f22) : o.material.color.clone();
       o.material = new THREE.MeshPhysicalMaterial({
         color: base,
-        roughness: 0.38,
+        roughness: black ? 0.46 : 0.38,
         metalness: 0.0,
-        clearcoat: 0.35,
-        clearcoatRoughness: 0.3,
+        clearcoat: black ? 0.28 : 0.35,
+        clearcoatRoughness: black ? 0.38 : 0.3,
         sheen: 0.0,
       });
       o.castShadow = true;
@@ -172,7 +173,12 @@
     }
   });
   // Aros naranjas con tornillos y brida de aluminio, como el robot real (trim=0 para quitarlos).
-  const trim = q.get('trim') === '0' ? [] : addRealTrim(robot, { debug: q.get('debug') === 'prof' ? 'prof' : q.get('debug') === '1', all: q.get('all') === '1' });
+  const trim = q.get('trim') === '0' ? [] : addRealTrim(robot, {
+    debug: q.get('debug') === 'prof' ? 'prof' : q.get('debug') === '1',
+    all: q.get('all') === '1',
+    // El acabado negro lleva las tapas negras, sin aro naranja, y tornillos oscuros.
+    ...(black ? { ringColor: '#141416', screwColor: 0x4a4d52 } : {}),
+  });
 
   // Postura: ángulo de cada articulación sobre su eje real.
   let idx = 0;
