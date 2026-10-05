@@ -4,11 +4,85 @@
   "category": "accesorio",
   "group": "vision",
   "order": 35,
-  "tagline": "Kit de visión 3D de IFM preparado para cobots FAIRINO.",
-  "description": "Kit de visión 3D de IFM preparado para cobots FAIRINO. Ficha técnica, compatibilidad y precio a consultar.",
-  "highlights": [],
-  "images": [],
-  "specs": [],
+  "tagline": "Cámara 3D de tiempo de vuelo que entrega la escena como datos de distancia.",
+  "description": "Cámara 3D de ifm basada en tecnología de tiempo de vuelo (ToF) con iluminación infrarroja integrada, que mide la distancia de cada píxel de la escena. Entrega imágenes de distancia y de grises por Ethernet para que el software del robot localice piezas, mida volúmenes o detecte posiciones. Se configura con ifm Vision Assistant o mediante su API para C, C++ y Halcon.",
+  "highlights": [
+    "Mide la distancia de cada píxel (tiempo de vuelo)",
+    "Alcance de 0,3 a 8 m",
+    "Datos 3D por Ethernet para el software del robot"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/kit-vision-3d-ifm/kit-vision-3d-ifm-oficial.png",
+      "alt": "Cámara 3D ifm O3D303, foto oficial"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Cámara",
+      "value": "ifm O3D3xx (datos del O3D303)"
+    },
+    {
+      "label": "Resolución 3D",
+      "value": "352 × 264",
+      "unit": "px"
+    },
+    {
+      "label": "Ángulo de apertura",
+      "value": "60 × 45",
+      "unit": "°"
+    },
+    {
+      "label": "Tecnología",
+      "value": "Tiempo de vuelo (chip PMD 3D ToF)"
+    },
+    {
+      "label": "Iluminación",
+      "value": "Infrarroja integrada, 850 nm"
+    },
+    {
+      "label": "Velocidad de lectura máxima",
+      "value": "25",
+      "unit": "Hz"
+    },
+    {
+      "label": "Alcance operativo",
+      "value": "300…8000",
+      "unit": "mm"
+    },
+    {
+      "label": "Interfaz",
+      "value": "Ethernet 10/100 Mbit/s (TCP/IP)"
+    },
+    {
+      "label": "Entradas / salidas digitales",
+      "value": "1 (disparo) / 2"
+    },
+    {
+      "label": "Tensión de alimentación",
+      "value": "24",
+      "unit": "V CC"
+    },
+    {
+      "label": "Grado de protección",
+      "value": "IP65 / IP67"
+    },
+    {
+      "label": "Dimensiones",
+      "value": "72 × 65 × 82,6",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": "766,95",
+      "unit": "g"
+    },
+    {
+      "label": "Temperatura ambiente",
+      "value": "−10…50",
+      "unit": "°C"
+    }
+  ],
   "applications": [
     "pick-and-place",
     "paletizado"
@@ -19,9 +93,9 @@
   "compatibleWith": [],
   "downloads": [
     {
-      "label": "Ficha técnica",
+      "label": "Ficha técnica de ifm",
       "type": "ficha",
-      "href": null
+      "href": "https://media.ifm.com/dam/493de918-2814-4166-86d4-f6c92980c743/Original/O3D303-03_ES-ES.pdf"
     }
   ],
   "store": {
@@ -32,8 +106,8 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": null,
-    "verified": false
+    "url": "https://www.ifm.com/es/es/product/O3D303",
+    "verified": true
   },
   "seo": {}
 }

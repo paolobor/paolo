@@ -1,14 +1,74 @@
 {
-  "name": "Kit de lijado para cobot",
+  "name": "Lijadora para cobot Mirka AIROS 650",
   "brand": "Mirka",
   "category": "accesorio",
   "group": "fuerza",
   "order": 38,
-  "tagline": "Lijadora de Mirka preparada para montarla en el cobot.",
-  "description": "Lijadora de Mirka preparada para montarla en el cobot. Ficha técnica, compatibilidad y precio a consultar.",
-  "highlights": [],
-  "images": [],
-  "specs": [],
+  "tagline": "Lijadora rotorbital eléctrica pensada para montarse en el brazo de un robot.",
+  "description": "Cabezal de lijado eléctrico de Mirka para robots industriales y colaborativos, con motor sin escobillas y velocidad constante configurable. Su carcasa de aluminio se acopla al robot mediante una brida ISO 9409-1 y el plato de 150 mm se conecta a un sistema de aspiración. La electrónica de control va separada en un armario y se comunica con el robot por Modbus RTU, con pasarelas Profinet o EtherNet/IP opcionales.",
+  "highlights": [
+    "Motor sin escobillas con velocidad constante",
+    "Plato de 150 mm con aspiración",
+    "Brida ISO 9409-1 para montarla en el cobot"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/kit-lijado-mirka/kit-lijado-mirka-oficial.png",
+      "alt": "Lijadora robótica Mirka AIROS 650 de 150 mm, foto oficial"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Diámetro del plato",
+      "value": "150",
+      "unit": "mm"
+    },
+    {
+      "label": "Órbita",
+      "value": "5",
+      "unit": "mm"
+    },
+    {
+      "label": "Tipo de movimiento",
+      "value": "Rotorbital"
+    },
+    {
+      "label": "Velocidad",
+      "value": "4000–10000",
+      "unit": "rpm"
+    },
+    {
+      "label": "Potencia de entrada",
+      "value": "350",
+      "unit": "W"
+    },
+    {
+      "label": "Tensión en la lijadora",
+      "value": "48",
+      "unit": "V CC"
+    },
+    {
+      "label": "Alimentación de la electrónica de control",
+      "value": "90–264",
+      "unit": "V CA"
+    },
+    {
+      "label": "Grado de protección",
+      "value": "IP66"
+    },
+    {
+      "label": "Acoplamiento al robot",
+      "value": "Brida ISO 9409-1"
+    },
+    {
+      "label": "Extracción de polvo",
+      "value": "Aspiración centralizada (manguera Ø 27 mm)"
+    },
+    {
+      "label": "Comunicación",
+      "value": "Modbus RTU RS-485 incluido; Profinet o EtherNet/IP opcionales"
+    }
+  ],
   "applications": [
     "lijado-y-pulido"
   ],
@@ -18,9 +78,9 @@
   "compatibleWith": [],
   "downloads": [
     {
-      "label": "Ficha técnica",
+      "label": "Ficha técnica de Mirka",
       "type": "ficha",
-      "href": null
+      "href": "https://cdn.brandfolder.io/3TVWCF1X/at/4cfqqh6vw7h6362src233pnc/Mirka_AIROS-Automation_leaflet_EN_04-2021.pdf"
     }
   ],
   "store": {
@@ -31,8 +91,8 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": null,
-    "verified": false
+    "url": "https://www.mirka.com/es-es/p/Mirka-AIROS-650CV-150---5/",
+    "verified": true
   },
   "seo": {}
 }

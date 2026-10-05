@@ -4,11 +4,84 @@
   "category": "accesorio",
   "group": "vision",
   "order": 34,
-  "tagline": "Kit de visión 2D de IFM preparado para cobots FAIRINO.",
-  "description": "Kit de visión 2D de IFM preparado para cobots FAIRINO. Ficha técnica, compatibilidad y precio a consultar.",
-  "highlights": [],
-  "images": [],
-  "specs": [],
+  "tagline": "Sensor de visión 2D que inspecciona contornos y superficies de las piezas.",
+  "description": "Sensor de visión compacto de ifm que comprueba contornos y superficies en 2D para el control de calidad y la detección de objetos. Integra iluminación RGBW, filtro de polarización y enfoque eléctrico, y se configura desde el PC con el software ifm Vision Assistant. Envía los resultados por Ethernet (TCP/IP o EtherNet/IP) y dispone de entradas y salidas digitales para el disparo y la señalización.",
+  "highlights": [
+    "Inspección de contornos y superficies",
+    "Iluminación RGBW y enfoque integrados",
+    "Ethernet TCP/IP o EtherNet/IP"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/kit-vision-2d-ifm/kit-vision-2d-ifm-oficial.png",
+      "alt": "Sensor de visión 2D ifm O2D500, foto oficial"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Sensor",
+      "value": "ifm O2D5xx (datos del O2D500)"
+    },
+    {
+      "label": "Resolución de imagen",
+      "value": "1280 × 960",
+      "unit": "px"
+    },
+    {
+      "label": "Sensor de imagen",
+      "value": "CMOS monocromo"
+    },
+    {
+      "label": "Iluminación integrada",
+      "value": "RGBW (625 / 525 / 453 nm)"
+    },
+    {
+      "label": "Velocidad de lectura máxima",
+      "value": "40",
+      "unit": "Hz"
+    },
+    {
+      "label": "Objetivo",
+      "value": "Estándar, alcance operativo > 85 mm"
+    },
+    {
+      "label": "Campo de visión a 1000 mm",
+      "value": "302 × 227",
+      "unit": "mm"
+    },
+    {
+      "label": "Interfaz",
+      "value": "Ethernet 10/100 Mbit/s (TCP/IP, EtherNet/IP)"
+    },
+    {
+      "label": "Entradas / salidas digitales",
+      "value": "3 / 5"
+    },
+    {
+      "label": "Tensión de alimentación",
+      "value": "18…30",
+      "unit": "V CC"
+    },
+    {
+      "label": "Grado de protección",
+      "value": "IP65"
+    },
+    {
+      "label": "Dimensiones",
+      "value": "45 × 45 × 86",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": "620,1",
+      "unit": "g"
+    },
+    {
+      "label": "Temperatura ambiente",
+      "value": "−10…50",
+      "unit": "°C"
+    }
+  ],
   "applications": [
     "pick-and-place"
   ],
@@ -18,9 +91,9 @@
   "compatibleWith": [],
   "downloads": [
     {
-      "label": "Ficha técnica",
+      "label": "Ficha técnica de ifm",
       "type": "ficha",
-      "href": null
+      "href": "https://media.ifm.com/dam/ddebddf1-08b3-4ef2-9061-81405781c80a/Original/O2D500-01_ES-ES.pdf"
     }
   ],
   "store": {
@@ -31,8 +104,8 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": null,
-    "verified": false
+    "url": "https://www.ifm.com/es/es/product/O2D500",
+    "verified": true
   },
   "seo": {}
 }

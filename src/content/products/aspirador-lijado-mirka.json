@@ -1,14 +1,85 @@
 {
-  "name": "Aspirador de polvo para lijado con cobot",
+  "name": "Aspirador Mirka 1230 L AFC",
   "brand": "Mirka",
   "category": "accesorio",
   "group": "fuerza",
   "order": 39,
-  "tagline": "Aspirador de Mirka para el lijado con cobot.",
-  "description": "Aspirador de Mirka para el lijado con cobot. Ficha técnica, compatibilidad y precio a consultar.",
-  "highlights": [],
-  "images": [],
-  "specs": [],
+  "tagline": "Aspirador industrial de clase L con limpieza automática del filtro.",
+  "description": "Aspirador móvil de Mirka para captar el polvo de lijado directamente en la herramienta, con arranque automático al encender la máquina conectada. El sistema AFC limpia el filtro de forma automática para mantener la aspiración estable durante la jornada. Su parte superior plana admite cajas de almacenamiento y las ruedas grandes facilitan moverlo por el taller.",
+  "highlights": [
+    "Limpieza automática del filtro (AFC)",
+    "Clase de polvo L, 30 l de depósito",
+    "Arranca solo al encender la herramienta conectada"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/aspirador-lijado-mirka/aspirador-lijado-mirka-oficial.png",
+      "alt": "Aspirador de polvo Mirka 1230 L AFC, foto oficial"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Clase de polvo",
+      "value": "L"
+    },
+    {
+      "label": "Potencia de entrada",
+      "value": "1200",
+      "unit": "W"
+    },
+    {
+      "label": "Depresión máxima",
+      "value": "250",
+      "unit": "mbar"
+    },
+    {
+      "label": "Caudal de aire",
+      "value": "4500",
+      "unit": "l/min"
+    },
+    {
+      "label": "Volumen del contenedor",
+      "value": "30",
+      "unit": "l"
+    },
+    {
+      "label": "Limpieza del filtro",
+      "value": "Automática (AFC)"
+    },
+    {
+      "label": "Superficie del filtro",
+      "value": "0,5",
+      "unit": "m²"
+    },
+    {
+      "label": "Toma para herramienta (versión EU)",
+      "value": "máx. 2400",
+      "unit": "W"
+    },
+    {
+      "label": "Tensión de red",
+      "value": "220–240 V CA, 50/60 Hz"
+    },
+    {
+      "label": "Longitud del cable",
+      "value": "7,5",
+      "unit": "m"
+    },
+    {
+      "label": "Dimensiones (largo × ancho × alto)",
+      "value": "565 × 385 × 565",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": "14,5",
+      "unit": "kg"
+    },
+    {
+      "label": "Grado de protección",
+      "value": "IPX4"
+    }
+  ],
   "applications": [
     "lijado-y-pulido"
   ],
@@ -18,9 +89,9 @@
   "compatibleWith": [],
   "downloads": [
     {
-      "label": "Ficha técnica",
+      "label": "Ficha técnica de Mirka",
       "type": "ficha",
-      "href": null
+      "href": "https://cdn.brandfolder.io/FSMPOV8D/at/vb7htvb7cqvts7xwtpgpcqbm/Mirka_Dust_Extractor_1230L_230V_manual_A5_09_2018_lres.pdf"
     }
   ],
   "store": {
@@ -31,8 +102,8 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": null,
-    "verified": false
+    "url": "https://www.mirka.com/es-es/p/Mirka-Dust-Extractor-1230-L/?variant=90469",
+    "verified": true
   },
   "seo": {}
 }

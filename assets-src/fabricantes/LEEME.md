@@ -27,6 +27,18 @@ se las den a sus distribuidores).
 Originales en `assets-src/fabricantes/schmalz/`. Schmalz también tiene el ROB-SET ECBPi FAIRINO (10.03.01.00988),
 que todavía no está en la tienda.
 
+## Mirka (mirka.com) e ifm (ifm.com)
+
+| Producto (id)          | Modelo                                                     | Seguridad                     |
+| ---------------------- | ---------------------------------------------------------- | ----------------------------- |
+| kit-lijado-mirka       | Mirka AIROS 650 Ø150 mm (antes 650CV), img.mirka.com       | Alta (misma foto oficial)     |
+| aspirador-lijado-mirka | Mirka Dust Extractor 1230 L AFC EU 230 V, ref. 8999200111  | Media-alta (podría ser el PC) |
+| kit-vision-2d-ifm      | ifm O2D500 (familia O2D5xx), media.ifm.com                 | Familia segura; variante no   |
+| kit-vision-3d-ifm      | ifm O3D303 (familia O3D3xx), media.ifm.com                 | Familia segura; variante no   |
+
+Confirmar con el proveedor del kit qué variante exacta de ifm lleva cada kit de visión. El peso de la AIROS no se
+pone: la web dice 1,4 kg y el folleto 1,3 kg. Originales en `assets-src/fabricantes/mirka/` e `ifm/`.
+
 ## Sin foto de fabricante
 
 - pinza-vacio-area y las pinzas IR: son de marca Inlux Robotics; su foto solo está en la web de Inlux. No se copia.
