@@ -32,6 +32,17 @@ for page in glob.glob('**/*.html', recursive=True):
     s2 = re.sub(r'--mask:url\((?:\.\./)*assets/([^)]+)\)', r'--mask:url(\1)', s)
     if s2 != s:
         open(page, 'w').write(s2)
+# Fuera lo que nadie usa (p. ej. los PNG/JPG originales que Astro copia aunque las páginas solo piden WebP):
+# la vista previa tiene un tope de archivos. Se busca el nombre de cada archivo en páginas, estilos y scripts.
+textos = ''.join(open(t, errors='ignore').read() for t in glob.glob('**/*', recursive=True)
+                 if os.path.isfile(t) and t.endswith(('.html', '.css', '.js', '.json', '.svg', '.webmanifest')))
+# Los datos para buscadores (JSON-LD) enlazan a la web real (https://fairino.es/_astro/…), no a esta copia.
+textos = re.sub(r'https://fairino\.es/_astro/[^"\s]+', '', textos)
+sobran = [x for x in glob.glob('assets/**/*', recursive=True) + glob.glob('media/**/*', recursive=True)
+          if os.path.isfile(x) and not x.endswith(('.css', '.js')) and os.path.basename(x) not in textos]
+for x in sobran:
+    os.remove(x)
+print('sin usar, fuera:', len(sobran))
 f = json.load(open('../site-files.json'))
 f = [x for x in f if os.path.exists(x) and not x.endswith('.glb') and not x.startswith('models/')]
 json.dump(f, open('../site-files-final.json', 'w'))
