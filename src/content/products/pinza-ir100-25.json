@@ -1,14 +1,75 @@
 {
-  "name": "Pinza eléctrica IR100-25",
-  "brand": "Inlux Robotics",
+  "name": "Pinza eléctrica adaptativa IR100-25",
+  "brand": "ChangingTek",
   "category": "accesorio",
   "group": "garra",
   "order": 20,
-  "tagline": "Pinza eléctrica para cobots FAIRINO.",
-  "description": "Pinza eléctrica para cobots FAIRINO. Ficha técnica, compatibilidad y precio a consultar.",
-  "highlights": [],
-  "images": [],
-  "specs": [],
+  "tagline": "Pinza de dos dedos con bielas y hasta 25 N, para piezas ligeras y delicadas.",
+  "description": "Pinza eléctrica colaborativa de dos dedos con bielas, de ChangingTek (modelo de referencia CTAG2F90-D). Aprieta con hasta 25 N, pensada para piezas ligeras o delicadas, y devuelve al robot la posición, la velocidad y la fuerza. Según el fabricante la carrera es de 90 mm: si necesitas más apertura, consúltanos antes de pedirla.",
+  "highlights": [
+    "Hasta 25 N: para piezas ligeras o delicadas",
+    "Realimentación de posición, velocidad y fuerza",
+    "Modbus RTU y E/S, ampliable a otros buses"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/pinza-ir100-25/pinza-ir100-25-oficial.png",
+      "alt": "Pinza eléctrica ChangingTek CTAG2F90-D, modelo de referencia de la IR100-25, foto del fabricante"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Accionamiento",
+      "value": "Servomotor (control y accionamiento integrados)"
+    },
+    {
+      "label": "Carrera máxima",
+      "value": "90",
+      "unit": "mm"
+    },
+    {
+      "label": "Fuerza de agarre máxima",
+      "value": "25",
+      "unit": "N"
+    },
+    {
+      "label": "Velocidad máxima de agarre",
+      "value": "100 (250 en modo rápido)",
+      "unit": "mm/s"
+    },
+    {
+      "label": "Repetibilidad",
+      "value": "±0,03",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": "0,8",
+      "unit": "kg"
+    },
+    {
+      "label": "Tensión",
+      "value": "24",
+      "unit": "V"
+    },
+    {
+      "label": "Corriente máxima",
+      "value": "1",
+      "unit": "A"
+    },
+    {
+      "label": "Realimentación",
+      "value": "Posición, velocidad y fuerza"
+    },
+    {
+      "label": "Comunicación",
+      "value": "Modbus RTU + E/S (ampliable a CAN, TCP/IP, EtherCAT, Profinet)"
+    },
+    {
+      "label": "Entorno de uso",
+      "value": "0–40 °C, < 85 % HR sin condensación"
+    }
+  ],
   "applications": [
     "pick-and-place",
     "manipulacion"
@@ -19,9 +80,9 @@
   "compatibleWith": [],
   "downloads": [
     {
-      "label": "Ficha técnica",
+      "label": "Ficha del CTAG2F90-D (web de ChangingTek)",
       "type": "ficha",
-      "href": null
+      "href": "https://en.changingtek.com/diandong/147"
     }
   ],
   "store": {
@@ -32,7 +93,7 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": null,
+    "url": "https://en.changingtek.com/diandong/147",
     "verified": false
   },
   "seo": {}

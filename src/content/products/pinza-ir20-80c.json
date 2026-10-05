@@ -1,13 +1,84 @@
 {
-  "name": "Pinza eléctrica IR20-80C",
+  "name": "Pinza eléctrica de 3 dedos HITBOT Z-ECG-20",
   "category": "accesorio",
   "group": "garra",
   "order": 9,
-  "tagline": "Pinza eléctrica para cobots FAIRINO.",
-  "description": "Pinza eléctrica para cobots FAIRINO. Ficha técnica, compatibilidad y precio a consultar. El modelo 3D oficial está en las descargas.",
-  "highlights": [],
-  "images": [],
-  "specs": [],
+  "tagline": "Pinza centrante de tres dedos, 20 mm de carrera y hasta 80 N (referencia IR20-80C).",
+  "description": "Pinza eléctrica centrante de HITBOT: sus tres dedos se mueven a la vez y centran piezas redondas o cilíndricas; equivale a la referencia IR20-80C. Carrera de 20 mm, fuerza ajustable de 30 a 80 N y repetibilidad de ±0,03 mm, con el controlador integrado y control por Modbus RTU (RS485) o E/S.",
+  "highlights": [
+    "Tres dedos que centran la pieza solos",
+    "Fuerza ajustable de 30 a 80 N",
+    "Controlador integrado: Modbus RTU o E/S"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/pinza-ir20-80c/pinza-ir20-80c-oficial.png",
+      "alt": "Pinza eléctrica de tres dedos HITBOT Z-ECG-20, foto del fabricante"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Carrera total (ajustable)",
+      "value": "20",
+      "unit": "mm"
+    },
+    {
+      "label": "Fuerza de agarre (ajustable)",
+      "value": "30–80",
+      "unit": "N"
+    },
+    {
+      "label": "Repetibilidad",
+      "value": "±0,03",
+      "unit": "mm"
+    },
+    {
+      "label": "Tiempo de carrera simple",
+      "value": "0,5",
+      "unit": "s"
+    },
+    {
+      "label": "Peso de pieza recomendado",
+      "value": "≤ 1",
+      "unit": "kg"
+    },
+    {
+      "label": "Tipo de movimiento",
+      "value": "3 dedos de movimiento paralelo (centrante)"
+    },
+    {
+      "label": "Transmisión",
+      "value": "Cremallera + guía de bolas"
+    },
+    {
+      "label": "Peso",
+      "value": "1,5",
+      "unit": "kg"
+    },
+    {
+      "label": "Dimensiones",
+      "value": "114 × 124,5 × 114",
+      "unit": "mm"
+    },
+    {
+      "label": "Tensión",
+      "value": "24 V ±10 %"
+    },
+    {
+      "label": "Corriente nominal / pico",
+      "value": "0,8 / 2",
+      "unit": "A"
+    },
+    {
+      "label": "Potencia",
+      "value": "20",
+      "unit": "W"
+    },
+    {
+      "label": "Comunicación",
+      "value": "Modbus RTU (RS485) y E/S, controlador integrado"
+    }
+  ],
   "applications": [
     "pick-and-place",
     "manipulacion"
@@ -18,9 +89,9 @@
   "compatibleWith": [],
   "downloads": [
     {
-      "label": "Ficha técnica",
+      "label": "Ficha del Z-ECG-20 (web de HITBOT)",
       "type": "ficha",
-      "href": null
+      "href": "https://www.hitbotrobot.com/product/z-ecg-20-3-finger-gripper/"
     },
     {
       "label": "Modelo 3D",
@@ -36,9 +107,9 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": "https://fairino.es/descargas/",
-    "verified": false
+    "url": "https://www.hitbotrobot.com/product/z-ecg-20-3-finger-gripper/",
+    "verified": true
   },
   "seo": {},
-  "brand": "Inlux Robotics"
+  "brand": "HITBOT"
 }

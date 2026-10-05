@@ -1,14 +1,104 @@
 {
-  "name": "Pinza eléctrica IR20-100R",
-  "brand": "Inlux Robotics",
+  "name": "Pinza eléctrica giratoria HITBOT Z-ERG-20-100",
+  "brand": "HITBOT",
   "category": "accesorio",
   "group": "garra",
   "order": 22,
-  "tagline": "Pinza eléctrica para cobots FAIRINO.",
-  "description": "Pinza eléctrica para cobots FAIRINO. Ficha técnica, compatibilidad y precio a consultar.",
-  "highlights": [],
-  "images": [],
-  "specs": [],
+  "tagline": "Agarra y gira sin límite de vueltas: 20 mm de carrera y hasta 100 N (referencia IR20-100R).",
+  "description": "Pinza eléctrica de HITBOT que, además de agarrar, gira la pieza sin límite de vueltas; equivale a la referencia IR20-100R. Sirve para enroscar, orientar o dar la vuelta a piezas pequeñas. Carrera de 20 mm, fuerza de 30 a 100 N, hasta 1,5 N·m de par y 180 rpm, con el controlador integrado.",
+  "highlights": [
+    "Agarre y giro infinito en una sola herramienta",
+    "Hasta 1,5 N·m de par y 180 rpm",
+    "Controlador integrado: Modbus o E/S"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/pinza-ir20-100r/pinza-ir20-100r-oficial.png",
+      "alt": "Pinza eléctrica giratoria HITBOT Z-ERG-20-100, foto del fabricante"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Carrera total (ajustable)",
+      "value": "20",
+      "unit": "mm"
+    },
+    {
+      "label": "Fuerza de agarre (ajustable)",
+      "value": "30–100",
+      "unit": "N"
+    },
+    {
+      "label": "Repetibilidad",
+      "value": "±0,2",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso de pieza recomendado",
+      "value": "≤ 1",
+      "unit": "kg"
+    },
+    {
+      "label": "Tiempo de carrera simple",
+      "value": "0,3",
+      "unit": "s"
+    },
+    {
+      "label": "Par de giro máximo",
+      "value": "1,5",
+      "unit": "N·m"
+    },
+    {
+      "label": "Velocidad de giro máxima",
+      "value": "180",
+      "unit": "rpm"
+    },
+    {
+      "label": "Rango de giro",
+      "value": "Giro infinito (sin anillo rozante)"
+    },
+    {
+      "label": "Holgura de giro",
+      "value": "±1",
+      "unit": "°"
+    },
+    {
+      "label": "Transmisión",
+      "value": "Piñón-cremallera + guía lineal"
+    },
+    {
+      "label": "Peso",
+      "value": "1,2",
+      "unit": "kg"
+    },
+    {
+      "label": "Dimensiones",
+      "value": "54 × 54 × 170",
+      "unit": "mm"
+    },
+    {
+      "label": "Tensión",
+      "value": "24 V ±10 %"
+    },
+    {
+      "label": "Corriente nominal / máxima",
+      "value": "2 / 4",
+      "unit": "A"
+    },
+    {
+      "label": "Comunicación",
+      "value": "Modbus (RS485) y E/S, controlador integrado"
+    },
+    {
+      "label": "Protección",
+      "value": "IP40"
+    },
+    {
+      "label": "Temperatura de trabajo",
+      "value": "5–55",
+      "unit": "°C"
+    }
+  ],
   "applications": [
     "pick-and-place",
     "manipulacion"
@@ -19,9 +109,9 @@
   "compatibleWith": [],
   "downloads": [
     {
-      "label": "Ficha técnica",
+      "label": "Ficha del Z-ERG-20-100 (web de HITBOT)",
       "type": "ficha",
-      "href": null
+      "href": "https://www.hitbotrobot.com/product/z-efg-20-100-robotic-electric-gripper/"
     }
   ],
   "store": {
@@ -32,8 +122,8 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": null,
-    "verified": false
+    "url": "https://www.hitbotrobot.com/product/z-efg-20-100-robotic-electric-gripper/",
+    "verified": true
   },
   "seo": {}
 }

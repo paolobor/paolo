@@ -50,6 +50,29 @@ pone: la web dice 1,4 kg y el folleto 1,3 kg. Originales en `assets-src/fabrican
 Pendiente: confirmar el tamaño de pantalla del kit HMI (7" o 10,1"). No se pone el PFHd del SE2L porque la web y
 el catálogo de IDEC no coinciden.
 
+## Pinzas eléctricas IR (JODELL, HITBOT, ChangingTek y DH-Robotics)
+
+Las referencias IR son pinzas de otros fabricantes con nombre propio (carrera-fuerza: IR75-300 = 75 mm / 300 N).
+Se ha buscado el fabricante de cada una y la foto y los datos son los suyos. La ficha conserva la URL (el id) y cita
+la referencia IR en el texto.
+
+| Producto (id)     | Fabricante y modelo           | Seguridad   | Foto y datos                                                         |
+| ----------------- | ----------------------------- | ----------- | -------------------------------------------------------------------- |
+| pinza-ir75-300    | JODELL RG75-300               | Alta        | jodell-robotics.com (product-detail?id=5); el STEP de fairino.es es un archivo de JODELL |
+| pinza-ir120-130   | HITBOT Z-EFG-130              | Alta        | hitbotrobot.com, página Z-EFG-130                                   |
+| pinza-ir20-80c    | HITBOT Z-ECG-20               | Alta        | hitbotrobot.com, página Z-ECG-20; el STEP de fairino.es es «Z-ECG-20» |
+| pinza-ir20-100r   | HITBOT Z-ERG-20-100           | Alta        | hitbot.cc (foto, 800×450 sobre blanco, recortada); datos de hitbotrobot.com |
+| pinza-ir100-25    | ChangingTek CTAG2F90-D        | Media-alta  | en.changingtek.com/diandong/147 (foto reducida de 7680 px)          |
+| pinza-ir130-100c  | DH-Robotics CGI-100-170       | Media-alta  | en.dh-robotics.com/product/cg (solo la miniatura de 300×300)        |
+
+Pendiente:
+- IR100-25: ChangingTek da 90 mm de carrera; confirmar con el proveedor la carrera real de la que vendemos.
+- IR130-100C: el cuerpo de la foto de DH es gris oscuro; la que se vende podría ser plateada. La foto grande
+  (wp-content/uploads/2023/02/CGI-100-170.png) hay que bajarla a mano: la web de DH bloquea las descargas automáticas.
+- El grado IP de la Z-EFG-130 y la Z-ECG-20 no se pone: la web inglesa y la china de HITBOT no coinciden.
+
 ## Sin foto de fabricante
 
-- pinza-vacio-area y las pinzas IR: son de marca Inlux Robotics; su foto solo está en la web de Inlux. No se copia.
+- pinza-vacio-area: es de marca Inlux Robotics; su foto solo está en la web de Inlux. No se copia.
+- sensor-fuerza-par-inlux, cambiador-rapido, adaptador-doble-herramienta y adaptador-antorcha: no se ha podido
+  identificar un fabricante (los modelos 3D de fairino.es no lo dicen). Hacen falta fotos propias.
