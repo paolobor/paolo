@@ -92,8 +92,8 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
 - Inicio: la franja de logos es ahora la red de colaboradores (`src/data/partners.ts`): los 13 partners del vídeo
   de FDI «Únete a nuestra red de colaboradores», con número, nombre y ciudad. Logos recortados de sus fichas en el
   vídeo (`src/assets/images/partners/`); cambiarlos por los originales cuando los tengamos.
-- Sede: Yuncler (Toledo), confirmado por FAIRINO España (antes ponía Villaluenga de la Sagra, como el pie de
-  fairino.es). Falta la calle y el número: `site.address.street` está a null y sale como [DATO].
+- Sede: Avenida Miguel Ángel Guerra Sabrido, 70, 45529 Yuncler (Toledo), confirmada por FAIRINO España (antes ponía
+  Villaluenga de la Sagra, como el pie de fairino.es).
 - Configurador: tarjetas con la foto oficial de cada producto (como en la tienda).
 - Tienda: filtro de precio (desactivado mientras los precios estén a 0).
 

@@ -12,15 +12,16 @@ export const site = {
   // Logo oficial: cuando tengamos el SVG, guardarlo en /public/brand/ y poner aquí la ruta (p. ej. 'brand/logo-fairino.svg').
   logo: null as string | null,
 
-  // Instalaciones en Yuncler (Toledo), confirmado por FAIRINO España. Falta la calle: null → [DATO: calle y número].
+  // Instalaciones en Yuncler (Toledo), dirección confirmada por FAIRINO España. Si street es null sale [DATO: calle y número].
   address: {
-    street: null as string | null,
+    street: 'Avenida Miguel Ángel Guerra Sabrido, 70' as string | null,
     postalCode: '45529',
     city: 'Yuncler',
     region: 'Toledo',
     country: 'España',
     countryCode: 'ES',
-    mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Yuncler+45529+Toledo',
+    mapsUrl:
+      'https://www.google.com/maps/search/?api=1&query=Avenida+Miguel+%C3%81ngel+Guerra+Sabrido+70+45529+Yuncler+Toledo',
   },
 
   // Titular del sitio para el aviso legal y la privacidad. Datos tomados del aviso legal actual de fairino.es,
