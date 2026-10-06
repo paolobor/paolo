@@ -146,6 +146,12 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
 - Bloque de humanoides: el vídeo destacado es el oficial de FAIRINO en la WRC 2026 (IA física, YouTube DCkKewMlc3s);
   la ventana del bloque abre vídeos de YouTube (youtube-nocookie, solo al pulsar) además de los MP4.
 - **Lijado y pulido**: foto y vídeo oficiales de FAIRINO (YouTube 3XZFIwvE5ZM, «Thailand | Robotic Polishing»).
+- **Entrada en oscuro** (el cliente no quiere blanco al entrar en la web): la intro hace el zoom al anillo rojo de la
+  escena oscura del vídeo (1,2 s, antes del corte al plano blanco), lo enciende con un aro naranja y funde a negro con
+  un resplandor naranja; el vídeo de portada (`media/fairino-portada.*`) lleva solo los tramos oscuros y su póster es
+  oscuro. El fondo del bloque de humanoides, también solo escena oscura.
+- Configurador: pendiente meter los 41 accesorios en el paso 4 (ahora solo 7), con filtros por familia y la carga
+  útil que deja cada garra en el cobot elegido.
 - Pendiente: el vídeo «Physical AI» de la página guardada de inluxrobotics.es: falta que el cliente pase el archivo.
 - El sello del final del teaser dice «FAIRINO COBOT S.L. B22587982 ESPAÑA»: puede servir para el titular legal, que
   sigue pendiente de confirmar (no se ha cambiado nada en `site.ts`).

@@ -15,8 +15,10 @@ Entrada animada con el logotipo oficial de FAIRINO. Funciona de dos formas:
    - Otro destello recorre el logotipo, que se encoge un instante antes de lanzarse.
    - El logotipo se acerca a cámara y la cámara cruza por el hueco de la «O». El vídeo solo se ve a través de ese hueco, como un portal.
    - Al otro lado, el cobot sale de la sombra.
-   - Zoom rápido al anillo naranja de una articulación hasta cruzarlo.
-3. **Fundido a blanco** y salto a la web.
+   - Zoom al anillo rojo de una articulación, todavía en la escena oscura (el vídeo se para a 1,2 s): la imagen se
+     oscurece y un aro de luz naranja enciende el anillo al cruzarlo, como un portal.
+3. **Fundido a negro** con un resplandor naranja que sale del anillo, y entrada en la web (que también es oscura).
+   Nada de blanco: el cliente pidió que la entrada siga en la escena oscura.
 
 Se ve una vez por sesión del navegador; nunca la ven los buscadores ni las fichas de producto. Al final, dentro de
 la web la capa se funde y aparece la página; la página suelta salta a fairino.es.
@@ -61,9 +63,9 @@ Para verla otra vez sin el parámetro, cierra la pestaña: sessionStorage se bor
     con los bordes fundidos en negro), no recortado.
   - Dentro de la web, los estilos, scripts y el vídeo de la intro solo se descargan si toca verla.
 - **«Saltar intro»** (esquina superior derecha) lleva directo a la web (dentro de la web, también la tecla Esc).
-- **Movimiento reducido** (`prefers-reduced-motion`): sin vídeo. El texto aparece con un fundido y, al hacer clic, funde a blanco y entra.
+- **Movimiento reducido** (`prefers-reduced-motion`): sin vídeo. El texto aparece con un fundido y, al hacer clic, funde a negro y entra.
 - **Móvil:** logotipo más grande y algo por encima del centro, y «Toca para entrar» en lugar de «Haz clic».
-- **Si el vídeo no carga** (red lenta), la intro no se queda colgada: funde a blanco y entra.
+- **Si el vídeo no carga** (red lenta), la intro no se queda colgada: funde a negro y entra.
 - **Sin JavaScript:** la página suelta muestra el logotipo y un enlace «Entrar en fairino.es»; dentro de la web, la
   intro no aparece.
 
@@ -73,7 +75,8 @@ El vídeo es un montaje del vídeo oficial del FAIRINO FR3:
 - 0,16 s de negro;
 - el brazo saliendo de la sombra;
 - el plano del anillo rojo;
-- el anillo naranja sobre fondo blanco, que se congela en el segundo 2,44 (justo cuando empieza el zoom).
+- el anillo naranja sobre fondo blanco (desde 2,1 s; ya no se ve: el zoom empieza a 1,2 s, sobre el anillo rojo
+  de la escena oscura; posición en `RING` de `js/intro.js`).
 
 Se regenera con:
 

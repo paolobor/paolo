@@ -207,14 +207,18 @@
   100% { transform: translate(0, 0); }
 }
 
-/* ---------- Escena 3 ---------- */
+/* ---------- Escena 3 ----------
+   Fundido a negro (el nombre «whiteout» se queda por compatibilidad) con un resplandor naranja que sale del anillo;
+   la web, también oscura, aparece desde ahí. */
 .fi-whiteout {
   position: absolute;
   inset: 0;
   z-index: 8;
   display: grid;
   place-items: center;
-  background: #fff;
+  background:
+    radial-gradient(circle at var(--fi-rx, 50%) var(--fi-ry, 50%), rgba(255, 122, 26, 0.32), rgba(255, 90, 20, 0.08) 28%, transparent 55%),
+    #070504;
   opacity: 0;
   pointer-events: none;
 }
@@ -224,10 +228,24 @@
   letter-spacing: 0.28em;
   text-transform: uppercase;
   text-decoration: none;
-  color: #111;
+  color: #f5eee8;
   padding: 14px 20px;
-  border: 1px solid rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   border-radius: 999px;
+}
+
+/* Aro de luz que enciende el anillo al cruzarlo */
+.fi-iris {
+  position: absolute;
+  z-index: 6;
+  border-radius: 50%;
+  pointer-events: none;
+  border: 2px solid rgba(255, 150, 80, 0.95);
+  box-shadow:
+    0 0 18px 4px rgba(255, 106, 19, 0.75),
+    0 0 60px 14px rgba(255, 90, 20, 0.35),
+    inset 0 0 26px 6px rgba(255, 106, 19, 0.55);
+  will-change: transform, opacity;
 }
 .fi-whiteout.is-fallback {
   pointer-events: auto;

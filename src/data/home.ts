@@ -5,8 +5,10 @@ import { partners } from './partners';
 export const hero = {
   // Vídeo de fondo: guardar en /public/media/ (MP4 H.264 + WebM, 10–15 s, sin audio, ≤ 3 MB) y poner las rutas aquí
   // (p. ej. 'media/hero.mp4'). El póster es una foto en src/assets/images (p. ej. 'home/hero-poster.jpg').
-  // Vídeo oficial de la portada de fairino.es (wp-content/uploads/2025/10/video-portada.mp4), sin audio y comprimido
-  // para la web (1080p, 38 s). El póster es su primer fotograma.
+  // Vídeo oficial de la portada de fairino.es (wp-content/uploads/2025/10/video-portada.mp4), sin audio, 1080p. Solo
+  // los planos oscuros (el cliente no quiere que pase a blanco): fuera el plano blanco de los tres cobots que el
+  // original repite cada 4,7 s; los ocho tramos oscuros van encadenados con fundidos de 0,4 s (25 s). El póster es su
+  // primer fotograma.
   video: {
     mp4: 'media/fairino-portada.mp4' as string | null,
     webm: 'media/fairino-portada.webm' as string | null,
