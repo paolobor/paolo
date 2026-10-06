@@ -1,0 +1,73 @@
+{
+  "_comentario": "Tarifa de FAIRINO Cobot S.L. (FAIRINO España), julio de 2026, copiada tal cual del PDF del cliente «00. TARIFA FAIRINO. Julio 2026 new.pdf». Precios PVP en euros. «producto» enlaza con src/content/products/<id>.json (foto y ficha); las líneas sin «producto» solo están en la tarifa. La usa tools/catalogo/generar.mjs para el catálogo en PDF. No inventar precios: lo que no está aquí sale como «Consultar».",
+  "titulo": "Tarifa julio 2026",
+  "fecha": "Julio de 2026",
+  "notas": {
+    "cobots": [
+      "Precios para cobots con protección IP54. IP65: unos 500 € más.",
+      "Unidades fuera de stock: plazo de suministro de 45 días.",
+      "Envío: precio por unidad a cualquier punto de España."
+    ],
+    "soldadura": "En las estaciones de soldadura con marcado CE hay que sumar 1.500 € por modelo.",
+    "aplicaciones": "Precios de las estaciones en la modalidad FAIRINO CORE. Las modalidades STAR y READY se gestionan a través de colaboradores autorizados según la zona."
+  },
+  "cobots": [
+    { "producto": "fr3", "pvp": 4988, "envio": 30, "codigo": "FR3", "caja": { "peso": "21 kg", "medidas": "80 × 45 × 45 cm" } },
+    { "producto": "fr3wms", "pvp": 5620, "envio": 30, "codigo": "FR3 WMS", "caja": { "peso": "19 kg", "medidas": "80 × 45 × 45 cm" }, "nuevo": true },
+    { "producto": "fr3wml", "pvp": 5900, "envio": 30, "codigo": "FR3 WML", "caja": { "peso": "18 kg", "medidas": "80 × 45 × 45 cm" }, "nuevo": true },
+    { "producto": "fr5", "pvp": 5620, "envio": 52, "codigo": "FR5", "caja": { "peso": "29 kg", "medidas": "80 × 45 × 45 cm" } },
+    { "producto": "fr5-negro", "pvp": 6035, "envio": 52, "codigo": "FR5 black", "caja": { "peso": "29 kg", "medidas": "80 × 45 × 45 cm" } },
+    { "producto": "fr5wml", "pvp": 12025, "envio": 65, "codigo": "FR5 WML", "caja": { "peso": "45 kg", "medidas": null }, "nuevo": true },
+    { "producto": "fr10", "pvp": 11290, "envio": 65, "codigo": "FR10", "caja": { "peso": "48 kg", "medidas": "100 × 50 × 50 cm" } },
+    { "producto": "fr10-negro", "pvp": 11710, "envio": 65, "codigo": "FR10 black", "caja": { "peso": "48 kg", "medidas": "100 × 50 × 50 cm" } },
+    { "producto": "fr16", "pvp": 11290, "envio": 65, "codigo": "FR16", "caja": { "peso": "45 kg", "medidas": "100 × 50 × 50 cm" } },
+    { "producto": "fr20", "pvp": 13750, "envio": 85, "codigo": "FR20", "caja": { "peso": "100 kg", "medidas": "135 × 60 × 60 cm" } },
+    { "producto": "fr30", "pvp": 13750, "envio": 85, "codigo": "FR30", "caja": { "peso": "95 kg", "medidas": "135 × 60 × 60 cm" } }
+  ],
+  "controladoras": [
+    { "nombre": "Controladora para FR3, FR5, FR10 y FR16", "productos": ["ac-mini-controller-2kw", "dc-mini-controller-2kw"], "pvp": 956, "codigo": "CTROL 1" },
+    { "nombre": "Controladora para FR20 y FR30", "productos": ["ac-controller-5kw", "dc-controller-5kw"], "pvp": 1970, "codigo": "CTROL 2" }
+  ],
+  "accesorios": [
+    { "producto": "tarjeta-profinet-ethernetip", "nombre": "Tarjeta PROFINET", "pvp": 850, "envio": 10, "codigo": "TJPF-net" },
+    { "producto": "epg40-050", "nombre": "Gripper FAIRINO EPG40-50", "nota": "Eléctrica paralela", "pvp": 666, "codigo": "EPG40-50", "grupo": "garra" },
+    { "nombre": "Gripper WR.EPG2 (50-150)", "pvp": 690, "codigo": "EPG2 50-150", "grupo": "garra" },
+    { "nombre": "Gripper WR.EPG3 (10-10)", "pvp": 620, "codigo": "EPG3 10-10", "grupo": "garra" },
+    { "nombre": "Gripper WR.EPG4 (10-50)", "pvp": 660, "codigo": "EPG4 10-50", "grupo": "garra" },
+    { "producto": "pinza-ir75-300", "nombre": "Gripper WR.RG (75-300)", "pvp": 1850, "codigo": "RG 75-300", "grupo": "garra" },
+    { "nombre": "Actuador de vacío (ventosa) pequeño", "nota": "Small suction cup", "pvp": 899, "codigo": "SMALL SCF", "grupo": "garra" },
+    { "nombre": "Actuador de vacío (ventosa) grande", "nota": "Big suction cup", "pvp": 935, "codigo": "BIG SCF", "grupo": "garra" },
+    { "nombre": "Sensor de fuerza G2CX-6F-D80-H28", "pvp": 1263, "codigo": "G2X-6F-D80-H28", "grupo": "fuerza" },
+    { "producto": "xjc-6f-d80-h28-a", "nombre": "Sensor de fuerza XJC-6F-D80-H28", "pvp": 1278, "codigo": "XJC-6F-D80-H28", "grupo": "fuerza" },
+    { "producto": "orbbec-gemini-2", "nombre": "Cámara Orbbec Gemini", "pvp": 1295, "codigo": "ORBEC GEMINI CAMERA", "grupo": "vision" },
+    { "nombre": "Módulo de seguridad", "nota": "Seta de control del cobot", "pvp": 129, "codigo": "MSegur1", "grupo": "control" },
+    { "producto": "smart-tool", "nombre": "Smart Tool", "nota": "Herramienta inteligente para robot de soldadura", "pvp": 688, "codigo": "SMTool", "grupo": "control" },
+    { "producto": "teach-pendant", "nombre": "Teach Pendant (TP1)", "nota": "Consola para manejar el robot", "pvp": 650, "codigo": "TP1", "grupo": "control" },
+    { "producto": "kit-escaner-seguridad-idec", "nombre": "Escáner de seguridad 270°", "pvp": 1575, "codigo": "SAF-SCAN-270", "grupo": "control" }
+  ],
+  "ecosistema": [
+    { "nombre": "Track de 1 m (7.º eje)", "nota": "Séptimo eje para FR3 y FR5", "pvp": 7875, "codigo": "AX7-FR3/5", "nuevo": true },
+    { "nombre": "Track de 25 m (7.º eje)", "nota": "Séptimo eje para FR10 a FR30", "pvp": 47250, "codigo": "AX7-FR10/30", "nuevo": true },
+    { "nombre": "Columna telescópica", "pvp": 6630, "codigo": "CL-T" },
+    { "nombre": "Columna con base tamaño palé", "pvp": 1100, "codigo": "CL-P" },
+    { "nombre": "Columna con guías", "pvp": 1500, "codigo": "CL-G" },
+    { "nombre": "Columna con base en H", "pvp": 1045, "codigo": "CL-H" }
+  ],
+  "modalidades": [
+    { "nombre": "FAIRINO CORE", "texto": "Los elementos que configuran la aplicación. Para clientes que ya saben lo que hacen y quieren ir directos a producción." },
+    { "nombre": "FAIRINO STAR", "texto": "Los elementos necesarios más la formación de los operarios. Para empezar con una base sólida desde el primer día." },
+    { "nombre": "FAIRINO READY", "texto": "Instalación llave en mano: la solución completa, lista para producir." }
+  ],
+  "estaciones": [
+    { "nombre": "Estación de paletizado telescópica", "detalle": "Maneja 20 kg · altura 2.600 mm · 520 kg", "pvp": 26775, "envio": 440, "codigo": "ESTPTFR20", "nota": "Caja del cobot 1350 × 60 × 60 (100 kg) · caja de madera de la estación 1400 × 100 × 1300" },
+    { "nombre": "Estación de paletizado con columna fija", "pvp": null, "codigo": "ESTPFFR20" },
+    { "nombre": "Estación de soldadura FR3", "detalle": "Peso: 15 kg · alcance: 622 mm", "pvp": 15600, "codigo": "ESTSFR3", "incluye": "Antorcha y Smart Tool", "soldadura": true },
+    { "nombre": "Estación de soldadura FR3 negro", "detalle": "Peso: 15 kg · alcance: 622 mm", "pvp": 16015, "codigo": "ESTSFR3", "incluye": "Antorcha y Smart Tool", "soldadura": true, "nuevo": true },
+    { "nombre": "Estación de soldadura FR3WML", "detalle": "Peso: 11 kg · alcance: 922 mm", "pvp": 16500, "codigo": "ESTSFR3WML", "incluye": "Antorcha y Smart Tool", "soldadura": true },
+    { "nombre": "Estación de soldadura FR10", "detalle": "Peso: 40 kg · alcance: 1.400 mm", "pvp": 21555, "codigo": "ESTSFR10", "incluye": "Antorcha y Smart Tool", "soldadura": true },
+    { "nombre": "Estación de soldadura FR5WML", "detalle": "Peso: 45 kg · alcance: 1.900 mm", "pvp": 22650, "codigo": "ESTSFR5WML", "incluye": "Antorcha y Smart Tool", "soldadura": true, "nuevo": true }
+  ],
+  "logistica": [
+    { "nombre": "AGV SEER contrapesado", "nota": "Robot carretilla autónomo: maneja palés y cargas pesadas", "pvp": 65000, "codigo": "SEER-SCB2000", "nuevo": true }
+  ]
+}

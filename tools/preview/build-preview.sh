@@ -50,9 +50,9 @@ extra = [x for x in glob.glob('assets/**/*.woff', recursive=True)
          if any(os.path.basename(y).split('.')[0] == os.path.basename(x).split('.')[0] for y in glob.glob('assets/**/*.woff2', recursive=True))]
 extra += [x for x in glob.glob('media/*.webm') if os.path.exists(x[:-5] + '.mp4')]
 # Subconjuntos de letra que el español no usa (vietnamita y latín extendido: el navegador solo los pide para esos
-# caracteres) y la página 404, que la vista previa no sirve.
+# caracteres), la página 404 y la imagen para redes sociales, que la vista previa no usa.
 extra += [x for x in glob.glob('assets/*-vietnamese-*.woff2') + glob.glob('assets/*-latin-ext-*.woff2')]
-extra += [x for x in ['404.html'] if os.path.exists(x)]
+extra += [x for x in ['404.html', 'og-default.png'] if os.path.exists(x)]
 for x in extra:
     os.remove(x)
 print('duplicados para el navegador, fuera:', len(extra))

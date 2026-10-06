@@ -7,3 +7,6 @@ dist/
 
 # Caché de Python (scripts de tools/)
 __pycache__/
+
+# Caché del generador del catálogo (tools/catalogo)
+tools/catalogo/.cache/

@@ -152,6 +152,10 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
   oscuro. El fondo del bloque de humanoides, también solo escena oscura.
 - Configurador: pendiente meter los 41 accesorios en el paso 4 (ahora solo 7), con filtros por familia y la carga
   útil que deja cada garra en el cobot elegido.
+- **Catálogo y tarifa en PDF** (`tools/catalogo/`, ver su LEEME): 17 páginas con la tarifa de julio de 2026
+  (`src/data/tarifa-julio-2026.json`); en `/descargas/`, apartado «Catálogo online» con portada, «Descargar PDF» y
+  «Ver online». Los precios de la tienda siguen a 0 €: el cliente pidió los precios en el catálogo.
+- Cifras del inicio: solo 13.000+ y #1, con la cuenta repetida cada 5 s.
 - Pendiente: el vídeo «Physical AI» de la página guardada de inluxrobotics.es: falta que el cliente pase el archivo.
 - El sello del final del teaser dice «FAIRINO COBOT S.L. B22587982 ESPAÑA»: puede servir para el titular legal, que
   sigue pendiente de confirmar (no se ha cambiado nada en `site.ts`).

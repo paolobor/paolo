@@ -3,10 +3,25 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/ui/PageHero.astro';
 import Icon from '../components/ui/Icon.astro';
 import ContactBand from '../components/home/ContactBand.astro';
+import { getImage } from 'astro:assets';
 import { downloadGroups } from '../data/downloads';
 import { site } from '../data/site';
+import catalogo from '../data/catalogo.json';
+import { findImage } from '../lib/images';
+import { url } from '../lib/url';
 
 const total = downloadGroups.reduce((n, g) => n + g.items.length, 0);
+// Catálogo online: el PDF lo genera tools/catalogo/generar.mjs (con la tarifa de src/data/tarifa-julio-2026.json).
+const portadaImg = findImage(catalogo.portada);
+const portada = portadaImg ? await getImage({ src: portadaImg, format: 'webp', width: 560 }) : null;
+const pdfHref = url(catalogo.archivo);
+const mb = (catalogo.kb / 1024).toLocaleString('es-ES', { maximumFractionDigits: 1 });
+const desde = `${catalogo.desde.toLocaleString('de-DE')} €`;
+const destacados = [
+  { k: `${catalogo.cobots} cobots`, v: `desde ${desde}` },
+  { k: `${catalogo.accesorios}`, v: 'accesorios y equipos' },
+  { k: 'Estaciones', v: 'de soldadura y paletizado' },
+];
 ---
 
 <BaseLayout
@@ -17,12 +32,48 @@ const total = downloadGroups.reduce((n, g) => n + g.items.length, 0);
     crumbs={[{ label: 'Descargas' }]}
     eyebrow="Documentación"
     title="Centro de descargas"
-    lead={`${total} enlaces a la documentación oficial de FAIRINO: planos, CAD, manuales, SDK, software y certificados.`}
+    lead={`El catálogo con la tarifa de FAIRINO España y ${total} enlaces a la documentación oficial: planos, CAD, manuales, SDK, software y certificados.`}
   >
     <nav aria-label="Categorías de descarga" class="flex flex-wrap gap-2 pt-2">
+      <a href="#catalogo" class="btn btn-primary btn-sm"><Icon name="book-open" size={16} />Catálogo online</a>
       {downloadGroups.map((g) => <a href={`#${g.id}`} class="btn btn-ghost btn-sm"><Icon name={g.icon} size={16} />{g.title}</a>)}
     </nav>
   </PageHero>
+
+  <!-- Catálogo online -->
+  <section id="catalogo" class="cat section scroll-mt-20 relative isolate overflow-hidden" aria-labelledby="catalogo-title">
+    <div class="container-x grid items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
+      <a href={pdfHref} target="_blank" rel="noopener" class="cat-cover" data-reveal aria-label={`Ver el ${catalogo.titulo} (PDF)`}>
+        <span class="cat-sheet cat-sheet-2" aria-hidden="true"></span>
+        <span class="cat-sheet cat-sheet-1" aria-hidden="true"></span>
+        {portada && <img src={portada.src} alt="" width={portada.attributes.width} height={portada.attributes.height} loading="lazy" decoding="async" />}
+        <span class="cat-badge"><Icon name="file-text" size={14} />PDF · {catalogo.paginas} páginas</span>
+      </a>
+      <div class="grid gap-5" data-reveal style="--reveal-delay:100ms">
+        <p class="eyebrow flex items-center gap-2.5"><span class="cat-dot" aria-hidden="true"></span>Catálogo online</p>
+        <h2 id="catalogo-title" class="h-section max-w-[20ch]">Catálogo y tarifa <span class="text-signal">{catalogo.fecha.replace('de ', '').toLowerCase()}</span></h2>
+        <p class="lead">
+          Toda la gama FAIRINO con sus precios: cobots, controladoras, garras y pinzas, sensores, accesorios y soluciones llave en mano. Fácil
+          de ver en el móvil o en el ordenador, y con enlaces a cada ficha de la web.
+        </p>
+        <dl class="grid gap-px overflow-hidden rounded-[14px] border border-line bg-line sm:grid-cols-3">
+          {
+            destacados.map((d) => (
+              <div class="grid gap-1 bg-surface px-4 py-3.5">
+                <dt class="font-display text-lg font-bold leading-tight" style="font-stretch:115%">{d.k}</dt>
+                <dd class="text-xs text-muted">{d.v}</dd>
+              </div>
+            ))
+          }
+        </dl>
+        <div class="flex flex-wrap items-center gap-3 pt-1">
+          <a href={pdfHref} download class="btn btn-primary"><Icon name="download" size={18} />Descargar PDF</a>
+          <a href={pdfHref} target="_blank" rel="noopener" class="btn btn-secondary"><Icon name="book-open" size={18} />Ver online</a>
+          <span class="font-mono text-xs text-muted">PDF · {mb} MB · {catalogo.paginas} páginas</span>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section class="section">
     <div class="container-x grid gap-6">
@@ -65,3 +116,81 @@ const total = downloadGroups.reduce((n, g) => n + g.items.length, 0);
 
   <ContactBand />
 </BaseLayout>
+
+<style>
+  .cat {
+    background:
+      radial-gradient(ellipse 50% 60% at 22% 55%, rgb(255 106 19 / 0.14), transparent 70%),
+      var(--color-paper);
+    border-bottom: 1px solid var(--color-line);
+  }
+  /* Portada del catálogo: un poco girada, con dos hojas detrás y luz naranja */
+  .cat-cover {
+    position: relative;
+    display: block;
+    width: min(78%, 400px);
+    margin-inline: auto;
+    aspect-ratio: 210 / 297;
+    transform: rotate(-3deg);
+    transition: transform 0.5s var(--ease-out-soft);
+  }
+  .cat-cover img,
+  .cat-sheet {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+  }
+  .cat-cover img {
+    object-fit: cover;
+    border: 1px solid rgb(255 255 255 / 0.12);
+    box-shadow:
+      0 40px 80px -30px rgb(0 0 0 / 0.95),
+      0 0 60px -10px rgb(255 106 19 / 0.35);
+  }
+  .cat-sheet {
+    border: 1px solid rgb(255 255 255 / 0.08);
+    background: linear-gradient(160deg, #1c140f, #0b0705);
+  }
+  .cat-sheet-1 {
+    transform: rotate(4deg) translate(14px, 6px);
+  }
+  .cat-sheet-2 {
+    transform: rotate(8deg) translate(26px, 12px);
+    opacity: 0.6;
+  }
+  .cat-cover:hover,
+  .cat-cover:focus-visible {
+    transform: rotate(0deg) translateY(-6px);
+  }
+  .cat-badge {
+    position: absolute;
+    left: 50%;
+    bottom: -14px;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    transform: translateX(-50%) rotate(3deg);
+    background: var(--color-signal);
+    color: var(--color-ink);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    box-shadow: 0 10px 30px -10px rgb(255 106 19 / 0.8);
+  }
+  .cat-dot {
+    position: relative;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-signal);
+    box-shadow: 0 0 10px rgb(255 122 26 / 0.8);
+  }
+</style>
