@@ -6,6 +6,8 @@ import { footerNav } from '../data/navigation';
 import { url } from '../lib/url';
 
 const year = new Date().getFullYear();
+// «Ver la intro»: en la tienda la vuelve a poner en la propia tienda; en el resto de páginas, en el inicio.
+const introHref = /\/tienda\/?$/.test(Astro.url.pathname) ? url('tienda/?intro=1') : url('?intro=1');
 const columns = [
   { title: 'Productos', links: footerNav.productos },
   { title: 'Soluciones', links: footerNav.soluciones },
@@ -85,7 +87,7 @@ const columns = [
       <ul class="flex flex-wrap gap-x-5 gap-y-2">
         {footerNav.legal.map((l) => <li><a href={url(l.href)} class="hover:text-white">{l.label}</a></li>)}
         <li><button type="button" class="hover:text-white" data-cookie-settings>Configurar cookies</button></li>
-        <li><a href={url('?intro=1')} class="hover:text-white">Ver la intro</a></li>
+        <li><a href={introHref} class="hover:text-white">Ver la intro</a></li>
       </ul>
     </div>
   </div>
