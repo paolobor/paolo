@@ -104,6 +104,11 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
     FR20 inyectora (p2EVoFe9k9w), FR30 paletizado alimentario (vFznCarJe-0).
   - Sin vídeo propio del modelo, con vídeo general de FAIRINO: FR16 paletizado (t8kvBmfZqac), FR5WML soldadura (rpG0fAo9oWc).
   - FR5 Negro y FR10 Negro sin vídeo: los oficiales son del acabado blanco.
+- Fichas de cobot: sección «Vídeos» con todos los vídeos del canal oficial de FAIRINO que nombran el modelo en el
+  título o la descripción (`src/data/fairino-videos.ts`, método en `tools/videos/LEEME.md`): FR3C 1, FR5 7, FR10 5,
+  FR20 5, FR30 1. Se abren en una ventana (horizontal o vertical) y YouTube solo se carga al pulsar. FR5 Negro y
+  FR10 Negro muestran los de su modelo con un aviso de que salen en blanco.
+- Aplicación «Pintura»: foto (fotograma) y vídeo oficial de FAIRINO pintando dentro de su cabina (dy-bvYYtOwA).
 
 ## Higgsfield: estado
 

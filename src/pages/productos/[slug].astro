@@ -12,6 +12,7 @@ import { site } from '../../data/site';
 import { getProducts, categoryMeta, accessoryGroups, type Product } from '../../lib/catalog';
 import { url, whatsappLink, formatNumber } from '../../lib/url';
 import { SCENE_WIDTHS, CUTOUT_WIDTHS, findImage } from '../../lib/images';
+import { fairinoVideos, fairinoChannel } from '../../data/fairino-videos';
 
 export const getStaticPaths = (async () => {
   const products = await getProducts();
@@ -34,6 +35,25 @@ const mediaCount = d.images.length + off;
 const delName = d.category === 'accesorio' ? '' : ` del ${d.name}`;
 const meta = categoryMeta[d.category];
 const all = await getProducts();
+
+// Vídeos oficiales de FAIRINO del modelo, del más nuevo al más antiguo. Las versiones en negro muestran los de su
+// modelo (grabados con el acabado blanco).
+const videoModel = product.id.replace(/-negro$/, '');
+const videoModelName = all.find((p) => p.id === videoModel)?.data.name ?? d.name;
+const videos = await Promise.all(
+  fairinoVideos
+    .filter((v) => v.models.includes(videoModel))
+    .sort((a, b) => b.date.localeCompare(a.date))
+    .map(async (v) => {
+      const img = findImage(`videos/yt-${v.youtube}.jpg`);
+      return {
+        ...v,
+        poster: img ? (await getImage({ src: img, format: 'webp', width: 640 })).src : undefined,
+        when: new Date(`${v.date}T12:00:00Z`).toLocaleDateString('es-ES', { month: 'long', year: 'numeric' }),
+        length: v.duration == null ? null : `${Math.floor(v.duration / 60)}:${String(v.duration % 60).padStart(2, '0')}`,
+      };
+    }),
+);
 
 // Productos relacionados según la categoría.
 const byId = (ids: string[]) => all.filter((p) => ids.includes(p.id));
@@ -311,6 +331,7 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
     <ul class="tabs-row container-x flex gap-2 overflow-x-auto py-2.5 text-sm font-semibold" data-section-tabs>
       <li><a href="#especificaciones" class="tab">Especificaciones</a></li>
       <li><a href="#descargas" class="tab">{manual ? 'Manual y descargas' : 'Descargas'}</a></li>
+      {videos.length > 0 && <li><a href="#videos" class="tab">Vídeos</a></li>}
       {apps.length > 0 && <li><a href="#aplicaciones" class="tab">Aplicaciones</a></li>}
       {compatible.length > 0 && <li><a href="#compatibles" class="tab">Compatibles</a></li>}
     </ul>
@@ -440,6 +461,61 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
       </ul>
     </div>
   </section>
+
+  <!-- Vídeos oficiales de FAIRINO -->
+  {
+    videos.length > 0 && (
+      <section id="videos" class="section blueprint on-dark scroll-mt-32 text-white" aria-labelledby="videos-title">
+        <div class="container-x grid gap-10">
+          <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <div class="grid gap-3">
+              <p class="eyebrow flex items-center gap-2"><Icon name="play" size={16} />Vídeos oficiales de FAIRINO</p>
+              <h2 id="videos-title" class="h-section">El {videoModelName} en acción</h2>
+              <p class="lead">
+                {videos.length === 1 ? 'Vídeo' : `${videos.length} vídeos`} del canal oficial de FAIRINO en los que sale este modelo.
+                {videoModel !== product.id && ` Están grabados con el ${videoModelName} blanco: el ${d.name} es el mismo modelo en negro.`}
+              </p>
+            </div>
+            <a href={fairinoChannel} target="_blank" rel="noopener" class="btn btn-secondary shrink-0">
+              <Icon name="si:youtube" size={18} class="text-[#ff0033]" />
+              Canal de FAIRINO
+            </a>
+          </div>
+          <ul class="grid gap-x-5 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
+            {videos.map((v) => (
+              <li>
+                <button type="button" class="vid-card group grid w-full gap-3 text-left" data-video-open data-yt={v.youtube} data-title={v.title} data-short={v.short ? '' : undefined} aria-label={`Reproducir el vídeo: ${v.title}`}>
+                  <span class="relative block aspect-video overflow-hidden rounded-xl border border-white/10 bg-black">
+                    <img src={v.poster} alt="" width="640" height="360" loading="lazy" decoding="async" class="size-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    <span class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></span>
+                    <span class="absolute left-1/2 top-1/2 grid size-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-signal text-ink shadow-[0_10px_40px_-6px_rgba(255,106,19,0.7)] transition-transform group-hover:scale-110">
+                      <Icon name="play" size={24} />
+                    </span>
+                    <span class="absolute bottom-2 right-2 rounded-md bg-black/75 px-1.5 py-1 font-mono text-[0.68rem] leading-none text-white">{v.short ? 'Short' : v.length}</span>
+                  </span>
+                  <span class="grid gap-1">
+                    <span class="font-semibold leading-snug text-white group-hover:text-signal">{v.title}</span>
+                    <span class="text-sm capitalize-first text-white/60">{v.when}</span>
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+          <p class="font-mono text-[0.7rem] uppercase tracking-[0.12em] text-white/55">Se reproducen en YouTube al pulsar play: hasta entonces no se carga nada de YouTube.</p>
+        </div>
+
+        <dialog class="vid-modal" data-video-modal aria-labelledby="vid-modal-title">
+          <div class="vid-modal-box">
+            <div class="vid-frame" data-video-frame></div>
+            <div class="flex items-start justify-between gap-4">
+              <p id="vid-modal-title" class="font-semibold text-white" data-video-title></p>
+              <button type="button" class="btn btn-secondary btn-sm shrink-0" data-video-close><Icon name="x" size={16} />Cerrar</button>
+            </div>
+          </div>
+        </dialog>
+      </section>
+    )
+  }
 
   <!-- Aplicaciones -->
   {
@@ -593,9 +669,89 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
     border-color: var(--color-brand);
     box-shadow: 0 0 0 2px var(--color-brand);
   }
+
+  /* Vídeos oficiales: se abren en una ventana encima de la ficha (horizontal o vertical, según el vídeo). */
+  .vid-card:focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 4px;
+    border-radius: 14px;
+  }
+  .capitalize-first::first-letter {
+    text-transform: uppercase;
+  }
+  .vid-modal {
+    max-width: none;
+    max-height: none;
+    margin: auto;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    overflow: visible;
+  }
+  .vid-modal::backdrop {
+    background: rgb(0 0 0 / 0.85);
+    backdrop-filter: blur(4px);
+  }
+  .vid-modal-box {
+    display: grid;
+    gap: 0.9rem;
+    width: min(92vw, 1100px, calc((88vh - 4rem) * 16 / 9));
+  }
+  .vid-modal.is-short .vid-modal-box {
+    width: min(92vw, calc((88vh - 4rem) * 9 / 16));
+  }
+  .vid-frame {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 14px;
+    background: #000;
+  }
+  .vid-modal.is-short .vid-frame {
+    aspect-ratio: 9 / 16;
+  }
+  /* El iframe se crea con JS: no lleva el atributo de los estilos con ámbito. */
+  .vid-frame :global(iframe) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
 </style>
 
 <script>
+  // Vídeos oficiales: YouTube solo se carga al pulsar un vídeo y se descarga al cerrar la ventana.
+  const vidModal = document.querySelector<HTMLDialogElement>('[data-video-modal]');
+  if (vidModal) {
+    const frame = vidModal.querySelector<HTMLElement>('[data-video-frame]')!;
+    const caption = vidModal.querySelector<HTMLElement>('[data-video-title]')!;
+    let opener: HTMLElement | null = null;
+    document.querySelectorAll<HTMLButtonElement>('[data-video-open]').forEach((btn) =>
+      btn.addEventListener('click', () => {
+        opener = btn;
+        const iframe = document.createElement('iframe');
+        iframe.src = `https://www.youtube-nocookie.com/embed/${btn.dataset.yt}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+        iframe.title = btn.dataset.title ?? 'Vídeo de FAIRINO';
+        iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+        iframe.allowFullscreen = true;
+        frame.replaceChildren(iframe);
+        caption.textContent = btn.dataset.title ?? '';
+        vidModal.classList.toggle('is-short', btn.dataset.short !== undefined);
+        vidModal.showModal();
+      }),
+    );
+    vidModal.querySelector('[data-video-close]')?.addEventListener('click', () => vidModal.close());
+    // Un clic fuera del vídeo (en el fondo oscuro) también cierra.
+    vidModal.addEventListener('click', (e) => {
+      if (e.target === vidModal) vidModal.close();
+    });
+    vidModal.addEventListener('close', () => {
+      frame.replaceChildren();
+      opener?.focus();
+    });
+  }
+
   // Marca la sección de la ficha que se está viendo y la mantiene a la vista en la barra.
   const tabsRow = document.querySelector<HTMLElement>('[data-section-tabs]');
   if (tabsRow) {
