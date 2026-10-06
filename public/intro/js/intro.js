@@ -210,8 +210,8 @@
       intro.style.setProperty('--fi-heat', '0.35');
       return;
     }
+    // Al principio no hay chispas: solo salen al hacer clic (escena 2).
     gsap.ticker.add(tick);
-    var r = geo.rect;
     var sh = { p: -0.4 };
     var tl = gsap.timeline({ delay: 0.3 });
     tl.fromTo(word, { opacity: 0 }, { opacity: 1, duration: 1.5, ease: 'power2.out' }, 0)
@@ -224,50 +224,14 @@
           ease: 'power2.inOut',
           onUpdate: function () {
             setShine(sh.p);
-            // El «cabezal» que suelta chispas va con el destello, por la base de las letras.
-            sparks.head.on = sh.p > 0.02 && sh.p < 0.98;
-            sparks.head.x = r.left + sh.p * r.width;
-            sparks.head.y = r.bottom + 1;
-          },
-          onComplete: function () {
-            sparks.head.on = false;
           },
         },
         0.4,
       )
       .fromTo(spain, { opacity: 0, letterSpacing: '1.1em' }, { opacity: 1, letterSpacing: '0.62em', duration: 1.6, ease: 'expo.out' }, 1.5)
-      .call(function () {
-        sparks.idle.on = true;
-      }, null, 1.5)
       .to(skip, { opacity: 1, duration: 1.2, ease: 'power2.out' }, 1.3)
       .to(hint, { opacity: 1, duration: 1.4, ease: 'power2.out' }, 2.2);
   }
-
-  // Chispas desde el ratón cuando pasa cerca del logotipo.
-  var last = null;
-  window.addEventListener(
-    'pointermove',
-    function (e) {
-      if (!sparks || state !== 'idle' || !geo) return;
-      var now = performance.now();
-      if (last) {
-        var dt = Math.max(8, now - last.t) / 1000;
-        var vx = (e.clientX - last.x) / dt;
-        var vy = (e.clientY - last.y) / dt;
-        var sp = Math.sqrt(vx * vx + vy * vy);
-        var r = geo.rect;
-        var dx = Math.max(r.left - e.clientX, 0, e.clientX - r.right);
-        var dy = Math.max(r.top - e.clientY, 0, e.clientY - r.bottom);
-        var prox = 1 - Math.sqrt(dx * dx + dy * dy) / (geo.h * 2.4);
-        if (prox > 0) {
-          var n = Math.min(mobile ? 6 : 14, Math.round((sp / 260) * prox + Math.random() * prox * 1.4));
-          if (n > 0) sparks.emit(e.clientX, e.clientY, Math.atan2(vy, vx), 0.75, 160, 520 + Math.min(sp, 2400) * 0.3, n, { lifeMin: 0.3, lifeMax: 0.85 });
-        }
-      }
-      last = { x: e.clientX, y: e.clientY, t: now };
-    },
-    { passive: true },
-  );
 
   // ---------------------------------------------------------------- escena 2
   function enter() {
@@ -290,8 +254,6 @@
     measure().then(function () {
       var o = geo.o;
       var r = geo.rect;
-      sparks.idle.on = false;
-      sparks.head.on = false;
 
       // Escala a la que el hueco de la «O» cubre toda la pantalla.
       var W = window.innerWidth;

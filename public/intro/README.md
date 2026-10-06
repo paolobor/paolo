@@ -9,13 +9,11 @@ Entrada animada con el logotipo oficial de FAIRINO. Funciona de dos formas:
 
 ## Recorrido (unos 4,5 s desde el clic)
 
-1. **El logotipo de FAIRINO y chispas.** Las letras oficiales (SVG de fairino.com) se enfocan desde un desenfoque
-   mientras un destello recorre las letras; después aparece «SPAIN» en naranja.
-   - Chispas de amoladora salen del borde de las letras: tienen gravedad y rozamiento con el aire, se enfrían de blanco a rojo y algunas revientan en fragmentos.
-   - El resplandor naranja ilumina el texto desde abajo según cuántas chispas calientes haya.
-   - Al mover el ratón cerca, salen más chispas desde ese punto.
+1. **El logotipo de FAIRINO.** Las letras oficiales (SVG de fairino.com) se enfocan desde un desenfoque
+   mientras un destello recorre las letras; después aparece «SPAIN» en naranja. Al principio no hay chispas.
 2. **Clic en cualquier parte** (o Intro / espacio).
-   - Las chispas estallan y caen dentro de la «O».
+   - Salen chispas de amoladora del logotipo (con gravedad y rozamiento con el aire, se enfrían de blanco a rojo)
+     y caen dentro de la «O»; su resplandor naranja ilumina el texto desde abajo.
    - El logotipo se acerca a cámara y la cámara cruza por el hueco de la «O». El vídeo solo se ve a través de ese hueco, como un portal.
    - Al otro lado, el cobot sale de la sombra.
    - Zoom rápido al anillo naranja de una articulación hasta cruzarlo.
