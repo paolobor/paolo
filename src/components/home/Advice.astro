@@ -6,13 +6,20 @@ import { site } from '../../data/site';
 import { url } from '../../lib/url';
 ---
 
-<section class="section bg-paper fx-aurora" aria-labelledby="advice-title">
+<section class="advice section bg-paper fx-aurora" aria-labelledby="advice-title">
+  <!-- Fondo: rejilla técnica que se desplaza despacio y se funde hacia los bordes -->
+  <div class="advice-grid" aria-hidden="true"></div>
   <div class="container-x grid items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
-    <div class="fx-kenburns relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] lg:aspect-[5/4]" data-reveal>
-      <SmartImage src={advice.image} alt={advice.imageHint} sizes="(min-width: 1024px) 55vw, 100vw" />
-      <div class="absolute bottom-4 left-4 flex items-center gap-3 rounded-xl bg-surface/90 px-4 py-3 shadow-lg backdrop-blur">
-        <span class="fx-ping text-brand"><Icon name="map-pin" size={20} /></span>
-        <span class="text-sm"><b class="block">{site.address.city}</b><span class="text-muted">{site.address.region}{site.address.street && ` · ${site.address.street}`}</span></span>
+    <div class="relative" data-reveal>
+      <!-- halo naranja que gira detrás de la foto y esquinas de encuadre -->
+      <div class="advice-halo" aria-hidden="true"></div>
+      <div class="advice-frame" aria-hidden="true"></div>
+      <div class="fx-kenburns relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] border border-white/10 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.95)] lg:aspect-[5/4]">
+        <SmartImage src={advice.image} alt={advice.imageHint} sizes="(min-width: 1024px) 55vw, 100vw" />
+        <div class="absolute bottom-4 left-4 flex items-center gap-3 rounded-xl bg-surface/90 px-4 py-3 shadow-lg backdrop-blur">
+          <span class="fx-ping text-brand"><Icon name="map-pin" size={20} /></span>
+          <span class="text-sm"><b class="block">{site.address.city}</b><span class="text-muted">{site.address.region}{site.address.street && ` · ${site.address.street}`}</span></span>
+        </div>
       </div>
     </div>
 
@@ -35,3 +42,79 @@ import { url } from '../../lib/url';
     </div>
   </div>
 </section>
+
+<style>
+  .advice-grid {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgb(255 122 26 / 0.07) 1px, transparent 1px),
+      linear-gradient(90deg, rgb(255 122 26 / 0.07) 1px, transparent 1px);
+    background-size: 44px 44px;
+    -webkit-mask-image: radial-gradient(ellipse 75% 85% at 32% 50%, #000 15%, transparent 72%);
+    mask-image: radial-gradient(ellipse 75% 85% at 32% 50%, #000 15%, transparent 72%);
+    animation: advice-grid 30s linear infinite;
+  }
+  @keyframes advice-grid {
+    to {
+      background-position:
+        0 44px,
+        44px 0;
+    }
+  }
+  .advice-halo {
+    position: absolute;
+    inset: -9%;
+    z-index: -1;
+    border-radius: 50%;
+    pointer-events: none;
+    background: conic-gradient(
+      from var(--fx-a),
+      rgb(255 122 26 / 0) 0deg,
+      rgb(255 122 26 / 0.55) 70deg,
+      rgb(255 176 96 / 0.12) 160deg,
+      rgb(255 106 19 / 0.45) 250deg,
+      rgb(255 122 26 / 0) 360deg
+    );
+    filter: blur(70px);
+    opacity: 0.55;
+    animation: fx-beam 16s linear infinite;
+  }
+  /* Esquinas de encuadre, como un visor */
+  .advice-frame {
+    --c: rgb(255 122 26 / 0.85);
+    --l: 26px;
+    position: absolute;
+    inset: -12px;
+    z-index: 2;
+    pointer-events: none;
+    background:
+      linear-gradient(var(--c), var(--c)) left top / var(--l) 2px no-repeat,
+      linear-gradient(var(--c), var(--c)) left top / 2px var(--l) no-repeat,
+      linear-gradient(var(--c), var(--c)) right top / var(--l) 2px no-repeat,
+      linear-gradient(var(--c), var(--c)) right top / 2px var(--l) no-repeat,
+      linear-gradient(var(--c), var(--c)) left bottom / var(--l) 2px no-repeat,
+      linear-gradient(var(--c), var(--c)) left bottom / 2px var(--l) no-repeat,
+      linear-gradient(var(--c), var(--c)) right bottom / var(--l) 2px no-repeat,
+      linear-gradient(var(--c), var(--c)) right bottom / 2px var(--l) no-repeat;
+    animation: advice-frame 4.5s ease-in-out infinite;
+  }
+  @keyframes advice-frame {
+    0%,
+    100% {
+      inset: -12px;
+      opacity: 0.85;
+    }
+    50% {
+      inset: -18px;
+      opacity: 0.45;
+    }
+  }
+  @media (max-width: 639px) {
+    .advice-frame {
+      --l: 18px;
+    }
+  }
+</style>
