@@ -111,10 +111,9 @@ Vídeo oficial «🇹🇭 Thailand | Robotic Polishing» del canal de FAIRINO en
 20 s; canal comprobado con el oEmbed de YouTube): un cobot FAIRINO con una lijadora orbital en la brida pule una chapa
 sobre la mesa de trabajo de un taller.
 
-- src/assets/images/videos/yt-3XZFIwvE5ZM.jpg: miniatura oficial (1280×720, i.ytimg.com/vi/<id>/maxresdefault.jpg),
-  póster del vídeo en /aplicaciones/lijado-y-pulido/.
-- src/assets/images/aplicaciones/fairino-lijado-pulido.jpg: la misma imagen, como foto de la aplicación (cabecera y
-  tarjetas; encuadre en `imagePosition` de `src/data/applications.ts`).
+- src/assets/images/aplicaciones/fairino-lijado-pulido.jpg: miniatura oficial (1280×720,
+  i.ytimg.com/vi/<id>/maxresdefault.jpg), como foto de la aplicación (cabecera y tarjetas; encuadre en `imagePosition`
+  de `src/data/applications.ts`) y como póster del vídeo en /aplicaciones/lijado-y-pulido/.
 
 ## FAIRINO: IA física en la WRC 2026 (vídeo de YouTube)
 

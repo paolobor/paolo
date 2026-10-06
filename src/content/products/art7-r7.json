@@ -14,10 +14,6 @@
     {
       "src": "../../assets/products/art7-r7/art7-r7-oficial.png",
       "alt": "ART7 R7, plataforma de brazo humanoide de FAIRINO (del teaser oficial)"
-    },
-    {
-      "src": "../../assets/products/art7-r7/art7-r7-teaser-datos.jpg",
-      "alt": "ART7 R7: 714 mm de alcance, 7 kg por brazo y ±0,03 mm de repetibilidad (teaser oficial de FAIRINO)"
     }
   ],
   "video": {
@@ -30,26 +26,81 @@
   "reachMm": 714,
   "repeatabilityMm": 0.03,
   "specs": [
-    { "label": "Tipo", "value": "Plataforma de doble brazo humanoide" },
-    { "label": "Ejes por brazo", "value": 7 },
-    { "label": "Carga por brazo", "value": 7, "unit": "kg" },
-    { "label": "Alcance", "value": 714, "unit": "mm" },
-    { "label": "Repetibilidad", "value": "±0,03", "unit": "mm" },
-    { "label": "Velocidad TCP típica", "value": "1,2", "unit": "m/s" },
-    { "label": "Muñeca", "value": "Cruzada" },
-    { "label": "Sensor de par", "value": "En cada articulación" },
-    { "label": "Muestreo del sensor", "value": "≥ 5", "unit": "kHz" },
-    { "label": "Precisión de control de fuerza", "value": "≤ 0,15 N · ≤ 0,1 N·m" },
-    { "label": "Software", "value": "ROS2 Humble · MoveIt2 · SDK C++" },
-    { "label": "Procesador", "value": "RK3588 · NPU 6 TOPS" },
-    { "label": "Peso", "value": null, "unit": "kg" },
-    { "label": "Certificación", "value": "CE en proceso" },
-    { "label": "Uso", "value": "I+D, investigación, educación, demostración y prototipos" }
+    {
+      "label": "Tipo",
+      "value": "Plataforma de doble brazo humanoide"
+    },
+    {
+      "label": "Ejes por brazo",
+      "value": 7
+    },
+    {
+      "label": "Carga por brazo",
+      "value": 7,
+      "unit": "kg"
+    },
+    {
+      "label": "Alcance",
+      "value": 714,
+      "unit": "mm"
+    },
+    {
+      "label": "Repetibilidad",
+      "value": "±0,03",
+      "unit": "mm"
+    },
+    {
+      "label": "Velocidad TCP típica",
+      "value": "1,2",
+      "unit": "m/s"
+    },
+    {
+      "label": "Muñeca",
+      "value": "Cruzada"
+    },
+    {
+      "label": "Sensor de par",
+      "value": "En cada articulación"
+    },
+    {
+      "label": "Muestreo del sensor",
+      "value": "≥ 5",
+      "unit": "kHz"
+    },
+    {
+      "label": "Precisión de control de fuerza",
+      "value": "≤ 0,15 N · ≤ 0,1 N·m"
+    },
+    {
+      "label": "Software",
+      "value": "ROS2 Humble · MoveIt2 · SDK C++"
+    },
+    {
+      "label": "Procesador",
+      "value": "RK3588 · NPU 6 TOPS"
+    },
+    {
+      "label": "Peso",
+      "value": null,
+      "unit": "kg"
+    },
+    {
+      "label": "Certificación",
+      "value": "CE en proceso"
+    },
+    {
+      "label": "Uso",
+      "value": "I+D, investigación, educación, demostración y prototipos"
+    }
   ],
   "applications": [],
   "compatibleWith": [],
   "downloads": [
-    { "label": "Ficha técnica", "type": "ficha", "href": null }
+    {
+      "label": "Ficha técnica",
+      "type": "ficha",
+      "href": null
+    }
   ],
   "source": {
     "url": "Teaser oficial «ART7 R7» de FAIRINO (vídeo facilitado por el cliente el 6 de octubre de 2026)",

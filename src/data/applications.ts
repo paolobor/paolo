@@ -164,7 +164,8 @@ export const applications: Application[] = [
     gallery: [],
     video: {
       youtube: '3XZFIwvE5ZM',
-      poster: 'videos/yt-3XZFIwvE5ZM.jpg',
+      // póster: la misma miniatura oficial que la foto de la aplicación
+      poster: 'aplicaciones/fairino-lijado-pulido.jpg',
       title: 'Puliendo una chapa en Tailandia',
       text: 'Vídeo oficial de FAIRINO: el cobot, con una lijadora orbital en la brida, pule una chapa sujeta sobre la mesa de trabajo de un taller.',
     },
