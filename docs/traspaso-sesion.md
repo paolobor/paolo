@@ -110,6 +110,10 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
   FR20 5, FR30 1. Se abren en una ventana (horizontal o vertical) y YouTube solo se carga al pulsar. FR5 Negro y
   FR10 Negro muestran los de su modelo con un aviso de que salen en blanco.
 - Aplicación «Pintura»: foto (fotograma) y vídeo oficial de FAIRINO pintando dentro de su cabina (dy-bvYYtOwA).
+- Inicio, «Ecosistema FAIRINO»: de fondo, un FAIRINO soldando (vídeo oficial de fairino.com, el bucle de su aplicación
+  de soldadura `public/uploads/files/20260119/045d54ba….mp4`), recortado a 8,9 s sin los destellos más fuertes,
+  sin audio (`public/media/fairino-ecosistema.{webm,mp4}`, ~1 MB cada uno). Solo se carga con la sección a la vista,
+  tiene botón de pausa y con «movimiento reducido» o ahorro de datos se queda en el fotograma fijo.
 
 ## Higgsfield: estado
 
