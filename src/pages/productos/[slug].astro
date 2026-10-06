@@ -15,6 +15,7 @@ import { getProducts, categoryMeta, accessoryGroups, type Product } from '../../
 import { url, whatsappLink, formatNumber } from '../../lib/url';
 import { SCENE_WIDTHS, CUTOUT_WIDTHS, findImage } from '../../lib/images';
 import { fairinoVideos, fairinoChannel } from '../../data/fairino-videos';
+import { configSlot } from '../../data/configurator';
 
 export const getStaticPaths = (async () => {
   const products = await getProducts();
@@ -26,6 +27,8 @@ interface Props {
 }
 const { product } = Astro.props;
 const d = product.data;
+// Hueco del configurador: todos los accesorios entran en el paso 4 (src/data/configurator.ts).
+const cfgSlot = configSlot(product);
 // Si el producto tiene vídeo, va el primero en la galería y las fotos se corren un puesto.
 const posterImg = d.video ? findImage(d.video.poster) : null;
 const videoPoster = posterImg ? (await getImage({ src: posterImg, format: 'webp', width: Math.min(1280, posterImg.width) })).src : undefined;
@@ -310,12 +313,12 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
             Solicitar presupuesto
           </a>
           {
-            d.configurator && (
+            cfgSlot && (
               <button
                 type="button"
                 class="btn btn-secondary"
                 data-add-config={product.id}
-                data-slot={d.configurator.slot}
+                data-slot={cfgSlot}
                 data-compat={d.category === 'cobot' ? d.compatibleWith.join(',') : undefined}
               >
                 <Icon name="plus" size={18} />

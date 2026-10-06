@@ -4,6 +4,7 @@ import Icon from './ui/Icon.astro';
 import SmartImage from './ui/SmartImage.astro';
 import { applications } from '../data/applications';
 import { url, formatNumber } from '../lib/url';
+import { configSlot } from '../data/configurator';
 
 interface Props {
   product: CollectionEntry<'products'>;
@@ -11,6 +12,7 @@ interface Props {
 }
 const { product, headingLevel: H = 'h3' } = Astro.props;
 const d = product.data;
+const cfgSlot = configSlot(product);
 const categoryLabel = { cobot: 'Cobot', controlador: 'Controlador', accesorio: 'Accesorio' }[d.category];
 const appNames = d.applications
   .map((slug) => applications.find((a) => a.slug === slug)?.name)
@@ -79,12 +81,12 @@ const readout =
     )}
     <div class="mt-auto flex flex-wrap gap-2 pt-1">
       <a href={url(`productos/${product.id}/`)} class="btn btn-primary btn-sm">Ver ficha</a>
-      {d.configurator && (
+      {cfgSlot && (
         <button
           type="button"
           class="btn btn-secondary btn-sm"
           data-add-config={product.id}
-          data-slot={d.configurator.slot}
+          data-slot={cfgSlot}
           data-compat={d.category === 'cobot' ? d.compatibleWith.join(',') : undefined}
           aria-label={`Añadir ${d.name} al configurador`}
         >

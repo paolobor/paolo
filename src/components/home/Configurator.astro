@@ -5,6 +5,7 @@ import SmartImage from '../ui/SmartImage.astro';
 import { site } from '../../data/site';
 import { hero } from '../../data/home';
 import { url, formatNumber, formatPrice } from '../../lib/url';
+import { accessoryFamilies, configSlot, isOnWrist, needs, specWeightKg, formatWeight } from '../../data/configurator';
 
 interface Props {
   // Encabezado propio en /configurador/ (allí el título es el h1 de la página).
@@ -13,24 +14,36 @@ interface Props {
 const { standalone = false } = Astro.props;
 
 const all = (await getCollection('products')).sort((a, b) => a.data.order - b.data.order);
+const byId = new Map(all.map((p) => [p.id, p]));
 const cobots = all.filter((p) => p.data.configurator?.slot === 'cobot');
 const controllers = all.filter((p) => p.data.configurator?.slot === 'controlador');
-const accessorySlots = [
-  { slot: 'gripper', label: 'Garra' },
-  { slot: 'camara', label: 'Cámara 3D' },
-  { slot: 'fuerza', label: 'Sensor de fuerza' },
-  { slot: 'safety', label: 'Seguridad' },
-  { slot: 'smarttool', label: 'Enseñanza manual' },
-  { slot: 'pendant', label: 'Programación' },
-];
-const accessories = accessorySlots.flatMap((s) =>
-  all.filter((p) => p.data.configurator?.slot === s.slot).map((p) => ({ entry: p, slotLabel: s.label })),
-);
 
-const priceAttr = (p: { data: { configurator?: { price: number | null } } }) =>
-  site.showPrices && p.data.configurator?.price != null ? String(p.data.configurator.price) : undefined;
-const priceText = (p: { data: { configurator?: { price: number | null } } }) =>
-  site.showPrices ? (p.data.configurator?.price != null ? formatPrice(p.data.configurator.price, site.currency) : 'Consultar') : null;
+// Paso 4: todos los accesorios del catálogo por familias (src/data/configurator.ts). Lo de una familia que no esté en
+// la lista sale al final, en «Otros».
+const accessoryEntries = all.filter((p) => configSlot(p) && p.data.category === 'accesorio');
+const knownFamilies = new Set(accessoryFamilies.map((f) => f.id));
+const families = [
+  ...accessoryFamilies,
+  { id: 'otros', label: 'Otros', short: 'Accesorio', icon: 'box', slot: 'accesorio' },
+]
+  .map((f) => ({
+    ...f,
+    items: accessoryEntries
+      .filter((p) => (f.id === 'otros' ? !knownFamilies.has(p.data.group ?? '') : p.data.group === f.id))
+      .map((p) => {
+        const wrist = isOnWrist(p);
+        const need = needs[p.id] ? byId.get(needs[p.id]) : undefined;
+        return { entry: p, slot: configSlot(p)!, wrist, kg: wrist ? specWeightKg(p.data.specs) : null, needName: need?.data.name };
+      }),
+  }))
+  .filter((f) => f.items.length);
+const accCount = accessoryEntries.length;
+
+type Priced = { data: { configurator?: { price: number | null }; store: { price: number | null } } };
+const priceOf = (p: Priced) => p.data.configurator?.price ?? p.data.store.price;
+const priceAttr = (p: Priced) => (site.showPrices && priceOf(p) != null ? String(priceOf(p)) : undefined);
+const priceText = (p: Priced) =>
+  site.showPrices ? (priceOf(p) != null ? formatPrice(priceOf(p)!, site.currency) : 'Consultar') : null;
 
 const steps = ['Cobot', 'Versión', 'Controlador', 'Accesorios', 'Presupuesto'];
 const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
@@ -85,6 +98,7 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
                     checked={p.id === defaultCobot}
                     data-name={p.data.name}
                     data-price={priceAttr(p)}
+                    data-payload={p.data.payloadKg ?? undefined}
                   />
                   <span class="opt-img" aria-hidden="true">
                     <span class="absolute inset-0">
@@ -175,35 +189,78 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
         <!-- 4. Accesorios -->
         <fieldset class="cfg-step" data-step="3">
           <legend class="cfg-legend">4 · Accesorios</legend>
-          <p class="cfg-hint">Todos son del ecosistema FAIRINO y compatibles entre sí. Marca los que quieras.</p>
-          <div class="grid gap-3 sm:grid-cols-2">
+          <p class="cfg-hint">
+            Los {accCount} accesorios del catálogo, para cualquier cobot FAIRINO. Lo que va en la muñeca resta de la carga útil:
+            con el cobot elegido te decimos cuánto queda para la pieza, y lo que no le encaja se desactiva.
+          </p>
+          <div class="acc-filters" role="group" aria-label="Filtrar accesorios por familia" data-acc-filters>
+            <button type="button" class="acc-chip" data-acc-filter="todos" aria-pressed="true">
+              <Icon name="layers" size={15} />
+              Todos
+              <span class="acc-chip-n">{accCount}</span>
+            </button>
             {
-              accessories.map(({ entry: p, slotLabel }) => (
-                <label class="opt opt-row">
-                  <input
-                    type="checkbox"
-                    name="accesorios"
-                    value={p.id}
-                    class="sr-only"
-                    data-name={p.data.name}
-                    data-slot={p.data.configurator?.slot}
-                    data-price={priceAttr(p)}
-                  />
-                  <span class="check" aria-hidden="true"><Icon name="check" size={14} strokeWidth={3} /></span>
-                  <span class="opt-thumb" aria-hidden="true">
-                    <span class="absolute inset-0">
-                      <SmartImage src={p.data.images[0]?.src} alt="" hint={p.data.name} tone="dark" fit="contain" sizes="72px" class="p-1.5" />
-                    </span>
-                  </span>
-                  <span class="grid">
-                    <span class="opt-meta uppercase tracking-[0.1em]">{slotLabel}</span>
-                    <span class="font-semibold">{p.data.name}</span>
-                  </span>
-                  {priceText(p) && <span class="opt-price ml-auto">{priceText(p)}</span>}
-                </label>
+              families.map((f) => (
+                <button type="button" class="acc-chip" data-acc-filter={f.id} aria-pressed="false">
+                  <Icon name={f.icon} size={15} />
+                  {f.label}
+                  <span class="acc-chip-n">{f.items.length}</span>
+                </button>
               ))
             }
           </div>
+          {
+            families.map((f) => (
+              <section class="acc-family" data-acc-family={f.id} aria-labelledby={`acc-h-${f.id}`}>
+                <h3 id={`acc-h-${f.id}`} class="acc-family-title">
+                  <Icon name={f.icon} size={17} class="text-signal" />
+                  {f.label}
+                  <span class="acc-family-n">{f.items.length}</span>
+                </h3>
+                <div class="grid gap-3 sm:grid-cols-2">
+                  {f.items.map(({ entry: p, slot, wrist, kg, needName }) => (
+                    <label class="opt opt-row">
+                      <input
+                        type="checkbox"
+                        name="accesorios"
+                        value={p.id}
+                        class="sr-only"
+                        data-name={p.data.name}
+                        data-slot={slot}
+                        data-family={f.short}
+                        data-price={priceAttr(p)}
+                        data-compat={p.data.compatibleWith.length ? p.data.compatibleWith.join(',') : undefined}
+                        data-wrist={wrist ? '' : undefined}
+                        data-kg={kg ?? undefined}
+                      />
+                      <span class="check" aria-hidden="true">
+                        <Icon name="check" size={14} strokeWidth={3} />
+                      </span>
+                      <span class="opt-thumb" aria-hidden="true">
+                        <span class="absolute inset-0">
+                          <SmartImage src={p.data.images[0]?.src} alt="" hint={p.data.name} tone="dark" fit="contain" sizes="72px" class="p-1.5" />
+                        </span>
+                      </span>
+                      <span class="grid min-w-0 gap-0.5">
+                        <span class="opt-meta uppercase tracking-[0.1em]">{p.data.brand}</span>
+                        <span class="font-semibold leading-snug">{p.data.name}</span>
+                        {wrist && (
+                          <span class="opt-meta opt-load" data-acc-load data-base={kg != null ? `${formatWeight(kg)} en la muñeca` : 'En la muñeca · peso a consultar'}>
+                            {kg != null ? `${formatWeight(kg)} en la muñeca` : 'En la muñeca · peso a consultar'}
+                          </span>
+                        )}
+                        {needName && <span class="opt-meta opt-needs">Va con: {needName}</span>}
+                        <span class="opt-meta opt-incompat" data-acc-incompat>
+                          No compatible con el cobot elegido
+                        </span>
+                      </span>
+                      {priceText(p) && <span class="opt-price ml-auto">{priceText(p)}</span>}
+                    </label>
+                  ))}
+                </div>
+              </section>
+            ))
+          }
         </fieldset>
 
         <!-- 5. Presupuesto -->
@@ -320,11 +377,26 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
               <rect x="294" y="116" width="5" height="15" rx="1" class="part" />
               <text x="288" y="146" class="lbl">GARRA</text>
             </g>
+            <g data-node="montaje">
+              <rect x="314" y="168" width="36" height="6" rx="1.5" class="part" />
+              <path d="M319 174 V198 M345 174 V198 M319 188 H345" class="detail" />
+              <text x="332" y="160" class="lbl">MONTAJE</text>
+            </g>
           </svg>
 
           <ul class="grid gap-px border-t border-white/10 bg-white/5 text-sm" data-cfg-list>
             <li class="bg-navy px-5 py-3 text-mist">Elige un cobot para empezar.</li>
           </ul>
+
+          <!-- Carga en la muñeca: lo que pesan los accesorios de la brida frente a la carga útil del cobot -->
+          <div class="cfg-load border-t border-white/10 px-5 py-4" data-cfg-load hidden>
+            <p class="flex items-baseline justify-between gap-3 font-mono text-xs">
+              <span class="text-mist">Carga en la muñeca (orientativa)</span>
+              <span class="text-white" data-cfg-load-val></span>
+            </p>
+            <div class="cfg-load-bar mt-2" aria-hidden="true"><span data-cfg-load-fill></span></div>
+            <p class="mt-2 text-xs leading-relaxed text-mist" data-cfg-load-note></p>
+          </div>
 
           <div class="grid gap-3 border-t border-white/10 px-5 py-5">
             {
@@ -502,6 +574,112 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
     display: block;
     color: #f3d98a;
   }
+  .opt-load.is-tight {
+    color: #f3d98a;
+  }
+  .opt-needs {
+    color: #d9c7b8;
+  }
+
+  /* Paso 4: filtros por familia y bloques de cada familia */
+  .acc-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 1.25rem;
+  }
+  :global(html:not(.js)) .acc-filters {
+    display: none;
+  }
+  .acc-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.4rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid rgb(255 255 255 / 0.16);
+    font-size: 0.85rem;
+    color: var(--color-mist);
+    transition:
+      background-color 0.2s,
+      border-color 0.2s,
+      color 0.2s;
+  }
+  .acc-chip:hover {
+    border-color: rgb(255 255 255 / 0.4);
+    color: #fff;
+  }
+  .acc-chip[aria-pressed='true'] {
+    background: var(--color-signal);
+    border-color: var(--color-signal);
+    color: var(--color-ink);
+  }
+  .acc-chip-n {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    opacity: 0.75;
+  }
+  /* Punto naranja: hay algo marcado en esa familia */
+  .acc-chip[data-has-sel]::after {
+    content: '';
+    width: 0.4rem;
+    height: 0.4rem;
+    border-radius: 999px;
+    background: var(--color-signal);
+  }
+  .acc-chip[aria-pressed='true'][data-has-sel]::after {
+    background: var(--color-ink);
+  }
+  .acc-family:not([hidden]) ~ .acc-family:not([hidden]) {
+    margin-top: 1.75rem;
+  }
+  .acc-family-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgb(255 255 255 / 0.1);
+    font-family: var(--font-display);
+    font-stretch: 112%;
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+  .acc-family-n {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 400;
+    color: var(--color-mist);
+  }
+
+  /* Carga en la muñeca */
+  .cfg-load-bar {
+    height: 6px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.08);
+    overflow: hidden;
+  }
+  .cfg-load-bar span {
+    display: block;
+    height: 100%;
+    width: var(--load, 0%);
+    border-radius: inherit;
+    background: var(--color-signal);
+    transition:
+      width 0.4s ease,
+      background-color 0.3s;
+  }
+  .cfg-load[data-level='tight'] .cfg-load-bar span {
+    background: #f3d98a;
+  }
+  .cfg-load[data-level='over'] .cfg-load-bar span {
+    background: #ff5a4f;
+  }
+  .cfg-load[data-level='over'] [data-cfg-load-note] {
+    color: #ffb4ad;
+  }
+
   .check {
     display: grid;
     place-items: center;
@@ -634,11 +812,24 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
     const modelLabel = root.querySelector<SVGTextElement>('[data-cfg-model]');
     const versionGroups = [...form.querySelectorAll<HTMLElement>('[data-versions-for]')];
     const versionsEmpty = form.querySelector<HTMLElement>('[data-versions-empty]');
+    const accInputs = [...form.querySelectorAll<HTMLInputElement>('input[name="accesorios"]')];
+    const chips = [...form.querySelectorAll<HTMLButtonElement>('[data-acc-filter]')];
+    const families = [...form.querySelectorAll<HTMLElement>('[data-acc-family]')];
+    const loadBox = root.querySelector<HTMLElement>('[data-cfg-load]');
     let current = 0;
 
     const fmt = new Intl.NumberFormat('es-ES', { style: 'currency', currency: cfg.currency, maximumFractionDigits: 0 });
     const checked = (name: string) => form.querySelector<HTMLInputElement>(`input[name="${name}"]:checked:not(:disabled)`);
-    const checkedAll = (name: string) => [...form.querySelectorAll<HTMLInputElement>(`input[name="${name}"]:checked`)];
+    const checkedAll = (name: string) => [...form.querySelectorAll<HTMLInputElement>(`input[name="${name}"]:checked:not(:disabled)`)];
+    // 0,097 → «97 g»; 1,5 → «1,5 kg» (igual que formatWeight de src/data/configurator.ts)
+    const kgText = (kg: number) =>
+      kg <= 0 ? '0 kg' : kg < 1 ? `${Math.round(kg * 1000)} g` : `${kg.toLocaleString('es-ES', { maximumFractionDigits: 3 })} kg`;
+    // Cobot elegido con su carga útil (null con «No lo tengo claro» o sin elegir)
+    const chosenCobot = () => {
+      const c = checked('cobot');
+      const payload = Number(c?.dataset.payload);
+      return c && c.value !== 'asesoramiento' && payload > 0 ? { id: c.value, name: c.dataset.name!, payload } : null;
+    };
 
     type Item = { label: string; name: string; slot: string; price: number | null };
 
@@ -664,7 +855,7 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
         });
       }
       if (ctrl) out.push({ label: 'Controlador', name: ctrl.dataset.name!, slot: 'controlador', price: price(ctrl) });
-      accs.forEach((a) => out.push({ label: 'Accesorio', name: a.dataset.name!, slot: a.dataset.slot!, price: price(a) }));
+      accs.forEach((a) => out.push({ label: a.dataset.family || 'Accesorio', name: a.dataset.name!, slot: a.dataset.slot!, price: price(a) }));
       return out;
     };
 
@@ -696,6 +887,60 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
         i.disabled = !ok;
         if (!ok) i.checked = false;
       });
+    };
+
+    // Accesorios: se desactiva lo que no es compatible con el cobot elegido o pesa más que su carga útil, y cada uno
+    // de la muñeca dice cuánta carga deja para la pieza.
+    const syncAccessories = () => {
+      const cobot = chosenCobot();
+      accInputs.forEach((i) => {
+        const label = i.closest('label');
+        const kg = i.dataset.kg ? Number(i.dataset.kg) : null;
+        const compat = i.dataset.compat ? i.dataset.compat.split(',') : null;
+        let why = '';
+        if (cobot && compat && !compat.includes(cobot.id)) why = `No compatible con el ${cobot.name}`;
+        else if (cobot && kg != null && kg >= cobot.payload) why = `Pesa más que la carga del ${cobot.name} (${kgText(cobot.payload)})`;
+        i.disabled = Boolean(why);
+        if (why) i.checked = false;
+        const incompat = label?.querySelector<HTMLElement>('[data-acc-incompat]');
+        if (incompat) incompat.textContent = why || 'No compatible con el cobot elegido';
+        const load = label?.querySelector<HTMLElement>('[data-acc-load]');
+        if (load) {
+          let text = load.dataset.base ?? '';
+          let tight = false;
+          if (cobot && kg != null && !why) {
+            const left = cobot.payload - kg;
+            text += ` · quedan ${kgText(left)} para la pieza`;
+            tight = left / cobot.payload < 0.25;
+          }
+          load.textContent = text;
+          load.classList.toggle('is-tight', tight);
+        }
+      });
+    };
+
+    // Carga en la muñeca: suma de lo marcado que va en la brida, frente a la carga útil del cobot.
+    const renderLoad = () => {
+      if (!loadBox) return;
+      const cobot = chosenCobot();
+      loadBox.hidden = !cobot;
+      if (!cobot) return;
+      const wrist = checkedAll('accesorios').filter((a) => a.dataset.wrist !== undefined);
+      const known = wrist.filter((a) => a.dataset.kg);
+      const unknown = wrist.length - known.length;
+      const used = known.reduce((s, a) => s + Number(a.dataset.kg), 0);
+      const left = cobot.payload - used;
+      const ratio = used / cobot.payload;
+      loadBox.dataset.level = used > cobot.payload ? 'over' : ratio > 0.75 ? 'tight' : 'ok';
+      loadBox.querySelector<HTMLElement>('[data-cfg-load-val]')!.textContent = `${kgText(used)} de ${kgText(cobot.payload)}`;
+      loadBox.querySelector<HTMLElement>('[data-cfg-load-fill]')!.style.setProperty('--load', `${Math.min(100, ratio * 100)}%`);
+      let note = !wrist.length
+        ? `Nada en la muñeca todavía: los ${kgText(cobot.payload)} del ${cobot.name} son para la herramienta y la pieza.`
+        : left < 0
+          ? `Te pasas ${kgText(-left)} con el ${cobot.name}: elige un cobot con más carga o te ayudamos a ajustarlo.`
+          : `Quedan ${kgText(left)} para la pieza con el ${cobot.name}.`;
+      if (unknown) note += ` ${unknown === 1 ? 'Un accesorio' : `${unknown} accesorios`} sin peso en ficha: lo afinamos en la propuesta.`;
+      loadBox.querySelector<HTMLElement>('[data-cfg-load-note]')!.textContent = note;
     };
 
     const render = () => {
@@ -740,6 +985,14 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
       diagram?.querySelectorAll<SVGGElement>('[data-node]').forEach((n) => n.toggleAttribute('data-on', on.has(n.dataset.node!)));
       const cobot = checked('cobot');
       if (modelLabel) modelLabel.textContent = cobot && cobot.value !== 'asesoramiento' ? cobot.dataset.name! : 'COBOT';
+
+      renderLoad();
+      // Punto en los filtros con algo marcado
+      chips.forEach((c) => {
+        const f = c.dataset.accFilter;
+        const n = f === 'todos' ? 0 : form.querySelectorAll(`[data-acc-family="${f}"] input:checked:not(:disabled)`).length;
+        c.toggleAttribute('data-has-sel', n > 0);
+      });
 
       // Pasos completados
       const done = [Boolean(cobot), Boolean(checked('version')) || cobot?.value === 'asesoramiento', Boolean(checked('controlador')), checkedAll('accesorios').length > 0];
@@ -793,10 +1046,11 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
       setRadio('cobot', params.get('cobot'));
       syncVersions();
       syncControllers();
+      syncAccessories();
       setRadio('version', params.get('version'));
       setRadio('controlador', params.get('controlador'));
       const acc = (params.get('acc') || '').split(',').filter(Boolean);
-      form.querySelectorAll<HTMLInputElement>('input[name="accesorios"]').forEach((i) => (i.checked = acc.includes(i.value)));
+      accInputs.forEach((i) => (i.checked = !i.disabled && acc.includes(i.value)));
     };
 
     const go = (n: number, focus = true) => {
@@ -818,6 +1072,7 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
       if (t.name === 'cobot') {
         syncVersions();
         syncControllers();
+        syncAccessories();
       }
       render();
       persist();
@@ -837,6 +1092,7 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
       form.querySelectorAll<HTMLInputElement>('input[type="radio"], input[name="accesorios"]').forEach((i) => (i.checked = false));
       syncVersions();
       syncControllers();
+      syncAccessories();
       persist();
       go(0, false);
     });
@@ -875,9 +1131,19 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
       submitForm(form, { subject, configuracion: summaryText() });
     });
 
+    // Filtros por familia
+    chips.forEach((c) =>
+      c.addEventListener('click', () => {
+        const f = c.dataset.accFilter;
+        chips.forEach((x) => x.setAttribute('aria-pressed', String(x === c)));
+        families.forEach((b) => (b.hidden = f !== 'todos' && b.dataset.accFamily !== f));
+      }),
+    );
+
     restore();
     syncVersions();
     syncControllers();
+    syncAccessories();
     go(0, false);
   }
 </script>

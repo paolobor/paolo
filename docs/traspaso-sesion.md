@@ -150,8 +150,11 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
   escena oscura del vídeo (1,2 s, antes del corte al plano blanco), lo enciende con un aro naranja y funde a negro con
   un resplandor naranja; el vídeo de portada (`media/fairino-portada.*`) lleva solo los tramos oscuros y su póster es
   oscuro. El fondo del bloque de humanoides, también solo escena oscura.
-- Configurador: pendiente meter los 41 accesorios en el paso 4 (ahora solo 7), con filtros por familia y la carga
-  útil que deja cada garra en el cobot elegido.
+- **Configurador, paso 4**: salen los 41 accesorios, por familias (garras, visión, fuerza y lijado, control y
+  seguridad, montaje) con filtros. Lo que va en la muñeca dice cuánta carga deja para la pieza con el cobot elegido
+  (peso de la ficha) y el resumen lleva la barra «Carga en la muñeca»; se desactiva lo incompatible o lo que pesa más
+  que la carga útil. Familias, piezas del esquema y lo que va en la muñeca: `src/data/configurator.ts`. Todas las
+  fichas de accesorio tienen «Añadir al configurador» (el ART7 R7 no: es «Próximamente»).
 - **Catálogo y tarifa en PDF** (`tools/catalogo/`, ver su LEEME): 17 páginas con la tarifa de julio de 2026
   (`src/data/tarifa-julio-2026.json`); en `/descargas/`, apartado «Catálogo online» con portada, «Descargar PDF» y
   «Ver online». Los precios de la tienda siguen a 0 €: el cliente pidió los precios en el catálogo.

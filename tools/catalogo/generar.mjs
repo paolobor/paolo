@@ -132,7 +132,6 @@ const logo = (h) => `<span class="logo" style="--h:${h}mm">${WORDMARK}<b>SPAIN</
 // ------------------------------------------------------------------ contenido
 const tarifaCobot = Object.fromEntries(tarifa.cobots.map((c) => [c.producto, c]));
 const tarifaAcc = Object.fromEntries(tarifa.accesorios.filter((a) => a.producto).map((a) => [a.producto, a]));
-const ctrlDe = Object.fromEntries(tarifa.controladoras.flatMap((c) => c.productos.map((id) => [id, c])));
 
 const cobots = Object.entries(productos)
   .filter(([, p]) => p.category === 'cobot')
