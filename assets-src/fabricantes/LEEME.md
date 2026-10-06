@@ -76,3 +76,15 @@ Pendiente:
 - pinza-vacio-area: es de marca Inlux Robotics; su foto solo está en la web de Inlux. No se copia.
 - sensor-fuerza-par-inlux, cambiador-rapido, adaptador-doble-herramienta y adaptador-antorcha: no se ha podido
   identificar un fabricante (los modelos 3D de fairino.es no lo dicen). Hacen falta fotos propias.
+
+## FAIRINO: pintura con pistola (vídeo de YouTube)
+
+Vídeo oficial «Spraying» del canal de FAIRINO en YouTube (@FAIRINOrobot, id dy-bvYYtOwA, un Short vertical): el cobot,
+con su funda protectora, pinta con pistola dentro de su cabina. Se comprobó el canal con el oEmbed de YouTube.
+
+- fairino/pintura/yt-dy-bvYYtOwA-oardefault-original.jpg: miniatura vertical oficial (1080×1920, i.ytimg.com/vi/<id>/oardefault.jpg).
+- src/assets/images/videos/yt-dy-bvYYtOwA.jpg: la misma, como póster del vídeo en /aplicaciones/pintura/.
+- src/assets/images/aplicaciones/fairino-pintura-cabina.jpg: recorte horizontal (1080×720, desde y = 420) para la
+  foto de la aplicación «Pintura» (cabecera y tarjetas).
+
+El vídeo se reproduce desde YouTube (youtube-nocookie) y solo al pulsar «play». No se descarga ni se aloja aquí.

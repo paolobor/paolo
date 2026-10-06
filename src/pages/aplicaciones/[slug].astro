@@ -11,7 +11,8 @@ import ContactBand from '../../components/home/ContactBand.astro';
 import { applications, type Application } from '../../data/applications';
 import { industries } from '../../data/industries';
 import { getProducts, sceneAlt } from '../../lib/catalog';
-import { isIllustrative } from '../../lib/images';
+import { findImage, isIllustrative } from '../../lib/images';
+import { getImage } from 'astro:assets';
 import { url } from '../../lib/url';
 
 export const getStaticPaths = (() => applications.map((app) => ({ params: { slug: app.slug }, props: { app } }))) satisfies GetStaticPaths;
@@ -28,6 +29,9 @@ const relatedIndustries = industries.filter((i) => i.applications.includes(app.s
 const others = applications.filter((a) => a.slug !== app.slug);
 const heroAlt = (await sceneAlt(app.image)) || app.imageHint;
 const gallery = await Promise.all(app.gallery.map(async (src) => ({ src, alt: await sceneAlt(src) })));
+// Póster del vídeo: imagen guardada en la web; YouTube solo se carga al pulsar «play».
+const posterImg = findImage(app.video?.poster);
+const videoPoster = posterImg ? (await getImage({ src: posterImg, format: 'webp', width: Math.min(720, posterImg.width) })).src : undefined;
 
 const quoteHref = url(`contacto/?asunto=presupuesto&aplicacion=${encodeURIComponent(app.name)}`);
 const waMessage = `Hola, quiero automatizar una tarea de ${app.name.toLowerCase()} con un cobot FAIRINO.`;
@@ -53,6 +57,16 @@ const waMessage = `Hola, quiero automatizar una tarea de ${app.name.toLowerCase(
       <div class="relative aspect-[16/10] overflow-hidden rounded-[var(--radius-card)] border border-white/10">
         <SmartImage src={app.image} alt={heroAlt} hint={app.imageHint} tone="dark" widths={[640, 960, 1400]} sizes="(min-width: 1024px) 52vw, 100vw" eager />
         {app.image && isIllustrative(app.image) && <IllustrativeBadge />}
+        {
+          app.video && (
+            <a href="#video" class="absolute bottom-3 left-3 inline-flex items-center gap-2 rounded-full bg-black/65 py-2 pl-2 pr-4 text-sm font-semibold text-white backdrop-blur transition-colors hover:bg-signal hover:text-ink">
+              <span class="grid size-7 place-items-center rounded-full bg-signal text-ink">
+                <Icon name="play" size={14} />
+              </span>
+              Ver el vídeo
+            </a>
+          )
+        }
       </div>
     </div>
   </section>
@@ -113,6 +127,46 @@ const waMessage = `Hola, quiero automatizar una tarea de ${app.name.toLowerCase(
       )
     }
   </section>
+
+  {
+    app.video && (
+      <section id="video" class="section blueprint on-dark text-white" aria-labelledby="video-title">
+        <div class="container-x grid items-center gap-10 lg:grid-cols-[1fr_auto] lg:gap-20">
+          <div class="grid content-start gap-5" data-reveal>
+            <p class="eyebrow flex items-center gap-2"><Icon name="play" size={16} />En su célula</p>
+            <h2 id="video-title" class="h-section">{app.video.title}</h2>
+            <p class="lead max-w-xl">{app.video.text}</p>
+            <div class="flex flex-wrap gap-3 pt-1">
+              <a href={quoteHref} class="btn btn-primary"><Icon name="send" size={18} />Pedir propuesta</a>
+              <a href={url('configurador/')} class="btn btn-secondary">Configurar mi célula</a>
+            </div>
+          </div>
+          <div
+            class:list={[
+              'relative w-full justify-self-center overflow-hidden rounded-[var(--radius-card)] border border-white/10 bg-black shadow-[0_30px_80px_-30px_rgba(0,0,0,0.9)]',
+              app.video.vertical ? 'aspect-[9/16] max-w-[340px] lg:w-[340px]' : 'aspect-video lg:w-[560px]',
+            ]}
+            data-reveal
+            data-yt={app.video.youtube}
+            data-yt-title={app.video.title}
+          >
+            <button type="button" class="group absolute inset-0 block" aria-label={`Reproducir el vídeo: ${app.video.title}`} data-yt-play>
+              <img src={videoPoster} alt="" class="size-full object-cover" loading="lazy" decoding="async" />
+              <span class="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-black/20 transition-colors group-hover:via-black/0"></span>
+              {/* En vertical, el botón va más abajo para no tapar el robot. */}
+              <span class:list={['absolute left-1/2 grid size-16 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-signal text-ink shadow-[0_10px_40px_-6px_rgba(255,106,19,0.7)] transition-transform group-hover:scale-110', app.video.vertical ? 'top-[70%]' : 'top-1/2']}>
+                <Icon name="play" size={28} />
+              </span>
+              <span class="absolute inset-x-4 bottom-4 grid gap-0.5 text-left">
+                <span class="text-sm font-semibold text-white">{app.video.title}</span>
+                <span class="font-mono text-[0.62rem] uppercase tracking-[0.12em] text-white/75">Vídeo oficial de FAIRINO · se reproduce en YouTube</span>
+              </span>
+            </button>
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   {
     gallery.length > 0 && (
@@ -197,3 +251,18 @@ const waMessage = `Hola, quiero automatizar una tarea de ${app.name.toLowerCase(
 
   <ContactBand whatsappMessage={waMessage} />
 </BaseLayout>
+
+<script>
+  // YouTube: no se carga nada de YouTube hasta que se pulsa «play».
+  document.querySelectorAll<HTMLElement>('[data-yt]').forEach((yt) => {
+    yt.querySelector('[data-yt-play]')?.addEventListener('click', () => {
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${yt.dataset.yt}?autoplay=1&rel=0&modestbranding=1&playsinline=1`;
+      iframe.title = yt.dataset.ytTitle ?? 'Vídeo de FAIRINO';
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      iframe.allowFullscreen = true;
+      iframe.className = 'absolute inset-0 size-full';
+      yt.replaceChildren(iframe);
+    });
+  });
+</script>

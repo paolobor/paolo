@@ -17,6 +17,9 @@ export interface Application {
   claims: string[] | null;
   // Más escenas del catálogo para la galería de la página.
   gallery: string[];
+  // Vídeo oficial de FAIRINO en YouTube (canal @FAIRINOrobot). No se carga nada de YouTube hasta que se pulsa «play».
+  // poster: ruta en src/assets/images; vertical: true para los Shorts (9:16).
+  video?: { youtube: string; poster: string; title: string; text: string; vertical?: boolean };
 }
 
 const scene = (model: string, name: string) => `products/${model}/fairino-${model}-escena-${name}.webp`;
@@ -182,8 +185,10 @@ export const applications: Application[] = [
     name: 'Pintura',
     short: 'Capas homogéneas y menos consumo de pintura, sin exponer a nadie a los disolventes.',
     icon: 'sliders-horizontal',
-    image: null,
-    imageHint: 'cobot pintando una pieza con pistola',
+    // Fotograma del vídeo oficial de FAIRINO (YouTube, «Spraying»): el cobot pintando dentro de su cabina.
+    image: 'aplicaciones/fairino-pintura-cabina.jpg',
+    imagePosition: '40% 50%',
+    imageHint: 'Cobot FAIRINO con funda protectora pintando con pistola dentro de su cabina de pintura',
     intro:
       'Pintar a mano una serie de piezas igual de bien es difícil y expone a la persona a los disolventes. Con la pistola en la brida, el cobot repite la misma distancia, el mismo solape y la misma velocidad en cada pasada.',
     tasks: ['Pintura de piezas en serie', 'Imprimación por pulverización', 'Barnizado', 'Aplicación de recubrimientos'],
@@ -195,5 +200,12 @@ export const applications: Application[] = [
     ],
     claims: null,
     gallery: [],
+    video: {
+      youtube: 'dy-bvYYtOwA',
+      poster: 'videos/yt-dy-bvYYtOwA.jpg',
+      title: 'Pintando dentro de su cabina',
+      text: 'Vídeo oficial de FAIRINO: el cobot, con su funda protectora, pinta con la pistola dentro de la cabina de pintura, montado en su propia célula.',
+      vertical: true,
+    },
   },
 ];
