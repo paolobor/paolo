@@ -1,4 +1,5 @@
-// Vídeos de fondo ([data-bgvideo]: «Ecosistema FAIRINO» del inicio, cabecera de «Sobre nosotros»).
+// Vídeos de fondo ([data-bgvideo]: «Ecosistema FAIRINO» del inicio, cabecera de «Sobre nosotros»). Va en el script
+// común de BaseLayout: en las páginas sin vídeo de fondo no hace nada.
 // Solo se descargan y se mueven con su sección a la vista; con «movimiento reducido» o ahorro de datos se quedan en el
 // fotograma fijo. El botón [data-bgvideo-toggle] los pausa y los reanuda.
 const ICON_PAUSE =
