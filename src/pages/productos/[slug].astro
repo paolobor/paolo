@@ -7,6 +7,8 @@ import Icon from '../../components/ui/Icon.astro';
 import Placeholder from '../../components/ui/Placeholder.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import ContactBand from '../../components/home/ContactBand.astro';
+import HumanoidTeaser from '../../components/home/HumanoidTeaser.astro';
+import { humanoid } from '../../data/humanoid';
 import { applications } from '../../data/applications';
 import { site } from '../../data/site';
 import { getProducts, categoryMeta, accessoryGroups, type Product } from '../../lib/catalog';
@@ -249,6 +251,14 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
       <div class="grid content-start gap-6">
         <div class="flex flex-wrap items-center gap-2">
           <span class="chip">{subtitle}</span>
+          {
+            d.upcoming && (
+              <span class="inline-flex items-center gap-1.5 rounded-full border border-signal/40 bg-signal/10 px-2.5 py-1 font-mono text-[0.65rem] font-bold uppercase tracking-[0.12em] text-brand">
+                <span class="size-1.5 rounded-full bg-signal" aria-hidden="true" />
+                Próximamente
+              </span>
+            )
+          }
           <span class="font-mono text-xs uppercase tracking-[0.12em] text-muted">{d.brand}</span>
         </div>
         <div class="grid gap-3">
@@ -287,7 +297,15 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
         }
 
         <div class="flex flex-wrap gap-3 pt-1">
-          <a href={quoteHref} class="btn btn-primary">
+          {
+            d.upcoming && (
+              <a href={url(humanoid.demoHref)} class="btn btn-primary">
+                <Icon name="calendar-check" size={18} />
+                Reserva tu demo
+              </a>
+            )
+          }
+          <a href={quoteHref} class:list={['btn', d.upcoming ? 'btn-secondary' : 'btn-primary']}>
             <Icon name="send" size={18} />
             Solicitar presupuesto
           </a>
@@ -325,6 +343,8 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
       </div>
     </div>
   </section>
+
+  {d.upcoming && <HumanoidTeaser id="presentacion" />}
 
   <!-- Navegación de la ficha -->
   <nav aria-label="Secciones de la ficha" class="sticky top-16 z-30 border-b border-line bg-surface/90 backdrop-blur lg:top-[72px]">

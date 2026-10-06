@@ -10,7 +10,7 @@ import { formatEUR } from '../../lib/store';
 import { site } from '../../data/site';
 import { url, formatNumber } from '../../lib/url';
 
-const cobots = await getProducts('cobot');
+const cobots = (await getProducts('cobot')).filter((c) => !c.data.upcoming);
 // Mismo número que la pestaña «Todos» de la tienda: productos más soluciones llave en mano.
 const allCount = (await getProducts()).length + solutions.length;
 const maxPayload = Math.max(...cobots.map((c) => c.data.payloadKg ?? 0));

@@ -112,7 +112,11 @@ const MENU_MAX = 4;
             <li>
               <a href={url(`productos/${p.id}/`)} class="mega-link">
                 <span class="font-display font-bold" style="font-stretch:112%">{p.data.name}</span>
-                {p.data.payloadKg != null && <span class="font-mono text-xs text-muted">{formatNumber(p.data.payloadKg)} kg</span>}
+                {p.data.upcoming ? (
+                  <span class="font-mono text-[0.62rem] uppercase tracking-[0.12em] text-brand">Próximamente</span>
+                ) : (
+                  p.data.payloadKg != null && <span class="font-mono text-xs text-muted">{formatNumber(p.data.payloadKg)} kg</span>
+                )}
               </a>
             </li>
           ))}

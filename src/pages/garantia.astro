@@ -6,7 +6,7 @@ import { site } from '../data/site';
 import { getProducts } from '../lib/catalog';
 import { url } from '../lib/url';
 
-const cobots = await getProducts('cobot');
+const cobots = (await getProducts('cobot')).filter((c) => !c.data.upcoming);
 ---
 
 <BaseLayout

@@ -1,0 +1,69 @@
+{
+  "name": "ART7 R7",
+  "category": "cobot",
+  "upcoming": true,
+  "order": 0,
+  "tagline": "Plataforma de brazo humanoide con control de fuerza: dos brazos de 7 ejes y 7 kg por brazo.",
+  "description": "Plataforma de doble brazo humanoide de FAIRINO con coordinación bimanual. Cada brazo tiene 7 ejes, muñeca cruzada y un sensor de par en cada articulación, para trabajar sintiendo la fuerza que aplica. El par de cada articulación se publica en topics ROS2 (ROS2 Humble, MoveIt2 y SDK C++). Pensada para I+D, investigación, educación, demostración y prototipos. Certificación CE en proceso.",
+  "highlights": [
+    "7 ejes por brazo y un sensor de par en cada articulación",
+    "Coordinación bimanual",
+    "ROS2 Humble, MoveIt2 y SDK C++"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/art7-r7/art7-r7-oficial.png",
+      "alt": "ART7 R7, plataforma de brazo humanoide de FAIRINO (del teaser oficial)"
+    },
+    {
+      "src": "../../assets/products/art7-r7/art7-r7-teaser-datos.jpg",
+      "alt": "ART7 R7: 714 mm de alcance, 7 kg por brazo y ±0,03 mm de repetibilidad (teaser oficial de FAIRINO)"
+    }
+  ],
+  "video": {
+    "mp4": "media/fairino-art7-r7.mp4",
+    "webm": "media/fairino-art7-r7.webm",
+    "poster": "videos/fairino-art7-r7-poster.jpg",
+    "alt": "ART7 R7, fragmentos del teaser oficial de FAIRINO"
+  },
+  "payloadKg": 7,
+  "reachMm": 714,
+  "repeatabilityMm": 0.03,
+  "specs": [
+    { "label": "Tipo", "value": "Plataforma de doble brazo humanoide" },
+    { "label": "Ejes por brazo", "value": 7 },
+    { "label": "Carga por brazo", "value": 7, "unit": "kg" },
+    { "label": "Alcance", "value": 714, "unit": "mm" },
+    { "label": "Repetibilidad", "value": "±0,03", "unit": "mm" },
+    { "label": "Velocidad TCP típica", "value": "1,2", "unit": "m/s" },
+    { "label": "Muñeca", "value": "Cruzada" },
+    { "label": "Sensor de par", "value": "En cada articulación" },
+    { "label": "Muestreo del sensor", "value": "≥ 5", "unit": "kHz" },
+    { "label": "Precisión de control de fuerza", "value": "≤ 0,15 N · ≤ 0,1 N·m" },
+    { "label": "Software", "value": "ROS2 Humble · MoveIt2 · SDK C++" },
+    { "label": "Procesador", "value": "RK3588 · NPU 6 TOPS" },
+    { "label": "Peso", "value": null, "unit": "kg" },
+    { "label": "Certificación", "value": "CE en proceso" },
+    { "label": "Uso", "value": "I+D, investigación, educación, demostración y prototipos" }
+  ],
+  "applications": [],
+  "compatibleWith": [],
+  "downloads": [
+    { "label": "Ficha técnica", "type": "ficha", "href": null }
+  ],
+  "source": {
+    "url": "Teaser oficial «ART7 R7» de FAIRINO (vídeo facilitado por el cliente el 6 de octubre de 2026)",
+    "verified": false
+  },
+  "seo": {
+    "title": "ART7 R7: plataforma de brazo humanoide FAIRINO (próximamente)",
+    "description": "ART7 R7 de FAIRINO: doble brazo humanoide de 7 ejes con sensor de par en cada articulación y control de fuerza. Próximamente en FAIRINO España: reserva tu demo."
+  },
+  "store": {
+    "sku": null,
+    "price": 0,
+    "shipping": 0,
+    "versions": [],
+    "shopifyVariantId": null
+  }
+}

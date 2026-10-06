@@ -136,6 +136,13 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
   «ART7 R7» y las cifras se descifran; tiene código de tiempo, grano y esquinas de visor. «Reserva tu demo» lleva a
   `reservar-cita/?demo=art7-r7`, que rellena el comentario y el asunto. Los dos vídeos completos se ven con sonido en
   una ventana. Origen: `assets-src/fabricantes/LEEME.md`.
+- **ART7 R7 en la tienda** (`content/products/art7-r7.json`, precio 0 €): primero de los cobots, con `upcoming: true`
+  (distintivo «Próximamente» en la tienda, en /cobots/ y en el menú; «Reserva tu demo» y el bloque del teaser en su ficha).
+  No sale en el escaparate de la tienda ni en la garantía. Datos solo del teaser oficial; el peso queda como [DATO].
+  Imagen principal: recorte (GrabCut) del fotograma de 48,6 s del teaser, sin el rótulo; segunda imagen, el fotograma
+  de 33,5 s con alcance, carga y repetibilidad. No se ha creado nada en Shopify.
+- Vista previa: `tools/preview/build-preview.sh` quita las .woff (hay .woff2) y los .webm de los vídeos que tienen .mp4,
+  para no pasar del tope de archivos. La web real conserva todo.
 - El sello del final del teaser dice «FAIRINO COBOT S.L. B22587982 ESPAÑA»: puede servir para el titular legal, que
   sigue pendiente de confirmar (no se ha cambiado nada en `site.ts`).
 

@@ -43,6 +43,15 @@ sobran = [x for x in glob.glob('assets/**/*', recursive=True) + glob.glob('media
 for x in sobran:
     os.remove(x)
 print('sin usar, fuera:', len(sobran))
+# Tope de archivos de la vista previa: fuera lo que los navegadores no necesitan. Las fuentes .woff sobran donde hay
+# .woff2 (todos los navegadores actuales usan .woff2), y de cada vídeo con .webm y .mp4 se queda el .mp4: si falta el
+# .webm, el navegador pasa al siguiente <source>. La web real conserva todo.
+extra = [x for x in glob.glob('assets/**/*.woff', recursive=True)
+         if any(os.path.basename(y).split('.')[0] == os.path.basename(x).split('.')[0] for y in glob.glob('assets/**/*.woff2', recursive=True))]
+extra += [x for x in glob.glob('media/*.webm') if os.path.exists(x[:-5] + '.mp4')]
+for x in extra:
+    os.remove(x)
+print('duplicados para el navegador, fuera:', len(extra))
 f = json.load(open('../site-files.json'))
 f = [x for x in f if os.path.exists(x) and not x.endswith('.glb') and not x.startswith('models/')]
 json.dump(f, open('../site-files-final.json', 'w'))

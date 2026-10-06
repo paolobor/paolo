@@ -7,7 +7,7 @@ import { getProducts, applicationOptions, payloadBucket, reachBucket } from '../
 
 const products = await getProducts('cobot');
 const filters = [
-  { key: 'carga', label: 'Carga útil', options: [{ value: 'hasta-5', label: 'Hasta 5 kg' }, { value: '6-16', label: '10–16 kg' }, { value: '20-30', label: '20–30 kg' }] },
+  { key: 'carga', label: 'Carga útil', options: [{ value: 'hasta-5', label: 'Hasta 5 kg' }, { value: '6-16', label: '6–16 kg' }, { value: '20-30', label: '20–30 kg' }] },
   { key: 'alcance', label: 'Alcance', options: [{ value: 'hasta-800', label: 'Hasta 800 mm' }, { value: '800-1500', label: '800–1500 mm' }, { value: 'mas-1500', label: 'Más de 1500 mm' }] },
   { key: 'aplicacion', label: 'Aplicación', options: applicationOptions },
 ];
