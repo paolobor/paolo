@@ -1,6 +1,5 @@
 // Contenido editable de la home. Los valores null se muestran como placeholders [DATO: …] / [FOTO: …].
 
-import { partners } from './partners';
 
 export const hero = {
   // Vídeo de fondo: guardar en /public/media/ (MP4 H.264 + WebM, 10–15 s, sin audio, ≤ 3 MB) y poner las rutas aquí
@@ -68,10 +67,9 @@ export const valueCards = [
 
 // La franja de colaboradores de la home sale de src/data/partners.ts.
 
-// Cifras facilitadas por FAIRINO España (octubre de 2026). Los partners salen de src/data/partners.ts.
+// Cifras facilitadas por FAIRINO España (octubre de 2026). Quitadas a petición del cliente: «25+ integraciones de
+// FAIRINO España» y «partners en toda España» (los partners siguen en la franja de colaboradores).
 export const counters: { value: number | null; prefix?: string; suffix?: string; label: string; hint: string }[] = [
-  { value: 25, suffix: '+', label: 'Integraciones de FAIRINO España', hint: 'integraciones' },
-  { value: partners.length, label: 'Partners en toda España', hint: 'partners' },
   { value: 13000, suffix: '+', label: 'Cobots FAIRINO producidos en 2025', hint: 'cobots producidos' },
   { value: 1, prefix: '#', label: 'Fabricante de cobots del mundo', hint: 'posición mundial' },
 ];

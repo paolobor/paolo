@@ -5,12 +5,12 @@ import { formatNumber } from '../../lib/url';
 
 <section class="fx-aurora relative border-y border-line bg-surface text-white" aria-label="FAIRINO España en cifras">
   <div class="glow-line fx-sweep absolute inset-x-0 top-0"></div>
-  <div class="container-x grid grid-cols-2 gap-x-6 gap-y-10 py-14 md:py-16 lg:grid-cols-4">
+  <div class="container-x grid gap-x-10 gap-y-10 py-14 sm:grid-cols-2 md:py-16 lg:max-w-5xl">
     {
       counters.map((c, i) => (
         <div class="grid content-start gap-2 border-l border-signal/40 pl-5" data-reveal style={`--reveal-delay:${i * 80}ms`}>
           {c.value != null ? (
-            <p class="text-glow font-mono text-[clamp(2.4rem,5vw,3.5rem)] font-medium leading-none tracking-tight tabular-nums">
+            <p class="count-num text-glow font-mono text-[clamp(2.8rem,6vw,4.25rem)] font-medium leading-none tracking-tight tabular-nums">
               {c.prefix}
               <span data-count-to={c.value}>{formatNumber(c.value)}</span>
               {c.suffix}
@@ -25,37 +25,61 @@ import { formatNumber } from '../../lib/url';
   </div>
 </section>
 
+<style>
+  /* Al terminar cada cuenta, la cifra da un pequeño destello */
+  .count-num.is-done {
+    animation: count-flash 0.9s ease-out;
+  }
+  @keyframes count-flash {
+    0% {
+      text-shadow: 0 0 0 rgb(255 122 26 / 0);
+    }
+    30% {
+      text-shadow: 0 0 28px rgb(255 122 26 / 0.85);
+    }
+    100% {
+      text-shadow: 0 0 0 rgb(255 122 26 / 0);
+    }
+  }
+</style>
+
 <script>
-  // Cuenta desde 0 al entrar en pantalla, una sola vez.
-  const els = document.querySelectorAll<HTMLElement>('[data-count-to]');
+  // Cuenta al entrar en pantalla y se repite cada 5 s mientras la franja está a la vista.
+  // Las cifras grandes suben desde 0 (13.000+); las de posición bajan hasta su puesto (#10 → #1).
+  const els = [...document.querySelectorAll<HTMLElement>('[data-count-to]')];
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const nf = new Intl.NumberFormat('es-ES');
-  if (!reduce && 'IntersectionObserver' in window) {
+  const EVERY = 5000;
+  if (els.length && !reduce && 'IntersectionObserver' in window) {
     const run = (el: HTMLElement) => {
       const target = Number(el.dataset.countTo);
+      const from = target <= 3 ? 10 : 0;
+      const num = el.closest<HTMLElement>('.count-num');
+      num?.classList.remove('is-done');
       const start = performance.now();
       const dur = 1600;
       const tick = (t: number) => {
         const p = Math.min(1, (t - start) / dur);
         const eased = 1 - Math.pow(1 - p, 3);
-        el.textContent = nf.format(Math.round(target * eased));
+        el.textContent = nf.format(Math.round(from + (target - from) * eased));
         if (p < 1) requestAnimationFrame(tick);
+        else if (num) {
+          void num.offsetWidth;
+          num.classList.add('is-done');
+        }
       };
       requestAnimationFrame(tick);
     };
-    const io = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => {
-          if (e.isIntersecting) {
-            run(e.target as HTMLElement);
-            io.unobserve(e.target);
-          }
-        }),
-      { threshold: 0.5 },
-    );
-    els.forEach((el) => {
-      el.textContent = '0';
-      io.observe(el);
-    });
+    const band = els[0].closest('section')!;
+    let timer = 0;
+    new IntersectionObserver(
+      ([e]) => {
+        window.clearInterval(timer);
+        if (!e.isIntersecting) return;
+        els.forEach(run);
+        timer = window.setInterval(() => els.forEach(run), EVERY);
+      },
+      { threshold: 0.4 },
+    ).observe(band);
   }
 </script>
