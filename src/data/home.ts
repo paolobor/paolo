@@ -79,7 +79,7 @@ export const advice = {
   text: 'Cuéntanos qué quieres automatizar y te decimos con franqueza si un cobot es la solución, qué modelo encaja y qué necesitas alrededor. Si quieres, lo vemos en persona en nuestras instalaciones.',
   points: ['Análisis de tu aplicación', 'Demostración en nuestras instalaciones', 'Propuesta detallada, sin compromiso'],
   image: 'home/showroom-yuncler.jpg' as string | null,
-  imageHint: 'Showroom de FAIRINO España en Yuncler (Toledo), con cobots FAIRINO en sus puestos de prueba',
+  imageHint: 'Showroom de FAIRINO España en Yuncler (Toledo): un técnico explica los cobots FAIRINO a unos visitantes',
 };
 
 export const testimonial = {
