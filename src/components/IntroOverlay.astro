@@ -2,17 +2,22 @@
 // La intro de public/intro/ encima de la página (inicio y tienda), una vez por sesión.
 // El marcado se toma de public/intro/index.html para que solo haya una versión de la intro.
 // Sus estilos y scripts solo se descargan si toca verla (html.fi-play, lo decide BaseLayout en el <head>).
+import { createHash } from 'node:crypto';
 import introHtml from '../../public/intro/index.html?raw';
+import introCss from '../../public/intro/css/intro.css?raw';
+import introJs from '../../public/intro/js/intro.js?raw';
 import { url } from '../lib/url';
 
 const markup = introHtml.match(/<main class="fi-intro"[\s\S]*?<\/main>/)?.[0] ?? '';
+// ?v= con la huella del archivo: si cambia, el navegador descarga la versión nueva en vez de usar la guardada.
+const v = (s: string) => `?v=${createHash('sha256').update(s).digest('hex').slice(0, 10)}`;
 ---
 
 <div class="fi-overlay" set:html={markup} />
 <template data-fi-load>
-  <link rel="stylesheet" href={url('intro/css/intro.css')} />
+  <link rel="stylesheet" href={url('intro/css/intro.css') + v(introCss)} />
   <script is:inline src={url('intro/js/vendor/gsap.min.js')}></script>
-  <script is:inline src={url('intro/js/intro.js')}></script>
+  <script is:inline src={url('intro/js/intro.js') + v(introJs)}></script>
 </template>
 <script is:inline>
   (function () {

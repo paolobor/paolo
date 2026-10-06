@@ -44,7 +44,12 @@ python3 -m http.server 8000
 
 Dentro de la web: `npm run build` y abre `/?intro=1` o `/tienda/?intro=1`.
 
-`?intro=1` la fuerza aunque ya se haya visto en la sesión; útil para enseñarla.
+`?intro=1` la fuerza aunque ya se haya visto en la sesión; útil para enseñarla. En la web, el enlace «Ver la intro»
+del pie de página hace lo mismo.
+
+**Caché:** la web pide `intro.css` e `intro.js` con `?v=` y la huella del archivo, así que cada cambio llega sin
+que el navegador use la versión guardada. En la página suelta (`index.html`) el `?v=` es un número: súbelo al
+cambiar cualquiera de los dos.
 
 Para verla otra vez sin el parámetro, cierra la pestaña: sessionStorage se borra al cerrarla.
 
