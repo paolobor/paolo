@@ -291,7 +291,7 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
 
   <!-- Navegación de la ficha -->
   <nav aria-label="Secciones de la ficha" class="sticky top-16 z-30 border-b border-line bg-surface/90 backdrop-blur lg:top-[72px]">
-    <ul class="container-x flex gap-1 overflow-x-auto py-2 text-sm font-medium">
+    <ul class="tabs-row container-x flex gap-2 overflow-x-auto py-2.5 text-sm font-semibold" data-section-tabs>
       <li><a href="#especificaciones" class="tab">Especificaciones</a></li>
       <li><a href="#descargas" class="tab">Descargas</a></li>
       {apps.length > 0 && <li><a href="#aplicaciones" class="tab">Aplicaciones</a></li>}
@@ -445,16 +445,57 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
 </BaseLayout>
 
 <style>
+  /* Secciones de la ficha: pastillas claras, la sección visible en naranja; sin barra de desplazamiento,
+     con un fundido a la derecha en el móvil para que se note que hay más. */
+  .tabs-row {
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 2.5rem), transparent);
+    mask-image: linear-gradient(90deg, #000 calc(100% - 2.5rem), transparent);
+  }
+  .tabs-row::-webkit-scrollbar {
+    display: none;
+  }
+  @media (min-width: 768px) {
+    .tabs-row {
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+  }
   .tab {
     display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
     white-space: nowrap;
-    padding: 0.5rem 0.85rem;
-    border-radius: 8px;
-    color: var(--color-muted);
+    padding: 0.55rem 1.05rem;
+    border: 1px solid rgb(255 255 255 / 0.14);
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.04);
+    color: var(--color-text);
+    transition:
+      background-color 0.25s,
+      border-color 0.25s,
+      color 0.25s;
   }
   .tab:hover {
-    background: var(--color-paper);
-    color: var(--color-brand);
+    border-color: rgb(255 122 26 / 0.6);
+    color: #fff;
+  }
+  .tab[aria-current='true'] {
+    border-color: var(--color-signal);
+    background: rgb(255 122 26 / 0.16);
+    color: #fff;
+  }
+  .tab[aria-current='true']::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-signal);
+    box-shadow: 0 0 8px var(--color-signal);
+  }
+  .tab:focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 2px;
   }
   .thumb[aria-pressed='true'] {
     border-color: var(--color-brand);
@@ -463,6 +504,28 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
 </style>
 
 <script>
+  // Marca la sección de la ficha que se está viendo y la mantiene a la vista en la barra.
+  const tabsRow = document.querySelector<HTMLElement>('[data-section-tabs]');
+  if (tabsRow) {
+    const tabs = [...tabsRow.querySelectorAll<HTMLAnchorElement>('a[href^="#"]')];
+    const sections = tabs.map((t) => document.querySelector<HTMLElement>(t.hash)).filter((x): x is HTMLElement => !!x);
+    const setActive = (id: string) => {
+      tabs.forEach((t) => {
+        const on = t.hash === '#' + id;
+        t.setAttribute('aria-current', on ? 'true' : 'false');
+        if (on) tabsRow.scrollTo({ left: t.offsetLeft - 16, behavior: 'smooth' });
+      });
+    };
+    const io = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) setActive(visible[0].target.id);
+      },
+      { rootMargin: '-140px 0px -55% 0px' },
+    );
+    sections.forEach((sec) => io.observe(sec));
+  }
+
   document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((g) => {
     const slides = [...g.querySelectorAll<HTMLElement>('[data-slide]')];
     const thumbs = [...g.querySelectorAll<HTMLButtonElement>('[data-thumb]')];
