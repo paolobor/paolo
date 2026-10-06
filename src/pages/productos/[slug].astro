@@ -64,7 +64,12 @@ const keySpecs =
 const subtitle = d.category === 'accesorio' && d.group ? accessoryGroups[d.group] : meta.singular;
 const waMessage = `Hola, me interesa el ${d.name}. ¿Me podéis dar más información?`;
 const quoteHref = url(`contacto/?asunto=presupuesto&producto=${encodeURIComponent(d.name)}`);
-const downloadIcon: Record<string, string> = { ficha: 'newspaper', manual: 'layers', cad: 'box', certificado: 'award', software: 'cpu' };
+const downloadIcon: Record<string, string> = { ficha: 'newspaper', manual: 'book-open', cad: 'box', certificado: 'award', software: 'cpu' };
+// El manual de instrucciones va destacado (botón arriba y primera tarjeta de las descargas).
+const manual = d.downloads.find((x) => x.type === 'manual');
+const manualExternal = !!manual?.href?.startsWith('http');
+const manualHref = manual?.href ? (manualExternal ? manual.href : url(manual.href)) : null;
+const otherDownloads = d.downloads.filter((x) => x !== manual);
 
 const title = d.seo.title ?? `${d.name}: ${meta.singular.toLowerCase()} FAIRINO`;
 const description = (d.seo.description ?? `${d.tagline} Ficha técnica, descargas, aplicaciones y presupuesto con FAIRINO España.`).slice(0, 160);
@@ -280,6 +285,18 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
               </button>
             )
           }
+          {
+            manual && (
+              <a
+                href={manualHref ?? '#manual'}
+                class="btn btn-secondary manual-btn"
+                {...(manualExternal ? { target: '_blank', rel: 'noopener' } : manualHref ? { download: true } : {})}
+              >
+                <Icon name="book-open" size={18} class="text-signal" />
+                Manual de instrucciones
+              </a>
+            )
+          }
         </div>
         <a href={whatsappLink(site.whatsapp.number, waMessage)} target="_blank" rel="noopener" class="inline-flex items-center gap-2 text-sm font-semibold text-text hover:text-brand">
           <Icon name="si:whatsapp" size={18} class="text-[#1fa855]" />
@@ -293,7 +310,7 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
   <nav aria-label="Secciones de la ficha" class="sticky top-16 z-30 border-b border-line bg-surface/90 backdrop-blur lg:top-[72px]">
     <ul class="tabs-row container-x flex gap-2 overflow-x-auto py-2.5 text-sm font-semibold" data-section-tabs>
       <li><a href="#especificaciones" class="tab">Especificaciones</a></li>
-      <li><a href="#descargas" class="tab">Descargas</a></li>
+      <li><a href="#descargas" class="tab">{manual ? 'Manual y descargas' : 'Descargas'}</a></li>
       {apps.length > 0 && <li><a href="#aplicaciones" class="tab">Aplicaciones</a></li>}
       {compatible.length > 0 && <li><a href="#compatibles" class="tab">Compatibles</a></li>}
     </ul>
@@ -341,13 +358,49 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
       <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div class="grid gap-3">
           <p class="eyebrow">Documentación</p>
-          <h2 id="dl-title" class="h-section">Descargas{delName}</h2>
+          <h2 id="dl-title" class="h-section">{manual ? 'Manual y descargas' : 'Descargas'}{delName}</h2>
         </div>
         <a href={url('descargas/')} class="link-arrow">Centro de descargas <Icon name="arrow-right" size={17} /></a>
       </div>
+      {
+        manual && (
+          <div id="manual" class="manual-card scroll-mt-40">
+            <span class="manual-icon">
+              <Icon name="book-open" size={30} />
+            </span>
+            <div class="grid min-w-0 gap-1.5">
+              <p class="eyebrow">Léelo antes de empezar</p>
+              <h3 class="font-display text-xl font-extrabold leading-tight md:text-2xl" style="font-stretch:112%">
+                {manual.label}
+              </h3>
+              <p class="text-sm text-muted md:text-base">Documentación oficial para instalarlo, ponerlo en marcha y trabajar con él con seguridad.</p>
+            </div>
+            {manualHref ? (
+              <a
+                href={manualHref}
+                class="btn btn-primary shrink-0"
+                {...(manualExternal ? { target: '_blank', rel: 'noopener' } : { download: true })}
+              >
+                Abrir el manual
+                <Icon name={manualExternal ? 'arrow-up-right' : 'download'} size={18} />
+              </a>
+            ) : (
+              <div class="grid shrink-0 justify-items-start gap-1.5 md:justify-items-end">
+                <span class="todo w-fit">[DATO: archivo]</span>
+                <a
+                  href={`mailto:${site.contacts[0].email}?subject=${encodeURIComponent(`${manual.label} ${d.name}`)}`}
+                  class="btn btn-primary"
+                >
+                  Pedir el manual por correo
+                </a>
+              </div>
+            )}
+          </div>
+        )
+      }
       <ul class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {
-          d.downloads.map((dl) => (
+          otherDownloads.map((dl) => (
             <li>
               {dl.href ? (
                 <a
@@ -445,6 +498,45 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
 </BaseLayout>
 
 <style>
+  /* Manual de instrucciones destacado */
+  .manual-card {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.25rem 1.5rem;
+    padding: 1.5rem;
+    overflow: hidden;
+    border: 1px solid rgb(255 122 26 / 0.55);
+    border-radius: 18px;
+    background:
+      radial-gradient(ellipse 60% 120% at 0% 50%, rgb(255 122 26 / 0.16), transparent 70%),
+      var(--color-surface);
+    box-shadow: 0 24px 60px -30px rgb(255 106 19 / 0.45);
+  }
+  .manual-card > .grid {
+    flex: 1 1 18rem;
+  }
+  .manual-icon {
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    flex-shrink: 0;
+    border-radius: 16px;
+    background: var(--color-signal);
+    color: var(--color-ink);
+    box-shadow: 0 10px 30px -8px rgb(255 122 26 / 0.7);
+  }
+  @media (min-width: 768px) {
+    .manual-card {
+      padding: 1.75rem 2rem;
+    }
+  }
+  .manual-btn {
+    border-color: rgb(255 122 26 / 0.55);
+  }
+
   /* Secciones de la ficha: pastillas claras, la sección visible en naranja; sin barra de desplazamiento,
      con un fundido a la derecha en el móvil para que se note que hay más. */
   .tabs-row {
