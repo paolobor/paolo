@@ -529,7 +529,7 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
           <ul class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {apps.map((a) => (
               <li>
-                <a href={url(`aplicaciones/${a.slug}/`)} class="card card-hover group grid h-full content-start gap-3 p-6">
+                <a href={url(`aplicaciones/${a.slug}/`)} class="card card-hover fx-spot group grid h-full content-start gap-3 p-6">
                   <span class="grid size-11 place-items-center rounded-xl bg-brand-50 text-brand transition-colors group-hover:bg-brand group-hover:text-white">
                     <Icon name={a.icon} size={22} />
                   </span>

@@ -50,10 +50,11 @@ const steps = [
   <section class="section" aria-labelledby="proc-title">
     <div class="container-x">
       <SectionHeading id="proc-title" eyebrow="Cómo trabajamos" title="De la idea a la célula funcionando" />
-      <ol class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <ol class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5" data-fx-cycle="3000">
         {
           steps.map((s, i) => (
-            <li class="card relative grid content-start gap-3 p-6" data-reveal style={`--reveal-delay:${i * 60}ms`}>
+            <li class="card fx-spot relative grid content-start gap-3 overflow-hidden p-6" data-reveal style={`--reveal-delay:${i * 60}ms`}>
+              <span class="fx-progress" aria-hidden="true" />
               <span class="absolute right-5 top-5 font-mono text-sm text-muted">0{i + 1}</span>
               <Icon name={s.icon} size={26} class="text-signal" />
               <h3 class="font-display text-lg font-bold" style="font-stretch:112%">{s.title}</h3>

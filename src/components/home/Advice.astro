@@ -6,12 +6,12 @@ import { site } from '../../data/site';
 import { url } from '../../lib/url';
 ---
 
-<section class="section bg-paper" aria-labelledby="advice-title">
+<section class="section bg-paper fx-aurora" aria-labelledby="advice-title">
   <div class="container-x grid items-center gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
-    <div class="relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] lg:aspect-[5/4]" data-reveal>
+    <div class="fx-kenburns relative aspect-[4/3] overflow-hidden rounded-[var(--radius-card)] lg:aspect-[5/4]" data-reveal>
       <SmartImage src={advice.image} alt={advice.imageHint} sizes="(min-width: 1024px) 55vw, 100vw" />
       <div class="absolute bottom-4 left-4 flex items-center gap-3 rounded-xl bg-surface/90 px-4 py-3 shadow-lg backdrop-blur">
-        <Icon name="map-pin" size={20} class="text-brand" />
+        <span class="fx-ping text-brand"><Icon name="map-pin" size={20} /></span>
         <span class="text-sm"><b class="block">{site.address.city}</b><span class="text-muted">{site.address.region}{site.address.street && ` · ${site.address.street}`}</span></span>
       </div>
     </div>

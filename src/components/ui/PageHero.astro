@@ -20,7 +20,7 @@ const posterImg = video?.poster ? findImage(video.poster) : null;
 const poster = posterImg ? (await getImage({ src: posterImg, format: 'webp', width: Math.min(1440, posterImg.width) })).src : undefined;
 ---
 
-<section class:list={['blueprint on-dark relative overflow-hidden text-white', video && 'isolate']} data-bgvideo={video ? '' : undefined}>
+<section class:list={['blueprint on-dark fx-aurora relative overflow-hidden text-white', video && 'isolate']} data-bgvideo={video ? '' : undefined}>
   {
     video && (
       <div class="hero-video" aria-hidden="true">

@@ -118,6 +118,12 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
   «High Protection» del vídeo oficial de la portada de fairino.com (presentación del FR3WMS/FR3WML), recortado para
   quitar los rótulos en inglés: 6,3 s en bucle, ~0,25 MB (`public/media/fairino-sobre-nosotros.*`). Los vídeos de
   fondo comparten `src/scripts/bg-video.ts` (carga perezosa, pausa, movimiento reducido).
+- Detalles en movimiento (clases `.fx-*` en `global.css`, script `src/scripts/fx.ts`): luz que sigue al puntero en
+  tarjetas (`fx-spot`), recorrido que ilumina una tarjeta tras otra con barra de progreso (`data-fx-cycle`), haz de luz
+  por el borde de la rejilla (`fx-beam`), resplandor que se desplaza de fondo (`fx-aurora`), barrido en la línea de
+  cifras (`fx-sweep`), zoom lento de foto (`fx-kenburns`) y aro que late (`fx-ping`). Puestos en «Seis razones»,
+  tarjetas de valor, cifras, asesoramiento, cabeceras interiores, ventajas de cada aplicación, «Qué aportamos» y
+  «Cómo trabajamos». Con «movimiento reducido» todo queda quieto.
 
 ## Higgsfield: estado
 

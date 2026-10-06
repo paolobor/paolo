@@ -98,10 +98,11 @@ const team = [
   <section class="section" aria-labelledby="pillars-title">
     <div class="container-x">
       <SectionHeading id="pillars-title" eyebrow="Qué aportamos" title="Lo que encuentras al trabajar con nosotros" />
-      <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+      <ul class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-5" data-fx-cycle="3000">
         {
           pillars.map((p, i) => (
-            <li class="card grid content-start gap-3 p-6" data-reveal style={`--reveal-delay:${i * 60}ms`}>
+            <li class="card fx-spot grid content-start gap-3 overflow-hidden p-6" data-reveal style={`--reveal-delay:${i * 60}ms`}>
+              <span class="fx-progress" aria-hidden="true" />
               <Icon name={p.icon} size={26} class="text-signal" />
               <h3 class="font-display text-lg font-bold" style="font-stretch:112%">{p.title}</h3>
               <p class="text-sm text-muted">{p.text}</p>

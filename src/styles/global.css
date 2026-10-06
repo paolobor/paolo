@@ -290,3 +290,204 @@ body {
   background-color: var(--color-ink) !important;
   color: var(--color-text) !important;
 }
+
+/* ---------- Detalles en movimiento (sutiles; los mueve scripts/fx.ts) ----------
+   fx-spot: luz naranja que sigue al puntero dentro de la tarjeta y le ilumina el borde. Con .is-lit (recorrido
+   automático de [data-fx-cycle]) la luz se queda arriba. fx-progress: barra fina que se llena mientras la tarjeta
+   está iluminada. fx-beam: un haz de luz recorre el borde. fx-aurora: resplandor cálido que se desplaza despacio
+   por el fondo. fx-kenburns: zoom muy lento de una foto. fx-ping: aro que late alrededor de un icono.
+   Con «movimiento reducido» todo queda quieto (regla general de arriba). */
+@property --fx-a {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+@layer components {
+  .fx-spot {
+    position: relative;
+    isolation: isolate;
+    --mx: 50%;
+    --my: 0%;
+  }
+  .fx-spot::before,
+  .fx-spot::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.45s ease;
+  }
+  .fx-spot::after {
+    background: radial-gradient(300px circle at var(--mx) var(--my), rgb(255 122 26 / 0.11), transparent 70%);
+  }
+  .fx-spot::before {
+    padding: 1px;
+    background: radial-gradient(220px circle at var(--mx) var(--my), rgb(255 138 61 / 0.75), transparent 70%);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+  }
+  .fx-spot:hover::before,
+  .fx-spot:hover::after,
+  .fx-spot.is-lit::before,
+  .fx-spot.is-lit::after {
+    opacity: 1;
+  }
+
+  .fx-progress {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    transform: scaleX(0);
+    transform-origin: left;
+    background: linear-gradient(90deg, var(--color-signal), #ffb36b);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .is-lit > .fx-progress {
+    opacity: 1;
+    animation: fx-progress var(--fx-cycle, 3200ms) linear forwards;
+  }
+  @keyframes fx-progress {
+    to {
+      transform: scaleX(1);
+    }
+  }
+
+  .fx-beam {
+    isolation: isolate;
+  }
+  .fx-beam::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: inherit;
+    padding: 1px;
+    pointer-events: none;
+    background: conic-gradient(from var(--fx-a), transparent 0deg 290deg, rgb(255 122 26 / 0.15) 315deg, rgb(255 170 100 / 0.95) 352deg, transparent 360deg);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    animation: fx-beam 9s linear infinite;
+  }
+  @keyframes fx-beam {
+    to {
+      --fx-a: 360deg;
+    }
+  }
+
+  .fx-aurora {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .fx-aurora::before,
+  .fx-aurora::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    width: 55vmax;
+    height: 55vmax;
+    border-radius: 50%;
+    pointer-events: none;
+    background: radial-gradient(closest-side, rgb(255 122 26 / 0.09), transparent);
+  }
+  .fx-aurora::before {
+    left: -18vmax;
+    top: -24vmax;
+    animation: fx-drift-a 26s ease-in-out infinite alternate;
+  }
+  .fx-aurora::after {
+    right: -20vmax;
+    bottom: -28vmax;
+    background: radial-gradient(closest-side, rgb(255 160 64 / 0.07), transparent);
+    animation: fx-drift-b 32s ease-in-out infinite alternate;
+  }
+  @keyframes fx-drift-a {
+    to {
+      transform: translate(48vw, 22vh) scale(1.15);
+    }
+  }
+  @keyframes fx-drift-b {
+    to {
+      transform: translate(-42vw, -18vh) scale(0.9);
+    }
+  }
+
+  /* barrido de luz por una línea fina (p. ej. .glow-line) */
+  .fx-sweep {
+    position: relative;
+    overflow: hidden;
+  }
+  .fx-sweep::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 22%;
+    background: linear-gradient(90deg, transparent, #ffd8b0, transparent);
+    animation: fx-sweep 7s cubic-bezier(0.6, 0, 0.4, 1) infinite;
+  }
+  @keyframes fx-sweep {
+    from {
+      transform: translateX(-120%);
+    }
+    to {
+      transform: translateX(560%);
+    }
+  }
+
+  .fx-kenburns img {
+    animation: fx-kenburns 26s ease-in-out infinite alternate;
+    will-change: transform;
+  }
+  @keyframes fx-kenburns {
+    from {
+      transform: scale(1.02);
+    }
+    to {
+      transform: scale(1.09) translate(-1.6%, -1.2%);
+    }
+  }
+
+  .fx-ping {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+  }
+  .fx-ping::after {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    border: 1px solid rgb(255 122 26 / 0.65);
+    animation: fx-ping 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) infinite;
+  }
+  @keyframes fx-ping {
+    0% {
+      transform: scale(0.55);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(1.9);
+      opacity: 0;
+    }
+  }
+}
