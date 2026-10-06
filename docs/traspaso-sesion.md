@@ -92,8 +92,9 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
 - Inicio: la franja de logos es ahora la red de colaboradores (`src/data/partners.ts`): los 13 partners del vídeo
   de FDI «Únete a nuestra red de colaboradores», con número, nombre y ciudad. Logos recortados de sus fichas en el
   vídeo (`src/assets/images/partners/`); cambiarlos por los originales cuando los tengamos.
-- Sede: Avenida Miguel Ángel Guerra Sabrido, 70, 45529 Yuncler (Toledo), confirmada por FAIRINO España (antes ponía
-  Villaluenga de la Sagra, como el pie de fairino.es).
+- Sede: Avenida de la Estación, 12, 45520 Villaluenga de la Sagra (Toledo), como el pie de fairino.es. Durante un
+  tiempo puso Yuncler (Av. Miguel Ángel Guerra Sabrido, 70); FAIRINO España pidió volver a la de Villaluenga.
+  La de Calle Málaga (Valdemoro) es solo la del titular legal (FDI Quality Import) en el aviso legal.
 - Configurador: tarjetas con la foto oficial de cada producto (como en la tienda).
 - Tienda: filtro de precio (desactivado mientras los precios estén a 0).
 
@@ -190,7 +191,7 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
   - Nombre exacto del sensor GZCX.
   - Tensión de entrada del AC Mini.
   - Titular legal: fairino.es dice FDI QUALITY IMPORT S.L. (Valdemoro) y la web usa Fairino Cobot S.L.
-    (Yuncler). ¿Cuál es el titular de la web?
+    (Villaluenga de la Sagra). ¿Cuál es el titular de la web?
   - ¿Hacéis demostraciones en casa del cliente? (la cita solo ofrece visita y videollamada).
   - Horario de atención, condiciones de la garantía, componentes y plazos de las células llave en mano.
   - Clave de Web3Forms (sin ella los formularios ofrecen correo y WhatsApp).

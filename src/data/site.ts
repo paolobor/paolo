@@ -11,16 +11,17 @@ export const site = {
 
   // Logotipo oficial: src/assets/brand/fairino-wordmark.svg (letras de FAIRINO), lo pinta components/ui/Logo.astro.
 
-  // Instalaciones en Yuncler (Toledo), dirección confirmada por FAIRINO España. Si street es null sale [DATO: calle y número].
+  // Instalaciones de FAIRINO España, la dirección que da la empresa (la misma que el pie de fairino.es).
+  // Si street es null sale [DATO: calle y número].
   address: {
-    street: 'Avenida Miguel Ángel Guerra Sabrido, 70' as string | null,
-    postalCode: '45529',
-    city: 'Yuncler',
+    street: 'Avenida de la Estación, 12' as string | null,
+    postalCode: '45520',
+    city: 'Villaluenga de la Sagra',
     region: 'Toledo',
     country: 'España',
     countryCode: 'ES',
     mapsUrl:
-      'https://www.google.com/maps/search/?api=1&query=Avenida+Miguel+%C3%81ngel+Guerra+Sabrido+70+45529+Yuncler+Toledo',
+      'https://www.google.com/maps/search/?api=1&query=Avenida+de+la+Estaci%C3%B3n+12+45520+Villaluenga+de+la+Sagra+Toledo',
   },
 
   // Titular del sitio para el aviso legal y la privacidad. Datos tomados del aviso legal actual de fairino.es,

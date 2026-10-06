@@ -9,7 +9,7 @@ import { url } from '../../lib/url';
 
 const items = partners.map((p) => ({ ...p, img: findImage(`partners/${p.slug}.png`) }));
 
-// Mapa de la red, como en el vídeo de FDI: líneas desde la sede de Yuncler hasta cada colaborador y un
+// Mapa de la red, como en el vídeo de FDI: líneas desde la sede (Villaluenga de la Sagra) hasta cada colaborador y un
 // recorrido que va mostrando uno a uno. La imagen la genera tools/mapa/generar-mapa.mjs (Mercator) y aquí
 // se colocan encima los puntos con la misma proyección.
 const { width: W, height: H, scale: k, translate: [tx, ty] } = mapa;

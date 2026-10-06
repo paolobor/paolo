@@ -11,8 +11,9 @@ export interface Partner {
   lon: number;
 }
 
-// Sede de FAIRINO Spain en el mapa (centro de Yuncler, Toledo), de donde salen las líneas hacia cada colaborador.
-export const hq = { name: 'FAIRINO Spain', place: 'Yuncler · Toledo', lat: 40.044, lon: -3.9008 };
+// Sede de FAIRINO Spain en el mapa (Avenida de la Estación, Villaluenga de la Sagra, según OpenStreetMap), de donde
+// salen las líneas hacia cada colaborador.
+export const hq = { name: 'FAIRINO Spain', place: 'Villaluenga de la Sagra · Toledo', lat: 40.0374, lon: -3.9133 };
 
 export const partners: Partner[] = [
   { n: '01', slug: 'emsira', name: 'Emsira', place: 'Guadarrama · Madrid', lat: 40.6724, lon: -4.089 },

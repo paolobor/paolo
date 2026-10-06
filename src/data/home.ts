@@ -47,7 +47,7 @@ export const valueCards = [
   {
     icon: 'map-pin',
     title: 'Visítanos en Toledo',
-    text: 'Ven a Yuncler (Toledo) y mira los cobots FAIRINO funcionando antes de decidir.',
+    text: 'Ven a Villaluenga de la Sagra (Toledo) y mira los cobots FAIRINO funcionando antes de decidir.',
     cta: { label: 'Reservar visita', href: 'reservar-cita/' },
   },
   {
@@ -79,7 +79,7 @@ export const advice = {
   text: 'Cuéntanos qué quieres automatizar y te decimos con franqueza si un cobot es la solución, qué modelo encaja y qué necesitas alrededor. Si quieres, lo vemos en persona en nuestras instalaciones.',
   points: ['Análisis de tu aplicación', 'Demostración en nuestras instalaciones', 'Propuesta detallada, sin compromiso'],
   image: 'home/showroom-yuncler.jpg' as string | null,
-  imageHint: 'Showroom de FAIRINO España en Yuncler (Toledo): un técnico explica los cobots FAIRINO a unos visitantes',
+  imageHint: 'Showroom de FAIRINO España en Villaluenga de la Sagra (Toledo): un técnico explica los cobots FAIRINO a unos visitantes',
 };
 
 export const testimonial = {
@@ -93,6 +93,6 @@ export const testimonial = {
 
 export const contactBand = {
   image: 'home/showroom-yuncler.jpg' as string | null,
-  imageHint: 'instalaciones de FAIRINO España en Yuncler (Toledo)',
+  imageHint: 'instalaciones de FAIRINO España en Villaluenga de la Sagra (Toledo)',
 };
 
