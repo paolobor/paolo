@@ -76,8 +76,19 @@ export const counters: { value: number | null; prefix?: string; suffix?: string;
 
 export const advice = {
   title: 'Asesoramiento gratuito, sin compromiso',
-  text: 'Cuéntanos qué quieres automatizar y te decimos con franqueza si un cobot es la solución, qué modelo encaja y qué necesitas alrededor. Si quieres, lo vemos en persona en nuestras instalaciones.',
-  points: ['Análisis de tu aplicación', 'Demostración en nuestras instalaciones', 'Propuesta detallada, sin compromiso'],
+  // La palabra que se resalta en el título.
+  accent: 'gratuito',
+  text: 'Cuéntanos qué quieres automatizar y te decimos con franqueza si un cobot es la solución, qué modelo encaja y qué necesitas alrededor.',
+  // Cómo prefiere el cliente: son los dos tipos de cita de /reservar-cita (?tipo= los deja elegidos).
+  modes: [
+    { value: 'visita', label: 'Visita a nuestras instalaciones', icon: 'building-2' },
+    { value: 'videollamada', label: 'Videollamada', icon: 'users' },
+  ],
+  steps: [
+    { title: 'Análisis de tu aplicación', text: 'Nos cuentas la pieza, el ciclo y el espacio que tienes, y vemos si un cobot encaja.', icon: 'scan-eye' },
+    { title: 'Demostración en nuestras instalaciones', text: 'Ves el cobot trabajando en Villaluenga de la Sagra, o por videollamada si te viene mejor.', icon: 'building-2' },
+    { title: 'Propuesta detallada, sin compromiso', text: 'Te detallamos el modelo, la garra y lo que hace falta alrededor para que decidas con calma.', icon: 'file-text' },
+  ],
   image: 'home/showroom-yuncler.jpg' as string | null,
   imageHint: 'Showroom de FAIRINO España en Villaluenga de la Sagra (Toledo): un técnico explica los cobots FAIRINO a unos visitantes',
 };

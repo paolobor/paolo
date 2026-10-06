@@ -88,3 +88,19 @@ con su funda protectora, pinta con pistola dentro de su cabina. Se comprobó el 
   foto de la aplicación «Pintura» (cabecera y tarjetas).
 
 El vídeo se reproduce desde YouTube (youtube-nocookie) y solo al pulsar «play». No se descarga ni se aloja aquí.
+
+## FAIRINO: humanoides (bloque «Próximamente» del inicio y de la tienda)
+
+Dos vídeos oficiales de FAIRINO que facilitó el cliente (6 de octubre); el cliente confirma que los dos son oficiales
+de FAIRINO. Datos y textos del bloque: `src/data/humanoid.ts`.
+
+- **Teaser ART7 R7** (español, 58 s, 1920x1080, con sonido): `public/media/fairino-art7-r7-teaser.mp4`, recodificado a
+  1280x720 (H.264 CRF 25, AAC 128 k), completo y sin recortes. Portada: fotograma de 45,3 s, el destello dorado sin
+  texto (`src/assets/images/videos/fairino-art7-r7-poster.jpg`). Los textos y las cifras del bloque salen de este vídeo,
+  igual que la nota «Certificación CE en proceso. Uso: I+D, investigación, educación, demostración y prototipos.».
+- **Humanoides FAIRINO** (inglés, 90 s, 1920x1080, con sonido): `public/media/fairino-humanoide.mp4`, 1280x720 a dos
+  pasadas (520 kb/s, AAC 96 k), completo. Portada: fotograma de 82,5 s (`fairino-humanoide-familia.jpg`).
+- **Fondo** (`public/media/fairino-humanoide-fondo.{webm,mp4}`, 11,5 s, sin sonido, en bucle): planos sin texto del
+  vídeo de los humanoides, encadenados con fundidos de 0,4 s: 0–5,8 s (los ojos en la oscuridad y el torso FAIRINO),
+  6–8,6 s (codo), 9–11,6 s (cabeza) y 12,6–14,3 s (brazo), y fundido a negro al final. Fotograma fijo: 4,6 s
+  (`fairino-humanoide-poster.jpg`).

@@ -125,6 +125,20 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
   tarjetas de valor, cifras, asesoramiento, cabeceras interiores, ventajas de cada aplicación, «Qué aportamos» y
   «Cómo trabajamos». Con «movimiento reducido» todo queda quieto.
 
+## Hecho el 6 de octubre
+
+- **Asesoramiento gratuito** (`components/home/Advice.astro`): «gratuito» resaltado, «Como prefieras» (visita o
+  videollamada: enlazan a `reservar-cita/?tipo=…`, que deja el tipo elegido), teléfono, y «Así lo hacemos»: tres pasos
+  numerados con una línea que se va llenando (fx-cycle). En la foto, línea de escáner y la etiqueta «Cobots en demostración».
+- **Humanoides FAIRINO «Próximamente»** (`components/home/HumanoidTeaser.astro`, `data/humanoid.ts`,
+  `scripts/teaser.ts`): en el inicio, justo después de la portada, y en la tienda, después del escaparate. De fondo, el
+  anuncio oficial de los humanoides sin sonido. Al entrar se abren bandas de cine, la frase sale palabra a palabra y
+  «ART7 R7» y las cifras se descifran; tiene código de tiempo, grano y esquinas de visor. «Reserva tu demo» lleva a
+  `reservar-cita/?demo=art7-r7`, que rellena el comentario y el asunto. Los dos vídeos completos se ven con sonido en
+  una ventana. Origen: `assets-src/fabricantes/LEEME.md`.
+- El sello del final del teaser dice «FAIRINO COBOT S.L. B22587982 ESPAÑA»: puede servir para el titular legal, que
+  sigue pendiente de confirmar (no se ha cambiado nada en `site.ts`).
+
 ## Higgsfield: estado
 
 - Saldo: 891 créditos, plan Plus. nano_banana_2 a 2k = 2 créditos por imagen.

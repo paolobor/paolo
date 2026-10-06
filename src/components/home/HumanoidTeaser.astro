@@ -1,0 +1,689 @@
+---
+import { getImage } from 'astro:assets';
+import Icon from '../ui/Icon.astro';
+import { humanoid as h } from '../../data/humanoid';
+import { findImage } from '../../lib/images';
+import { url } from '../../lib/url';
+
+// «Próximamente»: bloque de anuncio de los humanoides FAIRINO (inicio y tienda). De fondo, el anuncio oficial de los
+// humanoides sin sonido; al entrar en pantalla se abre como una cortinilla de cine, la frase aparece palabra a palabra
+// y el nombre y las cifras se descifran (scripts/teaser.ts). Los dos vídeos completos se ven con sonido en una ventana.
+interface Props {
+  id?: string;
+}
+const { id = 'humanoide' } = Astro.props;
+
+const webp = async (path: string, width: number) => {
+  const img = findImage(path);
+  return img ? (await getImage({ src: img, format: 'webp', width: Math.min(width, img.width) })).src : undefined;
+};
+const bgPoster = await webp(h.background.poster, 1280);
+const videos = await Promise.all(h.videos.map(async (v) => ({ ...v, src: url(v.mp4), posterSrc: await webp(v.poster, 640) })));
+const words = h.hook.split(' ');
+---
+
+<section id={id} class="tz relative isolate overflow-hidden text-white" aria-labelledby={`${id}-title`} data-bgvideo data-teaser>
+  <div class="tz-bg" aria-hidden="true">
+    <video class="tz-video" muted loop playsinline preload="none" poster={bgPoster} disablepictureinpicture tabindex="-1" data-bgvideo-video>
+      <source src={url(h.background.webm)} type="video/webm" />
+      <source src={url(h.background.mp4)} type="video/mp4" />
+    </video>
+  </div>
+  <div class="tz-shade" aria-hidden="true"></div>
+  <div class="tz-grain" aria-hidden="true"></div>
+  <div class="tz-scan" aria-hidden="true"></div>
+  <div class="tz-hud" aria-hidden="true">
+    <span class="tz-hud-label">FAIRINO España presenta</span>
+    <span class="tz-hud-tc"><span class="tz-rec"></span><span data-teaser-tc>TC 00:00:00:00</span></span>
+  </div>
+  <div class="tz-bar tz-bar-top" aria-hidden="true"></div>
+  <div class="tz-bar tz-bar-bottom" aria-hidden="true"></div>
+
+  <div class="container-x relative grid gap-10 lg:grid-cols-[1.3fr_1fr] lg:items-end lg:gap-14">
+    <div class="grid content-start gap-5">
+      <p class="tz-eyebrow"><span class="tz-dot" aria-hidden="true"></span>{h.eyebrow}</p>
+      <p class="tz-hook">
+        <span class="sr-only">{h.hook}</span>
+        {words.map((w, i) => <span class="tz-word" style={`--i:${i}`} aria-hidden="true">{w} </span>)}
+      </p>
+      <h2 id={`${id}-title`} class="tz-name">
+        <span class="sr-only">{h.name}</span>
+        <span aria-hidden="true" data-scramble data-delay="1000" data-duration="1100">{h.name}</span>
+      </h2>
+      <p class="tz-claim">{h.claim}</p>
+      <ul class="tz-specs" aria-label={`Datos del ${h.name}`}>
+        {
+          h.specs.map((s, i) => (
+            <li class="tz-spec" style={`--i:${i}`}>
+              <span class="sr-only">{s.value}: {s.label}</span>
+              <span class="tz-spec-v" aria-hidden="true" data-scramble data-delay={1700 + i * 200} data-duration="700">{s.value}</span>
+              <span class="tz-spec-l" aria-hidden="true">{s.label}</span>
+            </li>
+          ))
+        }
+      </ul>
+      <div class="tz-ctas flex flex-wrap items-center gap-3 pt-1">
+        <a href={url(h.demoHref)} class="btn btn-primary tz-cta"><Icon name="calendar-check" size={18} />Reserva tu demo</a>
+        <a href={videos[0].src} class="btn btn-secondary tz-glass" data-teaser-open={videos[0].id}><Icon name="play" size={16} />Ver el teaser</a>
+      </div>
+      <p class="tz-tagline">{h.tagline}</p>
+    </div>
+
+    <div class="tz-reel grid grid-cols-2 gap-3 lg:grid-cols-1">
+      {
+        videos.map((v, i) => (
+          <a href={v.src} class="tz-tile" style={`--i:${i}`} data-teaser-open={v.id} aria-label={`Ver el vídeo «${v.title}» (${v.meta}), con sonido`}>
+            {v.posterSrc && <img src={v.posterSrc} alt="" loading="lazy" decoding="async" width="640" height="360" />}
+            <span class="tz-tile-play" aria-hidden="true"><Icon name="play" size={18} /></span>
+            <span class="tz-tile-text" aria-hidden="true">
+              <b>{v.title}</b>
+              <span>{v.meta}</span>
+            </span>
+          </a>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="container-x tz-foot relative">
+    <p class="tz-note">{h.note}</p>
+    <div class="tz-caption">
+      <span>{h.background.credit}</span>
+      <button type="button" class="tz-toggle" aria-label="Pausar el vídeo de fondo" data-bgvideo-toggle hidden></button>
+    </div>
+  </div>
+
+  <dialog class="tz-modal" aria-labelledby={`${id}-modal-title`} data-teaser-modal>
+    <div class="tz-modal-box">
+      <div class="tz-modal-head">
+        <p id={`${id}-modal-title`} class="tz-modal-title" data-teaser-modal-title>{videos[0].title}</p>
+        <button type="button" class="tz-modal-close" aria-label="Cerrar el vídeo" data-teaser-close><Icon name="x" size={20} /></button>
+      </div>
+      <video class="tz-player" controls playsinline preload="none" data-teaser-player></video>
+    </div>
+  </dialog>
+  <script type="application/json" data-teaser-videos set:html={JSON.stringify(videos.map((v) => ({ id: v.id, title: v.title, src: v.src, poster: v.posterSrc })))} />
+</section>
+
+<style>
+  .tz {
+    --bar: clamp(22px, 5.5vh, 56px);
+    display: grid;
+    align-content: center;
+    gap: 2.5rem;
+    padding-block: calc(var(--bar) + 3.5rem) calc(var(--bar) + 1.5rem);
+    background: #050302;
+  }
+  @media (min-width: 1024px) {
+    .tz {
+      min-height: min(100svh, 1000px);
+      gap: 3rem;
+    }
+  }
+
+  /* Vídeo de fondo: a la derecha en el escritorio, fundido con el negro; detrás y apagado en el móvil */
+  .tz-bg {
+    position: absolute;
+    inset: 0;
+    z-index: -4;
+  }
+  .tz-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 35%;
+    opacity: 0.5;
+    filter: brightness(0.8) contrast(1.1) saturate(0.85);
+  }
+  @media (min-width: 1024px) {
+    .tz-bg {
+      left: 28%;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 34%);
+      mask-image: linear-gradient(90deg, transparent 0%, #000 34%);
+    }
+    .tz-video {
+      opacity: 0.85;
+    }
+  }
+  .tz-shade {
+    position: absolute;
+    inset: 0;
+    z-index: -3;
+    pointer-events: none;
+    background:
+      linear-gradient(180deg, #050302 0%, transparent 22%, transparent 70%, #050302 100%),
+      linear-gradient(90deg, rgb(5 3 2 / 0.92) 0%, rgb(5 3 2 / 0.7) 38%, rgb(5 3 2 / 0.15) 70%, rgb(5 3 2 / 0.35) 100%),
+      radial-gradient(ellipse 40% 50% at 18% 60%, rgb(255 122 26 / 0.14), transparent 70%);
+  }
+  @media (max-width: 1023px) {
+    .tz-shade {
+      background:
+        linear-gradient(180deg, #050302 0%, rgb(5 3 2 / 0.55) 30%, rgb(5 3 2 / 0.8) 70%, #050302 100%),
+        radial-gradient(ellipse 70% 40% at 30% 40%, rgb(255 122 26 / 0.14), transparent 70%);
+    }
+  }
+
+  /* Grano de película */
+  .tz-grain {
+    position: absolute;
+    inset: -50%;
+    z-index: -2;
+    pointer-events: none;
+    opacity: 0.09;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    animation: tz-grain 0.9s steps(5) infinite;
+  }
+  @keyframes tz-grain {
+    0% {
+      transform: translate(0, 0);
+    }
+    20% {
+      transform: translate(-3%, 2%);
+    }
+    40% {
+      transform: translate(2%, -3%);
+    }
+    60% {
+      transform: translate(-2%, -1%);
+    }
+    80% {
+      transform: translate(3%, 3%);
+    }
+    100% {
+      transform: translate(0, 0);
+    }
+  }
+
+  /* Línea de luz que barre la pantalla */
+  .tz-scan {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 1px;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(90deg, transparent, rgb(255 160 90 / 0.5), transparent);
+    box-shadow: 0 0 18px rgb(255 122 26 / 0.35);
+    animation: tz-scan 8s linear infinite;
+  }
+  @keyframes tz-scan {
+    from {
+      transform: translateY(0);
+    }
+    to {
+      transform: translateY(100vh);
+    }
+  }
+
+  /* Esquinas de visor, rótulo y código de tiempo, como en el teaser */
+  .tz-hud {
+    --c: rgb(255 255 255 / 0.35);
+    --l: 22px;
+    position: absolute;
+    inset: calc(var(--bar) + 14px) 16px;
+    z-index: 1;
+    pointer-events: none;
+    background:
+      linear-gradient(var(--c), var(--c)) left top / var(--l) 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) left top / 1px var(--l) no-repeat,
+      linear-gradient(var(--c), var(--c)) right top / var(--l) 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) right top / 1px var(--l) no-repeat,
+      linear-gradient(var(--c), var(--c)) left bottom / var(--l) 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) left bottom / 1px var(--l) no-repeat,
+      linear-gradient(var(--c), var(--c)) right bottom / var(--l) 1px no-repeat,
+      linear-gradient(var(--c), var(--c)) right bottom / 1px var(--l) no-repeat;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgb(245 238 232 / 0.5);
+  }
+  @media (min-width: 1024px) {
+    .tz-hud {
+      inset-inline: 28px;
+    }
+  }
+  .tz-hud-label,
+  .tz-hud-tc {
+    position: absolute;
+    top: 10px;
+  }
+  .tz-hud-label {
+    left: 30px;
+  }
+  .tz-hud-tc {
+    right: 30px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .tz-rec {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-signal);
+    box-shadow: 0 0 8px rgb(255 122 26 / 0.9);
+    animation: tz-blink 1.2s steps(2, jump-none) infinite;
+  }
+  @keyframes tz-blink {
+    50% {
+      opacity: 0.15;
+    }
+  }
+  @media (max-width: 639px) {
+    .tz-hud-label {
+      display: none;
+    }
+  }
+
+  /* Bandas de cine: cerradas hasta que el bloque entra en pantalla; luego se abren y se quedan finas */
+  .tz-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    height: var(--bar);
+    background: #000;
+    pointer-events: none;
+    transition: height 1.3s cubic-bezier(0.77, 0, 0.18, 1);
+  }
+  .tz-bar-top {
+    top: 0;
+  }
+  .tz-bar-bottom {
+    bottom: 0;
+  }
+  :global(.tz-armed) .tz-bar {
+    height: 50.5%;
+  }
+  :global(.tz-armed.is-on) .tz-bar {
+    height: var(--bar);
+  }
+
+  /* Textos */
+  .tz-eyebrow {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-brand);
+  }
+  .tz-dot {
+    position: relative;
+    width: 7px;
+    height: 7px;
+    flex: none;
+    border-radius: 50%;
+    background: var(--color-signal);
+    box-shadow: 0 0 10px rgb(255 122 26 / 0.8);
+  }
+  .tz-dot::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border-radius: 50%;
+    border: 1px solid rgb(255 122 26 / 0.6);
+    animation: tz-ping 2.4s cubic-bezier(0.2, 0.7, 0.2, 1) infinite;
+  }
+  @keyframes tz-ping {
+    0% {
+      transform: scale(0.6);
+      opacity: 1;
+    }
+    100% {
+      transform: scale(2.2);
+      opacity: 0;
+    }
+  }
+  .tz-hook {
+    max-width: 44ch;
+    font-size: clamp(1.15rem, 2.1vw, 1.55rem);
+    font-weight: 300;
+    line-height: 1.35;
+    color: rgb(245 238 232 / 0.86);
+  }
+  .tz-word {
+    display: inline-block;
+    white-space: pre;
+  }
+  .tz-name {
+    font-family: var(--font-display);
+    font-size: clamp(3.6rem, 10.5vw, 8.6rem);
+    font-weight: 800;
+    font-stretch: 125%;
+    line-height: 0.88;
+    letter-spacing: -0.01em;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    background: linear-gradient(100deg, #fff 0%, #fff 42%, #ffc690 50%, #fff 58%, #fff 100%);
+    background-size: 300% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 0 40px rgb(255 122 26 / 0.18));
+    animation: tz-shine 6s ease-in-out infinite;
+  }
+  @keyframes tz-shine {
+    0%,
+    100% {
+      background-position: 100% 0;
+    }
+    50% {
+      background-position: 0% 0;
+    }
+  }
+  .tz-claim {
+    max-width: 34ch;
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+    color: rgb(245 238 232 / 0.78);
+  }
+
+  .tz-specs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    max-width: 640px;
+    margin-top: 0.5rem;
+    border: 1px solid rgb(255 255 255 / 0.1);
+    border-radius: 14px;
+    overflow: hidden;
+    background: rgb(255 255 255 / 0.1);
+  }
+  @media (min-width: 640px) {
+    .tz-specs {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+  .tz-spec {
+    display: grid;
+    align-content: start;
+    gap: 0.35rem;
+    padding: 0.9rem 1rem;
+    background: rgb(8 5 3 / 0.82);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+  }
+  .tz-spec-v {
+    font-family: var(--font-mono);
+    font-size: clamp(1.05rem, 1.6vw, 1.3rem);
+    font-weight: 600;
+    white-space: nowrap;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .tz-spec-l {
+    font-size: 0.74rem;
+    line-height: 1.35;
+    color: rgb(245 238 232 / 0.6);
+  }
+  .tz-cta {
+    box-shadow: 0 0 0 0 rgb(255 122 26 / 0.5);
+    animation: tz-pulse 2.6s ease-out infinite;
+  }
+  @keyframes tz-pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgb(255 122 26 / 0.5);
+    }
+    70%,
+    100% {
+      box-shadow: 0 0 0 14px rgb(255 122 26 / 0);
+    }
+  }
+  .tz-glass {
+    background: rgb(5 3 2 / 0.5);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+  .tz-tagline {
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgb(255 179 107 / 0.9);
+  }
+
+  /* Vídeos completos */
+  .tz-tile {
+    position: relative;
+    display: block;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 0.12);
+    border-radius: 14px;
+    background: #000;
+    box-shadow: 0 30px 70px -40px rgb(0 0 0 / 0.95);
+    transition:
+      border-color 0.3s ease,
+      transform 0.3s ease;
+  }
+  .tz-tile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.82;
+    transition:
+      transform 0.6s ease,
+      opacity 0.3s ease;
+  }
+  .tz-tile::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 40%, rgb(0 0 0 / 0.78));
+  }
+  .tz-tile-play {
+    position: absolute;
+    left: 14px;
+    top: 14px;
+    z-index: 1;
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border: 1px solid rgb(255 255 255 / 0.35);
+    border-radius: 50%;
+    background: rgb(5 3 2 / 0.55);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease;
+  }
+  .tz-tile-text {
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    bottom: 12px;
+    z-index: 1;
+    display: grid;
+    gap: 0.15rem;
+    font-size: 0.9rem;
+  }
+  .tz-tile-text span {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgb(245 238 232 / 0.65);
+  }
+  .tz-tile:hover,
+  .tz-tile:focus-visible {
+    border-color: rgb(255 122 26 / 0.6);
+  }
+  .tz-tile:hover img,
+  .tz-tile:focus-visible img {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  .tz-tile:hover .tz-tile-play,
+  .tz-tile:focus-visible .tz-tile-play {
+    border-color: var(--color-signal);
+    background: var(--color-signal);
+  }
+  @media (max-width: 639px) {
+    .tz-tile-play {
+      left: 10px;
+      top: 10px;
+      width: 34px;
+      height: 34px;
+    }
+    .tz-tile-text {
+      left: 10px;
+      right: 10px;
+      bottom: 8px;
+      font-size: 0.78rem;
+    }
+    .tz-tile-text span {
+      font-size: 0.55rem;
+    }
+  }
+
+  .tz-foot {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem 1.5rem;
+  }
+  .tz-note {
+    font-size: 0.72rem;
+    color: rgb(245 238 232 / 0.45);
+  }
+  .tz-caption {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgb(245 238 232 / 0.45);
+  }
+  .tz-toggle {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgb(255 255 255 / 0.16);
+    border-radius: 999px;
+    color: rgb(245 238 232 / 0.75);
+    background: rgb(5 3 2 / 0.4);
+    transition:
+      border-color 0.25s ease,
+      color 0.25s ease;
+  }
+  .tz-toggle[hidden] {
+    display: none;
+  }
+  .tz-toggle:hover,
+  .tz-toggle:focus-visible {
+    border-color: var(--color-signal);
+    color: var(--color-signal);
+  }
+
+  /* Entrada (solo con el script y sin «movimiento reducido»): todo espera a que se abran las bandas */
+  :global(.tz-armed) :is(.tz-eyebrow, .tz-name, .tz-claim, .tz-spec, .tz-ctas, .tz-tagline, .tz-tile, .tz-foot) {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  :global(.tz-armed) .tz-word {
+    opacity: 0;
+    filter: blur(10px);
+    transform: translateY(0.35em);
+  }
+  :global(.tz-armed.is-on) :is(.tz-eyebrow, .tz-name, .tz-claim, .tz-spec, .tz-ctas, .tz-tagline, .tz-tile, .tz-foot, .tz-word) {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    transition:
+      opacity 0.8s ease,
+      transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1),
+      filter 0.8s ease;
+  }
+  :global(.tz-armed.is-on) .tz-eyebrow {
+    transition-delay: 0.5s;
+  }
+  :global(.tz-armed.is-on) .tz-word {
+    transition-delay: calc(0.7s + var(--i) * 0.09s);
+  }
+  :global(.tz-armed.is-on) .tz-name {
+    transition-delay: 1s;
+  }
+  :global(.tz-armed.is-on) .tz-claim {
+    transition-delay: 1.5s;
+  }
+  :global(.tz-armed.is-on) .tz-spec {
+    transition-delay: calc(1.7s + var(--i) * 0.2s);
+  }
+  :global(.tz-armed.is-on) .tz-ctas {
+    transition-delay: 2.5s;
+  }
+  :global(.tz-armed.is-on) .tz-tagline {
+    transition-delay: 2.8s;
+  }
+  :global(.tz-armed.is-on) .tz-tile {
+    transition-delay: calc(1.3s + var(--i) * 0.2s);
+  }
+  :global(.tz-armed.is-on) .tz-foot {
+    transition-delay: 3s;
+  }
+
+  /* Ventana del vídeo */
+  .tz-modal {
+    width: min(1100px, 94vw);
+    max-width: none;
+    margin: auto;
+    padding: 0;
+    border: 1px solid rgb(255 255 255 / 0.12);
+    border-radius: 16px;
+    background: #050302;
+    color: #fff;
+    box-shadow: 0 40px 120px -30px rgb(0 0 0 / 0.95);
+  }
+  .tz-modal::backdrop {
+    background: rgb(0 0 0 / 0.82);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+  .tz-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.7rem 0.8rem 0.7rem 1.1rem;
+  }
+  .tz-modal-title {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgb(245 238 232 / 0.75);
+  }
+  .tz-modal-close {
+    display: grid;
+    place-items: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    color: rgb(245 238 232 / 0.8);
+    transition:
+      background-color 0.2s ease,
+      color 0.2s ease;
+  }
+  .tz-modal-close:hover,
+  .tz-modal-close:focus-visible {
+    background: rgb(255 255 255 / 0.08);
+    color: #fff;
+  }
+  .tz-player {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+  }
+</style>

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import StoreShowroom from '../../components/store/StoreShowroom.astro';
+import HumanoidTeaser from '../../components/home/HumanoidTeaser.astro';
 import StoreCard from '../../components/store/StoreCard.astro';
 import Icon from '../../components/ui/Icon.astro';
 import { getProducts, categoryMeta, type Product } from '../../lib/catalog';
@@ -86,6 +87,7 @@ const emptyCats = shopCategories.filter((c) => countIn(c.key) === 0);
   intro
 >
   <StoreShowroom />
+  <HumanoidTeaser />
 
   <script type="application/json" id="shop-relations" set:html={JSON.stringify(relations)} />
   <section id="productos" class="section scroll-mt-20" aria-labelledby="all-title" data-shop>

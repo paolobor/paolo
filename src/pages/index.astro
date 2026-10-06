@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Hero from '../components/home/Hero.astro';
+import HumanoidTeaser from '../components/home/HumanoidTeaser.astro';
 import ValueCards from '../components/home/ValueCards.astro';
 import LogoMarquee from '../components/home/LogoMarquee.astro';
 import Configurator from '../components/home/Configurator.astro';
@@ -26,6 +27,7 @@ const siteUrl = new URL(import.meta.env.BASE_URL, Astro.site);
   jsonLd={organizationSchema(siteUrl)}
 >
   <Hero />
+  <HumanoidTeaser />
   <ValueCards />
   <LogoMarquee />
   <Configurator />

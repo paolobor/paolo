@@ -36,7 +36,7 @@ const steps = [
             {
               types.map((t, i) => (
                 <label class="booking-type card grid cursor-pointer content-start gap-2 p-4">
-                  <input type="radio" name="tipo" value={t.label} checked={i === 0} required class="sr-only" />
+                  <input type="radio" name="tipo" value={t.label} checked={i === 0} required class="sr-only" data-tipo={t.value} />
                   <Icon name={t.icon} size={22} class="text-signal" />
                   <span class="font-semibold">{t.label}</span>
                   <span class="text-sm text-muted">{t.text}</span>
@@ -110,4 +110,18 @@ const steps = [
   const today = new Date();
   const iso = new Date(today.getTime() - today.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
   document.querySelectorAll<HTMLInputElement>('[data-min-today]').forEach((i) => (i.min = iso));
+
+  // ?tipo=visita o ?tipo=videollamada (enlaces de «Asesoramiento gratuito» del inicio) deja elegido el tipo de cita.
+  const tipo = new URLSearchParams(location.search).get('tipo');
+  document.querySelectorAll<HTMLInputElement>('input[name="tipo"][data-tipo]').forEach((r) => {
+    if (r.dataset.tipo === tipo) r.checked = true;
+  });
+
+  // ?demo=art7-r7 (bloque «Próximamente» del inicio y de la tienda): la cita es para ver el ART7 R7.
+  if (new URLSearchParams(location.search).get('demo') === 'art7-r7') {
+    const msg = document.querySelector<HTMLTextAreaElement>('#r-msg');
+    if (msg && !msg.value) msg.value = 'Quiero reservar una demostración del ART7 R7 (plataforma de brazo humanoide con control de fuerza).';
+    const subject = document.querySelector<HTMLInputElement>('form[data-form="booking"] input[name="subject"]');
+    if (subject) subject.value = 'Solicitud de demo del ART7 R7 desde la web';
+  }
 </script>
