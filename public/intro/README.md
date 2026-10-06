@@ -7,13 +7,12 @@ Entrada animada con el logotipo oficial de FAIRINO. Funciona de dos formas:
 - **Suelta** (esta carpeta tal cual, `index.html`): página propia que al terminar salta a https://fairino.es/,
   para GitHub Pages, WordPress o cualquier hosting estático. HTML, CSS y JavaScript sin compilar.
 
-## Recorrido (unos 4,5 s desde el clic)
+## Recorrido (unos 4 s desde el clic)
 
 1. **El logotipo de FAIRINO.** Las letras oficiales (SVG de fairino.com) se enfocan desde un desenfoque
-   mientras un destello recorre las letras; después aparece «SPAIN» en naranja. Al principio no hay chispas.
+   mientras un destello recorre las letras; después aparece «SPAIN» en naranja. Sin chispas ni partículas.
 2. **Clic en cualquier parte** (o Intro / espacio).
-   - Salen chispas de amoladora del logotipo (con gravedad y rozamiento con el aire, se enfrían de blanco a rojo)
-     y caen dentro de la «O»; su resplandor naranja ilumina el texto desde abajo.
+   - Otro destello recorre el logotipo, que se encoge un instante antes de lanzarse.
    - El logotipo se acerca a cámara y la cámara cruza por el hueco de la «O». El vídeo solo se ve a través de ese hueco, como un portal.
    - Al otro lado, el cobot sale de la sombra.
    - Zoom rápido al anillo naranja de una articulación hasta cruzarlo.
@@ -28,7 +27,6 @@ la web la capa se funde y aparece la página; la página suelta salta a fairino.
 index.html                 la página suelta (destino en <html data-target="https://fairino.es/">); la web toma de aquí el marcado
 css/intro.css              estilos
 js/intro.js                guion de las escenas (GSAP)
-js/sparks.js               sistema de chispas (Canvas 2D, mezcla aditiva)
 js/vendor/gsap.min.js      GSAP 3.15 (licencia gratuita de GSAP)
 assets/fairino-intro.mp4   vídeo 1080p H.264 (0,5 MB)  · .webm VP9 (0,3 MB)
 assets/fairino-intro-720.* vídeo 720p para pantallas pequeñas en horizontal (0,26 MB / 0,15 MB)
@@ -58,9 +56,8 @@ Para verla otra vez sin el parámetro, cierra la pestaña: sessionStorage se bor
     con los bordes fundidos en negro), no recortado.
   - Dentro de la web, los estilos, scripts y el vídeo de la intro solo se descargan si toca verla.
 - **«Saltar intro»** (esquina superior derecha) lleva directo a la web (dentro de la web, también la tecla Esc).
-- **Movimiento reducido** (`prefers-reduced-motion`): sin chispas ni vídeo. El texto aparece con un fundido y, al hacer clic, funde a blanco y entra.
-- **Móvil:** logotipo más grande y algo por encima del centro, chispas de un tamaño mínimo que se vea, «Toca para
-  entrar» en lugar de «Haz clic», menos chispas y densidad de píxeles limitada a 1,5.
+- **Movimiento reducido** (`prefers-reduced-motion`): sin vídeo. El texto aparece con un fundido y, al hacer clic, funde a blanco y entra.
+- **Móvil:** logotipo más grande y algo por encima del centro, y «Toca para entrar» en lugar de «Haz clic».
 - **Si el vídeo no carga** (red lenta), la intro no se queda colgada: funde a blanco y entra.
 - **Sin JavaScript:** la página suelta muestra el logotipo y un enlace «Entrar en fairino.es»; dentro de la web, la
   intro no aparece.

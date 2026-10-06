@@ -1,7 +1,7 @@
 /*
  * Intro de FAIRINO Spain.
- *   Escena 1: el logotipo de FAIRINO se enfoca con un destello, sin chispas. Clic (o Intro / espacio).
- *   Escena 2: estallido de chispas que caen dentro de la «O», la cámara la atraviesa y detrás arranca el vídeo;
+ *   Escena 1: el logotipo de FAIRINO se enfoca con un destello. Clic (o Intro / espacio).
+ *   Escena 2: un destello recorre el logotipo, la cámara atraviesa la «O» y detrás arranca el vídeo;
  *             después, zoom al anillo naranja de una articulación como si fuera un portal.
  *   Escena 3: fundido a blanco y
  *             - página suelta (intro/index.html): salto a la web (data-target en <html>);
@@ -46,8 +46,6 @@
   var film = $('[data-film]');
   var video = $('[data-video]');
   var whiteout = $('[data-whiteout]');
-  var canvas = $('[data-sparks]');
-  var underglow = $('.fi-underglow');
   var PATH = document.getElementById('fi-wm');
   var state = 'idle';
   if (coarse) hint.querySelector('span').textContent = 'Toca para entrar';
@@ -81,8 +79,7 @@
   }
 
   // ---------------------------------------------------------------- medidas del logotipo
-  // Se pinta el logotipo en un lienzo oculto para sacar el borde de las letras (de donde salen las chispas)
-  // y el hueco de la «O» (el portal).
+  // Se pinta el logotipo en un lienzo oculto para sacar el hueco de la «O» (el portal).
   var geo = null;
   var mcan = document.createElement('canvas');
   var mctx = mcan.getContext('2d', { willReadFrequently: true });
@@ -97,7 +94,6 @@
         rect: r,
         h: h,
         o: { x: r.right - h * 0.55, y: r.top + h / 2, hx: h * 0.42, hy: h * 0.25, rad: h * 0.2 },
-        points: { x: new Float32Array(0), y: new Float32Array(0), nx: new Float32Array(0), ny: new Float32Array(0), bottom: [] },
       };
     };
     return new Promise(function (resolve) {
@@ -119,24 +115,6 @@
         var ink = function (x, y) {
           return A(x, y) > 120;
         };
-
-        // Borde de las letras con su normal hacia fuera
-        var step = Math.max(1, Math.round(h / 60));
-        var px = [], py = [], nx = [], ny = [], bottom = [];
-        for (var y = 1; y < H - 1; y += step) {
-          for (var x = 1; x < W - 1; x += step) {
-            if (!ink(x, y)) continue;
-            if (ink(x + 1, y) && ink(x - 1, y) && ink(x, y + 1) && ink(x, y - 1)) continue;
-            var gx = A(x - 1, y) - A(x + 1, y);
-            var gy = A(x, y - 1) - A(x, y + 1);
-            var gl = Math.sqrt(gx * gx + gy * gy) || 1;
-            px.push(r.left - pad + x);
-            py.push(r.top - pad + y);
-            nx.push(gx / gl);
-            ny.push(gy / gl);
-            if (gy / gl > 0.55) bottom.push(px.length - 1);
-          }
-        }
 
         // La «O» es la última letra: de su borde derecho hacia la izquierda hasta el hueco con la «N».
         var colInk = function (x) {
@@ -162,13 +140,7 @@
             rect: r,
             h: h,
             o: { x: r.left - pad + cx, y: r.top - pad + cy, hx: ix, hy: iy, rad: Math.min(ix, iy) * 0.75 },
-            points: { x: Float32Array.from(px), y: Float32Array.from(py), nx: Float32Array.from(nx), ny: Float32Array.from(ny), bottom: bottom },
           };
-        }
-        if (sparks) {
-          // En el móvil el logotipo es pequeño: las chispas no bajan de un tamaño que se vea bien.
-          sparks.setScale(Math.max(h / 80, mobile ? 0.62 : 0));
-          sparks.setPoints(geo.points);
         }
         resolve();
       };
@@ -178,21 +150,6 @@
       };
       img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
     });
-  }
-
-  // ---------------------------------------------------------------- chispas
-  var sparks = reduce ? null : new window.Sparks(canvas, { mobile: mobile });
-  var lastHeat = -1;
-  function tick(t, deltaMs) {
-    if (!sparks) return;
-    var dt = Math.min(deltaMs / 1000, 1 / 20);
-    sparks.update(dt);
-    sparks.draw();
-    var heat = Math.min(1, sparks.activity + sparks.charge / 60);
-    if (Math.abs(heat - lastHeat) > 0.004) {
-      lastHeat = heat;
-      intro.style.setProperty('--fi-heat', heat.toFixed(3));
-    }
   }
 
   // Destello: banda de luz que recorre el logotipo (p de -0,4 a 1,4 sobre su ancho).
@@ -207,11 +164,8 @@
       gsap.to(word, { opacity: 1, duration: 1, ease: 'power1.out' });
       gsap.to(spain, { opacity: 1, duration: 1, delay: 0.3 });
       gsap.to([hint, skip], { opacity: 1, duration: 1, delay: 0.6 });
-      intro.style.setProperty('--fi-heat', '0.35');
       return;
     }
-    // Al principio no hay chispas: solo salen al hacer clic (escena 2).
-    gsap.ticker.add(tick);
     var sh = { p: -0.4 };
     var tl = gsap.timeline({ delay: 0.3 });
     tl.fromTo(word, { opacity: 0 }, { opacity: 1, duration: 1.5, ease: 'power2.out' }, 0)
@@ -253,7 +207,6 @@
     gsap.set(word, { scale: 1, filter: 'none' });
     measure().then(function () {
       var o = geo.o;
-      var r = geo.rect;
 
       // Escala a la que el hueco de la «O» cubre toda la pantalla.
       var W = window.innerWidth;
@@ -273,23 +226,15 @@
       var sh = { p: -0.4 };
       var tl = gsap.timeline();
       tl.to([hint, skip], { opacity: 0, duration: 0.35, ease: 'power2.out' }, 0)
-        // Estallido
-        .call(function () {
-          sparks.explode(mobile ? 170 : 360, r.left + r.width / 2, r.top + r.height / 2);
-        }, null, 0)
-        .to(sh, { p: 1.4, duration: 0.62, ease: 'power2.inOut', onUpdate: function () { setShine(sh.p); } }, 0.18)
-        .to(word, { scale: 0.986, duration: 0.24, ease: 'power2.out' }, 0)
-        .to(word, { scale: 1, duration: 0.34, ease: 'power2.inOut' }, 0.24)
-        // Absorción: todas las chispas caen dentro de la «O»
-        .call(function () {
-          sparks.attractTo(o.x, o.y);
-        }, null, 0.2)
-        .to(sparks.attr, { pull: 1, duration: 0.5, ease: 'power2.in' }, 0.2)
+        // Un destello recorre el logotipo, que se encoge un poco antes de lanzarse.
+        .to(sh, { p: 1.4, duration: 0.62, ease: 'power2.inOut', onUpdate: function () { setShine(sh.p); } }, 0)
+        .to(word, { scale: 0.986, duration: 0.16, ease: 'power2.out' }, 0)
+        .to(word, { scale: 1, duration: 0.22, ease: 'power2.inOut' }, 0.16)
         // La cámara atraviesa la «O»: el vídeo solo se ve por su hueco, que crece con la letra hasta llenar la pantalla.
         .call(function () {
           portal(1);
           film.style.opacity = '1';
-        }, null, 0.5)
+        }, null, 0.3)
         .to(
           fly,
           {
@@ -302,15 +247,13 @@
               portal(sc * 0.985);
             },
           },
-          0.6,
+          0.4,
         )
-        .to([canvas, underglow], { opacity: 0, duration: 0.3, ease: 'power1.in' }, 0.95)
-        .call(playVideo, null, 1.12)
-        .set(word, { visibility: 'hidden' }, 1.4)
+        .call(playVideo, null, 0.92)
+        .set(word, { visibility: 'hidden' }, 1.2)
         .call(function () {
           film.style.clipPath = '';
-          gsap.ticker.remove(tick);
-        }, null, 1.4);
+        }, null, 1.2);
     });
   }
 
@@ -388,7 +331,6 @@
   function close(duration) {
     state = 'done';
     remember();
-    gsap.ticker.remove(tick);
     var host = intro.closest('.fi-overlay') || intro;
     window.scrollTo(0, 0);
     gsap.to(host, {
@@ -447,7 +389,6 @@
   window.addEventListener('resize', function () {
     clearTimeout(resizeT);
     resizeT = setTimeout(function () {
-      if (sparks) sparks.resize();
       if (state === 'idle') measure();
     }, 150);
   });
