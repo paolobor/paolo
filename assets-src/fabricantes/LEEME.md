@@ -100,9 +100,10 @@ de FAIRINO. Datos y textos del bloque: `src/data/humanoid.ts`.
   igual que la nota «Certificación CE en proceso. Uso: I+D, investigación, educación, demostración y prototipos.».
 - **Humanoides FAIRINO** (inglés, 90 s, 1920x1080, con sonido): `public/media/fairino-humanoide.mp4`, 1280x720 a dos
   pasadas (520 kb/s, AAC 96 k), completo. Portada: fotograma de 82,5 s (`fairino-humanoide-familia.jpg`).
-- **Fondo** (`public/media/fairino-humanoide-fondo.{webm,mp4}`, 11,5 s, sin sonido, en bucle): planos sin texto del
-  vídeo de los humanoides, encadenados con fundidos de 0,4 s: 0–5,8 s (los ojos en la oscuridad y el torso FAIRINO),
-  6–8,6 s (codo), 9–11,6 s (cabeza) y 12,6–14,3 s (brazo), y fundido a negro al final. Fotograma fijo: 4,6 s
+- **Fondo** (`public/media/fairino-humanoide-fondo.{webm,mp4}`, 8,5 s, sin sonido, en bucle): solo planos oscuros (el
+  cliente pidió que no pasara a los planos blancos) y sin texto: 0–5,9 s (los ojos en la oscuridad y el torso FAIRINO)
+  y 18,2–21,4 s (el humanoide de cuerpo entero sobre negro, recortado a 1280×720 desde x = 650 para dejar fuera el
+  rótulo de la izquierda), con un fundido de 0,6 s entre los dos y fundido a negro al final. Fotograma fijo: 4,6 s
   (`fairino-humanoide-poster.jpg`).
 
 ## FAIRINO: lijado y pulido (vídeo de YouTube)
