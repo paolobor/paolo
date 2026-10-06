@@ -27,7 +27,8 @@ function scramble(el: HTMLElement, duration: number) {
 interface TeaserVideo {
   id: string;
   title: string;
-  src: string;
+  src: string | null;
+  youtube: string | null;
   poster?: string;
 }
 
@@ -69,6 +70,7 @@ document.querySelectorAll<HTMLElement>('[data-teaser]').forEach((box) => {
   const modal = box.querySelector<HTMLDialogElement>('[data-teaser-modal]');
   const player = modal?.querySelector<HTMLVideoElement>('[data-teaser-player]');
   const title = modal?.querySelector<HTMLElement>('[data-teaser-modal-title]');
+  const yt = modal?.querySelector<HTMLElement>('[data-teaser-yt]');
   if (!modal || !player || typeof modal.showModal !== 'function') return;
   let list: TeaserVideo[] = [];
   let bgWasPlaying = false;
@@ -81,17 +83,34 @@ document.querySelectorAll<HTMLElement>('[data-teaser]').forEach((box) => {
     link.addEventListener('click', (e) => {
       const v = list.find((x) => x.id === link.dataset.teaserOpen);
       if (!v) return;
+      if (v.youtube && !yt) return;
       e.preventDefault();
-      player.poster = v.poster ?? '';
-      player.src = v.src;
       if (title) title.textContent = v.title;
       bgWasPlaying = !!bg && !bg.paused;
       bg?.pause();
+      if (v.youtube && yt) {
+        // Vídeo del canal oficial de FAIRINO: se carga ahora, al pulsar (modo de privacidad mejorada de YouTube).
+        player.hidden = true;
+        yt.hidden = false;
+        const frame = document.createElement('iframe');
+        frame.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(v.youtube)}?autoplay=1&rel=0&modestbranding=1`;
+        frame.title = v.title;
+        frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+        frame.allowFullscreen = true;
+        yt.replaceChildren(frame);
+        modal.showModal();
+        return;
+      }
+      if (yt) yt.hidden = true;
+      player.hidden = false;
+      player.poster = v.poster ?? '';
+      player.src = v.src ?? '';
       modal.showModal();
       player.play().catch(() => {});
     }),
   );
   modal.addEventListener('close', () => {
+    yt?.replaceChildren();
     player.pause();
     player.removeAttribute('src');
     player.load();
@@ -103,3 +122,6 @@ document.querySelectorAll<HTMLElement>('[data-teaser]').forEach((box) => {
     if (e.target === modal) modal.close();
   });
 });
+
+// Módulo propio: sus constantes no chocan con las de los otros scripts.
+export {};

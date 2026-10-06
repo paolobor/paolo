@@ -18,7 +18,15 @@ const webp = async (path: string, width: number) => {
   return img ? (await getImage({ src: img, format: 'webp', width: Math.min(width, img.width) })).src : undefined;
 };
 const bgPoster = await webp(h.background.poster, 1280);
-const videos = await Promise.all(h.videos.map(async (v) => ({ ...v, src: url(v.mp4), posterSrc: await webp(v.poster, 640) })));
+const videos = await Promise.all(
+  h.videos.map(async (v, i) => ({
+    ...v,
+    // sin <dialog>, el enlace abre el vídeo tal cual (el MP4 de la web o la página de YouTube)
+    src: v.mp4 ? url(v.mp4) : `https://www.youtube.com/watch?v=${v.youtube}`,
+    posterSrc: await webp(v.poster, i === 0 ? 960 : 640),
+  })),
+);
+const teaser = videos.find((v) => v.id === 'art7-r7') ?? videos[0];
 const words = h.hook.split(' ');
 ---
 
@@ -64,15 +72,16 @@ const words = h.hook.split(' ');
       </ul>
       <div class="tz-ctas flex flex-wrap items-center gap-3 pt-1">
         <a href={url(h.demoHref)} class="btn btn-primary tz-cta"><Icon name="calendar-check" size={18} />Reserva tu demo</a>
-        <a href={videos[0].src} class="btn btn-secondary tz-glass" data-teaser-open={videos[0].id}><Icon name="play" size={16} />Ver el teaser</a>
+        <a href={teaser.src} class="btn btn-secondary tz-glass" data-teaser-open={teaser.id}><Icon name="play" size={16} />Ver el teaser</a>
       </div>
       <p class="tz-tagline">{h.tagline}</p>
     </div>
 
-    <div class="tz-reel grid grid-cols-2 gap-3 lg:grid-cols-1">
+    <div class="tz-reel grid grid-cols-2 gap-3">
       {
         videos.map((v, i) => (
-          <a href={v.src} class="tz-tile" style={`--i:${i}`} data-teaser-open={v.id} aria-label={`Ver el vídeo «${v.title}» (${v.meta}), con sonido`}>
+          <a href={v.src} class:list={['tz-tile', i === 0 && 'tz-tile-main col-span-2']} style={`--i:${i}`} data-teaser-open={v.id} aria-label={`Ver el vídeo «${v.title}» (${v.meta}), con sonido`}>
+            {i === 0 && <span class="tz-tile-tag" aria-hidden="true">Destacado</span>}
             {v.posterSrc && <img src={v.posterSrc} alt="" loading="lazy" decoding="async" width="640" height="360" />}
             <span class="tz-tile-play" aria-hidden="true"><Icon name="play" size={18} /></span>
             <span class="tz-tile-text" aria-hidden="true">
@@ -100,9 +109,10 @@ const words = h.hook.split(' ');
         <button type="button" class="tz-modal-close" aria-label="Cerrar el vídeo" data-teaser-close><Icon name="x" size={20} /></button>
       </div>
       <video class="tz-player" controls playsinline preload="none" data-teaser-player></video>
+      <div class="tz-player tz-yt" data-teaser-yt hidden></div>
     </div>
   </dialog>
-  <script type="application/json" data-teaser-videos set:html={JSON.stringify(videos.map((v) => ({ id: v.id, title: v.title, src: v.src, poster: v.posterSrc })))} />
+  <script type="application/json" data-teaser-videos set:html={JSON.stringify(videos.map((v) => ({ id: v.id, title: v.title, src: v.mp4 ? v.src : null, youtube: v.youtube ?? null, poster: v.posterSrc })))} />
 </section>
 
 <style>
@@ -476,6 +486,33 @@ const words = h.hook.split(' ');
     inset: 0;
     background: linear-gradient(180deg, transparent 40%, rgb(0 0 0 / 0.78));
   }
+  /* El destacado, más grande y con su etiqueta */
+  .tz-tile-tag {
+    position: absolute;
+    right: 14px;
+    top: 14px;
+    z-index: 1;
+    padding: 0.3rem 0.65rem;
+    border: 1px solid rgb(255 122 26 / 0.5);
+    border-radius: 999px;
+    background: rgb(5 3 2 / 0.6);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-brand);
+  }
+  .tz-tile-main .tz-tile-text {
+    font-size: 1.05rem;
+  }
+  .tz-tile-main .tz-tile-play {
+    width: 52px;
+    height: 52px;
+    border-color: var(--color-signal);
+    background: var(--color-signal);
+  }
   .tz-tile-play {
     position: absolute;
     left: 14px;
@@ -679,6 +716,15 @@ const words = h.hook.split(' ');
   .tz-modal-close:focus-visible {
     background: rgb(255 255 255 / 0.08);
     color: #fff;
+  }
+  .tz-player[hidden] {
+    display: none;
+  }
+  .tz-yt :global(iframe) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
   }
   .tz-player {
     display: block;

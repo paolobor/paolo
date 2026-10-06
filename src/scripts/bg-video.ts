@@ -39,3 +39,6 @@ document.querySelectorAll<HTMLElement>('[data-bgvideo]').forEach((section) => {
     sync();
   });
 });
+
+// Módulo propio: sus constantes no chocan con las de los otros scripts.
+export {};

@@ -146,8 +146,11 @@ export const applications: Application[] = [
     name: 'Lijado y pulido',
     short: 'Acabados uniformes con control de fuerza, sin polvo ni vibraciones para las personas.',
     icon: 'refresh-cw',
-    image: null,
-    imageHint: 'cobot con lijadora y sensor de fuerza sobre una pieza',
+    // Miniatura del vídeo oficial de FAIRINO (YouTube, «Thailand | Robotic Polishing»): el cobot con una lijadora
+    // orbital pule una chapa sobre la mesa de trabajo.
+    image: 'aplicaciones/fairino-lijado-pulido.jpg',
+    imagePosition: '46% 62%',
+    imageHint: 'Cobot FAIRINO con una lijadora orbital en la brida puliendo una chapa sobre una mesa de trabajo',
     intro:
       'El lijado y el pulido exigen apretar siempre igual sobre la pieza. Con un sensor de fuerza en la muñeca, el cobot mantiene la presión constante y sigue la forma de la superficie, mientras las personas se alejan del polvo y de las vibraciones.',
     tasks: ['Lijado de piezas de madera, composite o metal', 'Pulido de superficies', 'Desbarbado de piezas mecanizadas o fundidas', 'Rectificado de cordones de soldadura'],
@@ -159,6 +162,12 @@ export const applications: Application[] = [
     ],
     claims: null,
     gallery: [],
+    video: {
+      youtube: '3XZFIwvE5ZM',
+      poster: 'videos/yt-3XZFIwvE5ZM.jpg',
+      title: 'Puliendo una chapa en Tailandia',
+      text: 'Vídeo oficial de FAIRINO: el cobot, con una lijadora orbital en la brida, pule una chapa sujeta sobre la mesa de trabajo de un taller.',
+    },
   },
   {
     slug: 'dosificacion-y-encolado',

@@ -70,3 +70,6 @@ if (!reduce && 'IntersectionObserver' in window) {
     ).observe(box);
   });
 }
+
+// Módulo propio: sus constantes no chocan con las de los otros scripts.
+export {};

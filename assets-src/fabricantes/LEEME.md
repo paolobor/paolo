@@ -104,3 +104,26 @@ de FAIRINO. Datos y textos del bloque: `src/data/humanoid.ts`.
   vídeo de los humanoides, encadenados con fundidos de 0,4 s: 0–5,8 s (los ojos en la oscuridad y el torso FAIRINO),
   6–8,6 s (codo), 9–11,6 s (cabeza) y 12,6–14,3 s (brazo), y fundido a negro al final. Fotograma fijo: 4,6 s
   (`fairino-humanoide-poster.jpg`).
+
+## FAIRINO: lijado y pulido (vídeo de YouTube)
+
+Vídeo oficial «🇹🇭 Thailand | Robotic Polishing» del canal de FAIRINO en YouTube (@FAIRINOrobot, id 3XZFIwvE5ZM,
+20 s; canal comprobado con el oEmbed de YouTube): un cobot FAIRINO con una lijadora orbital en la brida pule una chapa
+sobre la mesa de trabajo de un taller.
+
+- src/assets/images/videos/yt-3XZFIwvE5ZM.jpg: miniatura oficial (1280×720, i.ytimg.com/vi/<id>/maxresdefault.jpg),
+  póster del vídeo en /aplicaciones/lijado-y-pulido/.
+- src/assets/images/aplicaciones/fairino-lijado-pulido.jpg: la misma imagen, como foto de la aplicación (cabecera y
+  tarjetas; encuadre en `imagePosition` de `src/data/applications.ts`).
+
+## FAIRINO: IA física en la WRC 2026 (vídeo de YouTube)
+
+Vídeo oficial «WRC 2026｜FAIRINO’s New Innovation Takes the Stage #EmbodiedAI» del canal de FAIRINO (id DCkKewMlc3s,
+44 s; canal comprobado con el oEmbed): el humanoide de FAIRINO en su stand de la World Robot Conference 2026. Va
+destacado en el bloque «Próximamente» de los humanoides; se carga desde youtube-nocookie solo al pulsar.
+
+- src/assets/images/videos/yt-DCkKewMlc3s.jpg: miniatura oficial (1280×720).
+
+El cliente pasó además una página guardada de inluxrobotics.es («Physical AI») con otro vídeo alojado allí; no se ha
+usado porque no se puede descargar desde ese sitio. Si el cliente pasa el archivo del vídeo y confirma que es oficial
+de FAIRINO, se puede añadir al bloque como los otros.

@@ -143,6 +143,10 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
   de 33,5 s con alcance, carga y repetibilidad. No se ha creado nada en Shopify.
 - Vista previa: `tools/preview/build-preview.sh` quita las .woff (hay .woff2) y los .webm de los vídeos que tienen .mp4,
   para no pasar del tope de archivos. La web real conserva todo.
+- Bloque de humanoides: el vídeo destacado es el oficial de FAIRINO en la WRC 2026 (IA física, YouTube DCkKewMlc3s);
+  la ventana del bloque abre vídeos de YouTube (youtube-nocookie, solo al pulsar) además de los MP4.
+- **Lijado y pulido**: foto y vídeo oficiales de FAIRINO (YouTube 3XZFIwvE5ZM, «Thailand | Robotic Polishing»).
+- Pendiente: el vídeo «Physical AI» de la página guardada de inluxrobotics.es: falta que el cliente pase el archivo.
 - El sello del final del teaser dice «FAIRINO COBOT S.L. B22587982 ESPAÑA»: puede servir para el titular legal, que
   sigue pendiente de confirmar (no se ha cambiado nada en `site.ts`).
 

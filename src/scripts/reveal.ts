@@ -18,3 +18,6 @@ if (reduce || !('IntersectionObserver' in window)) {
   );
   items.forEach((el) => io.observe(el));
 }
+
+// Módulo propio: sus constantes no chocan con las de los otros scripts.
+export {};

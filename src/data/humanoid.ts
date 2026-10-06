@@ -2,6 +2,15 @@
 // Textos y datos sacados tal cual del teaser oficial «ART7 R7» de FAIRINO (en español, 58 s). No añadir cifras que no
 // salgan en material oficial. El fondo y el segundo vídeo son el anuncio oficial de los humanoides FAIRINO (90 s).
 // Origen de los vídeos y de cómo se recortaron: assets-src/fabricantes/LEEME.md.
+export interface HumanoidVideo {
+  id: string;
+  title: string;
+  meta: string;
+  mp4?: string;
+  youtube?: string;
+  poster: string;
+}
+
 export const humanoid = {
   eyebrow: 'Próximamente · Robótica humanoide FAIRINO',
   hook: 'Hay una diferencia entre moverse y sentir.',
@@ -23,7 +32,16 @@ export const humanoid = {
     poster: 'videos/fairino-humanoide-poster.jpg',
     credit: 'Vídeo oficial de FAIRINO · humanoides',
   },
-  videos: [
+  // El primero sale destacado (grande). youtube: vídeo del canal oficial de FAIRINO; se carga solo al pulsar
+  // (youtube-nocookie). mp4: vídeo alojado en la web.
+  videos: <HumanoidVideo[]>[
+    {
+      id: 'wrc-2026',
+      title: 'IA física: FAIRINO en la WRC 2026',
+      meta: '0:44 · vídeo oficial · YouTube',
+      youtube: 'DCkKewMlc3s',
+      poster: 'videos/yt-DCkKewMlc3s.jpg',
+    },
     {
       id: 'art7-r7',
       title: 'Teaser ART7 R7',
