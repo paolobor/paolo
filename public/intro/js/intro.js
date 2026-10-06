@@ -1,7 +1,7 @@
 /*
  * Intro de FAIRINO Spain.
- *   Escena 1: el logotipo de FAIRINO se enfoca con un destello y chispas alrededor. Clic (o Intro / espacio).
- *   Escena 2: estallido, las chispas caen dentro de la «O», la cámara la atraviesa y detrás arranca el vídeo;
+ *   Escena 1: el logotipo de FAIRINO se enfoca con un destello, sin chispas. Clic (o Intro / espacio).
+ *   Escena 2: estallido de chispas que caen dentro de la «O», la cámara la atraviesa y detrás arranca el vídeo;
  *             después, zoom al anillo naranja de una articulación como si fuera un portal.
  *   Escena 3: fundido a blanco y
  *             - página suelta (intro/index.html): salto a la web (data-target en <html>);
