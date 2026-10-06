@@ -114,6 +114,10 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
   de soldadura `public/uploads/files/20260119/045d54ba….mp4`), recortado a 8,9 s sin los destellos más fuertes,
   sin audio (`public/media/fairino-ecosistema.{webm,mp4}`, ~1 MB cada uno). Solo se carga con la sección a la vista,
   tiene botón de pausa y con «movimiento reducido» o ahorro de datos se queda en el fotograma fijo.
+- «Sobre nosotros»: cabecera con vídeo de fondo a la derecha (`PageHero` admite `video`). Es la apertura y el tramo
+  «High Protection» del vídeo oficial de la portada de fairino.com (presentación del FR3WMS/FR3WML), recortado para
+  quitar los rótulos en inglés: 6,3 s en bucle, ~0,25 MB (`public/media/fairino-sobre-nosotros.*`). Los vídeos de
+  fondo comparten `src/scripts/bg-video.ts` (carga perezosa, pausa, movimiento reducido).
 
 ## Higgsfield: estado
 

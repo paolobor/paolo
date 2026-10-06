@@ -1,23 +1,124 @@
 ---
+import { getImage } from 'astro:assets';
 import Breadcrumbs, { type Crumb } from './Breadcrumbs.astro';
+import { findImage } from '../../lib/images';
+import { url } from '../../lib/url';
 
 // Cabecera de páginas interiores: fondo técnico oscuro, migas de pan, título y entradilla.
+// Con «video», un vídeo de fondo a la derecha que se funde con el negro (lo mueve scripts/bg-video.ts).
 interface Props {
   eyebrow?: string;
   title: string;
   lead?: string;
   crumbs: Crumb[];
   compact?: boolean;
+  // webm y mp4 en /public (p. ej. 'media/….webm'); poster en src/assets/images; credit, el pie del vídeo.
+  video?: { webm: string; mp4: string; poster?: string; credit?: string };
 }
-const { eyebrow, title, lead, crumbs, compact = false } = Astro.props;
+const { eyebrow, title, lead, crumbs, compact = false, video } = Astro.props;
+const posterImg = video?.poster ? findImage(video.poster) : null;
+const poster = posterImg ? (await getImage({ src: posterImg, format: 'webp', width: Math.min(1440, posterImg.width) })).src : undefined;
 ---
 
-<section class="blueprint on-dark relative overflow-hidden text-white">
-  <div class:list={['container-x grid gap-5', compact ? 'py-12 md:py-14' : 'py-14 md:py-20']}>
+<section class:list={['blueprint on-dark relative overflow-hidden text-white', video && 'isolate']} data-bgvideo={video ? '' : undefined}>
+  {
+    video && (
+      <div class="hero-video" aria-hidden="true">
+        <video muted loop playsinline preload="none" poster={poster} disablepictureinpicture tabindex="-1" data-bgvideo-video>
+          <source src={url(video.webm)} type="video/webm" />
+          <source src={url(video.mp4)} type="video/mp4" />
+        </video>
+      </div>
+    )
+  }
+  <div class:list={['container-x relative grid gap-5', compact ? 'py-12 md:py-14' : 'py-14 md:py-20', video && 'lg:py-24']}>
     <Breadcrumbs items={crumbs} />
     {eyebrow && <p class="eyebrow">{eyebrow}</p>}
     <h1 class="max-w-[22ch] text-[clamp(2.1rem,4.8vw,3.6rem)] font-extrabold" style="font-stretch:120%">{title}</h1>
-    {lead && <p class="lead">{lead}</p>}
+    {lead && <p class:list={['lead', video && 'lg:max-w-[50ch]']}>{lead}</p>}
     <slot />
+    {
+      video && (
+        <div class="hero-video-caption">
+          {video.credit && <span>{video.credit}</span>}
+          <button type="button" class="hero-video-toggle" aria-label="Pausar el vídeo de fondo" data-bgvideo-toggle hidden />
+        </div>
+      )
+    }
   </div>
 </section>
+
+{video && <script>import '../../scripts/bg-video';</script>}
+
+<style>
+  /* El vídeo ocupa la derecha y se funde con el negro por la izquierda, arriba y abajo. */
+  .hero-video {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1;
+    width: min(68%, 1000px);
+    pointer-events: none;
+    -webkit-mask-image:
+      linear-gradient(90deg, transparent 0%, #000 36%),
+      linear-gradient(180deg, transparent 0%, #000 14%, #000 82%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(90deg, transparent 0%, #000 36%),
+      linear-gradient(180deg, transparent 0%, #000 14%, #000 82%, transparent 100%);
+    mask-composite: intersect;
+  }
+  .hero-video video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 62% 72%;
+    opacity: 0.9;
+  }
+  /* En el móvil el texto ocupa todo el ancho: el vídeo va detrás, más apagado. */
+  @media (max-width: 1023px) {
+    .hero-video {
+      width: 100%;
+      -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 85%, transparent 100%);
+      mask-image: linear-gradient(180deg, transparent 0%, #000 30%, #000 85%, transparent 100%);
+    }
+    .hero-video video {
+      opacity: 0.35;
+    }
+  }
+
+  .hero-video-caption {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: rgb(245 238 232 / 0.45);
+  }
+  .hero-video-toggle {
+    display: grid;
+    place-items: center;
+    width: 30px;
+    height: 30px;
+    border: 1px solid rgb(255 255 255 / 0.16);
+    border-radius: 999px;
+    color: rgb(245 238 232 / 0.75);
+    background: rgb(7 5 4 / 0.4);
+    transition:
+      border-color 0.25s ease,
+      color 0.25s ease;
+  }
+  .hero-video-toggle[hidden] {
+    display: none;
+  }
+  .hero-video-toggle:hover,
+  .hero-video-toggle:focus-visible {
+    border-color: var(--color-signal);
+    color: var(--color-signal);
+  }
+</style>

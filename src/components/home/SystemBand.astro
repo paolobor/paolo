@@ -17,9 +17,9 @@ const posterImg = findImage('videos/fairino-ecosistema-poster.jpg');
 const poster = posterImg ? (await getImage({ src: posterImg, format: 'webp', width: 1280 })).src : undefined;
 ---
 
-<section class="eco section relative isolate overflow-hidden" aria-labelledby="system-title" data-eco>
+<section class="eco section relative isolate overflow-hidden" aria-labelledby="system-title" data-bgvideo>
   <div class="eco-bg" aria-hidden="true">
-    <video class="eco-video" muted loop playsinline preload="none" poster={poster} disablepictureinpicture tabindex="-1" data-eco-video>
+    <video class="eco-video" muted loop playsinline preload="none" poster={poster} disablepictureinpicture tabindex="-1" data-bgvideo-video>
       <source src={url('media/fairino-ecosistema.webm')} type="video/webm" />
       <source src={url('media/fairino-ecosistema.mp4')} type="video/mp4" />
     </video>
@@ -63,7 +63,7 @@ const poster = posterImg ? (await getImage({ src: posterImg, format: 'webp', wid
 
   <div class="eco-caption container-x relative">
     <span>Vídeo oficial de FAIRINO · soldadura colaborativa</span>
-    <button type="button" class="eco-toggle" aria-label="Pausar el vídeo de fondo" data-eco-toggle hidden>
+    <button type="button" class="eco-toggle" aria-label="Pausar el vídeo de fondo" data-bgvideo-toggle hidden>
       <Icon name="pause" size={14} />
     </button>
   </div>
@@ -228,40 +228,5 @@ const poster = posterImg ? (await getImage({ src: posterImg, format: 'webp', wid
 </style>
 
 <script>
-  // El vídeo de fondo solo se carga y se mueve con la sección a la vista; con «movimiento reducido» o ahorro de datos
-  // se queda en el fotograma fijo. El botón lo pausa y lo reanuda.
-  document.querySelectorAll<HTMLElement>('[data-eco]').forEach((section) => {
-    const video = section.querySelector<HTMLVideoElement>('[data-eco-video]');
-    const toggle = section.querySelector<HTMLButtonElement>('[data-eco-toggle]');
-    if (!video) return;
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
-    if (reduce || saveData) return;
-
-    let visible = false;
-    let userPaused = false;
-    const sync = () => {
-      if (visible && !userPaused) video.play().catch(() => {});
-      else video.pause();
-      if (toggle) {
-        toggle.hidden = false;
-        toggle.setAttribute('aria-label', userPaused ? 'Reanudar el vídeo de fondo' : 'Pausar el vídeo de fondo');
-        toggle.innerHTML = userPaused
-          ? '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg>'
-          : '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="14" y="4" width="4" height="16" rx="1"/><rect x="6" y="4" width="4" height="16" rx="1"/></svg>';
-      }
-    };
-    new IntersectionObserver(
-      ([entry]) => {
-        visible = entry.isIntersecting;
-        if (visible && video.preload === 'none') video.preload = 'auto';
-        sync();
-      },
-      { rootMargin: '200px 0px' },
-    ).observe(section);
-    toggle?.addEventListener('click', () => {
-      userPaused = !userPaused;
-      sync();
-    });
-  });
+  import '../../scripts/bg-video';
 </script>
