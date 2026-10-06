@@ -138,7 +138,7 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
   una ventana. Origen: `assets-src/fabricantes/LEEME.md`.
 - **ART7 R7 en la tienda** (`content/products/art7-r7.json`, precio 0 €): primero de los cobots, con `upcoming: true`
   (distintivo «Próximamente» en la tienda, en /cobots/ y en el menú; «Reserva tu demo» y el bloque del teaser en su ficha).
-  No sale en el escaparate de la tienda ni en la garantía. Datos solo del teaser oficial; el peso queda como [DATO].
+  En el escaparate de la tienda va el último, después del FR30 (más pequeño, porque es ancho); no sale en la garantía. Datos solo del teaser oficial; el peso queda como [DATO].
   Imagen principal: recorte (GrabCut) del fotograma de 48,6 s del teaser, sin el rótulo; segunda imagen, el fotograma
   de 33,5 s con alcance, carga y repetibilidad. No se ha creado nada en Shopify.
 - Vista previa: `tools/preview/build-preview.sh` quita las .woff (hay .woff2) y los .webm de los vídeos que tienen .mp4,

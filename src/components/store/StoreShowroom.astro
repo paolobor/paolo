@@ -4,13 +4,16 @@
 import { getImage } from 'astro:assets';
 import Icon from '../ui/Icon.astro';
 import { getProducts } from '../../lib/catalog';
+import { humanoid } from '../../data/humanoid';
 import { applications } from '../../data/applications';
 import { solutions } from '../../data/solutions';
 import { formatEUR } from '../../lib/store';
 import { site } from '../../data/site';
 import { url, formatNumber } from '../../lib/url';
 
-const cobots = (await getProducts('cobot')).filter((c) => !c.data.upcoming);
+const allCobots = await getProducts('cobot');
+// Los que están «Próximamente» (el ART7 R7) van al final, después del FR30.
+const cobots = [...allCobots.filter((c) => !c.data.upcoming), ...allCobots.filter((c) => c.data.upcoming)];
 // Mismo número que la pestaña «Todos» de la tienda: productos más soluciones llave en mano.
 const allCount = (await getProducts()).length + solutions.length;
 const maxPayload = Math.max(...cobots.map((c) => c.data.payloadKg ?? 0));
@@ -31,12 +34,15 @@ const slides = await Promise.all(
     const payloadMax = spec(c, 'Carga máxima')?.value;
     // Escala visual según el tamaño real: un FR3 se ve más pequeño que un FR20.
     const reach = c.data.reachMm ?? minReach;
-    const scale = 0.82 + (0.18 * (reach - minReach)) / (maxReach - minReach || 1);
+    // El ART7 R7 es ancho (dos brazos abiertos): más bajo para que no tape a los vecinos.
+    const scale = c.data.upcoming ? 0.6 : 0.82 + (0.18 * (reach - minReach)) / (maxReach - minReach || 1);
     return {
       id: c.id,
       i,
       name: c.data.name,
-      tags: ['Robot colaborativo', klass, app].filter(Boolean).join(' · '),
+      tags: c.data.upcoming ? 'Brazo humanoide · Próximamente' : ['Robot colaborativo', klass, app].filter(Boolean).join(' · '),
+      upcoming: c.data.upcoming,
+      series: c.data.upcoming ? 'Humanoide · 7 ejes por brazo' : 'Serie FR · 6 ejes',
       description: c.data.description,
       img: main?.src ?? null,
       imgW: main?.attributes.width ?? 600,
@@ -45,7 +51,7 @@ const slides = await Promise.all(
       alt: c.data.images[0]?.alt ?? `Cobot FAIRINO ${c.data.name}`,
       scale,
       readout: [
-        { k: 'Carga útil', v: c.data.payloadKg != null ? formatNumber(c.data.payloadKg) : null, u: 'kg', extra: payloadMax ? `máx. ${payloadMax} kg` : '' },
+        { k: c.data.upcoming ? 'Carga por brazo' : 'Carga útil', v: c.data.payloadKg != null ? formatNumber(c.data.payloadKg) : null, u: 'kg', extra: payloadMax ? `máx. ${payloadMax} kg` : '' },
         { k: 'Alcance', v: c.data.reachMm != null ? formatNumber(c.data.reachMm) : null, u: 'mm', extra: '' },
         { k: 'Repetibilidad', v: c.data.repeatabilityMm != null ? `±${formatNumber(c.data.repeatabilityMm)}` : null, u: 'mm', extra: '' },
         { k: 'Peso', v: weight != null ? String(weight).replace('≈ ', '') : null, u: 'kg', extra: '' },
@@ -83,7 +89,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     <div class="grid justify-items-start gap-1 font-mono md:justify-items-end">
       <span class="text-[0.68rem] uppercase tracking-[0.16em] text-mist">Modelo</span>
       <span class="text-3xl font-medium tabular-nums" aria-live="polite"><span data-count>01</span> / {pad(total)}</span>
-      <span class="text-[0.68rem] uppercase tracking-[0.16em] text-mist">Serie FR · 6 ejes</span>
+      <span class="text-[0.68rem] uppercase tracking-[0.16em] text-mist" data-series>{slides[0].series}</span>
     </div>
   </div>
 
@@ -170,7 +176,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
   <div class="container-x relative pb-8">
     {
       slides.map((s) => (
-        <div class="info grid justify-items-center gap-4 text-center" data-info={s.i} hidden={s.i !== 0} id={`cobot-${s.id}`}>
+        <div class="info grid justify-items-center gap-4 text-center" data-info={s.i} data-series={s.series} hidden={s.i !== 0} id={`cobot-${s.id}`}>
           <p class="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-mist">{s.tags}</p>
           <h2 class="model-name text-[clamp(2.4rem,5.5vw,4rem)] font-extrabold leading-none" style="font-stretch:125%">{s.name}</h2>
           <dl class="grid grid-cols-2 gap-x-10 gap-y-4 sm:grid-cols-4">
@@ -217,6 +223,12 @@ const pad = (n: number) => String(n).padStart(2, '0');
               <Icon name="sliders-horizontal" size={18} />
               Ver especificaciones
             </button>
+            {s.upcoming && (
+              <a href={url(humanoid.demoHref)} class="btn btn-secondary">
+                <Icon name="calendar-check" size={18} />
+                Reserva tu demo
+              </a>
+            )}
             <a href={url(`productos/${s.id}/`)} class="link-arrow text-sm">
               Ficha completa <Icon name="arrow-right" size={16} />
             </a>
@@ -935,7 +947,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
         r.dataset.off = String(o);
         r.toggleAttribute('data-active', a === 0);
         const img = r.querySelector('img');
-        if (img) img.alt = a === 0 ? `Cobot FAIRINO ${names[i]}` : '';
+        if (img) img.alt = a === 0 ? `FAIRINO ${names[i]}` : '';
       });
     };
 
@@ -944,6 +956,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
       layout();
       infos.forEach((el, k) => (el.hidden = k !== index));
       if (count) count.textContent = String(index + 1).padStart(2, '0');
+      const series = root.querySelector<HTMLElement>('[data-series]');
+      if (series) series.textContent = infos[index].dataset.series ?? '';
       sides.forEach((b) => {
         const dir = Number(b.dataset.side);
         const name = names[(index + dir + n) % n];

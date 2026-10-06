@@ -17,7 +17,7 @@ const products = defineCollection({
     brand: z.string().default('FAIRINO'),
     category: z.enum(['cobot', 'controlador', 'accesorio']),
     // Próximamente (p. ej. el ART7 R7): sale en la tienda y en el catálogo con el distintivo «Próximamente» y «Reserva
-    // tu demo», pero no en el escaparate de la tienda ni en la validación de garantía.
+    // tu demo»; en el escaparate de la tienda va al final, y no sale en la validación de garantía.
     upcoming: z.boolean().default(false),
     // Accesorios: visión, garra, fuerza, control. Controladores: ac, dc.
     group: z.string().optional(),
