@@ -49,7 +49,7 @@
     { "producto": "track-7-eje-1m", "nombre": "Track de 1 m (7.º eje)", "nota": "Séptimo eje para FR3 y FR5", "pvp": 7875, "codigo": "AX7-FR3/5", "nuevo": true },
     { "producto": "track-7-eje-25m", "nombre": "Track de 25 m (7.º eje)", "nota": "Séptimo eje para FR10 a FR30", "pvp": 47250, "codigo": "AX7-FR10/30", "nuevo": true },
     { "nombre": "Columna telescópica", "pvp": 6630, "codigo": "CL-T" },
-    { "nombre": "Columna con base tamaño palé", "pvp": 1100, "codigo": "CL-P" },
+    { "producto": "columna-base-pale", "nombre": "Columna con base tamaño palé", "pvp": 1100, "codigo": "CL-P" },
     { "producto": "columna-guias", "nombre": "Columna con guías", "pvp": 1500, "codigo": "CL-G" },
     { "producto": "columna-base-h", "nombre": "Columna con base en H", "pvp": 1045, "codigo": "CL-H" }
   ],

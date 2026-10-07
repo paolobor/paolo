@@ -1,0 +1,59 @@
+{
+  "name": "Columna telescópica con base tamaño palé",
+  "brand": "FAIRINO",
+  "category": "accesorio",
+  "group": "montaje",
+  "order": 64,
+  "tagline": "Columna elevable de aluminio sobre una base en H del tamaño de un palé, para poner el cobot a la altura justa.",
+  "description": "Columna telescópica de aluminio de tres tramos con placa redonda de montaje para el cobot arriba, motor con reductora planetaria y manivela en la base. Va sobre una base en H de perfil de aluminio del tamaño de un palé, estable y fácil de colocar junto a la línea o el puesto de paletizado. Te la entregamos lista para montar el cobot.",
+  "highlights": [
+    "Columna telescópica de tres tramos",
+    "Motor con reductora planetaria y manivela",
+    "Base en H del tamaño de un palé"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/columna-base-pale/columna-base-pale-oficial.png",
+      "alt": "Columna telescópica de aluminio sobre base en H de perfil, con motor y manivela, para cobot FAIRINO"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Columna",
+      "value": "Telescópica, tres tramos"
+    },
+    {
+      "label": "Accionamiento",
+      "value": "Motor con reductora planetaria y manivela"
+    },
+    {
+      "label": "Base",
+      "value": "En H, perfil de aluminio, tamaño palé"
+    },
+    {
+      "label": "Código de tarifa",
+      "value": "CL-P"
+    }
+  ],
+  "applications": [
+    "paletizado",
+    "carga-de-maquinas"
+  ],
+  "shopCategories": [
+    "montaje"
+  ],
+  "compatibleWith": [],
+  "downloads": [],
+  "store": {
+    "sku": "CL-P",
+    "price": 1100,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "Foto de FAIRINO España; fondo quitado con Higgsfield (gpt_image_2_5 + image_background_remover) y tarifa de FAIRINO España",
+    "verified": false
+  },
+  "seo": {}
+}
