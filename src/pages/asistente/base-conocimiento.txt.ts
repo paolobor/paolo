@@ -7,6 +7,8 @@ import { solutions } from '../../data/solutions';
 import { advice } from '../../data/home';
 import { shopCategories } from '../../data/shop';
 import tarifa from '../../data/tarifa.json';
+import catalogo from '../../data/catalogo.json';
+import { downloadGroups } from '../../data/downloads';
 
 // Base de conocimiento para el asistente virtual (ElevenLabs Agents → Knowledge Base, con «Use RAG»).
 // Sale de los mismos datos que la web y la tienda, así que se mantiene al día sola: se descarga de
@@ -121,6 +123,25 @@ export const GET: APIRoute = async () => {
     if (ap.claims?.length) out.push(`Datos publicados por FAIRINO: ${ap.claims.join('; ')}.`);
     out.push(`Más información: ${base}/aplicaciones/${ap.slug}/`);
   });
+
+  h('Descargas y documentación técnica');
+  out.push(
+    `Todo está en el centro de descargas de la web: ${base}/descargas/ . La documentación oficial de FAIRINO está en inglés; ` +
+      `si el cliente necesita ayuda en español con un documento, FAIRINO España se la da (${site.contacts[0].email}).`,
+  );
+  out.push(`Catálogo y tarifa de FAIRINO España (${catalogo.fecha.toLowerCase()}, PDF de ${catalogo.paginas} páginas): ${base}/${catalogo.archivo.replace(/^\//, '')}`);
+  out.push('Manual completo del cobot en línea (incluye instalación, seguridad, programación, Modbus y códigos de error): https://fairino-doc-en.readthedocs.io/latest/');
+  out.push('Manual completo en PDF (más de 3.000 páginas): https://fairino-doc-en.readthedocs.io/_/downloads/en/latest/pdf/');
+  for (const g of downloadGroups) {
+    h2(g.title);
+    out.push(g.text);
+    g.items.forEach((it) => out.push(`- ${it.label}${it.note ? ` (${it.note})` : ''}: ${it.href}`));
+  }
+  h2('Documentos de cada producto');
+  for (const p of products) {
+    const docs = p.data.downloads.filter((d) => d.href);
+    if (docs.length) out.push(`- ${p.data.name}: ${docs.map((d) => `${d.label} ${d.href}`).join(' · ')}`);
+  }
 
   h('Sectores');
   industries.forEach((ind) => {
