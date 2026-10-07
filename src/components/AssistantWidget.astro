@@ -1,6 +1,6 @@
 ---
 // Asistente virtual de FAIRINO España (ElevenLabs Agents): voz y chat de texto. Solo se pinta cuando hay agentId en
-// src/data/site.ts. El script del widget se carga cuando la página ya está lista, para no retrasar la carga.
+// src/data/site.ts. El script del widget se carga cuando la página ya está lista y el aviso de cookies contestado.
 // El modo «voz + texto», la posición y el dominio permitido se configuran en el panel del agente (ver site.ts).
 import { site } from '../data/site';
 
@@ -55,7 +55,12 @@ const textos = JSON.stringify({
         markdown-link-allowed-hosts={host}
       />
       <script is:inline>
+        // El widget va en la misma esquina que el aviso de cookies: no se carga hasta que el visitante contesta al aviso,
+        // y se esconde si lo vuelve a abrir desde el pie de página. Se carga 1,5 s después de la página.
         (function () {
+          var el = document.querySelector('elevenlabs-convai');
+          // En el móvil, solo el botón redondo: la tarjeta completa tapa el contenido.
+          if (window.matchMedia('(max-width: 639px)').matches) el.setAttribute('variant', 'tiny');
           var load = function () {
             var s = document.createElement('script');
             s.src = 'https://unpkg.com/@elevenlabs/convai-widget-embed';
@@ -63,8 +68,20 @@ const textos = JSON.stringify({
             s.type = 'text/javascript';
             document.body.appendChild(s);
           };
-          if (document.readyState === 'complete') setTimeout(load, 1500);
-          else window.addEventListener('load', function () { setTimeout(load, 1500); });
+          var start = function () {
+            var banner = document.getElementById('cookie-banner');
+            if (banner) {
+              var sync = function () {
+                el.style.display = banner.hidden ? '' : 'none';
+              };
+              sync();
+              new MutationObserver(sync).observe(banner, { attributes: true, attributeFilter: ['hidden'] });
+            }
+            if (banner && !banner.hidden) window.addEventListener('consent:change', function () { setTimeout(load, 300); }, { once: true });
+            else setTimeout(load, 1500);
+          };
+          if (document.readyState === 'complete') start();
+          else window.addEventListener('load', start);
         })();
       </script>
     </>
