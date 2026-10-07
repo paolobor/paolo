@@ -1,10 +1,15 @@
 // Categorías de la tienda: sustituyen a la pestaña única «Accesorios». Cada accesorio indica las suyas en el campo
 // "shopCategories" de su ficha; «Soluciones» muestra además las células llave en mano de src/data/solutions.ts.
+// Una categoría con "subs" saca una segunda fila de pestañas: el producto lleva en su ficha la clave de la categoría y
+// la del apartado (p. ej. ["otras-soluciones", "tracks"]).
 export interface ShopCategory {
   key: string;
   label: string;
   // Texto de la tarjeta de consulta cuando la categoría aún no tiene productos publicados.
   empty?: string;
+  // Frase que sale encima de los apartados.
+  intro?: string;
+  subs?: ShopCategory[];
 }
 
 export const shopCategories: ShopCategory[] = [
@@ -18,6 +23,16 @@ export const shopCategories: ShopCategory[] = [
   { key: 'ihm', label: 'IHM' },
   { key: 'lijado', label: 'Lijado' },
   { key: 'soluciones', label: 'Soluciones' },
+  {
+    key: 'otras-soluciones',
+    label: 'Otras soluciones',
+    intro: 'Equipos para ampliar la célula de tu cobot FAIRINO: séptimo eje, columnas y transportadores que trabajan junto al robot.',
+    subs: [
+      { key: 'tracks', label: 'Tracks' },
+      { key: 'columnas', label: 'Columnas' },
+      { key: 'transportadores-charnela', label: 'Transportadores de charnela', empty: 'transportadores de charnela' },
+    ],
+  },
   { key: 'proteccion', label: 'Protección para cobots', empty: 'fundas y protecciones para cobots' },
   { key: 'seguridad', label: 'Seguridad' },
 ];

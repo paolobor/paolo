@@ -1,0 +1,94 @@
+{
+  "name": "Transportador de charnela",
+  "brand": "FAIRINO España",
+  "category": "accesorio",
+  "group": "montaje",
+  "order": 65,
+  "tagline": "Cinta de cadena de charnela que lleva y recoge el producto en la zona de trabajo de tu cobot FAIRINO.",
+  "description": "Transportador de cadena de charnela de plástico sobre bastidor de perfil de aluminio, con guías laterales y patas de aluminio con pie de fundición. Se monta junto al cobot FAIRINO para alimentar o recoger piezas: el robot las coge de la cinta con su garra o su ventosa y las deja en caja, en palé o en la máquina, o al revés. La marcha y el paro de la cinta se pueden gobernar desde las salidas digitales de la controladora FAIRINO, para que el programa del robot y la cinta trabajen sincronizados. Te lo preparamos con el recorrido de tu línea.",
+  "highlights": [
+    "Se combina con cualquier cobot FAIRINO: pick and place, paletizado o carga de máquinas",
+    "Cadena de charnela de plástico sobre bastidor de aluminio",
+    "Tramos rectos y curvas según el recorrido de tu línea"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/transportador-charnela/transportador-charnela-oficial.png",
+      "alt": "Transportador de charnela con cadena de plástico blanca, bastidor y patas de aluminio y soportes de guía negros"
+    },
+    {
+      "src": "../../assets/products/transportador-charnela/fairino-transportador-charnela-escena-cobot.webp",
+      "alt": "Cobot FAIRINO con ventosa de vacío junto a un transportador de charnela, en una célula oscura con luces naranjas",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/transportador-charnela/fairino-transportador-charnela-escena-fabrica.webp",
+      "alt": "Cobot FAIRINO con ventosa de vacío y transportador de charnela en una fábrica luminosa",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/transportador-charnela/fairino-transportador-charnela-escena-showroom.webp",
+      "alt": "Transportador de charnela con curvas y patas de aluminio en una sala de exposición con luz naranja",
+      "illustrative": true
+    }
+  ],
+  "specs": [
+    {
+      "label": "Cadena",
+      "value": "Charnela de plástico"
+    },
+    {
+      "label": "Bastidor",
+      "value": "Perfil de aluminio"
+    },
+    {
+      "label": "Patas",
+      "value": "Perfil de aluminio con pie de fundición"
+    },
+    {
+      "label": "Guías laterales",
+      "value": "Con soportes de fijación"
+    },
+    {
+      "label": "Ancho de cadena",
+      "value": null,
+      "unit": "mm"
+    },
+    {
+      "label": "Velocidad",
+      "value": null,
+      "unit": "m/min"
+    },
+    {
+      "label": "Carga admisible",
+      "value": null
+    },
+    {
+      "label": "Cobots compatibles",
+      "value": "Toda la gama FAIRINO"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "paletizado",
+    "carga-de-maquinas"
+  ],
+  "shopCategories": [
+    "otras-soluciones",
+    "transportadores-charnela"
+  ],
+  "compatibleWith": [],
+  "downloads": [],
+  "store": {
+    "sku": null,
+    "price": null,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "Fotos de FAIRINO España; fondos cambiados con Higgsfield (gpt_image_2_5) y recorte con image_background_remover",
+    "verified": false
+  },
+  "seo": {}
+}

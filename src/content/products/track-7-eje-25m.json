@@ -38,7 +38,8 @@
     "soldadura"
   ],
   "shopCategories": [
-    "montaje"
+    "otras-soluciones",
+    "tracks"
   ],
   "compatibleWith": [
     "fr10",

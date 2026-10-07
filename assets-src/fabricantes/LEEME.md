@@ -180,4 +180,20 @@ pidió a gpt_image_2_5 que cambiara solo el fondo por blanco (trabajo 6d912639-7
 comparado con la foto original pieza a pieza) y luego se quitó el blanco con image_background_remover
 (f9e989a6-9e0d-49cc-a019-e82f32bcea9f); el tirador del armario que quedaba suelto se borró a mano.
 
+Transportador de charnela (transportador-charnela-original.jpg y transportador-charnela-con-fairino-original.jpg, fotos del
+cliente del 7 de octubre de 2026). El cliente pidió fotos «comerciales, modernas, futuristas» y que se vea que se combina con
+un FAIRINO. gpt_image_2_5 cambió solo el fondo (se quitaron la persona, la regleta suelta que sujetaba y el almacén); la
+cinta, el cobot y la ventosa se compararon con la foto original. Las escenas llevan «escena» en el nombre y salen con el pie
+«Imagen ilustrativa». Coste: unos 1,5 créditos.
+
+| Imagen                                              | Foto original                                   | Trabajo de Higgsfield                                                       |
+| --------------------------------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------- |
+| transportador-charnela-oficial.png (recorte)        | transportador-charnela-original.jpg             | 34e86d2a-709f-443d-81fe-fe5eaa35fea9 (fondo blanco) → 8d680997-4a7d-4310-a1cd-59ec366c2b7a |
+| fairino-transportador-charnela-escena-showroom.webp | transportador-charnela-original.jpg             | 269a679a-ccdb-4a05-a654-70135fd4bc98                                        |
+| fairino-transportador-charnela-escena-cobot.webp    | transportador-charnela-con-fairino-original.jpg | 42e51f84-81d6-41b7-a575-36acf64212db                                        |
+| fairino-transportador-charnela-escena-fabrica.webp  | transportador-charnela-con-fairino-original.jpg | 6f705ccc-899a-409d-8574-7bc47f7705ea                                        |
+
+En las cajas del almacén de la foto se lee YA-VA (fabricante de transportadores); la marca y el modelo del transportador
+están sin confirmar, así que en la web sale como de FAIRINO España, sin marca de fabricante.
+
 Pendiente: la cámara 3D negra con dos proyectores (el cliente dice que todavía no se ponga).

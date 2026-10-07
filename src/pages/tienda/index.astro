@@ -77,7 +77,10 @@ const tabs = [
   { key: 'controlador', label: categoryMeta.controlador.label, count: countIn('controlador') },
   ...shopCategories.map((c) => ({ key: c.key, label: c.label, count: countIn(c.key) })),
 ];
-const emptyCats = shopCategories.filter((c) => countIn(c.key) === 0);
+// Las categorías con apartados («Otras soluciones») sacan una segunda fila de pestañas debajo. Las tarjetas de consulta
+// de un apartado vacío salen también en la pestaña de su categoría.
+const parentOf = (key: string) => shopCategories.find((c) => c.subs?.some((s) => s.key === key))?.key;
+const emptyCats = shopCategories.flatMap((c) => [c, ...(c.subs ?? [])]).filter((c) => countIn(c.key) === 0);
 ---
 
 <BaseLayout
@@ -107,6 +110,27 @@ const emptyCats = shopCategories.filter((c) => countIn(c.key) === 0);
             ))
           }
         </div>
+        {
+          shopCategories
+            .filter((c) => c.subs)
+            .map((c) => (
+              <div class="grid gap-3" data-subtabs={c.key} hidden>
+                {c.intro && <p class="text-sm text-muted">{c.intro}</p>}
+                <div class="shop-tabs -mx-4 flex gap-2 overflow-x-auto px-4 pb-1 md:mx-0 md:flex-wrap md:overflow-visible md:px-0" role="tablist" aria-label={`Apartados de ${c.label}`}>
+                  <button type="button" role="tab" class="shop-subtab" aria-selected="true" data-subtab="">
+                    Todo
+                    <span class="font-mono text-xs opacity-70">{countIn(c.key)}</span>
+                  </button>
+                  {c.subs!.map((s) => (
+                    <button type="button" role="tab" class="shop-subtab" aria-selected="false" data-subtab={s.key}>
+                      {s.label}
+                      <span class="font-mono text-xs opacity-70">{countIn(s.key) || 'bajo pedido'}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ))
+        }
       </div>
 
       <div class="grid items-start gap-6 lg:grid-cols-[340px_minmax(0,1fr)] lg:gap-8">
@@ -196,7 +220,7 @@ const emptyCats = shopCategories.filter((c) => countIn(c.key) === 0);
           </li>
           {
             emptyCats.map((c) => (
-              <li data-cats={c.key} data-only hidden class="col-span-2 md:col-span-3">
+              <li data-cats={[parentOf(c.key), c.key].filter(Boolean).join(' ')} data-only hidden class="col-span-2 md:col-span-3">
                 <div class="card flex flex-col items-start gap-4 p-6 md:flex-row md:items-center md:justify-between">
                   <div class="grid gap-1">
                     <p class="font-display text-lg font-bold" style="font-stretch:112%">{c.label}: bajo pedido</p>
@@ -253,6 +277,34 @@ const emptyCats = shopCategories.filter((c) => countIn(c.key) === 0);
     background: var(--color-signal);
     border-color: var(--color-signal);
     color: var(--color-ink);
+  }
+  /* Segunda fila (apartados): más pequeña y marcada solo con el borde, para que se lea como parte de la pestaña elegida. */
+  .shop-subtab {
+    flex-shrink: 0;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-radius: 999px;
+    border: 1px dashed var(--color-line);
+    padding: 0.4rem 0.85rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--color-muted);
+    transition:
+      border-color 0.2s,
+      color 0.2s,
+      background-color 0.2s;
+  }
+  .shop-subtab:hover {
+    border-color: var(--color-signal);
+    color: var(--color-text);
+  }
+  .shop-subtab[aria-selected='true'] {
+    border-style: solid;
+    border-color: var(--color-signal);
+    background: rgb(255 106 19 / 0.12);
+    color: var(--color-signal);
   }
   [data-price-toggle][aria-expanded='true'] :global(.price-chev) {
     transform: rotate(180deg);
@@ -397,7 +449,10 @@ const emptyCats = shopCategories.filter((c) => countIn(c.key) === 0);
     const nMin = pf?.querySelector<HTMLInputElement>('[data-num-min]');
     const nMax = pf?.querySelector<HTMLInputElement>('[data-num-max]');
     const noResults = shop.querySelector<HTMLElement>('[data-no-results]');
+    const subRows = [...shop.querySelectorAll<HTMLElement>('[data-subtabs]')];
     let tab = 'todos';
+    // Apartado elegido en la segunda fila de pestañas ('' = toda la categoría).
+    let sub = '';
     let lo = 0;
     let hi = max;
 
@@ -407,7 +462,7 @@ const emptyCats = shopCategories.filter((c) => countIn(c.key) === 0);
       items.forEach((it) => {
         const only = 'only' in it.dataset;
         // «Todos» no muestra las tarjetas de consulta de las categorías vacías.
-        const inTab = tab === 'todos' ? !only : it.dataset.cats!.split(' ').includes(tab);
+        const inTab = tab === 'todos' ? !only : it.dataset.cats!.split(' ').includes(sub || tab);
         const p = it.dataset.price;
         const inPrice = full || only || (p !== undefined && Number(p) >= lo && Number(p) <= hi);
         it.hidden = !(inTab && inPrice);
@@ -449,12 +504,19 @@ const emptyCats = shopCategories.filter((c) => countIn(c.key) === 0);
     // En móvil y tableta el filtro empieza plegado para no empujar los productos hacia abajo.
     if (window.matchMedia('(max-width: 1023px)').matches) setOpen(false);
 
+    const setSub = (key: string) => {
+      sub = key;
+      subRows.forEach((r) => r.querySelectorAll<HTMLElement>('[data-subtab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.subtab === key))));
+      apply();
+    };
     const filter = (key: string) => {
       tab = key;
       tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.tab === key)));
-      apply();
+      subRows.forEach((r) => (r.hidden = r.dataset.subtabs !== key));
+      setSub('');
     };
     tabs.forEach((t) => t.addEventListener('click', () => filter(t.dataset.tab!)));
+    subRows.forEach((r) => r.querySelectorAll<HTMLElement>('[data-subtab]').forEach((b) => b.addEventListener('click', () => setSub(b.dataset.subtab!))));
 
     const el = <K extends keyof HTMLElementTagNameMap>(tag: K, cls = '', text = '') => {
       const e = document.createElement(tag);
