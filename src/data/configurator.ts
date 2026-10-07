@@ -21,7 +21,13 @@ export const accessoryFamilies: AccessoryFamily[] = [
   { id: 'fuerza', label: 'Fuerza y lijado', short: 'Fuerza', icon: 'sliders-horizontal', slot: 'fuerza' },
   { id: 'control', label: 'Control y seguridad', short: 'Control', icon: 'shield-check', slot: 'control' },
   { id: 'montaje', label: 'Montaje', short: 'Montaje', icon: 'wrench', slot: 'montaje' },
+  // Como en la tienda: tracks, columnas, transportadores y mesas modulares van aparte, con sus apartados.
+  { id: 'otras-soluciones', label: 'Otras soluciones', short: 'Otras soluciones', icon: 'factory', slot: 'montaje' },
 ];
+
+// Familia del configurador: la de la ficha («group»), salvo lo que la tienda pone en «Otras soluciones».
+type FamilyEntry = { data: { group?: string; shopCategories: string[] } };
+export const familyOf = (p: FamilyEntry) => (p.data.shopCategories.includes('otras-soluciones') ? 'otras-soluciones' : p.data.group);
 
 // Pieza del esquema cuando no es la de su familia (los de FAIRINO la llevan en "configurator.slot" de su ficha).
 export const slotOverrides: Record<string, string> = {

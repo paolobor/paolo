@@ -5,7 +5,8 @@ import SmartImage from '../ui/SmartImage.astro';
 import { site } from '../../data/site';
 import { hero } from '../../data/home';
 import { url, formatNumber, formatPrice } from '../../lib/url';
-import { accessoryFamilies, configSlot, isOnWrist, needs, specWeightKg, formatWeight } from '../../data/configurator';
+import { accessoryFamilies, configSlot, familyOf, isOnWrist, needs, specWeightKg, formatWeight } from '../../data/configurator';
+import { shopCategories } from '../../data/shop';
 
 interface Props {
   // Encabezado propio en /configurador/ (allí el título es el h1 de la página).
@@ -26,16 +27,20 @@ const families = [
   ...accessoryFamilies,
   { id: 'otros', label: 'Otros', short: 'Accesorio', icon: 'box', slot: 'accesorio' },
 ]
-  .map((f) => ({
-    ...f,
-    items: accessoryEntries
-      .filter((p) => (f.id === 'otros' ? !knownFamilies.has(p.data.group ?? '') : p.data.group === f.id))
+  .map((f) => {
+    const items = accessoryEntries
+      .filter((p) => (f.id === 'otros' ? !knownFamilies.has(familyOf(p) ?? '') : familyOf(p) === f.id))
       .map((p) => {
         const wrist = isOnWrist(p);
         const need = needs[p.id] ? byId.get(needs[p.id]) : undefined;
         return { entry: p, slot: configSlot(p)!, wrist, kg: wrist ? specWeightKg(p.data.specs) : null, needName: need?.data.name };
-      }),
-  }))
+      });
+    // Apartados de la familia, los mismos de la tienda (src/data/shop.ts); solo los que tienen algo.
+    const subs = (shopCategories.find((c) => c.key === f.id)?.subs ?? [])
+      .map((s) => ({ ...s, n: items.filter((i) => i.entry.data.shopCategories.includes(s.key)).length }))
+      .filter((s) => s.n);
+    return { ...f, items, subs };
+  })
   .filter((f) => f.items.length);
 const accCount = accessoryEntries.length;
 
@@ -217,9 +222,21 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
                   {f.label}
                   <span class="acc-family-n">{f.items.length}</span>
                 </h3>
+                {f.subs.length > 0 && (
+                  <div class="acc-subs" role="group" aria-label={`Apartados de ${f.label}`} data-acc-subs={f.id} hidden>
+                    <button type="button" class="acc-sub" data-acc-sub="" aria-pressed="true">
+                      Todo <span class="acc-chip-n">{f.items.length}</span>
+                    </button>
+                    {f.subs.map((s) => (
+                      <button type="button" class="acc-sub" data-acc-sub={s.key} aria-pressed="false">
+                        {s.label} <span class="acc-chip-n">{s.n}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <div class="grid gap-3 sm:grid-cols-2">
                   {f.items.map(({ entry: p, slot, wrist, kg, needName }) => (
-                    <label class="opt opt-row">
+                    <label class="opt opt-row" data-acc-cats={f.subs.length ? p.data.shopCategories.join(' ') : undefined}>
                       <input
                         type="checkbox"
                         name="accesorios"
@@ -507,6 +524,9 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
   .opt:hover {
     border-color: rgb(255 255 255 / 0.4);
   }
+  .opt-row[hidden] {
+    display: none;
+  }
   .opt-row {
     display: flex;
     align-items: center;
@@ -629,6 +649,37 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
   }
   .acc-chip[aria-pressed='true'][data-has-sel]::after {
     background: var(--color-ink);
+  }
+  /* Apartados de una familia (como en la tienda): segunda fila, más pequeña y con borde discontinuo */
+  .acc-subs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-bottom: 0.9rem;
+  }
+  .acc-sub {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.7rem;
+    border-radius: 999px;
+    border: 1px dashed rgb(255 255 255 / 0.2);
+    font-size: 0.8rem;
+    color: var(--color-mist);
+    transition:
+      border-color 0.2s,
+      color 0.2s,
+      background-color 0.2s;
+  }
+  .acc-sub:hover {
+    border-color: var(--color-signal);
+    color: #fff;
+  }
+  .acc-sub[aria-pressed='true'] {
+    border-style: solid;
+    border-color: var(--color-signal);
+    background: rgb(255 106 19 / 0.12);
+    color: var(--color-signal);
   }
   .acc-family:not([hidden]) ~ .acc-family:not([hidden]) {
     margin-top: 1.75rem;
@@ -1131,12 +1182,25 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
       submitForm(form, { subject, configuracion: summaryText() });
     });
 
-    // Filtros por familia
+    // Filtros por familia y, en las que tienen apartados (Otras soluciones), segunda fila como en la tienda: sale al
+    // elegir la familia y filtra sus accesorios.
+    const setSub = (box: HTMLElement, key: string) => {
+      box.querySelectorAll<HTMLElement>('[data-acc-sub]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.accSub === key)));
+      box.closest('[data-acc-family]')?.querySelectorAll<HTMLElement>('[data-acc-cats]').forEach((o) => {
+        o.hidden = key !== '' && !o.dataset.accCats!.split(' ').includes(key);
+      });
+    };
+    const subBoxes = [...form.querySelectorAll<HTMLElement>('[data-acc-subs]')];
+    subBoxes.forEach((box) => box.querySelectorAll<HTMLElement>('[data-acc-sub]').forEach((b) => b.addEventListener('click', () => setSub(box, b.dataset.accSub!))));
     chips.forEach((c) =>
       c.addEventListener('click', () => {
         const f = c.dataset.accFilter;
         chips.forEach((x) => x.setAttribute('aria-pressed', String(x === c)));
         families.forEach((b) => (b.hidden = f !== 'todos' && b.dataset.accFamily !== f));
+        subBoxes.forEach((box) => {
+          box.hidden = box.dataset.accSubs !== f;
+          setSub(box, '');
+        });
       }),
     );
 

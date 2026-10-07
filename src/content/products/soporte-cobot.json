@@ -3,12 +3,12 @@
   "category": "accesorio",
   "group": "montaje",
   "order": 18,
-  "tagline": "Mesa de perfil de aluminio con ruedas para montar tu cobot FAIRINO a la altura de trabajo y llevarlo de un puesto a otro.",
-  "description": "Mesa de perfil de aluminio ranurado para montar el cobot FAIRINO a la altura de trabajo. El tablero es de perfiles ranurados: la base del cobot, el utillaje o las herramientas de recambio se fijan donde haga falta con tuercas en T. Lleva cuatro ruedas giratorias con pie nivelador, así que se mueve de un puesto a otro y, una vez en su sitio, se apoya sobre los niveladores para que quede firme.",
+  "tagline": "Mesa modular de perfil de aluminio con ruedas para tu cobot FAIRINO: pídela ya montada o personalízala a tu gusto.",
+  "description": "Mesa modular de perfil de aluminio ranurado para montar el cobot FAIRINO a la altura de trabajo. Pídela ya montada, lista para poner el cobot, o personalízala a tu gusto. El tablero es de perfiles ranurados: la base del cobot, el utillaje o las herramientas de recambio se fijan donde haga falta con tuercas en T. Lleva cuatro ruedas giratorias con pie nivelador, así que se mueve de un puesto a otro y, una vez en su sitio, se apoya sobre los niveladores para que quede firme.",
   "highlights": [
+    "Modular: pídela ya montada o personalízala a tu gusto",
     "Estructura y tablero de perfil de aluminio ranurado",
-    "Cuatro ruedas giratorias con pie nivelador",
-    "Para mover el cobot entre puestos de trabajo"
+    "Cuatro ruedas giratorias con pie nivelador"
   ],
   "images": [
     {
@@ -32,6 +32,10 @@
     }
   ],
   "specs": [
+    {
+      "label": "Formato",
+      "value": "Modular: ya montada o personalizada a tu gusto"
+    },
     {
       "label": "Estructura",
       "value": "Perfil de aluminio ranurado"
@@ -64,7 +68,8 @@
     "carga-de-maquinas"
   ],
   "shopCategories": [
-    "montaje"
+    "otras-soluciones",
+    "modular"
   ],
   "compatibleWith": [],
   "downloads": [

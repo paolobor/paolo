@@ -248,7 +248,7 @@ const secciones = [
   { id: 'control', n: '02', titulo: 'Control, programación y seguridad', intro: 'Controladoras, consola, mandos y seguridad para trabajar con el cobot de forma intuitiva y segura.', items: control },
   { id: 'garras', n: '03', titulo: 'Garras y pinzas', intro: 'Pinzas eléctricas, de vacío y flexibles para coger cualquier pieza: de la FAIRINO EPG40-50 a toda la gama eléctrica de W-Robot, de dos, tres y cuatro dedos y giratorias.', items: garras },
   { id: 'sensores', n: '04', titulo: 'Sensores, visión y lijado', intro: 'Fuerza y par de seis ejes, cámaras 2D y 3D y el equipo de lijado para acabados con fuerza constante.', items: sensores },
-  { id: 'montaje', n: '05', titulo: 'Montaje, séptimo eje y transportadores', intro: 'Tracks lineales, columnas y soportes para llevar el cobot donde haga falta, y transportadores de charnela modulares, ya montados o a tu gusto, que le llevan y recogen el producto.', items: [...montaje, ...otros] },
+  { id: 'montaje', n: '05', titulo: 'Montaje, séptimo eje y transportadores', intro: 'Tracks lineales, columnas, mesas modulares y soportes para llevar el cobot donde haga falta, y transportadores de charnela que le llevan y recogen el producto.', items: [...montaje, ...otros] },
   { id: 'soluciones', n: '06', titulo: 'Soluciones llave en mano', intro: 'Estaciones de soldadura y paletizado listas para producir, y logística autónoma.' },
 ];
 

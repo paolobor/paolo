@@ -1,42 +1,38 @@
 {
-  "name": "Transportador de charnela modular",
+  "name": "Transportador de charnela",
   "brand": "FAIRINO España",
   "category": "accesorio",
   "group": "montaje",
   "order": 65,
-  "tagline": "Cinta modular de cadena de charnela para tu cobot FAIRINO: pídela ya montada o personalízala a tu gusto.",
-  "description": "Transportador modular de cadena de charnela de plástico sobre bastidor de perfil de aluminio, con guías laterales y patas de aluminio con pie de fundición. Pídela ya montada, lista para ponerla junto al cobot, o personalízala a tu gusto: combinamos tramos rectos y curvas hasta tener el recorrido que necesita tu línea. Se monta junto al cobot FAIRINO para alimentar o recoger piezas: el robot las coge de la cinta con su garra o su ventosa y las deja en caja, en palé o en la máquina, o al revés. La marcha y el paro de la cinta se pueden gobernar desde las salidas digitales de la controladora FAIRINO, para que el programa del robot y la cinta trabajen sincronizados.",
+  "tagline": "Cinta de cadena de charnela que lleva y recoge el producto en la zona de trabajo de tu cobot FAIRINO.",
+  "description": "Transportador de cadena de charnela de plástico sobre bastidor de perfil de aluminio, con guías laterales y patas de aluminio con pie de fundición. Se monta junto al cobot FAIRINO para alimentar o recoger piezas: el robot las coge de la cinta con su garra o su ventosa y las deja en caja, en palé o en la máquina, o al revés. La marcha y el paro de la cinta se pueden gobernar desde las salidas digitales de la controladora FAIRINO, para que el programa del robot y la cinta trabajen sincronizados. Te lo preparamos con el recorrido de tu línea.",
   "highlights": [
-    "Modular: pídela ya montada o personalízala a tu gusto",
     "Se combina con cualquier cobot FAIRINO: pick and place, paletizado o carga de máquinas",
-    "Cadena de charnela de plástico sobre bastidor de aluminio, con tramos rectos y curvas"
+    "Cadena de charnela de plástico sobre bastidor de aluminio",
+    "Tramos rectos y curvas según el recorrido de tu línea"
   ],
   "images": [
     {
       "src": "../../assets/products/transportador-charnela/transportador-charnela-oficial.png",
-      "alt": "Transportador de charnela modular con cadena de plástico blanca, bastidor y patas de aluminio y soportes de guía negros"
+      "alt": "Transportador de charnela con cadena de plástico blanca, bastidor y patas de aluminio y soportes de guía negros"
     },
     {
       "src": "../../assets/products/transportador-charnela/fairino-transportador-charnela-escena-cobot.webp",
-      "alt": "Cobot FAIRINO con ventosa de vacío junto a un transportador de charnela modular, en una célula oscura con luces naranjas",
+      "alt": "Cobot FAIRINO con ventosa de vacío junto a un transportador de charnela, en una célula oscura con luces naranjas",
       "illustrative": true
     },
     {
       "src": "../../assets/products/transportador-charnela/fairino-transportador-charnela-escena-fabrica.webp",
-      "alt": "Cobot FAIRINO con ventosa de vacío y transportador de charnela modular en una fábrica luminosa",
+      "alt": "Cobot FAIRINO con ventosa de vacío y transportador de charnela en una fábrica luminosa",
       "illustrative": true
     },
     {
       "src": "../../assets/products/transportador-charnela/fairino-transportador-charnela-escena-showroom.webp",
-      "alt": "Transportador de charnela modular con curvas y patas de aluminio en una sala de exposición con luz naranja",
+      "alt": "Transportador de charnela con curvas y patas de aluminio en una sala de exposición con luz naranja",
       "illustrative": true
     }
   ],
   "specs": [
-    {
-      "label": "Formato",
-      "value": "Modular: ya montada o personalizada a tu gusto"
-    },
     {
       "label": "Cadena",
       "value": "Charnela de plástico"
