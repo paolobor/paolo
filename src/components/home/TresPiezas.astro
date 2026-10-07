@@ -1,0 +1,269 @@
+---
+import { getImage } from 'astro:assets';
+import Icon from '../ui/Icon.astro';
+import { url } from '../../lib/url';
+import { findImage } from '../../lib/images';
+
+// Vídeo del anuncio de FAIRINO España (del segundo 24 al 42): cobot, transportador de charnela y perfilería de aluminio,
+// «tres piezas clave, un mismo proveedor». En 1080p a 60 fps. Sale sin sonido y solo se descarga y se mueve con la
+// sección a la vista; los botones lo pausan y le ponen sonido.
+const posterImg = findImage('videos/fdi-tres-piezas-poster.jpg');
+const poster = posterImg ? (await getImage({ src: posterImg, format: 'webp', width: 1600 })).src : undefined;
+
+const piezas = [
+  { icon: 'box', title: 'Cobot FAIRINO', text: 'Del FR3 al FR30, con su controlador, garras y accesorios.', href: 'cobots/', cta: 'Ver cobots' },
+  { icon: 'workflow', title: 'Transportadores de charnela', text: 'Llevan y recogen el producto en la zona de trabajo del cobot.', href: 'productos/transportador-charnela/', cta: 'Ver transportador' },
+  { icon: 'layers', title: 'Perfilería de aluminio modular', text: 'Mesas y estructuras ya montadas o hechas a tu gusto.', href: 'productos/soporte-cobot/', cta: 'Ver mesa soporte' },
+];
+---
+
+<section class="tp section relative isolate overflow-hidden" aria-labelledby="tp-title" data-tp>
+  <div class="tp-glow" aria-hidden="true"></div>
+  <div class="container-x grid gap-10 lg:gap-12">
+    <div class="grid max-w-3xl gap-4" data-reveal>
+      <p class="eyebrow flex items-center gap-2.5"><span class="tp-dot" aria-hidden="true"></span>Un mismo proveedor</p>
+      <h2 id="tp-title" class="h-section">Tres piezas clave para tu proyecto</h2>
+      <p class="lead text-mist">
+        Un proyecto necesita más que un robot. Con FAIRINO España tienes el cobot, los transportadores de charnela y la
+        perfilería de aluminio para montar la solución completa, de un solo proveedor.
+      </p>
+    </div>
+
+    <div class="tp-player" data-reveal style="--reveal-delay:80ms">
+      <video
+        class="tp-video"
+        muted
+        loop
+        playsinline
+        preload="none"
+        poster={poster}
+        disablepictureinpicture
+        aria-label="Vídeo de FAIRINO España: un cobot FAIRINO, transportadores de charnela y perfilería de aluminio, tres piezas clave de un mismo proveedor"
+        data-tp-video
+      >
+        <source src={url('media/fdi-tres-piezas.webm')} type="video/webm" />
+        <source src={url('media/fdi-tres-piezas.mp4')} type="video/mp4" />
+      </video>
+      <div class="tp-controls">
+        <button type="button" class="tp-btn" aria-label="Reproducir el vídeo" data-tp-play>
+          <span data-tp-icon-play><Icon name="play" size={16} /></span>
+          <span data-tp-icon-pause hidden><Icon name="pause" size={16} /></span>
+        </button>
+        <button type="button" class="tp-btn tp-btn-sound" aria-pressed="false" data-tp-sound>
+          <svg data-tp-icon-muted xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z" /><line x1="22" x2="16" y1="9" y2="15" /><line x1="16" x2="22" y1="9" y2="15" /></svg>
+          <svg data-tp-icon-sound hidden xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5z" /><path d="M16 9a5 5 0 0 1 0 6" /><path d="M19.4 18.4a9 9 0 0 0 0-12.8" /></svg>
+          <span data-tp-sound-label>Activar sonido</span>
+        </button>
+      </div>
+    </div>
+
+    <ol class="grid gap-3 sm:grid-cols-3 sm:gap-4">
+      {
+        piezas.map((p, i) => (
+          <li class="tp-card" data-reveal style={`--reveal-delay:${120 + i * 80}ms`}>
+            <a href={url(p.href)} class="grid h-full content-start gap-3 p-5 sm:p-6">
+              <span class="flex items-center justify-between">
+                <span class="tp-icon grid size-11 place-items-center rounded-xl text-brand">
+                  <Icon name={p.icon} size={22} />
+                </span>
+                <span class="tp-n">0{i + 1}</span>
+              </span>
+              <span class="font-display text-lg font-bold leading-tight" style="font-stretch:112%">{p.title}</span>
+              <span class="text-sm text-mist/85">{p.text}</span>
+              <span class="tp-cta mt-1 inline-flex items-center gap-1.5 text-sm font-semibold text-signal">
+                {p.cta} <Icon name="arrow-right" size={16} />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .tp {
+    background: var(--color-ink);
+  }
+  .tp-glow {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse 55% 45% at 50% 58%, rgb(255 106 19 / 0.14), transparent 70%),
+      linear-gradient(180deg, var(--color-ink), transparent 20%, transparent 80%, var(--color-ink));
+  }
+  .tp-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--color-signal);
+    box-shadow: 0 0 10px rgb(255 122 26 / 0.8);
+  }
+
+  /* Reproductor: 16:9, esquinas redondeadas, borde y brillo naranja */
+  .tp-player {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: 22px;
+    border: 1px solid rgb(255 122 26 / 0.28);
+    background: #000;
+    box-shadow:
+      0 50px 120px -50px rgb(0 0 0 / 0.95),
+      0 0 80px -20px rgb(255 106 19 / 0.35);
+  }
+  .tp-video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    cursor: pointer;
+  }
+  .tp-controls {
+    position: absolute;
+    right: 14px;
+    bottom: 14px;
+    display: flex;
+    gap: 0.5rem;
+  }
+  .tp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    height: 38px;
+    min-width: 38px;
+    justify-content: center;
+    padding: 0 0.7rem;
+    border-radius: 999px;
+    border: 1px solid rgb(255 255 255 / 0.2);
+    background: rgb(7 5 4 / 0.55);
+    -webkit-backdrop-filter: blur(8px);
+    backdrop-filter: blur(8px);
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    transition:
+      border-color 0.2s,
+      color 0.2s,
+      background-color 0.2s;
+  }
+  .tp-btn:hover,
+  .tp-btn:focus-visible {
+    border-color: var(--color-signal);
+    color: var(--color-signal);
+  }
+  .tp-btn-sound[aria-pressed='true'] {
+    background: var(--color-signal);
+    border-color: var(--color-signal);
+    color: var(--color-ink);
+  }
+  @media (max-width: 639px) {
+    .tp-player {
+      border-radius: 14px;
+    }
+    .tp-controls {
+      right: 8px;
+      bottom: 8px;
+    }
+    .tp-btn {
+      height: 34px;
+      min-width: 34px;
+      font-size: 0.75rem;
+    }
+  }
+
+  /* Las tres piezas */
+  .tp-card {
+    position: relative;
+    border: 1px solid rgb(255 255 255 / 0.09);
+    border-radius: var(--radius-card);
+    background: linear-gradient(160deg, rgb(28 20 15 / 0.7), rgb(11 7 5 / 0.6));
+    transition:
+      transform 0.35s var(--ease-out-soft, ease),
+      border-color 0.35s ease,
+      box-shadow 0.35s ease;
+  }
+  .tp-card:hover {
+    transform: translateY(-3px);
+    border-color: rgb(255 122 26 / 0.4);
+    box-shadow: 0 26px 60px -28px rgb(255 106 19 / 0.38);
+  }
+  .tp-icon {
+    background: rgb(255 122 26 / 0.1);
+    box-shadow: inset 0 0 0 1px rgb(255 122 26 / 0.22);
+  }
+  .tp-n {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    color: rgb(245 238 232 / 0.4);
+  }
+  .tp-card:hover .tp-cta {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>
+
+<script>
+  // Se reproduce sin sonido con la sección a la vista y se para al salir. Con «movimiento reducido» o ahorro de datos
+  // no arranca solo: se queda en el póster hasta que se pulse «play». El sonido solo se activa con el botón.
+  const section = document.querySelector<HTMLElement>('[data-tp]');
+  const video = section?.querySelector<HTMLVideoElement>('[data-tp-video]');
+  if (section && video) {
+    const playBtn = section.querySelector<HTMLButtonElement>('[data-tp-play]')!;
+    const soundBtn = section.querySelector<HTMLButtonElement>('[data-tp-sound]')!;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+    let visible = false;
+    let userPaused = Boolean(reduce || saveData);
+
+    const paint = () => {
+      const playing = !video.paused;
+      playBtn.setAttribute('aria-label', playing ? 'Pausar el vídeo' : 'Reproducir el vídeo');
+      playBtn.querySelector<HTMLElement>('[data-tp-icon-play]')!.hidden = playing;
+      playBtn.querySelector<HTMLElement>('[data-tp-icon-pause]')!.hidden = !playing;
+      soundBtn.setAttribute('aria-pressed', String(!video.muted));
+      soundBtn.querySelector<SVGElement>('[data-tp-icon-muted]')!.toggleAttribute('hidden', !video.muted);
+      soundBtn.querySelector<SVGElement>('[data-tp-icon-sound]')!.toggleAttribute('hidden', video.muted);
+      soundBtn.querySelector<HTMLElement>('[data-tp-sound-label]')!.textContent = video.muted ? 'Activar sonido' : 'Silenciar';
+    };
+    const sync = () => {
+      if (visible && !userPaused) {
+        if (video.preload === 'none') video.preload = 'auto';
+        video.play().catch(() => {});
+      } else video.pause();
+    };
+    const toggle = () => {
+      userPaused = !video.paused;
+      if (!userPaused) video.preload = 'auto';
+      if (userPaused) video.pause();
+      else video.play().catch(() => {});
+    };
+
+    video.addEventListener('play', paint);
+    video.addEventListener('pause', paint);
+    video.addEventListener('volumechange', paint);
+    playBtn.addEventListener('click', toggle);
+    video.addEventListener('click', toggle);
+    soundBtn.addEventListener('click', () => {
+      video.muted = !video.muted;
+      if (!video.muted && video.paused) {
+        userPaused = false;
+        video.preload = 'auto';
+        video.play().catch(() => {});
+      }
+    });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(
+        ([entry]) => {
+          visible = entry.isIntersecting;
+          sync();
+        },
+        { threshold: 0.35 },
+      ).observe(video);
+    }
+    paint();
+  }
+</script>
