@@ -223,7 +223,7 @@ de las fichas oficiales de SmartShift «Tool changer» y «Light manual tool cha
 | smartshift-modulo-electrico-oficial.png  | smartshift-modulo-electrico.jpg   | 73937e74-2da5-4328-b3e3-2cd2be3dcb71 → 4b9934c9-b42c-485d-84c5-d3a301ee8ef7 |
 
 Base magnética (`base-magnetica-original.jpg`, foto del cliente): escalado 6bdd5afd-2b4b-421e-9e98-dcd6f7d69f4d → sin fondo
-ca2b5a4c-8fbd-49be-9514-d6318f1f6c7b. La marca de la ficha (Inlux Robotics) viene de la lista inicial, sin confirmar.
+ca2b5a4c-8fbd-49be-9514-d6318f1f6c7b. El cliente confirma que la marca no es Inlux Robotics (la de la lista inicial); sale como FAIRINO España hasta saber cuál es.
 
 Pinzas multiventosa de vacío WJF (fotos del cliente; modelo en la etiqueta): gpt_image_2_5 pasó el fondo a blanco y
 image_background_remover lo quitó; las escenas con rayos de luz cambian solo el fondo (pie «Imagen ilustrativa»).
