@@ -1,13 +1,13 @@
 <!doctype html>
-<!-- data-target: a dónde lleva la intro al terminar (cámbialo aquí; p. ej. "/" si la intro vive dentro de fairino.es). -->
-<html lang="es" data-target="https://fairino.es/">
+<!-- data-target: a dónde lleva la intro al terminar (el inicio de esta misma web). -->
+<html lang="es" data-target="/">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>FAIRINO Spain</title>
     <meta name="description" content="FAIRINO Spain · Robots colaborativos." />
     <meta name="theme-color" content="#000000" />
-    <link rel="canonical" href="https://fairino.es/" />
+    <link rel="canonical" href="https://fairinocobot.com/" />
     <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
 
     <!-- Si la intro ya se vio en esta sesión, directo a la web (antes de pintar nada). ?intro=1 la fuerza. -->
@@ -17,7 +17,7 @@
           var q = new URLSearchParams(location.search);
           if (!q.has('intro') && sessionStorage.getItem('fairino-intro-vista') === '1') {
             document.documentElement.className += ' is-skipping';
-            location.replace(document.documentElement.dataset.target || 'https://fairino.es/');
+            location.replace(document.documentElement.dataset.target || '/');
           }
         } catch (e) {}
       })();
@@ -85,17 +85,17 @@
       </div>
 
       <button class="fi-enter" type="button" data-enter aria-label="Entrar en FAIRINO Spain"></button>
-      <a class="fi-skip" href="https://fairino.es/" data-skip>Saltar intro</a>
+      <a class="fi-skip" href="/" data-skip>Saltar intro</a>
 
       <div class="fi-grain" aria-hidden="true"></div>
       <div class="fi-whiteout" data-whiteout aria-hidden="true">
-        <a class="fi-whiteout-link" href="https://fairino.es/" data-whiteout-link>Entrar en FAIRINO Spain</a>
+        <a class="fi-whiteout-link" href="/" data-whiteout-link>Entrar en FAIRINO Spain</a>
       </div>
     </main>
 
     <noscript>
       <style>.fi-hint,.fi-enter,.fi-film{display:none}.fi-word{opacity:1}</style>
-      <p class="fi-noscript"><a href="https://fairino.es/">Entrar en fairino.es</a></p>
+      <p class="fi-noscript"><a href="/">Entrar en la web</a></p>
     </noscript>
 
     <script src="js/vendor/gsap.min.js" defer></script>

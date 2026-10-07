@@ -19,7 +19,7 @@
   var script = document.currentScript;
   var ASSETS = new URL('../assets/', script && script.src ? script.src : location.href).href;
   var OVERLAY = root.classList.contains('fi-play');
-  var TARGET = root.dataset.target || 'https://fairino.es/';
+  var TARGET = root.dataset.target || '/';
   var KEY = 'fairino-intro-vista';
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

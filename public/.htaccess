@@ -1,0 +1,53 @@
+# FAIRINO España · web estática (Astro) en un hosting Apache (Dinahosting).
+# Solo hay archivos HTML, CSS, JS, imágenes y vídeos: nada de PHP ni base de datos.
+# El paso de http a https lo hace el propio hosting (actívalo en el panel si hiciera falta).
+
+DirectoryIndex index.html
+ErrorDocument 404 /404.html
+Options -Indexes
+
+# Sin www: www.fairinocobot.com → fairinocobot.com
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+  RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+</IfModule>
+
+# Tipos de archivo que algunos servidores no conocen
+<IfModule mod_mime.c>
+  AddType image/webp .webp
+  AddType image/avif .avif
+  AddType video/webm .webm
+  AddType font/woff2 .woff2
+  AddType model/gltf-binary .glb
+  AddType application/manifest+json .webmanifest
+</IfModule>
+
+# Comprimir el texto (páginas, estilos, scripts)
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/plain text/xml application/javascript text/javascript application/json application/xml image/svg+xml
+</IfModule>
+
+# Caché del navegador: las páginas se piden siempre de nuevo; imágenes, vídeos y letras se guardan un tiempo.
+# Los archivos de _astro llevan su huella en el nombre y tienen su propia regla (_astro/.htaccess).
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 day"
+  ExpiresByType text/html "access plus 0 seconds"
+  ExpiresByType text/plain "access plus 0 seconds"
+  ExpiresByType application/xml "access plus 0 seconds"
+  ExpiresByType text/xml "access plus 0 seconds"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType image/avif "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType video/mp4 "access plus 1 month"
+  ExpiresByType video/webm "access plus 1 month"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

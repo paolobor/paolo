@@ -3,9 +3,9 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
-// SITE y BASE permiten publicar en el dominio final (https://fairino.es, base "/")
+// SITE y BASE permiten publicar en el dominio final (https://fairinocobot.com, base "/"; fairino.es sigue con su web aparte)
 // o en una URL de pruebas de GitHub Pages (p. ej. SITE=https://usuario.github.io BASE=/repo).
-const site = process.env.SITE ?? 'https://fairino.es';
+const site = process.env.SITE ?? 'https://fairinocobot.com';
 const base = process.env.BASE ?? '/';
 
 export default defineConfig({

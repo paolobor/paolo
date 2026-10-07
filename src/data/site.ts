@@ -6,7 +6,7 @@ export const site = {
   tagline: 'Distribuidor oficial de cobots FAIRINO en España',
   description:
     'Distribuidor oficial de robots colaborativos FAIRINO en España. Cobots, controladores y accesorios, integración llave en mano y soporte desde Toledo.',
-  url: 'https://fairino.es',
+  url: 'https://fairinocobot.com', // dominio de esta web (fairino.es sigue con la web anterior); igual que SITE en astro.config.mjs
   locale: 'es_ES',
 
   // Logotipo oficial: src/assets/brand/fairino-wordmark.svg (letras de FAIRINO), lo pinta components/ui/Logo.astro.

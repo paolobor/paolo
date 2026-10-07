@@ -1,0 +1,4 @@
+# Archivos generados con su huella en el nombre (cambian de nombre cuando cambian): caché de un año.
+<IfModule mod_headers.c>
+  Header set Cache-Control "public, max-age=31536000, immutable"
+</IfModule>
