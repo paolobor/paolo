@@ -57,6 +57,29 @@ for page in glob.glob('**/*.html', recursive=True):
     s2 = re.sub(r'<(?:img|source)\b[^>]*>', lambda m: una_anchura(m.group(0)), s)
     if s2 != s:
         open(page, 'w').write(s2)
+# Y cada imagen, una sola variante en toda la copia: si dos páginas piden anchuras distintas de la misma imagen
+# (nombre.HASH_variante.webp), todas pasan a la más pesada (la más ancha) y el resto cae abajo por no usarse.
+textos_img = glob.glob('**/*.html', recursive=True) + glob.glob('assets/**/*.js', recursive=True) + glob.glob('**/*.json', recursive=True)
+todo = ''.join(open(t, errors='ignore').read() for t in textos_img)
+grupos = {}
+for x in glob.glob('assets/*.webp') + glob.glob('assets/*.avif') + glob.glob('assets/*.png') + glob.glob('assets/*.jpg'):
+    b = os.path.basename(x)
+    m = re.match(r'(.+\.[A-Za-z0-9_-]{8})_[A-Za-z0-9_-]+\.(webp|avif|png|jpg)$', b)
+    if m and b in todo:
+        grupos.setdefault((m.group(1), m.group(2)), []).append(b)
+cambio = {}
+for vs in grupos.values():
+    if len(vs) > 1:
+        mayor = max(vs, key=lambda v: os.path.getsize('assets/' + v))
+        cambio.update({v: mayor for v in vs if v != mayor})
+if cambio:
+    patron = re.compile('|'.join(re.escape(v) for v in cambio))
+    for t in textos_img:
+        s = open(t, errors='ignore').read()
+        s2 = patron.sub(lambda m: cambio[m.group(0)], s)
+        if s2 != s:
+            open(t, 'w').write(s2)
+print('variantes de imagen unificadas:', len(cambio))
 # Fuera lo que nadie usa (p. ej. los PNG/JPG originales que Astro copia aunque las páginas solo piden WebP):
 # la vista previa tiene un tope de archivos. Se busca el nombre de cada archivo en páginas, estilos y scripts.
 textos = ''.join(open(t, errors='ignore').read() for t in glob.glob('**/*', recursive=True)
