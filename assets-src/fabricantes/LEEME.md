@@ -196,4 +196,15 @@ cinta, el cobot y la ventosa se compararon con la foto original. Las escenas lle
 En las cajas del almacén de la foto se lee YA-VA (fabricante de transportadores); la marca y el modelo del transportador
 están sin confirmar, así que en la web sale como de FAIRINO España, sin marca de fabricante.
 
+Mesa soporte FAIRINO (ficha `soporte-cobot`; mesa-soporte-fairino-original.jpg y mesa-soporte-fairino-original-2.jpg, fotos
+del cliente del 7 de octubre de 2026). El cliente la pidió «con rayos de luz, buena óptica y futurista». gpt_image_2_5 cambió
+solo el fondo (fuera cajas, palés y almacén); la mesa se comparó con la foto original. Coste: unos 1,5 créditos.
+
+| Imagen                                           | Foto original                         | Trabajo de Higgsfield                                                             |
+| ------------------------------------------------ | ------------------------------------- | --------------------------------------------------------------------------------- |
+| soporte-cobot-oficial.png (recorte)              | mesa-soporte-fairino-original.jpg     | 1d24862c-4050-457d-ae66-ae62c5e97287 (fondo blanco) → 62292807-e496-419f-9d10-064446b6f643 |
+| fairino-mesa-soporte-escena-rayos.webp           | mesa-soporte-fairino-original.jpg     | b2f65713-d575-4493-a6d2-b3743531f27e                                              |
+| fairino-mesa-soporte-escena-foco.webp            | mesa-soporte-fairino-original.jpg     | cef86b1c-cc01-4902-9dd2-87dea5d92fcf                                              |
+| fairino-mesa-soporte-escena-contrapicado.webp    | mesa-soporte-fairino-original-2.jpg   | f16e12dc-8f7d-4f8d-b761-362266c6e942                                              |
+
 Pendiente: la cámara 3D negra con dos proyectores (el cliente dice que todavía no se ponga).

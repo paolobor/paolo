@@ -1,14 +1,68 @@
 {
-  "name": "Soporte para cobot de perfil de aluminio",
+  "name": "Mesa soporte FAIRINO",
   "category": "accesorio",
   "group": "montaje",
   "order": 18,
-  "tagline": "Soporte de perfil de aluminio para montar el cobot a la altura de trabajo.",
-  "description": "Soporte de perfil de aluminio para montar el cobot a la altura de trabajo. Ficha técnica, compatibilidad y precio a consultar. El modelo 3D oficial está en las descargas.",
-  "highlights": [],
-  "images": [],
-  "specs": [],
-  "applications": [],
+  "tagline": "Mesa de perfil de aluminio con ruedas para montar tu cobot FAIRINO a la altura de trabajo y llevarlo de un puesto a otro.",
+  "description": "Mesa de perfil de aluminio ranurado para montar el cobot FAIRINO a la altura de trabajo. El tablero es de perfiles ranurados: la base del cobot, el utillaje o las herramientas de recambio se fijan donde haga falta con tuercas en T. Lleva cuatro ruedas giratorias con pie nivelador, así que se mueve de un puesto a otro y, una vez en su sitio, se apoya sobre los niveladores para que quede firme.",
+  "highlights": [
+    "Estructura y tablero de perfil de aluminio ranurado",
+    "Cuatro ruedas giratorias con pie nivelador",
+    "Para mover el cobot entre puestos de trabajo"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/soporte-cobot/soporte-cobot-oficial.png",
+      "alt": "Mesa soporte FAIRINO de perfil de aluminio ranurado con esquinas negras y cuatro ruedas con nivelador"
+    },
+    {
+      "src": "../../assets/products/soporte-cobot/fairino-mesa-soporte-escena-rayos.webp",
+      "alt": "Mesa soporte FAIRINO de aluminio iluminada por haces de luz naranja y blanca en un estudio oscuro",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/soporte-cobot/fairino-mesa-soporte-escena-contrapicado.webp",
+      "alt": "Mesa soporte FAIRINO vista desde abajo, con rayos de luz y suelo brillante",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/soporte-cobot/fairino-mesa-soporte-escena-foco.webp",
+      "alt": "Mesa soporte FAIRINO bajo un foco cenital en una sala de exposición con luces naranjas",
+      "illustrative": true
+    }
+  ],
+  "specs": [
+    {
+      "label": "Estructura",
+      "value": "Perfil de aluminio ranurado"
+    },
+    {
+      "label": "Tablero",
+      "value": "Perfiles de aluminio ranurados para tuercas en T"
+    },
+    {
+      "label": "Ruedas",
+      "value": "4 giratorias con pie nivelador"
+    },
+    {
+      "label": "Dimensiones",
+      "value": null,
+      "unit": "mm"
+    },
+    {
+      "label": "Carga admisible",
+      "value": null
+    },
+    {
+      "label": "Cobots compatibles",
+      "value": null
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion",
+    "carga-de-maquinas"
+  ],
   "shopCategories": [
     "montaje"
   ],
@@ -33,9 +87,9 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": "https://fairino.es/descargas/",
+    "url": "Fotos de FAIRINO España; fondos cambiados con Higgsfield (gpt_image_2_5) y recorte con image_background_remover",
     "verified": false
   },
   "seo": {},
-  "brand": "Inlux Robotics"
+  "brand": "FAIRINO"
 }

@@ -26,11 +26,11 @@ export const shopCategories: ShopCategory[] = [
   {
     key: 'otras-soluciones',
     label: 'Otras soluciones',
-    intro: 'Equipos para ampliar la célula de tu cobot FAIRINO: séptimo eje, columnas y transportadores que trabajan junto al robot.',
+    intro: 'Equipos para ampliar la célula de tu cobot FAIRINO: séptimo eje, columnas y transportadores modulares que trabajan junto al robot.',
     subs: [
       { key: 'tracks', label: 'Tracks' },
       { key: 'columnas', label: 'Columnas' },
-      { key: 'transportadores-charnela', label: 'Transportadores de charnela', empty: 'transportadores de charnela' },
+      { key: 'transportadores-charnela', label: 'Transportadores de charnela modulares', empty: 'transportadores de charnela modulares' },
     ],
   },
   { key: 'proteccion', label: 'Protección para cobots', empty: 'fundas y protecciones para cobots' },
