@@ -1,0 +1,60 @@
+{
+  "name": "Columna con guías para cobot",
+  "brand": "FAIRINO",
+  "category": "accesorio",
+  "group": "montaje",
+  "order": 63,
+  "tagline": "Columna móvil de perfil de aluminio con eje vertical motorizado para subir y bajar el cobot.",
+  "description": "Columna de perfil de aluminio sobre base con ruedas, con un eje vertical guiado: husillo de bolas, guías lineales y motor paso a paso que suben y bajan el carro donde va el cobot. Sirve para trabajar a distintas alturas o mover la célula de un puesto a otro. Te la entregamos lista para montar el cobot.",
+  "highlights": [
+    "Eje vertical con husillo de bolas y guías lineales",
+    "Motor paso a paso para subir y bajar el carro",
+    "Base de perfil de aluminio con ruedas"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/columna-guias/columna-guias-oficial.png",
+      "alt": "Columna con guías para cobot FAIRINO: eje vertical con husillo, motor y base de aluminio con ruedas"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Eje vertical",
+      "value": "Husillo de bolas y guías lineales"
+    },
+    {
+      "label": "Accionamiento",
+      "value": "Motor paso a paso"
+    },
+    {
+      "label": "Base",
+      "value": "Perfil de aluminio con ruedas"
+    },
+    {
+      "label": "Código de tarifa",
+      "value": "CL-G"
+    }
+  ],
+  "applications": [
+    "paletizado",
+    "carga-de-maquinas",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "montaje"
+  ],
+  "compatibleWith": [],
+  "downloads": [],
+  "store": {
+    "sku": "CL-G",
+    "price": 1500,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "Foto de FAIRINO España; fondo quitado con Higgsfield (gpt_image_2_5 + image_background_remover) y tarifa de FAIRINO España",
+    "verified": false
+  },
+  "seo": {}
+}

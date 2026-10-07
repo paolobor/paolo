@@ -172,5 +172,11 @@ el reflejo verde del suelo de los bordes. Coste: unos 20 créditos. Originales e
 | columna-base-h    | columna-base-h-original.jpg         | a2fef581-8df8-43b9-b98b-82221533fb13 → 0211b109-7ab9-4f38-ae09-27eac3799ef2   |
 | gzcx-6f-75mm      | sensor-g2cx-fairino-original.jpg    | b838c812-c95c-4ab9-920d-a1b379ce315d → b07c112d-5d4f-4f71-a7c5-134099eb572b   |
 | modulo-seguridad  | modulo-seguridad-original.jpg       | da044676-d7e6-43b1-9fe2-594218895601 → bd71d726-da4b-46a6-b572-0457a0dbdfe8   |
+| columna-guias     | columna-guias-original.jpg          | ver nota                                                                      |
+
+Columna con guías: el quitafondos no separaba la columna gris del armario gris de detrás, así que primero se le
+pidió a gpt_image_2_5 que cambiara solo el fondo por blanco (trabajo 6d912639-7d21-4bea-9813-315845c341ec,
+comparado con la foto original pieza a pieza) y luego se quitó el blanco con image_background_remover
+(f9e989a6-9e0d-49cc-a019-e82f32bcea9f); el tirador del armario que quedaba suelto se borró a mano.
 
 Pendiente: la cámara 3D negra con dos proyectores (el cliente dice que todavía no se ponga).
