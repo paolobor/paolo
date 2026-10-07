@@ -1,14 +1,14 @@
 {
-  "name": "Track lineal de 1 m (7.º eje) para FR3 y FR5",
+  "name": "Track lineal de 1 m (7.º eje)",
   "brand": "FAIRINO",
   "category": "accesorio",
   "group": "montaje",
   "order": 59,
   "tagline": "Séptimo eje lineal: el cobot se desplaza 1 m para atender más puestos desde el mismo sitio.",
-  "description": "Eje lineal motorizado sobre el que se monta un cobot FAIRINO FR3 o FR5 para moverlo a lo largo de 1 m, como un séptimo eje. Amplía el área de trabajo para atender varias máquinas o puestos con un solo cobot. Te lo entregamos configurado con el cobot.",
+  "description": "Eje lineal motorizado sobre el que se monta el cobot FAIRINO para moverlo a lo largo de 1 m, como un séptimo eje. Es compatible con todos los modelos de FAIRINO. Amplía el área de trabajo para atender varias máquinas o puestos con un solo cobot. Te lo entregamos configurado con el cobot.",
   "highlights": [
     "1 m de recorrido como séptimo eje",
-    "Para los cobots FR3 y FR5",
+    "Compatible con todos los cobots FAIRINO",
     "Un cobot atiende varios puestos"
   ],
   "images": [
@@ -25,7 +25,7 @@
     },
     {
       "label": "Cobots",
-      "value": "FR3 y FR5"
+      "value": "Todos los modelos FAIRINO"
     },
     {
       "label": "Código de tarifa",
@@ -41,15 +41,7 @@
     "otras-soluciones",
     "tracks"
   ],
-  "compatibleWith": [
-    "fr3",
-    "fr3c",
-    "fr3wms",
-    "fr3wml",
-    "fr5",
-    "fr5-negro",
-    "fr5wml"
-  ],
+  "compatibleWith": [],
   "downloads": [],
   "store": {
     "sku": "AX7-FR3/5",
