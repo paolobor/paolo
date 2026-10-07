@@ -64,11 +64,12 @@ export const site = {
   },
 
   // Asistente virtual (ElevenLabs Agents): voz y chat de texto en todas las páginas. Mientras agentId sea null no se
-  // carga nada. En el panel del agente: idioma español, «Voice + text» en Widget → Interface, posición «bottom-left»
-  // (abajo a la derecha está el botón de WhatsApp) y el dominio de la web en Security → Allowlist.
-  // Base de conocimiento: /asistente/base-conocimiento.txt (src/pages/asistente/), se genera con cada build.
+  // carga nada. En el panel del agente: idioma español, entrada de texto en Widget → Interface y el dominio de la web en
+  // Security → Allowlist. La posición (abajo a la izquierda) y los textos del widget van en AssistantWidget.astro.
+  // Base de conocimiento: /asistente/base-conocimiento.txt (src/pages/asistente/), se genera con cada build, más los
+  // textos del manual y el SDK de tools/asistente/extraer-manual.py (subidos a mano, con «Usar RAG»).
   assistant: {
-    agentId: null as string | null, // [DATO: ID del agente de ElevenLabs]
+    agentId: 'agent_0701m4bjmv7rfg9abjm69q28bm9b' as string | null, // «Asistente FAIRINO España»
   },
 
   // Newsletter: proveedor pendiente (Brevo, Mailchimp…). Mientras sea null, el formulario usa el mismo envío que los demás.

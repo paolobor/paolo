@@ -6,6 +6,41 @@ import { site } from '../data/site';
 
 const agentId = site.assistant.agentId;
 const host = new URL(site.url).hostname;
+// Textos del widget en español (atributo text-contents; manda sobre los del panel). Va abajo a la izquierda porque
+// abajo a la derecha está el botón de WhatsApp. El idioma no se fuerza desde aquí: lo pone el agente (español), y
+// forzarlo sin permitirlo en Security → Overrides corta la conversación.
+const textos = JSON.stringify({
+  main_label: '¿Dudas con los cobots?',
+  start_call: 'Hablar',
+  start_chat: 'Escribir',
+  new_call: 'Nueva llamada',
+  end_call: 'Colgar',
+  mute_microphone: 'Silenciar micrófono',
+  change_language: 'Cambiar idioma',
+  collapse: 'Cerrar',
+  expand: 'Abrir el chat',
+  copied: 'Copiado',
+  accept_terms: 'Aceptar',
+  dismiss_terms: 'Cancelar',
+  listening_status: 'Te escucho…',
+  speaking_status: 'Hablando…',
+  connecting_status: 'Conectando…',
+  chatting_status: 'En el chat',
+  input_label: 'Mensaje',
+  input_placeholder: 'Escribe tu pregunta…',
+  input_placeholder_text_only: 'Escribe tu pregunta…',
+  input_placeholder_new_conversation: 'Escribe para empezar…',
+  user_ended_conversation: 'Has terminado la conversación',
+  agent_ended_conversation: 'El asistente ha terminado la conversación',
+  error_occurred: 'Ha habido un error. Vuelve a intentarlo.',
+  send_message: 'Enviar',
+  text_mode: 'Texto',
+  voice_mode: 'Voz',
+  switched_to_text_mode: 'Ahora por texto',
+  switched_to_voice_mode: 'Ahora por voz',
+  copy: 'Copiar',
+  typing_indicator: 'Escribiendo…',
+});
 ---
 
 {
@@ -13,15 +48,10 @@ const host = new URL(site.url).hostname;
     <>
       <elevenlabs-convai
         agent-id={agentId}
-        override-language="es"
+        placement="bottom-left"
         avatar-orb-color-1="#ff7a1a"
         avatar-orb-color-2="#ffe2c8"
-        action-text="¿Dudas con los cobots?"
-        start-call-text="Hablar"
-        end-call-text="Colgar"
-        expand-text="Abrir el chat"
-        listening-text="Te escucho…"
-        speaking-text="Hablando…"
+        text-contents={textos}
         markdown-link-allowed-hosts={host}
       />
       <script is:inline>
