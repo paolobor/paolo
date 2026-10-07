@@ -1,14 +1,89 @@
 {
-  "name": "Cambiador rápido de herramienta",
+  "name": "Cambiador rápido de herramienta SmartShift",
   "category": "accesorio",
   "group": "montaje",
   "order": 13,
-  "tagline": "Para cambiar de herramienta en la brida del cobot sin desmontarla.",
-  "description": "Para cambiar de herramienta en la brida del cobot sin desmontarla. Ficha técnica, compatibilidad y precio a consultar. El modelo 3D oficial está en las descargas.",
-  "highlights": [],
-  "images": [],
-  "specs": [],
-  "applications": [],
+  "tagline": "Cambia de garra en segundos, a mano o de forma automática con el Tool Pocket, con aire y señal eléctrica a través del cambiador.",
+  "description": "Cambiador de herramienta modular de SmartShift, fabricado y probado en Noruega. La parte del robot (robot master) va fija en la brida del cobot y cada herramienta lleva la suya (tool holder): para cambiar, se suelta una y se acopla la otra, sin necesidad de programar. Pasa dos tomas de aire (G 1/8\") y señal eléctrica con un conector M8 de 8 pines (24 V, 1 A), así que vale para garras eléctricas, neumáticas o de vacío. Con el Tool Pocket el cambio es automático: el cobot deja la herramienta en su soporte y coge la siguiente en aproximadamente un segundo. SmartShift tiene también una versión manual ligera, solo mecánica, para herramientas sin aire ni señal.",
+  "highlights": [
+    "Carga de hasta 20 kg",
+    "Aire (2 × G 1/8\") y señal eléctrica (M8 de 8 pines) a través del cambiador",
+    "Cambio automático en aprox. 1 s con el Tool Pocket"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/cambiador-rapido/cambiador-rapido-oficial.png",
+      "alt": "Cambiador de herramienta SmartShift negro con módulo eléctrico y cable con conector M8"
+    },
+    {
+      "src": "../../assets/products/cambiador-rapido/smartshift-negro-oficial.png",
+      "alt": "Robot master y tool holder del cambiador SmartShift negro, con tomas de aire y palanca de bloqueo"
+    },
+    {
+      "src": "../../assets/products/cambiador-rapido/smartshift-manual-aluminio-oficial.png",
+      "alt": "Cambiador manual SmartShift de aluminio con pomo de bloqueo"
+    },
+    {
+      "src": "../../assets/products/cambiador-rapido/smartshift-tool-pocket-oficial.png",
+      "alt": "Tool Pocket de SmartShift, soporte para el cambio automático de herramienta"
+    },
+    {
+      "src": "../../assets/products/cambiador-rapido/smartshift-modulo-electrico-oficial.png",
+      "alt": "Módulo eléctrico de SmartShift con ocho contactos y cable"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Carga máxima",
+      "value": 20,
+      "unit": "kg"
+    },
+    {
+      "label": "Conexión neumática",
+      "value": "2 × G 1/8\""
+    },
+    {
+      "label": "Conexión eléctrica",
+      "value": "M8 de 8 pines, 24 V 1 A"
+    },
+    {
+      "label": "Diámetro exterior",
+      "value": 63,
+      "unit": "mm"
+    },
+    {
+      "label": "Brida",
+      "value": "Ø 31,5 mm h7 · diámetro de referencia 50 mm"
+    },
+    {
+      "label": "Peso",
+      "value": 380,
+      "unit": "g"
+    },
+    {
+      "label": "Peso del robot master",
+      "value": 130,
+      "unit": "g"
+    },
+    {
+      "label": "Peso del tool holder",
+      "value": 250,
+      "unit": "g"
+    },
+    {
+      "label": "Material",
+      "value": "Robot master de PETP; tool holder de aluminio 6082-T6 anodizado"
+    },
+    {
+      "label": "Tool Pocket",
+      "value": "Hasta 5 kg · 710 g · cambio en aprox. 1 s"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion",
+    "carga-de-maquinas"
+  ],
   "shopCategories": [
     "montaje"
   ],
@@ -33,9 +108,9 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": "https://fairino.es/descargas/",
-    "verified": false
+    "url": "Fichas técnicas oficiales de SmartShift Robotics («Tool changer» y «Light manual tool changer», smartshift-robotics.com); fotos del fabricante, escaladas y recortadas con Higgsfield",
+    "verified": true
   },
   "seo": {},
-  "brand": "Inlux Robotics"
+  "brand": "SmartShift"
 }

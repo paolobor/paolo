@@ -3,12 +3,42 @@
   "category": "accesorio",
   "group": "montaje",
   "order": 16,
-  "tagline": "Base magnética para fijar el cobot sobre una superficie de acero.",
-  "description": "Base magnética para fijar el cobot sobre una superficie de acero. Ficha técnica, compatibilidad y precio a consultar. El modelo 3D oficial está en las descargas.",
-  "highlights": [],
-  "images": [],
-  "specs": [],
-  "applications": [],
+  "tagline": "Base de tres patas con imanes conmutables para fijar el cobot sobre cualquier superficie de acero, sin taladrar.",
+  "description": "Base de tres patas con un imán conmutable en cada una. Se coloca sobre una mesa, una bancada o una máquina de acero, se giran las palancas a ON y el cobot queda fijo; para cambiarlo de sitio, se giran a OFF y se levanta. El plato central lleva los taladros para atornillar la base del cobot.",
+  "highlights": [
+    "Tres imanes conmutables con palanca ON/OFF",
+    "Se fija sobre acero sin taladrar la superficie",
+    "Plato central con taladros para la base del cobot"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/base-magnetica/base-magnetica-oficial.png",
+      "alt": "Base magnética de tres patas para cobot, con plato central taladrado y tres imanes con palanca"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Fijación",
+      "value": "3 imanes conmutables con palanca"
+    },
+    {
+      "label": "Plato",
+      "value": "Taladrado para la base del cobot"
+    },
+    {
+      "label": "Fuerza de sujeción",
+      "value": null
+    },
+    {
+      "label": "Cobots compatibles",
+      "value": null
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion",
+    "carga-de-maquinas"
+  ],
   "shopCategories": [
     "montaje"
   ],
@@ -33,7 +63,7 @@
     "shopifyVariantId": null
   },
   "source": {
-    "url": "https://fairino.es/descargas/",
+    "url": "Foto de FAIRINO España; escalada y fondo quitado con Higgsfield",
     "verified": false
   },
   "seo": {},

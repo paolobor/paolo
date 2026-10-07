@@ -207,4 +207,32 @@ solo el fondo (fuera cajas, palés y almacén); la mesa se comparó con la foto 
 | fairino-mesa-soporte-escena-foco.webp            | mesa-soporte-fairino-original.jpg     | cef86b1c-cc01-4902-9dd2-87dea5d92fcf                                              |
 | fairino-mesa-soporte-escena-contrapicado.webp    | mesa-soporte-fairino-original-2.jpg   | f16e12dc-8f7d-4f8d-b761-362266c6e942                                              |
 
+## SmartShift (cambiador de herramienta)
+
+Fotos del fabricante que pasó el cliente (`assets-src/fabricantes/smartshift/`). En Higgsfield se escalaron a 2K
+(bytedance_image_upscale) y se les quitó el fondo (image_background_remover); el producto no se generó ni se retocó. Datos
+de las fichas oficiales de SmartShift «Tool changer» y «Light manual tool changer» (smartshift-robotics.com). Es la ficha
+`cambiador-rapido`. La foto de aluminio puede ser la versión manual ligera; sin confirmar.
+
+| Imagen                                   | Original                          | Escalado → sin fondo                                                        |
+| ---------------------------------------- | --------------------------------- | --------------------------------------------------------------------------- |
+| cambiador-rapido-oficial.png             | smartshift-electrico.jpg          | 8ae904d0-04a2-4a01-8d7f-f338463b554a → 378075dc-b11a-440e-b504-6739009b5559 |
+| smartshift-negro-oficial.png             | smartshift-negro.jpg              | 9e64d082-c776-46b2-a9f6-3f4213ec1ede → e7fbcd15-da1d-41b1-8d90-dd9c33c815c8 |
+| smartshift-manual-aluminio-oficial.png   | smartshift-manual-aluminio.jpg    | 73e30332-0c4c-4831-bd33-4a998dad090d → af80d754-d506-4b22-9ce1-a928a111d812 |
+| smartshift-tool-pocket-oficial.png       | smartshift-tool-pocket.jpg        | f1637aca-abfb-4279-b17e-65b17fb96856 → 0b4e2427-894b-48e1-a988-6f7c4db7d764 |
+| smartshift-modulo-electrico-oficial.png  | smartshift-modulo-electrico.jpg   | 73937e74-2da5-4328-b3e3-2cd2be3dcb71 → 4b9934c9-b42c-485d-84c5-d3a301ee8ef7 |
+
+Base magnética (`base-magnetica-original.jpg`, foto del cliente): escalado 6bdd5afd-2b4b-421e-9e98-dcd6f7d69f4d → sin fondo
+ca2b5a4c-8fbd-49be-9514-d6318f1f6c7b. La marca de la ficha (Inlux Robotics) viene de la lista inicial, sin confirmar.
+
+Pinzas multiventosa de vacío WJF (fotos del cliente; modelo en la etiqueta): gpt_image_2_5 pasó el fondo a blanco y
+image_background_remover lo quitó; las escenas con rayos de luz cambian solo el fondo (pie «Imagen ilustrativa»).
+
+| Ficha                  | Original                             | Fondo blanco → sin fondo                                                     | Escena                               |
+| ---------------------- | ------------------------------------ | ---------------------------------------------------------------------------- | ------------------------------------ |
+| ventosa-vacio-grande   | ventosa-vacio-grande-original.jpg    | 056f152d-df33-49f2-877c-a49328bf5253 → 4f5fd62b-ee38-4862-abec-3080ff90a1f6  | 1b5d3c34-dca2-44f7-96ea-867fd8d5cd4c |
+| ventosa-vacio-pequena  | ventosa-vacio-pequena-original.jpg   | facd0998-0980-49c3-b9d1-a5c274b779d8 → 6cc91dbb-413d-4b4a-ad8f-68ef3ea0ddc1  | 557d57bd-b2cf-422c-8149-18bca7d88787 |
+
+Coste de esta tanda (SmartShift, base y pinzas): unos 20 créditos.
+
 Pendiente: la cámara 3D negra con dos proyectores (el cliente dice que todavía no se ponga).

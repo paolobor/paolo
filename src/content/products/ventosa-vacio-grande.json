@@ -1,0 +1,81 @@
+{
+  "brand": "WJF",
+  "category": "accesorio",
+  "group": "garra",
+  "applications": [
+    "paletizado",
+    "pick-and-place",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "ventosas-vacio",
+    "pinzas-vacio"
+  ],
+  "compatibleWith": [],
+  "downloads": [],
+  "seo": {},
+  "name": "Pinza multiventosa de vacío grande (39 ventosas)",
+  "order": 67,
+  "tagline": "Pinza de vacío con 39 ventosas de fuelle de Ø 40 mm para coger cajas, bandejas y piezas planas con tu cobot FAIRINO.",
+  "description": "Pinza de vacío con 39 ventosas azules de fuelle de Ø 40 mm, en 3 filas de 13, sobre un cuerpo de aluminio anodizado. Coge cajas, bandejas, chapas o piezas planas por arriba, y el fuelle de las ventosas se adapta a pequeñas diferencias de altura de la pieza. Se monta en el cobot FAIRINO y se conecta a la línea de vacío.",
+  "highlights": [
+    "39 ventosas de fuelle de Ø 40 mm",
+    "Área de agarre de 130 × 610 mm",
+    "Cuerpo de aluminio anodizado"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/ventosa-vacio-grande/ventosa-vacio-grande-oficial.png",
+      "alt": "Pinza multiventosa de vacío grande con 39 ventosas azules de fuelle sobre cuerpo de aluminio"
+    },
+    {
+      "src": "../../assets/products/ventosa-vacio-grande/fairino-ventosa-vacio-grande-escena-rayos.webp",
+      "alt": "Pinza multiventosa de vacío grande en un estudio oscuro con haces de luz",
+      "illustrative": true
+    }
+  ],
+  "specs": [
+    {
+      "label": "Modelo",
+      "value": "WJF-SVK-130*610-3R54-D40"
+    },
+    {
+      "label": "Ventosas",
+      "value": "39 de fuelle (3 filas de 13)"
+    },
+    {
+      "label": "Diámetro de ventosa",
+      "value": 40,
+      "unit": "mm"
+    },
+    {
+      "label": "Área de agarre",
+      "value": "130 × 610",
+      "unit": "mm"
+    },
+    {
+      "label": "Cuerpo",
+      "value": "Aluminio anodizado"
+    },
+    {
+      "label": "Peso",
+      "value": null,
+      "unit": "kg"
+    },
+    {
+      "label": "Código de tarifa",
+      "value": "BIG SCF"
+    }
+  ],
+  "store": {
+    "sku": "BIG SCF",
+    "price": 935,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "Fotos de FAIRINO España (modelo en la etiqueta del producto); fondo quitado y escena con Higgsfield; precio de la tarifa de FAIRINO España",
+    "verified": false
+  }
+}

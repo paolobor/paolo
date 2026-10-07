@@ -1,0 +1,86 @@
+{
+  "brand": "WJF",
+  "category": "accesorio",
+  "group": "garra",
+  "applications": [
+    "paletizado",
+    "pick-and-place",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "ventosas-vacio",
+    "pinzas-vacio"
+  ],
+  "compatibleWith": [],
+  "downloads": [],
+  "seo": {},
+  "name": "Pinza multiventosa de vacío pequeña (18 ventosas)",
+  "order": 66,
+  "tagline": "Pinza de vacío con 18 ventosas de fuelle de Ø 40 mm para coger cajas, bandejas y piezas planas con tu cobot FAIRINO.",
+  "description": "Pinza de vacío con 18 ventosas azules de fuelle de Ø 40 mm, en 3 filas de 6, sobre un cuerpo de aluminio anodizado. Coge cajas, bandejas, chapas o piezas planas por arriba, y el fuelle de las ventosas se adapta a pequeñas diferencias de altura de la pieza. Se monta en el cobot FAIRINO y se conecta a la línea de vacío.",
+  "highlights": [
+    "18 ventosas de fuelle de Ø 40 mm",
+    "Área de agarre de 130 × 271 mm",
+    "Cuerpo de aluminio anodizado"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/ventosa-vacio-pequena/ventosa-vacio-pequena-oficial.png",
+      "alt": "Pinza multiventosa de vacío pequeña con 18 ventosas azules de fuelle sobre cuerpo de aluminio"
+    },
+    {
+      "src": "../../assets/products/ventosa-vacio-pequena/fairino-ventosa-vacio-pequena-escena-rayos.webp",
+      "alt": "Pinza multiventosa de vacío pequeña en un estudio oscuro con haces de luz",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/transportador-charnela/fairino-transportador-charnela-escena-cobot.webp",
+      "alt": "Cobot FAIRINO con la pinza de vacío de 18 ventosas junto a un transportador de charnela",
+      "illustrative": true
+    }
+  ],
+  "specs": [
+    {
+      "label": "Modelo",
+      "value": "WJF-SVK-130*271-3R54-D40"
+    },
+    {
+      "label": "Ventosas",
+      "value": "18 de fuelle (3 filas de 6)"
+    },
+    {
+      "label": "Diámetro de ventosa",
+      "value": 40,
+      "unit": "mm"
+    },
+    {
+      "label": "Área de agarre",
+      "value": "130 × 271",
+      "unit": "mm"
+    },
+    {
+      "label": "Cuerpo",
+      "value": "Aluminio anodizado"
+    },
+    {
+      "label": "Peso",
+      "value": null,
+      "unit": "kg"
+    },
+    {
+      "label": "Código de tarifa",
+      "value": "SMALL SCF"
+    }
+  ],
+  "store": {
+    "sku": "SMALL SCF",
+    "price": 899,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "Fotos de FAIRINO España (modelo en la etiqueta del producto); fondo quitado y escena con Higgsfield; precio de la tarifa de FAIRINO España",
+    "verified": false
+  }
+}
