@@ -11,7 +11,7 @@ import { findImage } from '../lib/images';
 import { url } from '../lib/url';
 
 const total = downloadGroups.reduce((n, g) => n + g.items.length, 0);
-// Catálogo online: el PDF lo genera tools/catalogo/generar.mjs (con la tarifa de src/data/tarifa-julio-2026.json).
+// Catálogo online: el PDF lo genera tools/catalogo/generar.mjs (con la tarifa de src/data/tarifa.json).
 const portadaImg = findImage(catalogo.portada);
 const portada = portadaImg ? await getImage({ src: portadaImg, format: 'webp', width: 560 }) : null;
 const pdfHref = url(catalogo.archivo);

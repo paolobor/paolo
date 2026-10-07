@@ -1,9 +1,9 @@
 // Catálogo y tarifa de FAIRINO España en PDF (A4), con la misma estética que la web.
 //   node tools/catalogo/generar.mjs
-// Lee las fichas de src/content/products y los precios de src/data/tarifa-julio-2026.json, prepara las fotos (JPEG
+// Lee las fichas de src/content/products y los precios de src/data/tarifa.json, prepara las fotos (JPEG
 // sobre el fondo oscuro de las tarjetas, para que el PDF pese poco), monta el HTML y Chromium (Playwright) lo pasa a
 // PDF. Deja:
-//   public/descargas/catalogo-fairino-espana-julio-2026.pdf   el catálogo
+//   public/descargas/catalogo-fairino-espana-<mes>-<año>.pdf  el catálogo (mes y año de «fecha» en la tarifa)
 //   src/assets/images/descargas/catalogo-portada.jpg           la portada, para la página de descargas
 //   src/data/catalogo.json                                     páginas, peso y cifras, para la página de descargas
 // Necesita Playwright con Chromium (en este entorno está instalado de forma global).
@@ -16,7 +16,10 @@ import sharp from 'sharp';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const CACHE = join(ROOT, 'tools/catalogo/.cache');
-const OUT_PDF = join(ROOT, 'public/descargas/catalogo-fairino-espana-julio-2026.pdf');
+const tarifa = JSON.parse(readFileSync(join(ROOT, 'src/data/tarifa.json'), 'utf8'));
+// «Octubre de 2026» → catalogo-fairino-espana-octubre-2026.pdf
+const periodo = tarifa.fecha.toLowerCase().replace(/ de /g, '-').replace(/\s+/g, '-');
+const OUT_PDF = join(ROOT, `public/descargas/catalogo-fairino-espana-${periodo}.pdf`);
 const OUT_COVER = join(ROOT, 'src/assets/images/descargas/catalogo-portada.jpg');
 const SITE = 'https://fairino.es/';
 mkdirSync(CACHE, { recursive: true });
@@ -24,7 +27,6 @@ mkdirSync(dirname(OUT_PDF), { recursive: true });
 mkdirSync(dirname(OUT_COVER), { recursive: true });
 
 // ------------------------------------------------------------------ datos
-const tarifa = JSON.parse(readFileSync(join(ROOT, 'src/data/tarifa-julio-2026.json'), 'utf8'));
 const productos = Object.fromEntries(
   readdirSync(join(ROOT, 'src/content/products'))
     .filter((f) => f.endsWith('.json'))

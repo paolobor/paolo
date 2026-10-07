@@ -1,10 +1,10 @@
 # Catálogo y tarifa en PDF
 
 `node tools/catalogo/generar.mjs` monta el catálogo de FAIRINO España con la misma estética que la web y lo guarda en
-`public/descargas/catalogo-fairino-espana-julio-2026.pdf`; la página `/descargas/` lo enlaza en «Catálogo online».
+`public/descargas/catalogo-fairino-espana-octubre-2026.pdf` (el nombre sale de «fecha» en la tarifa); la página `/descargas/` lo enlaza en «Catálogo online».
 
-- **Precios:** `src/data/tarifa-julio-2026.json`, copiados tal cual de la tarifa del cliente
-  («00. TARIFA FAIRINO. Julio 2026 new.pdf»). Cada línea con `producto` toma la foto y los datos de su ficha
+- **Precios:** `src/data/tarifa.json`, copiados tal cual de la tarifa del cliente
+  («00. TARIFA FAIRINO. Julio 2026 new.pdf»); el catálogo sale con fecha de octubre de 2026 a petición del cliente. Cada línea con `producto` toma la foto y los datos de su ficha
   (`src/content/products/<id>.json`); las líneas sin `producto` solo están en la tarifa (borde discontinuo e icono).
   Los productos de la tienda que no están en la tarifa salen con «Consultar». No se inventan precios.
 - **Fotos:** se pasan a JPEG sobre el fondo oscuro de las tarjetas (caché en `tools/catalogo/.cache/`, fuera de git),

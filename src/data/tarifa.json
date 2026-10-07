@@ -1,7 +1,7 @@
 {
-  "_comentario": "Tarifa de FAIRINO Cobot S.L. (FAIRINO España), julio de 2026, copiada tal cual del PDF del cliente «00. TARIFA FAIRINO. Julio 2026 new.pdf». Precios PVP en euros. «producto» enlaza con src/content/products/<id>.json (foto y ficha); las líneas sin «producto» solo están en la tarifa. La usa tools/catalogo/generar.mjs para el catálogo en PDF. No inventar precios: lo que no está aquí sale como «Consultar».",
-  "titulo": "Tarifa julio 2026",
-  "fecha": "Julio de 2026",
+  "_comentario": "Tarifa de FAIRINO Cobot S.L. (FAIRINO España), copiada tal cual del PDF del cliente «00. TARIFA FAIRINO. Julio 2026 new.pdf»; el catálogo sale con fecha de octubre de 2026 a petición del cliente. «fecha» da nombre al PDF (catalogo-fairino-espana-octubre-2026.pdf). Precios PVP en euros. «producto» enlaza con src/content/products/<id>.json (foto y ficha); las líneas sin «producto» solo están en la tarifa. La usa tools/catalogo/generar.mjs para el catálogo en PDF. No inventar precios: lo que no está aquí sale como «Consultar».",
+  "titulo": "Tarifa octubre 2026",
+  "fecha": "Octubre de 2026",
   "notas": {
     "cobots": [
       "Precios para cobots con protección IP54. IP65: unos 500 € más.",

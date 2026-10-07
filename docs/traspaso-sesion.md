@@ -155,9 +155,10 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
   (peso de la ficha) y el resumen lleva la barra «Carga en la muñeca»; se desactiva lo incompatible o lo que pesa más
   que la carga útil. Familias, piezas del esquema y lo que va en la muñeca: `src/data/configurator.ts`. Todas las
   fichas de accesorio tienen «Añadir al configurador» (el ART7 R7 no: es «Próximamente»).
-- **Catálogo y tarifa en PDF** (`tools/catalogo/`, ver su LEEME): 17 páginas con la tarifa de julio de 2026
-  (`src/data/tarifa-julio-2026.json`); en `/descargas/`, apartado «Catálogo online» con portada, «Descargar PDF» y
-  «Ver online». Los precios de la tienda siguen a 0 €: el cliente pidió los precios en el catálogo.
+- **Catálogo y tarifa en PDF** (`tools/catalogo/`, ver su LEEME): 17 páginas, con fecha de octubre de 2026 (los
+  precios son los de la tarifa de julio que pasó el cliente; `src/data/tarifa.json`); en `/descargas/`, apartado
+  «Catálogo online» con portada y «Descargar PDF» (sin «Ver online», a petición del cliente). Los precios de la
+  tienda siguen a 0 €; el cliente ha dicho que sí a ponerles los de la tarifa (pendiente).
 - Cifras del inicio: solo 13.000+ y #1, con la cuenta repetida cada 5 s.
 - Pendiente: el vídeo «Physical AI» de la página guardada de inluxrobotics.es: falta que el cliente pase el archivo.
 - El sello del final del teaser dice «FAIRINO COBOT S.L. B22587982 ESPAÑA»: puede servir para el titular legal, que
