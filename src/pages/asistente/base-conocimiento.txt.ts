@@ -14,6 +14,8 @@ import { downloadGroups } from '../../data/downloads';
 // Sale de los mismos datos que la web y la tienda, así que se mantiene al día sola: se descarga de
 // /asistente/base-conocimiento.txt después de cada build y se vuelve a subir al agente cuando cambie el catálogo.
 // Solo datos publicados: lo que en la web es [DATO] o null no se incluye.
+// Preparada para la búsqueda del agente (RAG), que trocea por párrafos: cada título va pegado a su texto y cada línea
+// dice de qué producto o documento habla, para que ningún trozo suelto llegue al agente sin contexto.
 
 const pendiente = (s: string | null | undefined) => !s || /\[(DATO|FOTO|TESTIMONIO)/.test(s);
 const eur = (n: number) => `${n.toLocaleString('de-DE')} €`;
@@ -62,20 +64,20 @@ export const GET: APIRoute = async () => {
     if (!pendiente(d.tagline)) out.push(d.tagline);
     if (!pendiente(d.description) && d.description !== d.tagline) out.push(d.description);
     const specs = (d.specs as Spec[]).filter((s) => s.value != null && !pendiente(String(s.value)));
-    if (specs.length) out.push(`Datos técnicos: ${specs.map(specText).join('; ')}.`);
-    if (d.highlights.length) out.push(`Puntos clave: ${d.highlights.filter((x) => !pendiente(x)).join('; ')}.`);
+    if (specs.length) out.push(`Datos técnicos de ${d.name}: ${specs.map(specText).join('; ')}.`);
+    if (d.highlights.length) out.push(`Puntos clave de ${d.name}: ${d.highlights.filter((x) => !pendiente(x)).join('; ')}.`);
     const price = d.store.price;
-    if (d.upcoming) out.push('Precio: se anunciará.');
+    if (d.upcoming) out.push(`Precio de ${d.name}: se anunciará.`);
     else if (price != null && price > 0) {
       const versions = d.store.versions.filter((v) => v.delta).map((v) => `${v.label}: +${eur(v.delta)}`);
-      out.push(`Precio (PVP): ${eur(price)}${versions.length ? ` (${versions.join('; ')})` : ''}${d.store.shipping ? `; envío ${eur(d.store.shipping)}` : ''}.`);
-    } else out.push('Precio: consultar (presupuesto a medida).');
+      out.push(`Precio de ${d.name} (PVP): ${eur(price)}${versions.length ? ` (${versions.join('; ')})` : ''}${d.store.shipping ? `; envío ${eur(d.store.shipping)}` : ''}.`);
+    } else out.push(`Precio de ${d.name}: consultar (presupuesto a medida).`);
     const compat = d.compatibleWith.map((id) => byId.get(id)?.data.name).filter(Boolean);
-    if (compat.length) out.push(`${d.category === 'cobot' ? 'Controladores compatibles' : 'Compatible con'}: ${compat.join(', ')}.`);
-    else if (d.category === 'accesorio') out.push('Compatible con cualquier cobot FAIRINO de la gama FR.');
+    if (compat.length) out.push(`${d.category === 'cobot' ? `Controladores compatibles con ${d.name}` : `${d.name} es compatible con`}: ${compat.join(', ')}.`);
+    else if (d.category === 'accesorio') out.push(`${d.name} es compatible con cualquier cobot FAIRINO de la gama FR.`);
     const apps = d.applications.map((s) => applications.find((x) => x.slug === s)?.name).filter(Boolean);
-    if (apps.length) out.push(`Aplicaciones: ${apps.join(', ')}.`);
-    out.push(`Ficha: ${base}/productos/${p.id}/`);
+    if (apps.length) out.push(`Aplicaciones de ${d.name}: ${apps.join(', ')}.`);
+    out.push(`Ficha de ${d.name} en la web: ${base}/productos/${p.id}/`);
   };
 
   h('Cobots FAIRINO');
@@ -135,12 +137,12 @@ export const GET: APIRoute = async () => {
   for (const g of downloadGroups) {
     h2(g.title);
     out.push(g.text);
-    g.items.forEach((it) => out.push(`- ${it.label}${it.note ? ` (${it.note})` : ''}: ${it.href}`));
+    g.items.forEach((it) => out.push(`- ${g.title} · ${it.label}${it.note ? ` (${it.note})` : ''}: ${it.href}`));
   }
   h2('Documentos de cada producto');
   for (const p of products) {
     const docs = p.data.downloads.filter((d) => d.href);
-    if (docs.length) out.push(`- ${p.data.name}: ${docs.map((d) => `${d.label} ${d.href}`).join(' · ')}`);
+    if (docs.length) out.push(`- Descargas de ${p.data.name}: ${docs.map((d) => `${d.label} ${d.href}`).join(' · ')}`);
   }
 
   h('Sectores');
@@ -154,6 +156,7 @@ export const GET: APIRoute = async () => {
     .filter((l) => !pendiente(l) || l === '')
     .join('\n')
     .replace(/\n{3,}/g, '\n\n')
+    .replace(/^(#+ .+)\n\n/gm, '$1\n')
     .trim();
   return new Response(`${text}\n`, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });
 };
