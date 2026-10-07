@@ -6,6 +6,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import CookieBanner from '../components/CookieBanner.astro';
+import AssistantWidget from '../components/AssistantWidget.astro';
 import CartDrawer from '../components/CartDrawer.astro';
 import IntroOverlay from '../components/IntroOverlay.astro';
 import { site } from '../data/site';
@@ -115,6 +116,7 @@ const clientConfig = {
     </main>
     <Footer />
     <WhatsAppButton message={whatsappMessage} />
+    <AssistantWidget />
     <CookieBanner />
     <CartDrawer />
 

@@ -63,6 +63,14 @@ export const site = {
     fallbackEmail: 'po@fairino.es',
   },
 
+  // Asistente virtual (ElevenLabs Agents): voz y chat de texto en todas las páginas. Mientras agentId sea null no se
+  // carga nada. En el panel del agente: idioma español, «Voice + text» en Widget → Interface, posición «bottom-left»
+  // (abajo a la derecha está el botón de WhatsApp) y el dominio de la web en Security → Allowlist.
+  // Base de conocimiento: /asistente/base-conocimiento.txt (src/pages/asistente/), se genera con cada build.
+  assistant: {
+    agentId: null as string | null, // [DATO: ID del agente de ElevenLabs]
+  },
+
   // Newsletter: proveedor pendiente (Brevo, Mailchimp…). Mientras sea null, el formulario usa el mismo envío que los demás.
   newsletter: { endpoint: null as string | null },
 
