@@ -238,8 +238,8 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
 - Datos de fairino.es: copiar los que faltan. El dominio ya descarga (`fairino.es`; `www.fairino.es` sigue bloqueado).
 - Dudas por confirmar con el usuario:
   - ¿IVA incluido?
-  - ¿«Safety Box» = «Módulo de seguridad» 129 €?
-  - Alcance del FR3WML: 922 o 1000 mm.
+  - Tarifa: ¿WR.RG 75-300 = pinza JODELL IR75-300? ¿G2CX de la tarifa = GZCX de la tienda? (ver tools/catalogo/LEEME.md;
+    ya confirmado: FR3WML 922 mm, track de 25 m, escáner 270° = IDEC SE2L, módulo de seguridad ≠ Safety Box).
   - Nombre exacto del sensor GZCX.
   - Tensión de entrada del AC Mini.
   - Titular legal: fairino.es dice FDI QUALITY IMPORT S.L. (Valdemoro) y la web usa Fairino Cobot S.L.

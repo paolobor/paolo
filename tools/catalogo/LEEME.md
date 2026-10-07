@@ -16,12 +16,16 @@
 
 Necesita Playwright con Chromium (en este entorno está instalado de forma global; `npm i -g playwright` si falta).
 
-## Dudas pendientes con la tarifa
+## Dudas de la tarifa
 
-- FR3 WML: la tarifa dice 1000 mm en la primera página y 922 mm en la estación de soldadura; el catálogo usa 922 mm
-  (el dato de la ficha).
-- «Track 25 mtr»: se ha copiado como 25 m; confirmar si es 2,5 m.
-- Escáner de seguridad 270° (SAF-SCAN-270): se ha asociado al escáner IDEC SE2L de la tienda (vigila 270°).
+Confirmado por el cliente (7 de octubre de 2026):
+
+- FR3 WML: alcance 922 mm (la tarifa dice 1000 mm en la primera página).
+- «Track 25 mtr»: 25 m.
+- Escáner de seguridad 270° (SAF-SCAN-270) = escáner IDEC SE2L de la tienda.
+- Módulo de seguridad (seta, 129 €) y Safety Box (tienda) son productos distintos.
+
+Pendiente de confirmar:
+
 - WR.RG (75-300): se ha asociado a la pinza JODELL RG75-300 (IR75-300) de la tienda.
 - Sensor G2CX-6F-D80-H28 (tarifa) y GZCX-6F-75MM (tienda) se tratan como productos distintos.
-- Módulo de seguridad (seta, 129 €) y Safety Box (tienda) se tratan como productos distintos.
