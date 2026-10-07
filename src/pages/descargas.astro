@@ -43,7 +43,7 @@ const destacados = [
   <!-- Catálogo online -->
   <section id="catalogo" class="cat section scroll-mt-20 relative isolate overflow-hidden" aria-labelledby="catalogo-title">
     <div class="container-x grid items-center gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-16">
-      <a href={pdfHref} target="_blank" rel="noopener" class="cat-cover" data-reveal aria-label={`Ver el ${catalogo.titulo} (PDF)`}>
+      <a href={pdfHref} download class="cat-cover" data-reveal aria-label={`Descargar el ${catalogo.titulo} (PDF)`}>
         <span class="cat-sheet cat-sheet-2" aria-hidden="true"></span>
         <span class="cat-sheet cat-sheet-1" aria-hidden="true"></span>
         {portada && <img src={portada.src} alt="" width={portada.attributes.width} height={portada.attributes.height} loading="lazy" decoding="async" />}
@@ -68,7 +68,6 @@ const destacados = [
         </dl>
         <div class="flex flex-wrap items-center gap-3 pt-1">
           <a href={pdfHref} download class="btn btn-primary"><Icon name="download" size={18} />Descargar PDF</a>
-          <a href={pdfHref} target="_blank" rel="noopener" class="btn btn-secondary"><Icon name="book-open" size={18} />Ver online</a>
           <span class="font-mono text-xs text-muted">PDF · {mb} MB · {catalogo.paginas} páginas</span>
         </div>
       </div>
