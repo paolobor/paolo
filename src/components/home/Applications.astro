@@ -27,20 +27,20 @@ import { url } from '../../lib/url';
       {
         applications.map((a, i) => (
           <li data-reveal style={`--reveal-delay:${(i % 4) * 70}ms`}>
-            <a href={url(`aplicaciones/${a.slug}/`)} class="app group relative block aspect-[4/5] overflow-hidden rounded-[var(--radius-card)] bg-navy">
+            <div class="app relative aspect-[4/5] overflow-hidden rounded-[var(--radius-card)] bg-navy">
               <div class="app-bg absolute inset-0">
                 <SmartImage src={a.image} alt="" hint={a.imageHint} tone="dark" align="top" position={a.imagePosition} widths={[320, 480, 720]} sizes="(min-width: 1024px) 25vw, 50vw" />
               </div>
               {a.image && isIllustrative(a.image) && <IllustrativeBadge class="right-2 top-2 px-2! text-[0.5rem]!" />}
               <div class="absolute inset-0 bg-[linear-gradient(180deg,transparent_30%,rgba(7,5,4,0.94))]" />
               <div class="absolute inset-x-0 bottom-0 grid gap-2 p-4 text-white sm:p-5">
-                <span class="grid size-10 place-items-center rounded-lg bg-white/10 text-signal backdrop-blur transition-colors group-hover:bg-signal group-hover:text-ink">
+                <span class="grid size-10 place-items-center rounded-lg bg-white/10 text-signal backdrop-blur">
                   <Icon name={a.icon} size={20} />
                 </span>
                 <span class="font-display text-lg font-bold sm:text-xl" style="font-stretch:115%">{a.name}</span>
                 <span class="app-text text-sm text-mist">{a.short}</span>
               </div>
-            </a>
+            </div>
           </li>
         ))
       }
@@ -49,13 +49,7 @@ import { url } from '../../lib/url';
 </section>
 
 <style>
-  .app-bg {
-    transition: transform 0.6s var(--ease-out-soft);
-  }
-  .app:hover .app-bg,
-  .app:focus-visible .app-bg {
-    transform: scale(1.06);
-  }
+  /* Solo fotos: las tarjetas no llevan a ninguna página (para eso está «Ver aplicaciones»). */
   /* En móvil la tarjeta es pequeña: solo icono y nombre. */
   .app-text {
     display: none;
@@ -66,20 +60,6 @@ import { url } from '../../lib/url';
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
-    }
-  }
-  @media (hover: hover) and (min-width: 1024px) {
-    .app-text {
-      max-height: 0;
-      opacity: 0;
-      transition:
-        max-height 0.45s var(--ease-out-soft),
-        opacity 0.3s;
-    }
-    .app:hover .app-text,
-    .app:focus-visible .app-text {
-      max-height: 5rem;
-      opacity: 1;
     }
   }
 </style>
