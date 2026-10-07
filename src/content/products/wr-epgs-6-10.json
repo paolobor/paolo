@@ -1,0 +1,105 @@
+{
+  "name": "Pinza eléctrica compacta EPGS-6-10",
+  "brand": "W-Robot",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 42,
+  "tagline": "Pinza eléctrica económica de dos dedos: 6 mm de carrera y 10 N, con el controlador dentro.",
+  "description": "Pinza eléctrica de dos dedos paralelos de la serie EPGS de W-Robot, la gama económica: el motor y el controlador van integrados y se maneja con señales de E/S, así que sustituye a una pinza neumática sin necesidad de aire comprimido. 6 mm de carrera, 10 N de fuerza de agarre y piezas de hasta 0,2 kg.",
+  "highlights": [
+    "6 mm de carrera y 10 N de agarre",
+    "Controlador integrado: se maneja con E/S",
+    "Sustituye a una pinza neumática, sin aire"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/wr-epgs-6-10/wr-epgs-6-10-oficial.png",
+      "alt": "Pinza eléctrica W-Robot EPGS-6-10, foto del fabricante"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Carrera",
+      "value": "6",
+      "unit": "mm"
+    },
+    {
+      "label": "Fuerza de agarre",
+      "value": "10",
+      "unit": "N"
+    },
+    {
+      "label": "Carga máxima recomendada",
+      "value": "0,2",
+      "unit": "kg"
+    },
+    {
+      "label": "Tiempo de apertura / cierre",
+      "value": "0,1",
+      "unit": "s"
+    },
+    {
+      "label": "Repetibilidad de posición",
+      "value": "±0,1",
+      "unit": "mm"
+    },
+    {
+      "label": "Medidas",
+      "value": "23,6 × 38 × 84",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": 160,
+      "unit": "g"
+    },
+    {
+      "label": "Tensión de alimentación",
+      "value": "24 V DC ±10 %"
+    },
+    {
+      "label": "Comunicación",
+      "value": "E/S digitales"
+    },
+    {
+      "label": "Protección",
+      "value": "IP40"
+    },
+    {
+      "label": "Certificaciones",
+      "value": "CE, FCC, RoHS"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "pinzas-electricas"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha del EPGS-6-10 (web de W-Robot)",
+      "type": "ficha",
+      "href": "https://www.w-robot.com/Products_details/Electric_jaws_-end-effector-_EPGS-6-16D2.html"
+    },
+    {
+      "label": "Manual de selección de pinzas W-Robot",
+      "type": "manual",
+      "href": "https://www.w-robot.com/Download/Product_Catalog.html"
+    }
+  ],
+  "store": {
+    "sku": "EPGS-6-10",
+    "price": null,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "https://www.w-robot.com/Products_details/Electric_jaws_-end-effector-_EPGS-6-16D2.html",
+    "verified": true
+  },
+  "seo": {}
+}

@@ -1,0 +1,96 @@
+{
+  "name": "Pinza eléctrica de 3 dedos EPG3-10-10",
+  "brand": "W-Robot",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 53,
+  "tagline": "Pinza céntrica de tres dedos para piezas redondas o irregulares.",
+  "description": "Pinza eléctrica de tres dedos de la serie EPG3 de W-Robot: los tres dedos cierran hacia el centro, así que centra y sujeta bien piezas redondas, cilíndricas o irregulares. 10 mm de carrera, 10 N de agarre y piezas de hasta 0,3 kg, con controlador integrado y comunicación Modbus RTU (RS485) o E/S.",
+  "highlights": [
+    "Tres dedos: centra piezas redondas e irregulares",
+    "10 mm de carrera y 10 N de agarre",
+    "Modbus RTU (RS485) o E/S, controlador integrado"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/wr-epg3-10-10/wr-epg3-10-10-oficial.png",
+      "alt": "Pinza eléctrica W-Robot EPG3-10-10, foto del fabricante"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Carrera",
+      "value": "10",
+      "unit": "mm"
+    },
+    {
+      "label": "Fuerza de agarre",
+      "value": "10",
+      "unit": "N"
+    },
+    {
+      "label": "Carga máxima recomendada",
+      "value": "0,3",
+      "unit": "kg"
+    },
+    {
+      "label": "Tiempo de apertura / cierre",
+      "value": "0,1",
+      "unit": "s"
+    },
+    {
+      "label": "Peso",
+      "value": 400,
+      "unit": "g"
+    },
+    {
+      "label": "Tensión de alimentación",
+      "value": "24 V DC ±10 %"
+    },
+    {
+      "label": "Comunicación",
+      "value": "Modbus RTU (RS485) y E/S"
+    },
+    {
+      "label": "Protección",
+      "value": "IP40"
+    },
+    {
+      "label": "Certificaciones",
+      "value": "CE, FCC, RoHS"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion",
+    "carga-de-maquinas"
+  ],
+  "shopCategories": [
+    "pinzas-electricas"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha del EPG3-10-10 (web de W-Robot)",
+      "type": "ficha",
+      "href": "https://www.w-robot.com/Products_details/Electric_jaws_-end-effector-_EPG3-10-10.html"
+    },
+    {
+      "label": "Manual de selección de pinzas W-Robot",
+      "type": "manual",
+      "href": "https://www.w-robot.com/Download/Product_Catalog.html"
+    }
+  ],
+  "store": {
+    "sku": "EPG3-10-10",
+    "price": 620,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "https://www.w-robot.com/Products_details/Electric_jaws_-end-effector-_EPG3-10-10.html",
+    "verified": true
+  },
+  "seo": {}
+}

@@ -157,8 +157,18 @@ Estado a 3 de octubre de 2026. Léelo entero antes de tocar nada.
   fichas de accesorio tienen «Añadir al configurador» (el ART7 R7 no: es «Próximamente»).
 - **Catálogo y tarifa en PDF** (`tools/catalogo/`, ver su LEEME): 17 páginas, con fecha de octubre de 2026 (los
   precios son los de la tarifa de julio que pasó el cliente; `src/data/tarifa.json`); en `/descargas/`, apartado
-  «Catálogo online» con portada y «Descargar PDF» (sin «Ver online», a petición del cliente). Los precios de la
-  tienda siguen a 0 €; el cliente ha dicho que sí a ponerles los de la tarifa (pendiente).
+  «Catálogo online» con portada y «Descargar PDF» (sin «Ver online», a petición del cliente).
+- **Precios de la tarifa en la tienda y el configurador** (sí del cliente): cada producto con línea en
+  `src/data/tarifa.json` tiene su PVP y su envío; el resto sale como «Consultar» (precio null). IP65: +500 € (la tarifa
+  dice «unos 500 €»). El ART7 R7 sigue a 0 € porque así lo pidió el cliente. El configurador usa el precio de la tienda.
+- **Pinzas W-Robot** (la «WR» de la tarifa): 17 modelos de la tabla del cliente (`wr-*`), con datos del manual oficial
+  y fotos del fabricante (ver `assets-src/fabricantes/LEEME.md`). EPG2-50-150, EPG3-10-10 y EPG4-10-50 con precio
+  de tarifa; el resto, «Consultar». Dudas: ERGD-25-35 (W-Robot solo publica el ERGD-30-35) y EPGL-160-1200.
+- **Productos nuevos con fotos del cliente mejoradas en Higgsfield**: track de 1 m y de 25 m (7.º eje), columna con
+  base en H y módulo de seguridad (seta), con su precio de tarifa; y la foto del sensor G2CX (= GZCX de la tienda,
+  confirmado) en la muñeca de un FAIRINO.
+- **Vista previa**: con 111 páginas pasaba del tope de 511 archivos; `build-preview.sh` deja una sola anchura por
+  imagen (solo en la vista previa).
 - Cifras del inicio: solo 13.000+ y #1, con la cuenta repetida cada 5 s.
 - Pendiente: el vídeo «Physical AI» de la página guardada de inluxrobotics.es: falta que el cliente pase el archivo.
 - El sello del final del teaser dice «FAIRINO COBOT S.L. B22587982 ESPAÑA»: puede servir para el titular legal, que

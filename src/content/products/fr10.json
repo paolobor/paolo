@@ -134,8 +134,7 @@
         "label": "IP65",
         "note": "Protección opcional"
       }
-    ],
-    "price": 0
+    ]
   },
   "source": {
     "url": "https://fairino.es/ https://www.frtech.fr/FR/3.html https://fairino.info/cobots/fairino-fr10",
@@ -144,8 +143,8 @@
   "seo": {},
   "store": {
     "sku": "FR10",
-    "price": 0,
-    "shipping": 0,
+    "price": 11290,
+    "shipping": 65,
     "versions": [
       {
         "id": "estandar",
@@ -155,7 +154,8 @@
       {
         "id": "ip65",
         "label": "IP65",
-        "delta": 0
+        "delta": 500,
+        "note": "Unos 500 € más que la IP54 (tarifa)"
       }
     ],
     "shopifyVariantId": null

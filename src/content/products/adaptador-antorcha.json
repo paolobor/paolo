@@ -29,7 +29,7 @@
   ],
   "store": {
     "sku": null,
-    "price": 0,
+    "price": null,
     "shipping": 0,
     "versions": [],
     "shopifyVariantId": null

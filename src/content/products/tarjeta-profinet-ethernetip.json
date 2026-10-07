@@ -65,8 +65,8 @@
   ],
   "store": {
     "sku": null,
-    "price": 0,
-    "shipping": 0,
+    "price": 850,
+    "shipping": 10,
     "versions": [],
     "shopifyVariantId": null
   },

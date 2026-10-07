@@ -1,0 +1,100 @@
+{
+  "name": "Pinza eléctrica para cobots EPGC-50-150",
+  "brand": "W-Robot",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 55,
+  "tagline": "Pinza paralela pensada para cobots: 50 mm de carrera, 150 N y freno.",
+  "description": "Pinza eléctrica de dos dedos paralelos de la serie EPGC de W-Robot, diseñada para montarse en cobots. 50 mm de carrera, 150 N de agarre y piezas de hasta 3 kg; lleva freno que mantiene la pieza si se corta la corriente, controlador integrado y comunicación Modbus RTU (RS485) o E/S.",
+  "highlights": [
+    "Diseñada para la muñeca de un cobot",
+    "150 N de agarre y piezas de hasta 3 kg",
+    "Freno: mantiene la pieza sin corriente"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/wr-epgc-50-150/wr-epgc-50-150-oficial.png",
+      "alt": "Pinza eléctrica W-Robot EPGC-50-150, foto del fabricante"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Carrera",
+      "value": "50",
+      "unit": "mm"
+    },
+    {
+      "label": "Fuerza de agarre",
+      "value": "150",
+      "unit": "N"
+    },
+    {
+      "label": "Carga máxima recomendada",
+      "value": "3",
+      "unit": "kg"
+    },
+    {
+      "label": "Tiempo de apertura / cierre",
+      "value": "0,5",
+      "unit": "s"
+    },
+    {
+      "label": "Peso",
+      "value": 1000,
+      "unit": "g"
+    },
+    {
+      "label": "Freno (mantiene la pieza sin corriente)",
+      "value": "Sí"
+    },
+    {
+      "label": "Tensión de alimentación",
+      "value": "24 V DC ±10 %"
+    },
+    {
+      "label": "Comunicación",
+      "value": "Modbus RTU (RS485) y E/S"
+    },
+    {
+      "label": "Protección",
+      "value": "IP40"
+    },
+    {
+      "label": "Certificaciones",
+      "value": "CE, FCC, RoHS"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion",
+    "carga-de-maquinas"
+  ],
+  "shopCategories": [
+    "pinzas-electricas"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha del EPGC-50-150 (web de W-Robot)",
+      "type": "ficha",
+      "href": "https://www.w-robot.com/Products_details/Electric_jaws_-end-effector-_EPGC-50-150.html"
+    },
+    {
+      "label": "Manual de selección de pinzas W-Robot",
+      "type": "manual",
+      "href": "https://www.w-robot.com/Download/Product_Catalog.html"
+    }
+  ],
+  "store": {
+    "sku": "EPGC-50-150",
+    "price": null,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "https://www.w-robot.com/Products_details/Electric_jaws_-end-effector-_EPGC-50-150.html",
+    "verified": true
+  },
+  "seo": {}
+}

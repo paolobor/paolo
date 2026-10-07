@@ -1,0 +1,51 @@
+{
+  "name": "Columna con base en H para cobot",
+  "brand": "FAIRINO",
+  "category": "accesorio",
+  "group": "montaje",
+  "order": 61,
+  "tagline": "Columna de perfil de aluminio con base en H para poner el cobot a la altura de trabajo.",
+  "description": "Columna de perfil de aluminio con base en H y placa redonda de montaje para el cobot. Sube el cobot a la altura que necesita la aplicación y deja la base estable y despejada. Te la entregamos lista para atornillar el cobot.",
+  "highlights": [
+    "Base en H, estable y despejada",
+    "Placa redonda de montaje para el cobot",
+    "Perfil de aluminio"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/columna-base-h/columna-base-h-oficial.png",
+      "alt": "Columna de perfil de aluminio con placa de montaje redonda para cobot FAIRINO"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Material",
+      "value": "Perfil de aluminio"
+    },
+    {
+      "label": "Código de tarifa",
+      "value": "CL-H"
+    }
+  ],
+  "applications": [
+    "paletizado",
+    "carga-de-maquinas"
+  ],
+  "shopCategories": [
+    "montaje"
+  ],
+  "compatibleWith": [],
+  "downloads": [],
+  "store": {
+    "sku": "CL-H",
+    "price": 1045,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "Foto de FAIRINO España (mejorada: escalado y fondo quitado con Higgsfield) y tarifa de FAIRINO España",
+    "verified": false
+  },
+  "seo": {}
+}

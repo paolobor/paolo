@@ -134,13 +134,12 @@
         "label": "IP65",
         "note": "Protección opcional"
       }
-    ],
-    "price": 0
+    ]
   },
   "store": {
     "sku": "FR5 WML",
-    "price": 0,
-    "shipping": 0,
+    "price": 12025,
+    "shipping": 65,
     "versions": [
       {
         "id": "estandar",
@@ -150,7 +149,8 @@
       {
         "id": "ip65",
         "label": "IP65",
-        "delta": 0
+        "delta": 500,
+        "note": "Unos 500 € más que la IP54 (tarifa)"
       }
     ],
     "shopifyVariantId": null

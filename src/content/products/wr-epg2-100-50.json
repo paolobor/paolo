@@ -1,0 +1,100 @@
+{
+  "name": "Pinza eléctrica de carrera larga EPG2-100-50",
+  "brand": "W-Robot",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 56,
+  "tagline": "Pinza de dos dedos con 100 mm de carrera para piezas grandes, con freno.",
+  "description": "Pinza eléctrica de la serie EPGC/EPG2 de W-Robot pensada para cobots, con dedos de gran apertura: 100 mm de carrera para coger piezas grandes o de tamaños muy distintos con la misma pinza. Fuerza de 50 N, piezas de hasta 2 kg, freno que mantiene la pieza sin corriente y controlador integrado.",
+  "highlights": [
+    "100 mm de carrera para piezas grandes",
+    "Freno: mantiene la pieza sin corriente",
+    "Modbus RTU (RS485) o E/S"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/wr-epg2-100-50/wr-epg2-100-50-oficial.png",
+      "alt": "Pinza eléctrica W-Robot EPG2-100-50, foto del fabricante"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Carrera",
+      "value": "100",
+      "unit": "mm"
+    },
+    {
+      "label": "Fuerza de agarre",
+      "value": "50",
+      "unit": "N"
+    },
+    {
+      "label": "Carga máxima recomendada",
+      "value": "2",
+      "unit": "kg"
+    },
+    {
+      "label": "Tiempo de apertura / cierre",
+      "value": "0,7",
+      "unit": "s"
+    },
+    {
+      "label": "Peso",
+      "value": 1000,
+      "unit": "g"
+    },
+    {
+      "label": "Freno (mantiene la pieza sin corriente)",
+      "value": "Sí"
+    },
+    {
+      "label": "Tensión de alimentación",
+      "value": "24 V DC ±10 %"
+    },
+    {
+      "label": "Comunicación",
+      "value": "Modbus RTU (RS485) y E/S"
+    },
+    {
+      "label": "Protección",
+      "value": "IP40"
+    },
+    {
+      "label": "Certificaciones",
+      "value": "CE, FCC, RoHS"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion",
+    "carga-de-maquinas"
+  ],
+  "shopCategories": [
+    "pinzas-electricas"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha del EPG2-100-50 (web de W-Robot)",
+      "type": "ficha",
+      "href": "https://www.w-robot.com/Products_details/Electric_jaws_-end-effector-_EPG2-100-50.html"
+    },
+    {
+      "label": "Manual de selección de pinzas W-Robot",
+      "type": "manual",
+      "href": "https://www.w-robot.com/Download/Product_Catalog.html"
+    }
+  ],
+  "store": {
+    "sku": "EPG2-100-50",
+    "price": null,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "https://www.w-robot.com/Products_details/Electric_jaws_-end-effector-_EPG2-100-50.html",
+    "verified": true
+  },
+  "seo": {}
+}

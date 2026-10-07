@@ -8,6 +8,10 @@
   "highlights": [],
   "images": [
     {
+      "src": "../../assets/products/gzcx-6f-75mm/gzcx-6f-75mm-foto.png",
+      "alt": "Sensor de fuerza FAIRINO montado en la muñeca de un cobot FAIRINO (foto de FAIRINO España)"
+    },
+    {
       "src": "../../assets/products/gzcx-6f-75mm/gzcx-6f-75mm-oficial.png",
       "alt": "Sensor de fuerza GZCX-6F-75MM, foto oficial de FAIRINO"
     }
@@ -96,8 +100,7 @@
   ],
   "configurator": {
     "slot": "fuerza",
-    "versions": [],
-    "price": 0
+    "versions": []
   },
   "source": {
     "url": "https://a.storyblok.com/f/298593/x/7432cf2b70/fairino-accessories-ecosystem.pdf https://www.fairino.be/product/force-sensor-cobot",
@@ -106,7 +109,7 @@
   "seo": {},
   "store": {
     "sku": null,
-    "price": 0,
+    "price": 1263,
     "shipping": 0,
     "versions": [],
     "shopifyVariantId": null

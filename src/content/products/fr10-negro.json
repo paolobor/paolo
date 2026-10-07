@@ -109,8 +109,7 @@
         "label": "Estándar",
         "note": "IP54"
       }
-    ],
-    "price": 0
+    ]
   },
   "source": {
     "url": "https://fairino.es/ https://www.frtech.fr/FR/3.html https://fairino.info/cobots/fairino-fr10",
@@ -121,8 +120,8 @@
   },
   "store": {
     "sku": null,
-    "price": 0,
-    "shipping": 0,
+    "price": 11710,
+    "shipping": 65,
     "versions": [
       {
         "id": "estandar",

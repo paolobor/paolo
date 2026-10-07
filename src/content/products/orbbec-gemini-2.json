@@ -89,8 +89,7 @@
   ],
   "configurator": {
     "slot": "camara",
-    "versions": [],
-    "price": 0
+    "versions": []
   },
   "source": {
     "url": "https://fairino.es/productos/orbbec-gemini-2/",
@@ -99,7 +98,7 @@
   "seo": {},
   "store": {
     "sku": "ORBEC GEMINI CAMERA",
-    "price": 0,
+    "price": 1295,
     "shipping": 0,
     "versions": [],
     "shopifyVariantId": null

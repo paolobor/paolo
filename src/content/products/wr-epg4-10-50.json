@@ -1,0 +1,120 @@
+{
+  "name": "Pinza eléctrica de 4 dedos EPG4-10-50",
+  "brand": "W-Robot",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 54,
+  "tagline": "Pinza céntrica de cuatro dedos: 10 mm por dedo y hasta 50 N.",
+  "description": "Pinza eléctrica de cuatro dedos de la serie EPG3/EPG4 de W-Robot: los cuatro dedos cierran hacia el centro para sujetar piezas cuadradas, redondas o irregulares con estabilidad. 10 mm de carrera por dedo, hasta 50 N de agarre y piezas de hasta 0,8 kg, con controlador integrado y comunicación Modbus RTU (RS485) o E/S.",
+  "highlights": [
+    "Cuatro dedos: sujeta piezas cuadradas y redondas",
+    "10 mm por dedo y hasta 50 N de agarre",
+    "Modbus RTU (RS485) o E/S, controlador integrado"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/wr-epg4-10-50/wr-epg4-10-50-oficial.png",
+      "alt": "Pinza eléctrica W-Robot EPG4-10-50, foto del fabricante"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Carrera por dedo",
+      "value": "0–10",
+      "unit": "mm"
+    },
+    {
+      "label": "Fuerza de agarre",
+      "value": "15–50",
+      "unit": "N"
+    },
+    {
+      "label": "Carga máxima recomendada",
+      "value": "0,8",
+      "unit": "kg"
+    },
+    {
+      "label": "Tiempo de apertura / cierre",
+      "value": "0,1",
+      "unit": "s"
+    },
+    {
+      "label": "Repetibilidad de posición",
+      "value": "±0,02",
+      "unit": "mm"
+    },
+    {
+      "label": "Precisión de la fuerza",
+      "value": "±10 %"
+    },
+    {
+      "label": "Medidas (sin dedos)",
+      "value": "55 × 55 × 105,9",
+      "unit": "mm"
+    },
+    {
+      "label": "Carga estática vertical admisible Fz",
+      "value": "140",
+      "unit": "N"
+    },
+    {
+      "label": "Momentos estáticos admisibles Mx / My / Mz",
+      "value": "2 / 2,1 / 3,2",
+      "unit": "N·m"
+    },
+    {
+      "label": "Peso",
+      "value": 450,
+      "unit": "g"
+    },
+    {
+      "label": "Tensión de alimentación",
+      "value": "24 V DC ±10 %"
+    },
+    {
+      "label": "Comunicación",
+      "value": "Modbus RTU (RS485) y E/S"
+    },
+    {
+      "label": "Protección",
+      "value": "IP40"
+    },
+    {
+      "label": "Certificaciones",
+      "value": "CE, FCC, RoHS"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion",
+    "carga-de-maquinas"
+  ],
+  "shopCategories": [
+    "pinzas-electricas"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha del EPG4-10-50 (web de W-Robot)",
+      "type": "ficha",
+      "href": "https://www.w-robot.com/Products_details/Electric_jaws_-end-effector-_EPG4-10-50.html"
+    },
+    {
+      "label": "Manual de selección de pinzas W-Robot",
+      "type": "manual",
+      "href": "https://www.w-robot.com/Download/Product_Catalog.html"
+    }
+  ],
+  "store": {
+    "sku": "EPG4-10-50",
+    "price": 660,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "https://www.w-robot.com/Products_details/Electric_jaws_-end-effector-_EPG4-10-50.html",
+    "verified": true
+  },
+  "seo": {}
+}

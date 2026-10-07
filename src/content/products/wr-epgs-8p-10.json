@@ -1,0 +1,95 @@
+{
+  "name": "Pinza eléctrica compacta EPGS-8P-10",
+  "brand": "W-Robot",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 44,
+  "tagline": "Pinza eléctrica económica de dos dedos: 8 mm de carrera y 10 N, con el controlador dentro.",
+  "description": "Pinza eléctrica de dos dedos paralelos de la serie EPGS de W-Robot, la gama económica: el motor y el controlador van integrados y se maneja con señales de E/S, así que sustituye a una pinza neumática sin necesidad de aire comprimido. 8 mm de carrera, 10 N de fuerza de agarre y piezas de hasta 0,2 kg.",
+  "highlights": [
+    "8 mm de carrera y 10 N de agarre",
+    "Controlador integrado: se maneja con E/S",
+    "Sustituye a una pinza neumática, sin aire"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/wr-epgs-8p-10/wr-epgs-8p-10-oficial.png",
+      "alt": "Pinza eléctrica W-Robot EPGS-8P-10, foto del fabricante"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Carrera",
+      "value": "8",
+      "unit": "mm"
+    },
+    {
+      "label": "Fuerza de agarre",
+      "value": "10",
+      "unit": "N"
+    },
+    {
+      "label": "Carga máxima recomendada",
+      "value": "0,2",
+      "unit": "kg"
+    },
+    {
+      "label": "Tiempo de apertura / cierre",
+      "value": "0,1",
+      "unit": "s"
+    },
+    {
+      "label": "Peso",
+      "value": 135,
+      "unit": "g"
+    },
+    {
+      "label": "Tensión de alimentación",
+      "value": "24 V DC ±10 %"
+    },
+    {
+      "label": "Comunicación",
+      "value": "E/S digitales"
+    },
+    {
+      "label": "Protección",
+      "value": "IP40"
+    },
+    {
+      "label": "Certificaciones",
+      "value": "CE, FCC, RoHS"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "pinzas-electricas"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha del EPGS-8P-10 (web de W-Robot)",
+      "type": "ficha",
+      "href": "https://www.w-robot.com/Products_details/Electric_jaws_-end-effector-_EPGS-8P.html"
+    },
+    {
+      "label": "Manual de selección de pinzas W-Robot",
+      "type": "manual",
+      "href": "https://www.w-robot.com/Download/Product_Catalog.html"
+    }
+  ],
+  "store": {
+    "sku": "EPGS-8P-10",
+    "price": null,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "https://www.w-robot.com/Products_details/Electric_jaws_-end-effector-_EPGS-8P.html",
+    "verified": true
+  },
+  "seo": {}
+}

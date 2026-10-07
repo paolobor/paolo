@@ -1,0 +1,119 @@
+{
+  "name": "Pinza eléctrica paralela EPG2-26-15",
+  "brand": "W-Robot",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 47,
+  "tagline": "Pinza paralela de dos dedos con control de fuerza: 26 mm de carrera y hasta 15 N.",
+  "description": "Pinza eléctrica de dos dedos paralelos de la serie industrial EPG2 de W-Robot. Lleva el controlador dentro, permite ajustar la fuerza y la carrera, detecta si la pieza se cae y se maneja por Modbus RTU (RS485) o por E/S. 26 mm de carrera, 15 N de fuerza de agarre y piezas de hasta 0,3 kg.",
+  "highlights": [
+    "26 mm de carrera y hasta 15 N de agarre",
+    "Fuerza y carrera ajustables, con detección de caída",
+    "Modbus RTU (RS485) o E/S, controlador integrado"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/wr-epg2-26-15/wr-epg2-26-15-oficial.png",
+      "alt": "Pinza eléctrica W-Robot EPG2-26-15, foto del fabricante"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Carrera",
+      "value": "0–26",
+      "unit": "mm"
+    },
+    {
+      "label": "Fuerza de agarre",
+      "value": "6–15",
+      "unit": "N"
+    },
+    {
+      "label": "Carga máxima recomendada",
+      "value": "0,3",
+      "unit": "kg"
+    },
+    {
+      "label": "Tiempo de apertura / cierre",
+      "value": "0,3",
+      "unit": "s"
+    },
+    {
+      "label": "Repetibilidad de posición",
+      "value": "±0,02",
+      "unit": "mm"
+    },
+    {
+      "label": "Precisión de la fuerza",
+      "value": "±10 %"
+    },
+    {
+      "label": "Medidas",
+      "value": "55 × 26 × 98",
+      "unit": "mm"
+    },
+    {
+      "label": "Carga estática vertical admisible Fz",
+      "value": "140",
+      "unit": "N"
+    },
+    {
+      "label": "Momentos estáticos admisibles Mx / My / Mz",
+      "value": "2,1 / 2 / 3,2",
+      "unit": "N·m"
+    },
+    {
+      "label": "Peso",
+      "value": 400,
+      "unit": "g"
+    },
+    {
+      "label": "Tensión de alimentación",
+      "value": "24 V DC ±10 %"
+    },
+    {
+      "label": "Comunicación",
+      "value": "Modbus RTU (RS485) y E/S"
+    },
+    {
+      "label": "Protección",
+      "value": "IP40"
+    },
+    {
+      "label": "Certificaciones",
+      "value": "CE, FCC, RoHS"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "pinzas-electricas"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha del EPG2-26-15 (web de W-Robot)",
+      "type": "ficha",
+      "href": "https://www.w-robot.com/Products_details/Electric_jaws_-end-effector-_EPG2-26-15.html"
+    },
+    {
+      "label": "Manual de selección de pinzas W-Robot",
+      "type": "manual",
+      "href": "https://www.w-robot.com/Download/Product_Catalog.html"
+    }
+  ],
+  "store": {
+    "sku": "EPG2-26-15",
+    "price": null,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "https://www.w-robot.com/Products_details/Electric_jaws_-end-effector-_EPG2-26-15.html",
+    "verified": true
+  },
+  "seo": {}
+}

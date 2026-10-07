@@ -1,0 +1,49 @@
+{
+  "name": "Módulo de seguridad (seta de emergencia)",
+  "brand": "FAIRINO",
+  "category": "accesorio",
+  "group": "control",
+  "order": 62,
+  "tagline": "Seta de parada de emergencia con mandos para el cobot, en caja con cable.",
+  "description": "Módulo de seguridad para el cobot FAIRINO: una caja amarilla con la seta roja de parada de emergencia, teclas de mando y selector, unida al cobot por cable. Se coloca donde trabaja el operario para parar el cobot al momento.",
+  "highlights": [
+    "Seta de parada de emergencia",
+    "Teclas de mando y selector",
+    "Caja compacta con cable"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/modulo-seguridad/modulo-seguridad-oficial.png",
+      "alt": "Módulo de seguridad FAIRINO con seta de emergencia roja, teclas y selector"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Parada de emergencia",
+      "value": "Seta con enclavamiento"
+    },
+    {
+      "label": "Código de tarifa",
+      "value": "MSegur1"
+    }
+  ],
+  "applications": [],
+  "shopCategories": [
+    "accesorios-fairino",
+    "seguridad"
+  ],
+  "compatibleWith": [],
+  "downloads": [],
+  "store": {
+    "sku": "MSegur1",
+    "price": 129,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "Foto de FAIRINO España (mejorada: escalado y fondo quitado con Higgsfield) y tarifa de FAIRINO España",
+    "verified": false
+  },
+  "seo": {}
+}

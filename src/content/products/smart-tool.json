@@ -75,8 +75,7 @@
   ],
   "configurator": {
     "slot": "smarttool",
-    "versions": [],
-    "price": 0
+    "versions": []
   },
   "source": {
     "url": "https://www.fairino.be/product/smart-tool https://fairino.info/cobots-accessories",
@@ -85,7 +84,7 @@
   "seo": {},
   "store": {
     "sku": "SMTool",
-    "price": 0,
+    "price": 688,
     "shipping": 0,
     "versions": [],
     "shopifyVariantId": null

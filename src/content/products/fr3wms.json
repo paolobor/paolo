@@ -134,8 +134,7 @@
         "label": "IP65",
         "note": "Protección opcional"
       }
-    ],
-    "price": 0
+    ]
   },
   "source": {
     "url": "https://fairino.es/ https://www.frtech.fr/FR/9.html https://www.fairino.be/product/fairino-fr3-wms-6-axis-collaborative-robot-3kg-622mm",
@@ -144,8 +143,8 @@
   "seo": {},
   "store": {
     "sku": "FR3 WMS",
-    "price": 0,
-    "shipping": 0,
+    "price": 5620,
+    "shipping": 30,
     "versions": [
       {
         "id": "estandar",
@@ -155,7 +154,8 @@
       {
         "id": "ip65",
         "label": "IP65",
-        "delta": 0
+        "delta": 500,
+        "note": "Unos 500 € más que la IP54 (tarifa)"
       }
     ],
     "shopifyVariantId": null

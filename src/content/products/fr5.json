@@ -134,8 +134,7 @@
         "label": "IP65",
         "note": "Protección opcional"
       }
-    ],
-    "price": 0
+    ]
   },
   "source": {
     "url": "https://fairino.es/productos/fr5/ https://www.frtech.fr/FR/4.html",
@@ -144,8 +143,8 @@
   "seo": {},
   "store": {
     "sku": "FR5",
-    "price": 0,
-    "shipping": 0,
+    "price": 5620,
+    "shipping": 52,
     "versions": [
       {
         "id": "estandar",
@@ -155,7 +154,8 @@
       {
         "id": "ip65",
         "label": "IP65",
-        "delta": 0
+        "delta": 500,
+        "note": "Unos 500 € más que la IP54 (tarifa)"
       }
     ],
     "shopifyVariantId": null

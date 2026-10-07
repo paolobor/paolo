@@ -1,0 +1,91 @@
+{
+  "name": "Pinza eléctrica giratoria de accionamiento directo ERGD-25-35",
+  "brand": "W-Robot",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 58,
+  "tagline": "Pinza giratoria con motor de accionamiento directo, sin holgura: 25 mm de carrera y 35 N.",
+  "description": "Pinza eléctrica giratoria de la serie ERGD de W-Robot: el giro lo da un motor de accionamiento directo, sin reductora, así que no tiene holgura y posiciona con mucha precisión. Gira sin límite de vueltas y coge con los dos dedos a la vez. Por el código del modelo: 25 mm de carrera y 35 N de agarre; el resto de datos, a consultar.",
+  "highlights": [
+    "Accionamiento directo: sin holgura",
+    "Coge y gira: giro infinito",
+    "25 mm de carrera y 35 N de agarre"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/wr-ergd-25-35/wr-ergd-25-35-oficial.png",
+      "alt": "Pinza eléctrica W-Robot de la serie ERGD, foto del fabricante"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Carrera",
+      "value": "25",
+      "unit": "mm"
+    },
+    {
+      "label": "Fuerza de agarre",
+      "value": "35",
+      "unit": "N"
+    },
+    {
+      "label": "Carga máxima recomendada",
+      "value": null,
+      "unit": "kg"
+    },
+    {
+      "label": "Tiempo de apertura / cierre",
+      "value": null,
+      "unit": "s"
+    },
+    {
+      "label": "Peso",
+      "value": null,
+      "unit": "g"
+    },
+    {
+      "label": "Giro",
+      "value": "Infinito"
+    },
+    {
+      "label": "Tensión de alimentación",
+      "value": "24 V DC ±10 %"
+    },
+    {
+      "label": "Comunicación",
+      "value": "Modbus RTU (RS485) y E/S"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "pinzas-electricas"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha de la serie ERGD (web de W-Robot)",
+      "type": "ficha",
+      "href": "https://www.w-robot.com/Products_details/ERGD-30-35.html"
+    },
+    {
+      "label": "Manual de selección de pinzas W-Robot",
+      "type": "manual",
+      "href": "https://www.w-robot.com/Download/Product_Catalog.html"
+    }
+  ],
+  "store": {
+    "sku": "ERGD-25-35",
+    "price": null,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "W-Robot Electric Gripper Selection Manual (w-robot.com, descargas)",
+    "verified": false
+  },
+  "seo": {}
+}

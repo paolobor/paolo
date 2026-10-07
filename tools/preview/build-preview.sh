@@ -32,6 +32,31 @@ for page in glob.glob('**/*.html', recursive=True):
     s2 = re.sub(r'--mask:url\((?:\.\./)*assets/([^)]+)\)', r'--mask:url(\1)', s)
     if s2 != s:
         open(page, 'w').write(s2)
+# Tope de archivos de la vista previa (511): cada imagen se queda con una sola anchura. De cada srcset se deja la
+# misma imagen del src (o la más ancha hasta 1200 px), y el resto de anchuras cae abajo por no usarse.
+# La web real conserva todas las anchuras.
+def una_anchura(tag):
+    m = re.search(r'\bsrcset="([^"]+)"', tag)
+    if not m:
+        return tag
+    cands = []
+    for c in m.group(1).split(','):
+        parts = c.strip().split()
+        if not parts:
+            continue
+        w = int(parts[1][:-1]) if len(parts) > 1 and parts[1].endswith('w') and parts[1][:-1].isdigit() else 0
+        cands.append((parts[0], w, c.strip()))
+    src = re.search(r'\bsrc="([^"]+)"', tag)
+    keep = next((c for c in cands if src and c[0] == src.group(1)), None)
+    if keep is None:
+        fit = [c for c in cands if c[1] <= 1200] or cands
+        keep = max(fit, key=lambda c: c[1])
+    return tag[:m.start(1)] + keep[2] + tag[m.end(1):]
+for page in glob.glob('**/*.html', recursive=True):
+    s = open(page).read()
+    s2 = re.sub(r'<(?:img|source)\b[^>]*>', lambda m: una_anchura(m.group(0)), s)
+    if s2 != s:
+        open(page, 'w').write(s2)
 # Fuera lo que nadie usa (p. ej. los PNG/JPG originales que Astro copia aunque las páginas solo piden WebP):
 # la vista previa tiene un tope de archivos. Se busca el nombre de cada archivo en páginas, estilos y scripts.
 textos = ''.join(open(t, errors='ignore').read() for t in glob.glob('**/*', recursive=True)

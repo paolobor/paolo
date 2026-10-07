@@ -25,7 +25,9 @@ Confirmado por el cliente (7 de octubre de 2026):
 - Escáner de seguridad 270° (SAF-SCAN-270) = escáner IDEC SE2L de la tienda.
 - Módulo de seguridad (seta, 129 €) y Safety Box (tienda) son productos distintos.
 
-Pendiente de confirmar:
+- WR.RG (75-300) = pinza JODELL RG75-300 (IR75-300) de la tienda.
+- Sensor G2CX-6F-D80-H28 (tarifa) = GZCX-6F-75MM de la tienda.
+- WR.EPG2 / WR.EPG3 / WR.EPG4 = pinzas W-Robot EPG2-50-150, EPG3-10-10 y EPG4-10-50.
 
-- WR.RG (75-300): se ha asociado a la pinza JODELL RG75-300 (IR75-300) de la tienda.
-- Sensor G2CX-6F-D80-H28 (tarifa) y GZCX-6F-75MM (tienda) se tratan como productos distintos.
+Las líneas de la tarifa con `producto` (también las de `ecosistema`, como los tracks y la columna con base en H) salen
+en el catálogo con la foto y el enlace de su ficha y el precio de la tarifa; las que no lo tienen, solo con el texto.

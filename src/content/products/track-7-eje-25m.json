@@ -1,0 +1,63 @@
+{
+  "name": "Track lineal de 25 m (7.º eje) para FR10 a FR30",
+  "brand": "FAIRINO",
+  "category": "accesorio",
+  "group": "montaje",
+  "order": 60,
+  "tagline": "Séptimo eje de suelo para los cobots grandes: hasta 25 m de recorrido.",
+  "description": "Eje lineal de suelo, robusto, para mover un cobot FAIRINO de FR10 a FR30 a lo largo de hasta 25 m, como un séptimo eje. Pensado para paletizado en varias líneas, carga de máquinas en fila o soldadura de piezas largas. En la foto se ven la cadena portacables, el engrase centralizado y la reductora del motor.",
+  "highlights": [
+    "Hasta 25 m de recorrido",
+    "Para los cobots FR10, FR16, FR20 y FR30",
+    "Cadena portacables y engrase centralizado"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/track-7-eje-25m/track-7-eje-25m-oficial.png",
+      "alt": "Track lineal de suelo para cobot FAIRINO, con cadena portacables y engrase centralizado"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Recorrido",
+      "value": "hasta 25",
+      "unit": "m"
+    },
+    {
+      "label": "Cobots",
+      "value": "FR10, FR16, FR20 y FR30"
+    },
+    {
+      "label": "Código de tarifa",
+      "value": "AX7-FR10/30"
+    }
+  ],
+  "applications": [
+    "paletizado",
+    "carga-de-maquinas",
+    "soldadura"
+  ],
+  "shopCategories": [
+    "montaje"
+  ],
+  "compatibleWith": [
+    "fr10",
+    "fr10-negro",
+    "fr16",
+    "fr20",
+    "fr30"
+  ],
+  "downloads": [],
+  "store": {
+    "sku": "AX7-FR10/30",
+    "price": 47250,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "Foto de FAIRINO España (mejorada: escalado y fondo quitado con Higgsfield) y tarifa de FAIRINO España",
+    "verified": false
+  },
+  "seo": {}
+}

@@ -1,0 +1,114 @@
+{
+  "name": "Pinza eléctrica paralela EPG2-26-50",
+  "brand": "W-Robot",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 48,
+  "tagline": "Pinza paralela de dos dedos con control de fuerza: 26 mm de carrera y hasta 50 N.",
+  "description": "Pinza eléctrica de dos dedos paralelos de la serie industrial EPG2 de W-Robot. Lleva el controlador dentro, permite ajustar la fuerza y la carrera, detecta si la pieza se cae y se maneja por Modbus RTU (RS485) o por E/S. 26 mm de carrera, 50 N de fuerza de agarre y piezas de hasta 0,8 kg.",
+  "highlights": [
+    "26 mm de carrera y hasta 50 N de agarre",
+    "Fuerza y carrera ajustables, con detección de caída",
+    "Modbus RTU (RS485) o E/S, controlador integrado"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/wr-epg2-26-50/wr-epg2-26-50-oficial.png",
+      "alt": "Pinza eléctrica W-Robot EPG2-26-50, foto del fabricante"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Carrera",
+      "value": "0–26",
+      "unit": "mm"
+    },
+    {
+      "label": "Fuerza de agarre",
+      "value": "15–50",
+      "unit": "N"
+    },
+    {
+      "label": "Carga máxima recomendada",
+      "value": "0,8",
+      "unit": "kg"
+    },
+    {
+      "label": "Tiempo de apertura / cierre",
+      "value": "0,3",
+      "unit": "s"
+    },
+    {
+      "label": "Repetibilidad de posición",
+      "value": "±0,02",
+      "unit": "mm"
+    },
+    {
+      "label": "Precisión de la fuerza",
+      "value": "±10 %"
+    },
+    {
+      "label": "Medidas",
+      "value": "55 × 26 × 103",
+      "unit": "mm"
+    },
+    {
+      "label": "Carga estática vertical admisible Fz",
+      "value": "140",
+      "unit": "N"
+    },
+    {
+      "label": "Momentos estáticos admisibles Mx / My / Mz",
+      "value": "2,1 / 2 / 3,2",
+      "unit": "N·m"
+    },
+    {
+      "label": "Peso",
+      "value": 420,
+      "unit": "g"
+    },
+    {
+      "label": "Tensión de alimentación",
+      "value": "24 V DC ±10 %"
+    },
+    {
+      "label": "Comunicación",
+      "value": "Modbus RTU (RS485) y E/S"
+    },
+    {
+      "label": "Protección",
+      "value": "IP40"
+    },
+    {
+      "label": "Certificaciones",
+      "value": "CE, FCC, RoHS"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "pinzas-electricas"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Manual de selección de pinzas W-Robot",
+      "type": "manual",
+      "href": "https://www.w-robot.com/Download/Product_Catalog.html"
+    }
+  ],
+  "store": {
+    "sku": "EPG2-26-50",
+    "price": null,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "W-Robot Electric Gripper Selection Manual (w-robot.com, descargas)",
+    "verified": true
+  },
+  "seo": {}
+}

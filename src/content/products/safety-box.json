@@ -75,8 +75,7 @@
   ],
   "configurator": {
     "slot": "safety",
-    "versions": [],
-    "price": 0
+    "versions": []
   },
   "source": {
     "url": "https://www.fairino.info/en/accessories/safety-box",
@@ -85,7 +84,7 @@
   "seo": {},
   "store": {
     "sku": null,
-    "price": 0,
+    "price": null,
     "shipping": 0,
     "versions": [],
     "shopifyVariantId": null

@@ -1,0 +1,95 @@
+{
+  "name": "Pinza eléctrica compacta EPGS-12P-15",
+  "brand": "W-Robot",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 45,
+  "tagline": "Pinza eléctrica económica de dos dedos: 12 mm de carrera y 15 N, con el controlador dentro.",
+  "description": "Pinza eléctrica de dos dedos paralelos de la serie EPGS de W-Robot, la gama económica: el motor y el controlador van integrados y se maneja con señales de E/S, así que sustituye a una pinza neumática sin necesidad de aire comprimido. 12 mm de carrera, 15 N de fuerza de agarre y piezas de hasta 0,26 kg.",
+  "highlights": [
+    "12 mm de carrera y 15 N de agarre",
+    "Controlador integrado: se maneja con E/S",
+    "Sustituye a una pinza neumática, sin aire"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/wr-epgs-12p-15/wr-epgs-12p-15-oficial.png",
+      "alt": "Pinza eléctrica W-Robot EPGS-12P-15, foto del fabricante"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Carrera",
+      "value": "12",
+      "unit": "mm"
+    },
+    {
+      "label": "Fuerza de agarre",
+      "value": "15",
+      "unit": "N"
+    },
+    {
+      "label": "Carga máxima recomendada",
+      "value": "0,26",
+      "unit": "kg"
+    },
+    {
+      "label": "Tiempo de apertura / cierre",
+      "value": "0,15",
+      "unit": "s"
+    },
+    {
+      "label": "Peso",
+      "value": 180,
+      "unit": "g"
+    },
+    {
+      "label": "Tensión de alimentación",
+      "value": "24 V DC ±10 %"
+    },
+    {
+      "label": "Comunicación",
+      "value": "E/S digitales"
+    },
+    {
+      "label": "Protección",
+      "value": "IP40"
+    },
+    {
+      "label": "Certificaciones",
+      "value": "CE, FCC, RoHS"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "pinzas-electricas"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha del EPGS-12P-15 (web de W-Robot)",
+      "type": "ficha",
+      "href": "https://www.w-robot.com/Products_details/EPGS-12P.html"
+    },
+    {
+      "label": "Manual de selección de pinzas W-Robot",
+      "type": "manual",
+      "href": "https://www.w-robot.com/Download/Product_Catalog.html"
+    }
+  ],
+  "store": {
+    "sku": "EPGS-12P-15",
+    "price": null,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "https://www.w-robot.com/Products_details/EPGS-12P.html",
+    "verified": true
+  },
+  "seo": {}
+}

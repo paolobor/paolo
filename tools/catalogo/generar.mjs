@@ -133,7 +133,7 @@ const logo = (h) => `<span class="logo" style="--h:${h}mm">${WORDMARK}<b>SPAIN</
 
 // ------------------------------------------------------------------ contenido
 const tarifaCobot = Object.fromEntries(tarifa.cobots.map((c) => [c.producto, c]));
-const tarifaAcc = Object.fromEntries(tarifa.accesorios.filter((a) => a.producto).map((a) => [a.producto, a]));
+const tarifaAcc = Object.fromEntries([...tarifa.accesorios, ...tarifa.ecosistema].filter((a) => a.producto).map((a) => [a.producto, a]));
 
 const cobots = Object.entries(productos)
   .filter(([, p]) => p.category === 'cobot')
@@ -207,6 +207,7 @@ const control = [
   prod('smart-tool', { icono: 'hand' }),
   prod('tarjeta-profinet-ethernetip', { icono: 'cpu' }),
   prod('safety-box', { icono: 'shield-check' }),
+  prod('modulo-seguridad', { icono: 'shield-check' }),
   ...tarifaSin((a) => a.grupo === 'control', 'shield-check'),
   prod('kit-escaner-seguridad-idec', { icono: 'shield-check' }),
   prod('kit-hmi-delta', { icono: 'cpu' }),
@@ -225,7 +226,10 @@ const sensores = [
   ...resto((id, p) => p.group === 'vision', 'scan-eye'),
 ];
 const montaje = [
-  ...tarifa.ecosistema.map((e) => deTarifa(e, /Track/.test(e.nombre) ? 'move-horizontal' : 'columns')),
+  ...tarifa.ecosistema.map((e) => {
+    const icono = /Track/.test(e.nombre) ? 'move-horizontal' : 'columns';
+    return e.producto ? prod(e.producto, { icono }) : deTarifa(e, icono);
+  }),
   ...resto((id, p) => p.group === 'montaje', 'wrench'),
 ];
 // Lo que quede (por si se añaden accesorios nuevos a la tienda).
@@ -242,7 +246,7 @@ const trozos = (arr, primera, resto) => {
 const secciones = [
   { id: 'cobots', n: '01', titulo: 'Cobots FAIRINO', intro: 'Diez modelos de seis ejes, de 3 a 30 kg de carga útil y hasta 1.900 mm de alcance, y lo que viene: el ART7 R7.' },
   { id: 'control', n: '02', titulo: 'Control, programación y seguridad', intro: 'Controladoras, consola, mandos y seguridad para trabajar con el cobot de forma intuitiva y segura.', items: control },
-  { id: 'garras', n: '03', titulo: 'Garras y pinzas', intro: 'Pinzas eléctricas, de vacío y flexibles para coger cualquier pieza: de la FAIRINO EPG40-50 a las pinzas adaptativas de tres dedos.', items: garras },
+  { id: 'garras', n: '03', titulo: 'Garras y pinzas', intro: 'Pinzas eléctricas, de vacío y flexibles para coger cualquier pieza: de la FAIRINO EPG40-50 a toda la gama eléctrica de W-Robot, de dos, tres y cuatro dedos y giratorias.', items: garras },
   { id: 'sensores', n: '04', titulo: 'Sensores, visión y lijado', intro: 'Fuerza y par de seis ejes, cámaras 2D y 3D y el equipo de lijado para acabados con fuerza constante.', items: sensores },
   { id: 'montaje', n: '05', titulo: 'Montaje, columnas y séptimo eje', intro: 'Tracks lineales, columnas y soportes para llevar el cobot donde haga falta.', items: [...montaje, ...otros] },
   { id: 'soluciones', n: '06', titulo: 'Soluciones llave en mano', intro: 'Estaciones de soldadura y paletizado listas para producir, y logística autónoma.' },

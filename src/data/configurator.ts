@@ -26,6 +26,7 @@ export const accessoryFamilies: AccessoryFamily[] = [
 // Pieza del esquema cuando no es la de su familia (los de FAIRINO la llevan en "configurator.slot" de su ficha).
 export const slotOverrides: Record<string, string> = {
   'kit-escaner-seguridad-idec': 'safety',
+  'modulo-seguridad': 'safety',
   'kit-hmi-delta': 'pendant',
 };
 

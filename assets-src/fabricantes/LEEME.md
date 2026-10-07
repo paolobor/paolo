@@ -127,3 +127,50 @@ destacado en el bloque «Próximamente» de los humanoides; se carga desde youtu
 El cliente pasó además una página guardada de inluxrobotics.es («Physical AI») con otro vídeo alojado allí; no se ha
 usado porque no se puede descargar desde ese sitio. Si el cliente pasa el archivo del vídeo y confirma que es oficial
 de FAIRINO, se puede añadir al bloque como los otros.
+
+## W-Robot (w-robot.com)
+
+Pinzas eléctricas de ShenZhen W-Robot Industry Co., Ltd. (la «WR» de la tarifa: WR.EPG2, WR.EPG3, WR.EPG4). Lista de
+modelos: la tabla que pasó el cliente (7 de octubre de 2026). Datos: tabla general del «W-Robot Electric Gripper
+Selection Manual» (w-robot.com → Download → Product Catalog), que es coherente; en las fichas de su web hay cifras
+copiadas de otro modelo (p. ej. el EPG3-10-10 con 50 N). Fotos: render oficial de la ficha de su web (1000–2700 px
+sobre blanco, recortado con `tools/fotos/recorte-fondo-blanco.py`) o, si el modelo no tiene ficha en la web, la
+imagen del manual (ya recortada).
+
+| Producto (id)     | Foto                                   | Nota                                                     |
+| ----------------- | -------------------------------------- | -------------------------------------------------------- |
+| wr-epgs-6-10      | web, EPGS-6-10 (1.ª foto)              |                                                          |
+| wr-epgs-8-10      | manual, pág. 12                        |                                                          |
+| wr-epgs-8p-10     | web, EPGS-8P-10 (9.ª foto)             |                                                          |
+| wr-epgs-12p-15    | web, EPGS-12P-15 (1.ª foto)            |                                                          |
+| wr-epgs-16-15     | manual, pág. 14                        |                                                          |
+| wr-epg2-26-15     | web, EPG2-26-15 (8.ª foto)             |                                                          |
+| wr-epg2-26-50     | manual, pág. 25                        |                                                          |
+| wr-epg2-50-50     | manual, pág. 28                        |                                                          |
+| wr-epg2-50-150    | manual, pág. 31                        | Tarifa: WR.EPG2 (50-150), 690 €                          |
+| wr-epg3-10-10     | web, EPG3-10-10 (1.ª foto)             | La tabla del cliente dice EFG3-10-10; tarifa WR.EPG3, 620 € |
+| wr-epg4-10-50     | web, EPG4-10-50 (1.ª foto)             | Tarifa: WR.EPG4 (10-50), 660 €                           |
+| wr-epgc-50-150    | web, EPGC-50-150 (1.ª foto)            |                                                          |
+| wr-epg2-100-50    | web, EPG2-100-50 (1.ª foto)            |                                                          |
+| wr-erg-20-80      | web, ERG-20-80 (1.ª foto)              |                                                          |
+| wr-ergd-25-35     | web, ERGD-30-35 (foto de la serie)     | W-Robot solo publica el ERGD-30-35: confirmar el modelo  |
+| wr-epgl-160-1200  | web, EPGL-200-1200 (foto de la serie)  | W-Robot publica el EPGL-200 y el EPGL-220: confirmar     |
+| wr-epgl-220-1200  | web, EPGL-200-1200 (foto de la serie)  |                                                          |
+
+Originales (reducidos a 1600 px) en `assets-src/fabricantes/w-robot/`.
+
+## Fotos de FAIRINO España mejoradas con Higgsfield
+
+Fotos que pasó el cliente el 7 de octubre de 2026. En Higgsfield solo se escalaron a 2K (bytedance_image_upscale) y
+se les quitó el fondo (image_background_remover); el producto no se generó ni se retocó. Al track grande se le quitó
+el reflejo verde del suelo de los bordes. Coste: unos 20 créditos. Originales en `assets-src/fabricantes/fairino-espana/`.
+
+| Producto (id)     | Foto original                       | Trabajos de Higgsfield (escalado → sin fondo)                                 |
+| ----------------- | ----------------------------------- | ----------------------------------------------------------------------------- |
+| track-7-eje-25m   | track-7-eje-25m-original.jpg        | 3eba81e0-dc7c-4b42-8d00-9dd53bbbf67d → b0dd8507-36c8-4a06-8349-183839ad121d   |
+| track-7-eje-1m    | track-7-eje-1m-original.jpg         | d587524b-2d2c-4ef6-8f7f-7946d8876a91 → 8c96ab82-3971-48b6-a28b-cfdc9e9747b4   |
+| columna-base-h    | columna-base-h-original.jpg         | a2fef581-8df8-43b9-b98b-82221533fb13 → 0211b109-7ab9-4f38-ae09-27eac3799ef2   |
+| gzcx-6f-75mm      | sensor-g2cx-fairino-original.jpg    | b838c812-c95c-4ab9-920d-a1b379ce315d → b07c112d-5d4f-4f71-a7c5-134099eb572b   |
+| modulo-seguridad  | modulo-seguridad-original.jpg       | da044676-d7e6-43b1-9fe2-594218895601 → bd71d726-da4b-46a6-b572-0457a0dbdfe8   |
+
+Pendiente: la cámara 3D negra con dos proyectores (el cliente dice que todavía no se ponga).

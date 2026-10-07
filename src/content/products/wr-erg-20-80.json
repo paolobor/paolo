@@ -1,0 +1,109 @@
+{
+  "name": "Pinza eléctrica giratoria ERG-20-80",
+  "brand": "W-Robot",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 57,
+  "tagline": "Pinza que coge y gira: giro infinito con precisión de ±0,05° y 80 N de agarre.",
+  "description": "Pinza eléctrica giratoria de la serie ERG de W-Robot: coge la pieza y la gira sin límite de vueltas, con dos servos (uno para los dedos y otro para el giro). Útil para orientar piezas, enroscar o montar sin mover el cobot. 20 mm de carrera, 80 N de agarre, piezas de hasta 1 kg y precisión de giro de ±0,05°.",
+  "highlights": [
+    "Coge y gira: giro infinito",
+    "Precisión de giro de ±0,05°",
+    "80 N de agarre y piezas de hasta 1 kg"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/wr-erg-20-80/wr-erg-20-80-oficial.png",
+      "alt": "Pinza eléctrica W-Robot ERG-20-80, foto del fabricante"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Carrera",
+      "value": "20",
+      "unit": "mm"
+    },
+    {
+      "label": "Fuerza de agarre",
+      "value": "80",
+      "unit": "N"
+    },
+    {
+      "label": "Carga máxima recomendada",
+      "value": "1",
+      "unit": "kg"
+    },
+    {
+      "label": "Tiempo de apertura / cierre",
+      "value": "0,4",
+      "unit": "s"
+    },
+    {
+      "label": "Precisión de giro",
+      "value": "±0,05°"
+    },
+    {
+      "label": "Par de giro nominal / pico",
+      "value": "0,5 / 1,5",
+      "unit": "N·m"
+    },
+    {
+      "label": "Giro",
+      "value": "Infinito"
+    },
+    {
+      "label": "Medidas",
+      "value": "70 × 47 × 142,5",
+      "unit": "mm"
+    },
+    {
+      "label": "Peso",
+      "value": 1000,
+      "unit": "g"
+    },
+    {
+      "label": "Tensión de alimentación",
+      "value": "24 V DC ±10 %"
+    },
+    {
+      "label": "Comunicación",
+      "value": "Modbus RTU (RS485) y E/S"
+    },
+    {
+      "label": "Certificaciones",
+      "value": "CE, FCC, RoHS"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "pinzas-electricas"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha del ERG-20-80 (web de W-Robot)",
+      "type": "ficha",
+      "href": "https://www.w-robot.com/Products_details/ERG-20-80.html"
+    },
+    {
+      "label": "Manual de selección de pinzas W-Robot",
+      "type": "manual",
+      "href": "https://www.w-robot.com/Download/Product_Catalog.html"
+    }
+  ],
+  "store": {
+    "sku": "ERG-20-80",
+    "price": null,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "https://www.w-robot.com/Products_details/ERG-20-80.html",
+    "verified": true
+  },
+  "seo": {}
+}

@@ -1,0 +1,95 @@
+{
+  "name": "Pinza eléctrica paralela EPG2-50-150",
+  "brand": "W-Robot",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 50,
+  "tagline": "Pinza paralela de dos dedos con freno: 50 mm de carrera y 150 N para piezas de hasta 3 kg.",
+  "description": "Pinza eléctrica de dos dedos paralelos de la serie industrial EPG2 de W-Robot, la de más fuerza de la serie. Lleva freno que mantiene la pieza si se corta la corriente, controlador integrado, fuerza y carrera ajustables y comunicación Modbus RTU (RS485) o E/S. 50 mm de carrera, 150 N de agarre y piezas de hasta 3 kg.",
+  "highlights": [
+    "150 N de agarre y piezas de hasta 3 kg",
+    "Freno: mantiene la pieza sin corriente",
+    "Modbus RTU (RS485) o E/S, controlador integrado"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/wr-epg2-50-150/wr-epg2-50-150-oficial.png",
+      "alt": "Pinza eléctrica W-Robot EPG2-50-150, foto del fabricante"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Carrera",
+      "value": "50",
+      "unit": "mm"
+    },
+    {
+      "label": "Fuerza de agarre",
+      "value": "150",
+      "unit": "N"
+    },
+    {
+      "label": "Carga máxima recomendada",
+      "value": "3",
+      "unit": "kg"
+    },
+    {
+      "label": "Tiempo de apertura / cierre",
+      "value": "0,5",
+      "unit": "s"
+    },
+    {
+      "label": "Peso",
+      "value": 1000,
+      "unit": "g"
+    },
+    {
+      "label": "Freno (mantiene la pieza sin corriente)",
+      "value": "Sí"
+    },
+    {
+      "label": "Tensión de alimentación",
+      "value": "24 V DC ±10 %"
+    },
+    {
+      "label": "Comunicación",
+      "value": "Modbus RTU (RS485) y E/S"
+    },
+    {
+      "label": "Protección",
+      "value": "IP40"
+    },
+    {
+      "label": "Certificaciones",
+      "value": "CE, FCC, RoHS"
+    }
+  ],
+  "applications": [
+    "pick-and-place",
+    "manipulacion",
+    "carga-de-maquinas"
+  ],
+  "shopCategories": [
+    "pinzas-electricas"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Manual de selección de pinzas W-Robot",
+      "type": "manual",
+      "href": "https://www.w-robot.com/Download/Product_Catalog.html"
+    }
+  ],
+  "store": {
+    "sku": "EPG2-50-150",
+    "price": 690,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "W-Robot Electric Gripper Selection Manual (w-robot.com, descargas)",
+    "verified": true
+  },
+  "seo": {}
+}

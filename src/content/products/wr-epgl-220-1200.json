@@ -1,0 +1,88 @@
+{
+  "name": "Pinza eléctrica de carrera larga EPGL-220-1200",
+  "brand": "W-Robot",
+  "category": "accesorio",
+  "group": "garra",
+  "order": 52,
+  "tagline": "Pinza de gran carrera y mucha fuerza: 220 mm y hasta 1.200 N, con freno.",
+  "description": "Pinza eléctrica paralela de la serie EPGL de W-Robot, de carrera larga y mucha fuerza: 220 mm de carrera y hasta 1.200 N para coger cajas, piezas grandes o pesadas. Lleva el controlador integrado, freno que mantiene la pieza si se corta la corriente y fuerza y carrera ajustables.",
+  "highlights": [
+    "220 mm de carrera y hasta 1.200 N",
+    "Freno: mantiene la pieza sin corriente",
+    "Para cajas y piezas grandes o pesadas"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/wr-epgl-220-1200/wr-epgl-220-1200-oficial.png",
+      "alt": "Pinza eléctrica W-Robot EPGL-220-1200, foto del fabricante"
+    }
+  ],
+  "specs": [
+    {
+      "label": "Carrera",
+      "value": "220",
+      "unit": "mm"
+    },
+    {
+      "label": "Fuerza de agarre",
+      "value": "1.200",
+      "unit": "N"
+    },
+    {
+      "label": "Carga máxima recomendada",
+      "value": "12",
+      "unit": "kg"
+    },
+    {
+      "label": "Tiempo de apertura / cierre",
+      "value": "2,2",
+      "unit": "s"
+    },
+    {
+      "label": "Peso",
+      "value": 4500,
+      "unit": "g"
+    },
+    {
+      "label": "Freno (mantiene la pieza sin corriente)",
+      "value": "Sí"
+    },
+    {
+      "label": "Tensión de alimentación",
+      "value": "24 V DC ±10 %"
+    }
+  ],
+  "applications": [
+    "paletizado",
+    "carga-de-maquinas",
+    "manipulacion"
+  ],
+  "shopCategories": [
+    "pinzas-electricas"
+  ],
+  "compatibleWith": [],
+  "downloads": [
+    {
+      "label": "Ficha de la serie EPGL (web de W-Robot)",
+      "type": "ficha",
+      "href": "https://www.w-robot.com/Products_details/EPGL-200-1200_Integrated_Drive_-_Control_Heavy-Load_Gripper.html"
+    },
+    {
+      "label": "Manual de selección de pinzas W-Robot",
+      "type": "manual",
+      "href": "https://www.w-robot.com/Download/Product_Catalog.html"
+    }
+  ],
+  "store": {
+    "sku": "EPGL-220-1200",
+    "price": null,
+    "shipping": null,
+    "versions": [],
+    "shopifyVariantId": null
+  },
+  "source": {
+    "url": "W-Robot Electric Gripper Selection Manual (w-robot.com, descargas)",
+    "verified": true
+  },
+  "seo": {}
+}
