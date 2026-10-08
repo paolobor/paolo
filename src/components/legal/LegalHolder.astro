@@ -17,8 +17,14 @@ const a = site.address;
   <dd>{l.registry ?? <span class="todo">[DATO: Registro Mercantil, tomo, folio, hoja]</span>}</dd>
   <dt>Correo electrónico</dt>
   <dd><a href={`mailto:${l.email}`}>{l.email}</a></dd>
-  <dt>Teléfono</dt>
-  <dd>{l.phone}</dd>
+  {
+    l.phone && (
+      <>
+        <dt>Teléfono</dt>
+        <dd>{l.phone}</dd>
+      </>
+    )
+  }
   <dt>Instalaciones</dt>
   <dd>{site.legalName}, {a.street ?? <span class="todo">[DATO: calle y número]</span>}, {a.postalCode} {a.city} ({a.region})</dd>
 </dl>

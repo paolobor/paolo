@@ -21,7 +21,7 @@ const tarifa = JSON.parse(readFileSync(join(ROOT, 'src/data/tarifa.json'), 'utf8
 const periodo = tarifa.fecha.toLowerCase().replace(/ de /g, '-').replace(/\s+/g, '-');
 const OUT_PDF = join(ROOT, `public/descargas/catalogo-fairino-espana-${periodo}.pdf`);
 const OUT_COVER = join(ROOT, 'src/assets/images/descargas/catalogo-portada.jpg');
-const SITE = 'https://fairino.es/';
+const SITE = 'https://fairinocobot.com/';
 mkdirSync(CACHE, { recursive: true });
 mkdirSync(dirname(OUT_PDF), { recursive: true });
 mkdirSync(dirname(OUT_COVER), { recursive: true });
@@ -36,7 +36,6 @@ const productos = Object.fromEntries(
 const CONTACTO = {
   telefonos: [
     { tel: '+34627775294', txt: '+34 627 775 294', email: 'po@fairino.es' },
-    { tel: '+34630832586', txt: '+34 630 832 586', email: 'fd@fairino.es' },
   ],
   direccion: 'Avenida de la Estación, 12 · 45520 Villaluenga de la Sagra (Toledo)',
 };
@@ -292,7 +291,7 @@ const cabecera = (seccion) => `
 const pie = (n) => `
   <footer class="pg-foot">
     <span>FAIRINO España · Catálogo y ${esc(tarifa.titulo.toLowerCase())}</span>
-    <a href="${SITE}">fairino.es</a>
+    <a href="${SITE}">fairinocobot.com</a>
     <span class="pg-num">${String(n).padStart(2, '0')} <i>/ ${String(TOTAL).padStart(2, '0')}</i></span>
   </footer>`;
 const precio = (pvp, extra = '') =>
@@ -392,7 +391,7 @@ function pagina(pg, n) {
       <div><b>${conTarifa.length} cobots</b> desde ${eur(desde)}</div>
       <div><b>${secciones.slice(1, 5).reduce((s, x) => s + x.items.length, 0)}</b> accesorios y equipos</div>
       <div><b>Estaciones</b> de soldadura y paletizado</div>
-      <a href="${SITE}">fairino.es</a>
+      <a href="${SITE}">fairinocobot.com</a>
     </div>
   </section>`;
 
@@ -417,7 +416,7 @@ function pagina(pg, n) {
           <li><span class="price">4.988 €</span> Precio de venta al público (PVP) de la ${esc(tarifa.titulo.toLowerCase())}, en euros.</li>
           <li><span class="price price-q">Consultar</span> Disponible en la tienda; te damos precio y plazo.</li>
           <li><span class="tag">Nuevo</span> Novedad en la tarifa.</li>
-          <li><span class="link">Ficha ↗</span> Enlace a la ficha completa en fairino.es: especificaciones, descargas y vídeos.</li>
+          <li><span class="link">Ficha ↗</span> Enlace a la ficha completa en fairinocobot.com: especificaciones, descargas y vídeos.</li>
         </ul>
       </div>
       <div class="values">${VALORES.map((v) => `<a href="${SITE}${v.url}"><span>${icono(v.icono, 22)}</span><b>${esc(v.titulo)}</b><p>${esc(v.texto)}</p></a>`).join('')}</div>
@@ -548,7 +547,7 @@ function pagina(pg, n) {
       <div class="back-grid">
         ${CONTACTO.telefonos.map((c) => `<div><span class="k">Teléfono</span><a href="tel:${c.tel}">${c.txt}</a><a href="mailto:${c.email}">${c.email}</a></div>`).join('')}
         <div><span class="k">Instalaciones</span><p>${esc(CONTACTO.direccion)}</p></div>
-        <div><span class="k">Web y tienda</span><a href="${SITE}">fairino.es</a><a href="${SITE}reservar-cita/">Reservar cita ↗</a></div>
+        <div><span class="k">Web y tienda</span><a href="${SITE}">fairinocobot.com</a><a href="${SITE}reservar-cita/">Reservar cita ↗</a></div>
       </div>
     </div>
     <p class="back-legal">Precios de venta al público de la ${esc(tarifa.titulo.toLowerCase())} de FAIRINO Cobot S.L., en euros, sujetos a cambios sin previo aviso. Imágenes orientativas. Especificaciones según la documentación de FAIRINO.</p>

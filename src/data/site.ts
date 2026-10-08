@@ -31,14 +31,13 @@ export const site = {
     taxId: 'B13956479',
     address: 'Calle Málaga, 3, nave 13 (Pol. Ind. La Carrehuela), 28343 Valdemoro (Madrid)',
     email: 'info@fdi-qi.com',
-    phone: '630 832 586',
+    phone: null as string | null, // el 630 832 586 se quitó de la web a petición de FAIRINO España
     registry: null as string | null, // [DATO: datos del Registro Mercantil]
     confirmed: false,
   },
 
   contacts: [
     { email: 'po@fairino.es', phone: '+34 627 775 294', tel: '+34627775294' },
-    { email: 'fd@fairino.es', phone: '+34 630 832 586', tel: '+34630832586' },
   ],
 
   // Número de WhatsApp (formato internacional sin "+" ni espacios).
