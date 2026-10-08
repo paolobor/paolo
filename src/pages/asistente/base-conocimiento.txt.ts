@@ -49,7 +49,7 @@ export const GET: APIRoute = async () => {
   advice.steps.forEach((s, i) => out.push(`${i + 1}. ${s.title}: ${s.text}`));
 
   h2('Garantía');
-  out.push(`Los cobots FAIRINO comprados en España, Portugal o Italia tienen 1 año de garantía. Se activa registrando la compra en ${base}/garantia/`);
+  out.push(`Los cobots FAIRINO comprados en España tienen 1 año de garantía. Se activa registrando la compra en ${base}/garantia/`);
 
   h2('Condiciones de la tarifa');
   tarifa.notas.cobots.forEach((n) => out.push(`- ${n}`));

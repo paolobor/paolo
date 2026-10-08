@@ -11,13 +11,13 @@ const cobots = (await getProducts('cobot')).filter((c) => !c.data.upcoming);
 
 <BaseLayout
   title="Validar garantía"
-  description="Registra tu cobot FAIRINO comprado en España, Portugal o Italia para activar su garantía de 1 año."
+  description="Registra tu cobot FAIRINO comprado en España para activar su garantía de 1 año."
 >
   <PageHero
     crumbs={[{ label: 'Validar garantía' }]}
     eyebrow="Garantía"
     title="Activa la garantía de tu cobot"
-    lead="Si has comprado un cobot FAIRINO en España, Portugal o Italia, registra aquí la compra para activar su garantía de 1 año."
+    lead="Si has comprado un cobot FAIRINO en España, registra aquí la compra para activar su garantía de 1 año."
   />
 
   <section class="section">
@@ -70,7 +70,7 @@ const cobots = (await getProducts('cobot')).filter((c) => !c.data.upcoming);
             <li class="flex gap-2"><Icon name="check" size={16} class="mt-0.5 shrink-0 text-brand" />Fecha de compra.</li>
             <li class="flex gap-2"><Icon name="check" size={16} class="mt-0.5 shrink-0 text-brand" />Empresa o colaborador que te lo vendió.</li>
           </ul>
-          <p class="text-sm text-muted">Válido para cobots comprados en España, Portugal o Italia.</p>
+          <p class="text-sm text-muted">Válido para cobots comprados en España.</p>
           <p class="text-sm text-muted">Condiciones: <span class="todo">[DATO: qué cubre la garantía y exclusiones]</span></p>
         </div>
         <div class="card grid gap-3 p-6">
