@@ -75,15 +75,16 @@ Para verla otra vez sin el parámetro, cierra la pestaña: sessionStorage se bor
 El vídeo es un montaje del vídeo oficial del FAIRINO FR3:
 - 0,16 s de negro;
 - el brazo saliendo de la sombra;
-- el plano del anillo rojo;
-- el anillo naranja sobre fondo blanco (desde 2,1 s; ya no se ve: el zoom empieza a 1,2 s, sobre el anillo rojo
-  de la escena oscura; posición en `RING` de `js/intro.js`).
+- el plano del anillo rojo (el zoom empieza a 1,2 s; posición en `RING` de `js/intro.js`);
+- un poco del plano oscuro siguiente, hasta 2,08 s (52 fotogramas).
+
+Solo escenas oscuras: el plano blanco del vídeo original está cortado de los archivos (el cliente no lo quiere).
 
 Se regenera con:
 
 ```bash
 V=original-fr3.mp4
-FC="[0:v]trim=start=1.44:end=2.12,setpts=PTS-STARTPTS[a];[0:v]trim=start=0.12:end=1.40,setpts=PTS-STARTPTS[b];[0:v]trim=start=3.64:end=3.97,setpts=PTS-STARTPTS[c];[a][b][c]concat=n=3:v=1:a=0,fps=25,tpad=start_duration=0.16:color=black:stop_mode=clone:stop_duration=1.6,format=yuv420p"
+FC="[0:v]trim=start=1.44:end=2.12,setpts=PTS-STARTPTS[a];[0:v]trim=start=0.12:end=1.40,setpts=PTS-STARTPTS[b];[a][b]concat=n=2:v=1:a=0,fps=25,tpad=start_duration=0.16:color=black,trim=end_frame=52,format=yuv420p"
 ffmpeg -i "$V" -filter_complex "$FC,scale=-2:1080:flags=lanczos[v]" -map "[v]" -an -c:v libx264 -preset slow -crf 23 -profile:v high -g 25 -movflags +faststart assets/fairino-intro.mp4
 ffmpeg -i "$V" -filter_complex "$FC,scale=-2:1080:flags=lanczos[v]" -map "[v]" -an -c:v libvpx-vp9 -crf 33 -b:v 0 -row-mt 1 -g 25 assets/fairino-intro.webm
 # 720p: scale=-2:720 y -crf 24 (MP4) / 35 (WebM), con el sufijo -720

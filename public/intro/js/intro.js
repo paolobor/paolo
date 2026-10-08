@@ -63,7 +63,8 @@
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
   var small = mobile || Math.max(window.innerWidth, window.innerHeight) * dpr <= 1400;
   var webm = !isSafari && video.canPlayType('video/webm; codecs="vp9"') === 'probably';
-  var src = ASSETS + 'fairino-intro' + (small ? '-720' : '') + (webm ? '.webm' : '.mp4');
+  // ?v=: súbelo al cambiar los vídeos, para que el navegador no use el guardado.
+  var src = ASSETS + 'fairino-intro' + (small ? '-720' : '') + (webm ? '.webm' : '.mp4') + '?v=2';
   var setSrc = function (u) {
     video.src = u;
     video.load();
