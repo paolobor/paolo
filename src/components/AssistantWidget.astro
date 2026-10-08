@@ -105,5 +105,10 @@ const textos = JSON.stringify({
     --el-accent-border: #ff7a1a;
     --el-accent-subtle: #ffa040;
     --el-accent-primary: #070504;
+    /* Letra de la web (IBM Plex Sans, ya cargada) en vez de la del sistema (system-ui/Segoe UI), que en algunos
+       Chrome de Windows sale como símbolos. */
+    --font-sans: 'IBM Plex Sans', 'Segoe UI', Roboto, Arial, sans-serif;
+    --font-mono: 'IBM Plex Mono', ui-monospace, Consolas, monospace;
+    font-family: var(--font-sans);
   }
 </style>
