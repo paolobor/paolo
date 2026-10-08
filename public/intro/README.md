@@ -7,16 +7,17 @@ Entrada animada con el logotipo oficial de FAIRINO. Funciona de dos formas:
 - **Suelta** (esta carpeta tal cual, `index.html`): página propia que al terminar salta a https://fairino.es/,
   para GitHub Pages, WordPress o cualquier hosting estático. HTML, CSS y JavaScript sin compilar.
 
-## Recorrido (unos 4 s desde el clic)
+## Recorrido (unos 5,5 s desde el clic)
 
 1. **El logotipo de FAIRINO.** Las letras oficiales (SVG de fairino.com) se enfocan desde un desenfoque
    mientras un destello recorre las letras; después aparece «SPAIN» en naranja. Sin chispas ni partículas.
 2. **Clic en cualquier parte** (o Intro / espacio).
    - Otro destello recorre el logotipo, que se encoge un instante antes de lanzarse.
    - El logotipo se acerca a cámara y la cámara cruza por el hueco de la «O». El vídeo solo se ve a través de ese hueco, como un portal.
-   - Al otro lado, el cobot sale de la sombra.
-   - Zoom al anillo rojo de una articulación, todavía en la escena oscura (el vídeo se para a 1,2 s): la imagen se
-     oscurece y un aro de luz naranja enciende el anillo al cruzarlo, como un portal.
+   - Al otro lado, el cobot sale de la sombra (el vídeo va al 85 % de su velocidad, `RATE` en `js/intro.js`).
+   - Plano del anillo rojo de una articulación, todavía en la escena oscura (el vídeo se para a 1,2 s): la cámara se
+     acerca despacio durante 1 s (`PUSH`) y después entra por el anillo mientras la imagen se oscurece. Sin aro de
+     luz ni «Haz clic para entrar» encima: el cliente pidió quitarlos de esta escena.
 3. **Fundido a negro** con un resplandor naranja que sale del anillo, y entrada en la web (que también es oscura).
    Nada de blanco: el cliente pidió que la entrada siga en la escena oscura.
 

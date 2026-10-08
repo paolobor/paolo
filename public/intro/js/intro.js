@@ -1,9 +1,10 @@
 /*
  * Intro de FAIRINO Spain.
  *   Escena 1: el logotipo de FAIRINO se enfoca con un destello. Clic (o Intro / espacio).
- *   Escena 2: un destello recorre el logotipo, la cámara atraviesa la «O» y detrás arranca el vídeo;
- *             el cobot sale de la sombra y la cámara entra por el anillo rojo de una articulación, que se enciende
- *             como un portal. Todo en la escena oscura del vídeo: el plano blanco que viene después no se ve.
+ *   Escena 2: un destello recorre el logotipo, la cámara atraviesa la «O» y detrás arranca el vídeo, algo más
+ *             lento que el original; el cobot sale de la sombra, la cámara se queda un momento en el plano del
+ *             anillo rojo de una articulación, se acerca despacio y entra por él. Todo en la escena oscura del vídeo:
+ *             el plano blanco que viene después no se ve.
  *   Escena 3: fundido a negro con un resplandor naranja y
  *             - página suelta (intro/index.html): salto a la web (data-target en <html>);
  *             - dentro de la web (inicio y tienda, html.fi-play): la capa se funde y deja ver la página.
@@ -34,6 +35,10 @@
   // respecto al ancho) y momento del zoom: a 1,2 s, todavía en la escena oscura (a los 2,1 s el vídeo corta a un
   // plano blanco, que así no llega a verse).
   var RING = { x: 0.588, y: 0.285, cap: 0.067, at: 1.2 };
+  // Velocidad del vídeo (más lento que el original, para que la escena del cobot dure más) y acercamiento lento al
+  // anillo antes de entrar por él.
+  var RATE = 0.85;
+  var PUSH = { scale: 1.08, duration: 1 };
 
   var $ = function (s) {
     return intro.querySelector(s);
@@ -50,6 +55,7 @@
   var whiteout = $('[data-whiteout]');
   var PATH = document.getElementById('fi-wm');
   var state = 'idle';
+  var revealTl = null;
   if (coarse) hint.querySelector('span').textContent = 'Toca para entrar';
 
   // ---------------------------------------------------------------- vídeo (se descarga entero en la escena 1)
@@ -169,7 +175,7 @@
       return;
     }
     var sh = { p: -0.4 };
-    var tl = gsap.timeline({ delay: 0.3 });
+    var tl = (revealTl = gsap.timeline({ delay: 0.3 }));
     tl.fromTo(word, { opacity: 0 }, { opacity: 1, duration: 1.5, ease: 'power2.out' }, 0)
       .fromTo(word, { filter: 'blur(16px)', scale: 1.035 }, { filter: 'blur(0px)', scale: 1, duration: 2.6, ease: 'expo.out', clearProps: 'filter' }, 0)
       .to(
@@ -195,6 +201,9 @@
     state = 'enter';
     remember();
     intro.classList.add('is-entering');
+    // Si se entra antes de que acabe la escena 1, su animación no debe volver a encender «Haz clic para entrar».
+    if (revealTl) revealTl.kill();
+    gsap.killTweensOf([hint, skip, spain]);
 
     if (reduce) {
       gsap
@@ -269,6 +278,7 @@
       done = true;
       fn();
     };
+    video.playbackRate = RATE;
     var p = video.play();
     if (p && p.catch) {
       p.catch(function () {
@@ -276,7 +286,7 @@
       });
     }
     var tooLong = function () {
-      return performance.now() - started > (video.currentTime > 0 ? 4500 : 2600);
+      return performance.now() - started > (video.currentTime > 0 ? 5000 : 2600);
     };
     var check = function () {
       if (done) return;
@@ -314,22 +324,15 @@
     // El resplandor del fundido sale del anillo.
     whiteout.style.setProperty('--fi-rx', ((rx / W) * 100).toFixed(1) + '%');
     whiteout.style.setProperty('--fi-ry', ((ry / H) * 100).toFixed(1) + '%');
-    // El anillo se enciende: un aro de luz naranja encima del anillo real que crece con él.
-    var iris = document.createElement('span');
-    iris.className = 'fi-iris';
-    iris.setAttribute('aria-hidden', 'true');
-    var d = cap * 2.35;
-    gsap.set(iris, { width: d, height: d * 1.18, left: rx - d / 2, top: ry - (d * 1.18) / 2, opacity: 0, scale: 1 });
-    intro.appendChild(iris);
+    // Primero se acerca despacio al anillo y después entra por él.
+    var t = PUSH.duration;
     var tl = gsap.timeline();
-    tl.to(film, { scale: S, duration: 1.05, ease: 'power3.in' }, 0)
+    tl.to(film, { scale: PUSH.scale, duration: t, ease: 'sine.inOut' }, 0)
+      .to(film, { scale: S, duration: 1.25, ease: 'power3.in' }, t)
       // Al acercarse, la imagen se oscurece (la tapa del anillo es clara: así no se llena la pantalla de gris).
-      .fromTo(video, { filter: 'brightness(1) saturate(1)' }, { filter: 'brightness(0.08) saturate(1.4)', duration: 0.7, ease: 'power1.in' }, 0.1)
-      .to(iris, { opacity: 1, duration: 0.25, ease: 'power2.out' }, 0.05)
-      .to(iris, { scale: S * 0.92, duration: 1.05, ease: 'power3.in' }, 0)
-      .to(iris, { opacity: 0, duration: 0.3, ease: 'power1.in' }, 0.8)
-      .to(whiteout, { opacity: 1, duration: 0.4, ease: 'power2.in' }, 0.72)
-      .call(go, null, 1.15);
+      .fromTo(video, { filter: 'brightness(1) saturate(1)' }, { filter: 'brightness(0.08) saturate(1.4)', duration: 0.85, ease: 'power1.in' }, t + 0.15)
+      .to(whiteout, { opacity: 1, duration: 0.45, ease: 'power2.in' }, t + 0.85)
+      .call(go, null, t + 1.35);
   }
 
   // ---------------------------------------------------------------- escena 3

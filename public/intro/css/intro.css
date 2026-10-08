@@ -155,6 +155,10 @@
 .fi-intro:has(.fi-enter:focus-visible) .fi-hint span {
   color: #fff;
 }
+/* «Haz clic para entrar» no vuelve a salir una vez dentro del vídeo. */
+.fi-intro.is-video .fi-hint {
+  opacity: 0 !important;
+}
 .fi-intro.is-entering .fi-enter {
   cursor: default;
   pointer-events: none;
@@ -234,19 +238,6 @@
   border-radius: 999px;
 }
 
-/* Aro de luz que enciende el anillo al cruzarlo */
-.fi-iris {
-  position: absolute;
-  z-index: 6;
-  border-radius: 50%;
-  pointer-events: none;
-  border: 2px solid rgba(255, 150, 80, 0.95);
-  box-shadow:
-    0 0 18px 4px rgba(255, 106, 19, 0.75),
-    0 0 60px 14px rgba(255, 90, 20, 0.35),
-    inset 0 0 26px 6px rgba(255, 106, 19, 0.55);
-  will-change: transform, opacity;
-}
 .fi-whiteout.is-fallback {
   pointer-events: auto;
 }
