@@ -2,7 +2,7 @@
 //   node tools/triptico/generar-art7-r7.mjs
 // Misma estética que la web y el catálogo (tools/catalogo/generar.mjs). Textos y cifras: el documento del cliente
 // «ART7. recopilatorio de inform para catalogo comercial.docx» (traducción del artículo de Gaogong Robotics del
-// 14/08/2026, preparada por Pedro Oreja el 02/10/2026), el teaser oficial del ART7 R7 y el anuncio oficial de los
+// 14/08/2026, preparada por el cliente el 02/10/2026), el teaser oficial del ART7 R7 y el anuncio oficial de los
 // humanoides FAIRINO. No se añaden cifras que no salgan ahí; el precio en yuanes del artículo no se usa (es del
 // mercado chino): «Precio y disponibilidad: consúltanos». Fotos: assets-src/fabricantes/fairino/art7-r7/ (ver LEEME).
 // Deja:

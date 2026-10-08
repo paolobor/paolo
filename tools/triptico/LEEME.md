@@ -9,7 +9,7 @@ web y lo guarda en `public/descargas/fairino-art7-r7-triptico.pdf`: A4 apaisado,
   Para imprenta, pide que ajusten la solapa a 97 mm si la quieren más estrecha.
 
 **Textos y cifras:** del documento del cliente «ART7. recopilatorio de inform para catalogo comercial.docx»
-(traducción de Pedro Oreja, 02/10/2026, del artículo de Gaogong Robotics del 14/08/2026), del teaser oficial del
+(traducción del cliente, 02/10/2026, del artículo de Gaogong Robotics del 14/08/2026), del teaser oficial del
 ART7 R7 y del anuncio oficial de los humanoides FAIRINO. La repetibilidad de fuerza y par (≤ 0,15 N · ≤ 0,05 N·m) es la
 del documento y del anuncio oficial; el teaser en español dice «≤ 0,1 N·m» como precisión de control de fuerza.
 El precio en yuanes del artículo no se usa (es del mercado chino): «Precio y disponibilidad: consúltanos».
