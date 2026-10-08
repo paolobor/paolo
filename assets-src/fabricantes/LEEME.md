@@ -236,3 +236,12 @@ image_background_remover lo quitó; las escenas con rayos de luz cambian solo el
 Coste de esta tanda (SmartShift, base y pinzas): unos 20 créditos.
 
 Pendiente: la cámara 3D negra con dos proyectores (el cliente dice que todavía no se ponga).
+
+## Mesa de trabajo modular FAIRINO (8/10/2026)
+
+Renders de FAIRINO España con una figura humana (`fairino-espana/mesa-trabajo-*-original.png`). Higgsfield:
+- figura quitada (gpt_image_2_5): iso A `13bf3c7d-fb97-43d1-aa87-fcd014498dc2`, lateral `e0b9cd16-1cfc-42a0-bdea-52e713130bd8`,
+  iso B `0f18ce8c-6aaf-44bd-bc9e-501e360f4ade`;
+- recorte de la iso B (image_background_remover) `5af556a8-31ad-4fc7-8bf7-17e7595b8166` → `mesa-trabajo-modular-oficial.png`;
+- escenas ilustrativas: rayos `3f0de93b-aca6-4a5a-a372-73169b2a7b0c`, foco `cda5d976-739a-4cff-954d-4a74782cfd49`,
+  fábrica `05c8811b-b7d1-4c57-8782-d9f6b804cb42`.

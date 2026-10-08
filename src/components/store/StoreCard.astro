@@ -53,15 +53,16 @@ const mediaAttrs = selectable
       )
     }
   </Media>
-  <div class="flex flex-1 flex-col gap-2 p-5">
+  <div class="@container flex flex-1 flex-col gap-2 p-4 sm:p-5">
     <p class="font-mono text-[0.62rem] uppercase tracking-[0.16em] text-mist">{d.brand}</p>
     <h3 class="font-display text-lg font-bold leading-tight" style="font-stretch:112%">
       <a href={url(`productos/${product.id}/`)} class="hover:text-signal">{d.name}</a>
     </h3>
     <p class="text-sm text-muted">{d.tagline}</p>
-    <div class="mt-auto flex items-center justify-between gap-3 pt-3">
+    <!-- En tarjetas estrechas (la tienda en el móvil va a dos columnas), precio arriba y botón debajo a todo lo ancho. -->
+    <div class="mt-auto flex flex-col gap-2 pt-3 @min-[15rem]:flex-row @min-[15rem]:items-center @min-[15rem]:justify-between @min-[15rem]:gap-3">
       <span class="font-mono text-lg">{d.store.price != null ? formatEUR(d.store.price) : 'Consultar'}</span>
-      <button type="button" class="btn btn-primary btn-sm" data-add-cart={product.id} data-name={d.name} aria-label={`Añadir ${d.name} al carrito`}>
+      <button type="button" class="btn btn-primary btn-sm w-full @min-[15rem]:w-auto" data-add-cart={product.id} data-name={d.name} aria-label={`Añadir ${d.name} al carrito`}>
         <Icon name="plus" size={16} />
         Añadir
       </button>

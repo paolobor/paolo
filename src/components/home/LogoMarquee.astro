@@ -366,6 +366,14 @@ const pins = items.map((p, i) => {
     color: var(--color-text);
     font-stretch: 112%;
   }
+  /* En el móvil las tarjetas del mapa son estrechas: el nombre pasa a dos líneas en vez de cortarse con «…». */
+  @media (max-width: 639px) {
+    .net-card-name {
+      white-space: normal;
+      text-overflow: clip;
+      line-height: 1.15;
+    }
+  }
   .net-card-place {
     font-family: var(--font-mono);
     font-size: 0.5rem;

@@ -1,0 +1,54 @@
+{
+  "name": "Mesa de trabajo modular FAIRINO",
+  "category": "accesorio",
+  "group": "montaje",
+  "order": 19,
+  "tagline": "Mesa de trabajo de perfil de aluminio con ruedas y el cobot montado en el centro: pídela ya montada o personalízala a tu gusto.",
+  "description": "Mesa de trabajo modular de perfil de aluminio ranurado, pensada para montar el cobot FAIRINO en un travesaño central y trabajar a los dos lados de la mesa. Pídela ya montada, lista para poner el cobot, o personalízala a tu gusto: medidas, travesaños y accesorios según tu aplicación. Los perfiles ranurados permiten fijar utillaje, sensores o soportes donde haga falta, y las cuatro ruedas giratorias la llevan de un puesto a otro.",
+  "highlights": [
+    "Modular: pídela ya montada o personalízala a tu gusto",
+    "Cobot en el travesaño central, para trabajar a los dos lados de la mesa",
+    "Estructura de perfil de aluminio ranurado con cuatro ruedas giratorias"
+  ],
+  "images": [
+    {
+      "src": "../../assets/products/mesa-trabajo-modular/mesa-trabajo-modular-oficial.png",
+      "alt": "Mesa de trabajo modular FAIRINO de perfil de aluminio con ruedas y un cobot montado en el travesaño central"
+    },
+    {
+      "src": "../../assets/products/mesa-trabajo-modular/fairino-mesa-trabajo-escena-rayos.webp",
+      "alt": "Mesa de trabajo modular con cobot en una sala oscura con rayos de luz y reflejos naranjas",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/mesa-trabajo-modular/fairino-mesa-trabajo-escena-foco.webp",
+      "alt": "Mesa de trabajo modular con cobot vista de lado bajo un foco cenital",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/mesa-trabajo-modular/fairino-mesa-trabajo-escena-fabrica.webp",
+      "alt": "Mesa de trabajo modular con cobot en una fábrica luminosa con grandes ventanales",
+      "illustrative": true
+    }
+  ],
+  "specs": [
+    { "label": "Formato", "value": "Modular: ya montada o personalizada a tu gusto" },
+    { "label": "Estructura", "value": "Perfil de aluminio ranurado" },
+    { "label": "Montaje del cobot", "value": "Travesaño central" },
+    { "label": "Ruedas", "value": "4 giratorias" },
+    { "label": "Dimensiones", "value": null, "unit": "mm" },
+    { "label": "Carga admisible", "value": null },
+    { "label": "Cobots compatibles", "value": null }
+  ],
+  "applications": ["pick-and-place", "manipulacion", "carga-de-maquinas"],
+  "shopCategories": ["otras-soluciones", "modular"],
+  "compatibleWith": [],
+  "downloads": [{ "label": "Ficha técnica", "type": "ficha", "href": null }],
+  "store": { "sku": null, "price": null, "shipping": 0, "versions": [], "shopifyVariantId": null },
+  "source": {
+    "url": "Renders de FAIRINO España; figura humana quitada, escenas con Higgsfield (gpt_image_2_5) y recorte con image_background_remover",
+    "verified": false
+  },
+  "seo": {},
+  "brand": "FAIRINO"
+}
