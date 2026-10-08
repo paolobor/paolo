@@ -9,6 +9,7 @@ import { shopCategories } from '../../data/shop';
 import tarifa from '../../data/tarifa.json';
 import catalogo from '../../data/catalogo.json';
 import { downloadGroups } from '../../data/downloads';
+import { kits } from '../../data/kits';
 
 // Base de conocimiento para el asistente virtual (ElevenLabs Agents → Knowledge Base, con «Use RAG»).
 // Sale de los mismos datos que la web y la tienda, así que se mantiene al día sola: se descarga de
@@ -124,6 +125,17 @@ export const GET: APIRoute = async () => {
     ap.benefits.forEach((b) => out.push(`- ${b.title}: ${b.text}`));
     if (ap.claims?.length) out.push(`Datos publicados por FAIRINO: ${ap.claims.join('; ')}.`);
     out.push(`Más información: ${base}/aplicaciones/${ap.slug}/`);
+  });
+
+  h('Soluciones de aplicación FAIRINO');
+  out.push(`Equipos completos de FAIRINO, listos para trabajar. Precio: se pide propuesta. Todas: ${base}/aplicaciones/soluciones/`);
+  kits.forEach((k) => {
+    h2(k.name);
+    out.push(`${k.intro} Dónde se usa: ${k.scenarios.join('; ')}.`);
+    out.push(`Ventajas de ${k.name}: ${k.benefits.map((b) => `${b.title} (${b.text.replace(/\.$/, '')})`).join('; ')}.`);
+    out.push(`Equipo de ${k.name}: ${k.parts.join(', ')}.`);
+    out.push(k.model ? `Modelo de ${k.name}: ${k.model}.` : `Cobots compatibles con ${k.name}: ${k.cobots.map((id) => id.toUpperCase()).join(', ')}.${k.cobotsNote ? ` ${k.cobotsNote}` : ''}`);
+    out.push(`Ficha de ${k.name}: ${base}/aplicaciones/soluciones/${k.slug}/`);
   });
 
   h('Descargas y documentación técnica');

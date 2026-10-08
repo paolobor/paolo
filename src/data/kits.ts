@@ -23,6 +23,8 @@ export interface Kit {
   model?: string;
   image: string;
   gallery: string[];
+  // PVP en euros cuando haya tarifa (sale en la web y en el catálogo); sin él, «Consultar».
+  pvp?: number | null;
 }
 
 const scene = (slug: string) => `aplicaciones/${slug}/fairino-${slug}-escena-principal.webp`;

@@ -15,6 +15,8 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import sharp from 'sharp';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..');
+// Soluciones de aplicación FAIRINO (las mismas de la web): Node importa el .ts directamente.
+const { kits } = await import(pathToFileURL(join(ROOT, 'src/data/kits.ts')).href);
 const CACHE = join(ROOT, 'tools/catalogo/.cache');
 const tarifa = JSON.parse(readFileSync(join(ROOT, 'src/data/tarifa.json'), 'utf8'));
 // «Octubre de 2026» → catalogo-fairino-espana-octubre-2026.pdf
@@ -235,7 +237,7 @@ const montaje = [
 const otros = resto(() => true, 'box');
 
 // ------------------------------------------------------------------ maquetación
-const A4 = { cobotsPorPagina: 3, accPrimera: 12, accResto: 12 };
+const A4 = { cobotsPorPagina: 3, accPrimera: 12, accResto: 12, kitsPrimera: 6, kitsResto: 9 };
 const trozos = (arr, primera, resto) => {
   const out = [arr.slice(0, primera)];
   for (let i = primera; i < arr.length; i += resto) out.push(arr.slice(i, i + resto));
@@ -248,7 +250,8 @@ const secciones = [
   { id: 'garras', n: '03', titulo: 'Garras y pinzas', intro: 'Pinzas eléctricas, de vacío y flexibles para coger cualquier pieza: de la FAIRINO EPG40-50 a toda la gama eléctrica de W-Robot, de dos, tres y cuatro dedos y giratorias.', items: garras },
   { id: 'sensores', n: '04', titulo: 'Sensores, visión y lijado', intro: 'Fuerza y par de seis ejes, cámaras 2D y 3D y el equipo de lijado para acabados con fuerza constante.', items: sensores },
   { id: 'montaje', n: '05', titulo: 'Montaje, séptimo eje y transportadores', intro: 'Tracks lineales, columnas, mesas modulares y soportes para llevar el cobot donde haga falta, y transportadores de charnela que le llevan y recogen el producto.', items: [...montaje, ...otros] },
-  { id: 'soluciones', n: '06', titulo: 'Soluciones llave en mano', intro: 'Estaciones de soldadura y paletizado listas para producir, y logística autónoma.' },
+  { id: 'aplicacion', n: '06', titulo: 'Soluciones de aplicación FAIRINO', intro: 'Equipos completos listos para trabajar: soldadura en carro, raíl y pórtico, carga de máquinas, pintura, lijado, paletizado con visión 3D, doble brazo, inspección móvil y humanoide.' },
+  { id: 'soluciones', n: '07', titulo: 'Soluciones llave en mano', intro: 'Estaciones de soldadura y paletizado listas para producir, y logística autónoma.' },
 ];
 
 // Páginas: [{tipo, ...}] y número de página de cada sección para el índice.
@@ -259,6 +262,8 @@ for (const s of secciones) {
   paginaDe[s.id] = paginas.length + 1;
   if (s.id === 'cobots') {
     trozos(cobots, 2, A4.cobotsPorPagina).forEach((items, i) => paginas.push({ tipo: 'cobots', s, items, primera: i === 0 }));
+  } else if (s.id === 'aplicacion') {
+    trozos(kits, A4.kitsPrimera, A4.kitsResto).forEach((items, i) => paginas.push({ tipo: 'kits', s, items, primera: i === 0 }));
   } else if (s.id === 'soluciones') {
     paginas.push({ tipo: 'soluciones', s, primera: true });
     paginas.push({ tipo: 'logistica', s });
@@ -280,6 +285,7 @@ async function prepararFotos() {
   rutas.soldadura = await foto(join(ROOT, 'src/assets/products/fr5-negro/fairino-fr5-negro-escena-estacion-soldadura.webp'), 1200, 640);
   rutas.paletizado = await foto(join(ROOT, 'src/assets/products/fr20/fairino-fr20-escena-paletizado.webp'), 1200, 640);
   rutas.art7 = await tarjeta(imgPath(productos['art7-r7']), 1100, 700, 0.06);
+  for (const k of kits) rutas[`kit:${k.slug}`] = await foto(join(ROOT, 'src/assets/images', k.image), 600, 400);
 }
 
 // ------------------------------------------------------------------ piezas HTML
@@ -363,6 +369,21 @@ const tarjetaAcc = (it) => `
     </div>
   </article>`;
 
+const tarjetaKit = (k) => {
+  const modelos = k.model ? [k.model] : k.cobots.map((id) => productos[id]?.name ?? id.toUpperCase());
+  return `
+  <article class="kit">
+    <div class="kit-img"><img src="${img(rutas[`kit:${k.slug}`])}" alt=""><span>Imagen ilustrativa</span></div>
+    <div class="kit-body">
+      <p class="acc-brand">${esc(APLICACIONES[k.parent] ?? 'Solución FAIRINO')}</p>
+      <h3>${esc(k.name)}</h3>
+      <p class="kit-txt">${esc(k.short)}</p>
+      <p class="kit-models">${modelos.map((m) => `<i>${esc(m)}</i>`).join('')}</p>
+      <div class="acc-foot">${precio(k.pvp ?? null)}<a class="link" href="${SITE}aplicaciones/soluciones/${k.slug}/">Ficha ↗</a></div>
+    </div>
+  </article>`;
+};
+
 const asesoria = (titulo, texto) => `
   <a class="help" href="${SITE}reservar-cita/">
     <span class="help-ico">${icono('calendar-check', 30)}</span>
@@ -385,7 +406,7 @@ function pagina(pg, n) {
     <div class="cover-title">
       <p class="eyebrow"><span class="dot"></span>${esc(tarifa.fecha)}</p>
       <h1>Catálogo<br><span>y tarifa</span></h1>
-      <p class="cover-lead">Cobots, controladoras, garras, sensores, accesorios y soluciones llave en mano, con sus precios.</p>
+      <p class="cover-lead">Cobots, controladoras, garras, sensores, accesorios, soluciones de aplicación y llave en mano, con sus precios.</p>
     </div>
     <div class="cover-foot">
       <div><b>${conTarifa.length} cobots</b> desde ${eur(desde)}</div>
@@ -475,6 +496,25 @@ function pagina(pg, n) {
     ${pg.primera ? abrirSeccion(pg.s) : `<p class="cont">${esc(pg.s.titulo)} <span>· continuación</span></p>`}
     <div class="accs">${pg.items.map(tarjetaAcc).join('')}</div>
     ${pg.items.length <= 6 ? asesoria('¿Buscas algo que no está aquí?', 'Soportes, utillajes y garras a medida: te proponemos la solución y la integramos en tu célula.') : ''}
+    ${pie(n)}
+  </section>`;
+
+    case 'kits':
+      return `
+  <section class="page"${pg.primera ? ` id="${pg.s.id}"` : ''}>
+    ${cabecera(pg.s.titulo)}
+    ${pg.primera ? abrirSeccion(pg.s) : `<p class="cont">${esc(pg.s.titulo)} <span>· continuación</span></p>`}
+    <div class="kits">${pg.items.map(tarjetaKit).join('')}${
+      !pg.primera && pg.items.length % 3
+        ? `<a class="kit-help" style="grid-column: span ${3 - (pg.items.length % 3)}" href="${SITE}reservar-cita/">
+        <span class="help-ico">${icono('calendar-check', 28)}</span>
+        <p class="eyebrow"><span class="dot"></span>Asesoramiento gratuito</p>
+        <h3>Te preparamos la propuesta</h3>
+        <p>Cuéntanos tu pieza y tu proceso: elegimos la solución, el cobot y lo que hace falta alrededor, con su precio. Los precios de estas soluciones se irán incorporando a la tarifa.</p>
+        <span class="help-cta">Reservar cita ↗</span>
+      </a>`
+        : ''
+    }</div>
     ${pie(n)}
   </section>`;
 
@@ -617,11 +657,11 @@ h1, h2, h3 { font-family: 'Archivo', sans-serif; font-stretch: 125%; font-weight
 .cover-foot a { font: 500 8pt 'PlexMono', monospace; color: var(--brand); letter-spacing: 0.12em; }
 
 /* Presentación */
-.pres { display: grid; gap: 9mm; margin-top: 4mm; }
+.pres { display: grid; gap: 7mm; margin-top: 3mm; }
 .pres-intro { display: grid; gap: 4mm; }
 .toc { display: grid; border-top: 0.3mm solid var(--line); }
 .toc-k { font-size: 6.6pt; color: var(--mist); margin-bottom: 2mm; }
-.toc a { display: grid; grid-template-columns: 12mm 1fr auto; align-items: baseline; padding: 2.6mm 0; border-bottom: 0.3mm solid var(--line); font: 700 12pt 'Archivo', sans-serif; font-stretch: 115%; }
+.toc a { display: grid; grid-template-columns: 12mm 1fr auto; align-items: baseline; padding: 2.1mm 0; border-bottom: 0.3mm solid var(--line); font: 700 12pt 'Archivo', sans-serif; font-stretch: 115%; }
 .toc a span { font: 500 8pt 'PlexMono', monospace; color: var(--signal); }
 .toc a i { font: 500 8pt 'PlexMono', monospace; font-style: normal; color: var(--mist); }
 .toc .toc-k { margin: 0; padding-top: 3mm; }
@@ -685,6 +725,21 @@ dt { font-size: 5.4pt; color: var(--mist); } dd { font: 500 9.4pt 'PlexMono', mo
 .acc-foot .price { font-size: 9.5pt; padding: 1.1mm 2mm; } .acc-foot .price-q { font-size: 7pt; }
 .acc-foot .link { margin-left: auto; }
 .acc-t { border-style: dashed; border-color: rgba(255,122,26,0.28); }
+
+/* Soluciones de aplicación */
+.kits { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+.kit { display: grid; grid-template-rows: auto 1fr; border: 0.3mm solid var(--line); border-radius: 3.4mm; overflow: hidden; background: linear-gradient(160deg, var(--card2), var(--card)); }
+.kit-img { position: relative; aspect-ratio: 3 / 2; background: #000; }
+.kit-img img { width: 100%; height: 100%; object-fit: cover; }
+.kit-img span { position: absolute; right: 1.4mm; bottom: 1.4mm; font: 500 4.6pt 'PlexMono', monospace; letter-spacing: 0.1em; text-transform: uppercase; background: rgba(7,5,4,0.65); padding: 0.6mm 1.4mm; border-radius: 9mm; color: var(--muted); }
+.kit-body { display: grid; grid-template-rows: auto auto 1fr auto auto; gap: 1mm; padding: 2.6mm 2.8mm 2.8mm; min-width: 0; }
+.kit h3 { font-size: 9.2pt; font-stretch: 110%; line-height: 1.12; }
+.kit-txt { font-size: 6.9pt; color: var(--muted); line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.kit-models { display: flex; flex-wrap: wrap; gap: 0.8mm; margin-top: 0.6mm; }
+.kit-models i { font: 500 5.2pt 'PlexMono', monospace; font-style: normal; padding: 0.3mm 1.2mm; border: 0.25mm solid var(--line); border-radius: 9mm; color: var(--muted); }
+.kit .acc-foot { margin-top: 1mm; } .kit .price-q { font-size: 6.6pt; padding: 0.9mm 1.8mm; }
+.kit-help { display: grid; align-content: center; justify-items: start; gap: 2.4mm; padding: 6mm 7mm; border: 0.3mm solid rgba(255,122,26,0.45); border-radius: 3.4mm; background: linear-gradient(120deg, #24150b, #0b0705 70%); }
+.kit-help h3 { font-size: 15pt; } .kit-help > p:not(.eyebrow) { color: var(--muted); font-size: 8.2pt; max-width: 100mm; }
 
 /* Bloque de asesoramiento */
 .help { margin-top: 5mm; display: grid; grid-template-columns: auto 1fr auto; gap: 5mm; align-items: center; padding: 5mm 6mm; border: 0.3mm solid rgba(255,122,26,0.45); border-radius: 4mm; background: linear-gradient(120deg, #24150b, #0b0705 70%); }
