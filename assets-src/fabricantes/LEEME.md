@@ -245,3 +245,7 @@ Renders de FAIRINO España con una figura humana (`fairino-espana/mesa-trabajo-*
 - recorte de la iso B (image_background_remover) `5af556a8-31ad-4fc7-8bf7-17e7595b8166` → `mesa-trabajo-modular-oficial.png`;
 - escenas ilustrativas: rayos `3f0de93b-aca6-4a5a-a372-73169b2a7b0c`, foco `cda5d976-739a-4cff-954d-4a74782cfd49`,
   fábrica `05c8811b-b7d1-4c57-8782-d9f6b804cb42`.
+- Con el cobot FAIRINO blanco (referencia `fr5-provisional-3d.png`, media `1de5e082-ca61-4df7-8a1e-cf39b45050cb`), que es
+  lo que se usa en la web: estudio `db1b1d56-f93f-445f-8925-428405fc26a7` → recorte `c6f1268b-e3a5-4247-a730-cb45a7d49436`,
+  rayos `10e530f9-b055-4521-b227-aba9693113cd`, foco `6595a253-69ba-4c4c-b19f-078d396227de`,
+  fábrica `220b01bd-f73f-43e8-8ebf-e8f2d6ae62ee`.
