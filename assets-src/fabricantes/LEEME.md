@@ -249,3 +249,5 @@ Renders de FAIRINO España con una figura humana (`fairino-espana/mesa-trabajo-*
   lo que se usa en la web: estudio `db1b1d56-f93f-445f-8925-428405fc26a7` → recorte `c6f1268b-e3a5-4247-a730-cb45a7d49436`,
   rayos `10e530f9-b055-4521-b227-aba9693113cd`, foco `6595a253-69ba-4c4c-b19f-078d396227de`,
   fábrica `220b01bd-f73f-43e8-8ebf-e8f2d6ae62ee`.
+- Escena del foco con la figura humana a escala (a petición de FAIRINO España): `b5788be7-c68f-44f8-9e3a-e4b8790a3e7b`
+  (alternativa desde la iso B: `5d112c2e-fdda-484f-9e15-51ef60ee35f7`).
