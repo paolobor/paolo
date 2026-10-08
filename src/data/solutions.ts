@@ -9,6 +9,8 @@ export interface Solution {
   image: string | null;
   imagePosition?: string;
   imageHint: string;
+  // Foto de cómo llega el equipo (opcional): ruta en src/assets/images y texto.
+  delivery?: { image: string; alt: string; text: string };
 }
 
 export const solutions: Solution[] = [
@@ -32,6 +34,12 @@ export const solutions: Solution[] = [
     image: 'products/fr20/fairino-fr20-escena-paletizado-doble.webp',
     imagePosition: '60% 50%',
     imageHint: 'célula de paletizado FAIRINO con palé y cajas',
+    // Foto del cliente (8/10/2026) de las cajas reales; Higgsfield solo cambió el entorno (assets-src/fabricantes/LEEME.md).
+    delivery: {
+      image: 'soluciones/fairino-paletizadores-escena-embalaje.webp',
+      alt: 'Cuatro cajas de madera FAIRINO sobre palés, apiladas de dos en dos',
+      text: 'Así llegan los paletizadores FAIRINO: en cajas de madera sobre palé, con cierres metálicos y los pictogramas de manipulación. Nosotros las recibimos, montamos la célula y te la entregamos funcionando.',
+    },
   },
   {
     slug: 'celula-de-carga-de-maquinas',

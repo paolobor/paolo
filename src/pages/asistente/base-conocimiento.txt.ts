@@ -142,7 +142,8 @@ export const GET: APIRoute = async () => {
   h2('Documentos de cada producto');
   for (const p of products) {
     const docs = p.data.downloads.filter((d) => d.href);
-    if (docs.length) out.push(`- Descargas de ${p.data.name}: ${docs.map((d) => `${d.label} ${d.href}`).join(' · ')}`);
+    const abs = (href: string) => (href.startsWith('http') ? href : `${base}/${href.replace(/^\//, '')}`);
+    if (docs.length) out.push(`- Descargas de ${p.data.name}: ${docs.map((d) => `${d.label} ${abs(d.href!)}`).join(' · ')}`);
   }
 
   h('Sectores');

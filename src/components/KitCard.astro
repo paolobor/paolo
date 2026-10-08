@@ -1,0 +1,33 @@
+---
+// Tarjeta de una solución de aplicación (src/data/kits.ts): foto, nombre, frase y cobots compatibles.
+import Icon from './ui/Icon.astro';
+import SmartImage from './ui/SmartImage.astro';
+import IllustrativeBadge from './ui/IllustrativeBadge.astro';
+import type { Kit } from '../data/kits';
+import { isIllustrative } from '../lib/images';
+import { url } from '../lib/url';
+
+interface Props {
+  kit: Kit;
+  // compact: tarjeta estrecha para el carrusel del inicio.
+  compact?: boolean;
+}
+const { kit, compact = false } = Astro.props;
+const models = kit.model ? [kit.model] : kit.cobots.map((id) => id.toUpperCase());
+---
+
+<a href={url(`aplicaciones/soluciones/${kit.slug}/`)} class:list={['card card-hover group grid h-full content-start overflow-hidden', compact && 'kit-compact']}>
+  <div class="relative aspect-[3/2] overflow-hidden bg-black">
+    <SmartImage src={kit.image} alt="" tone="dark" widths={compact ? [360, 540] : [400, 640, 900]} sizes={compact ? '18rem' : '(min-width: 1024px) 30vw, (min-width: 640px) 45vw, 100vw'} class="transition-transform duration-500 group-hover:scale-105" />
+    {isIllustrative(kit.image) && <IllustrativeBadge class="right-2 top-2 px-2! text-[0.5rem]!" />}
+  </div>
+  <div class="grid content-start gap-2 p-4 sm:p-5">
+    <span class="flex items-center gap-2 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-signal"><Icon name={kit.icon} size={14} />Solución FAIRINO</span>
+    <span class="font-display text-[1.05rem] font-bold leading-tight" style="font-stretch:112%">{kit.name}</span>
+    {!compact && <span class="text-sm text-muted">{kit.short}</span>}
+    <span class="flex flex-wrap gap-1 pt-1">
+      {models.slice(0, compact ? 4 : 7).map((m) => <span class="rounded-full border border-line px-2 py-0.5 font-mono text-[0.62rem] text-mist">{m}</span>)}
+      {compact && models.length > 4 && <span class="px-1 font-mono text-[0.62rem] text-muted">+{models.length - 4}</span>}
+    </span>
+  </div>
+</a>

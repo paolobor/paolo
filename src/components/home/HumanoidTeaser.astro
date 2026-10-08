@@ -2,6 +2,7 @@
 import { getImage } from 'astro:assets';
 import Icon from '../ui/Icon.astro';
 import { humanoid as h } from '../../data/humanoid';
+import triptico from '../../data/triptico-art7-r7.json';
 import { findImage } from '../../lib/images';
 import { url } from '../../lib/url';
 
@@ -27,6 +28,9 @@ const videos = await Promise.all(
   })),
 );
 const teaser = videos.find((v) => v.id === 'art7-r7') ?? videos[0];
+// Tríptico comercial en PDF (tools/triptico/generar-art7-r7.mjs), entre «Reserva tu demo» y «Ver el teaser».
+const tripticoThumb = await webp(triptico.portada, 96);
+const tripticoPeso = triptico.kb >= 1024 ? `${(triptico.kb / 1024).toLocaleString('es-ES', { maximumFractionDigits: 1 })} MB` : `${triptico.kb} KB`;
 const words = h.hook.split(' ');
 ---
 
@@ -72,6 +76,11 @@ const words = h.hook.split(' ');
       </ul>
       <div class="tz-ctas flex flex-wrap items-center gap-3 pt-1">
         <a href={url(h.demoHref)} class="btn btn-primary tz-cta"><Icon name="calendar-check" size={18} />Reserva tu demo</a>
+        <a href={url(triptico.archivo)} class="btn btn-secondary tz-glass tz-doc" download aria-label={`Descargar el tríptico del ${h.name} (PDF, ${tripticoPeso})`}>
+          {tripticoThumb && <img class="tz-doc-thumb" src={tripticoThumb} alt="" width="24" height="51" loading="lazy" decoding="async" />}
+          <span class="tz-doc-text"><span>Tríptico</span><small>PDF · {tripticoPeso}</small></span>
+          <Icon name="download" size={16} class="tz-doc-ico" />
+        </a>
         <a href={teaser.src} class="btn btn-secondary tz-glass" data-teaser-open={teaser.id}><Icon name="play" size={16} />Ver el teaser</a>
       </div>
       <p class="tz-tagline">{h.tagline}</p>
@@ -448,6 +457,42 @@ const words = h.hook.split(' ');
     background: rgb(5 3 2 / 0.5);
     -webkit-backdrop-filter: blur(6px);
     backdrop-filter: blur(6px);
+  }
+  /* Botón del tríptico: miniatura de la portada y peso del PDF */
+  .tz-doc {
+    gap: 0.65rem;
+    padding-block: 0.3rem;
+    padding-left: 0.45rem;
+  }
+  .tz-doc-thumb {
+    width: 1.35rem;
+    height: 2.9rem;
+    object-fit: cover;
+    border-radius: 3px;
+    border: 1px solid rgb(255 122 26 / 0.55);
+    box-shadow: 0 6px 16px -6px rgb(0 0 0 / 0.9);
+    transform: rotate(-6deg);
+    transition: transform 0.25s ease;
+  }
+  .tz-doc:hover .tz-doc-thumb,
+  .tz-doc:focus-visible .tz-doc-thumb {
+    transform: rotate(0deg) translateY(-2px) scale(1.06);
+  }
+  .tz-doc-text {
+    display: grid;
+    gap: 0.3rem;
+    text-align: left;
+  }
+  .tz-doc-text small {
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgb(255 179 107 / 0.9);
+  }
+  .tz-doc :global(.tz-doc-ico) {
+    color: rgb(255 179 107 / 0.9);
   }
   .tz-tagline {
     font-family: var(--font-mono);

@@ -1,0 +1,54 @@
+---
+// Todas las soluciones de aplicación FAIRINO (src/data/kits.ts), agrupadas por aplicación.
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PageHero from '../../../components/ui/PageHero.astro';
+import Icon from '../../../components/ui/Icon.astro';
+import KitCard from '../../../components/KitCard.astro';
+import ContactBand from '../../../components/home/ContactBand.astro';
+import { kits } from '../../../data/kits';
+import { applications } from '../../../data/applications';
+import { url } from '../../../lib/url';
+
+const groups = [
+  ...applications.map((a) => ({ id: a.slug, name: a.name, icon: a.icon, href: `aplicaciones/${a.slug}/`, items: kits.filter((k) => k.parent === a.slug) })),
+  { id: 'mas', name: 'Inspección y robótica humanoide', icon: 'scan-eye', href: null, items: kits.filter((k) => !k.parent) },
+].filter((g) => g.items.length);
+---
+
+<BaseLayout
+  title="Soluciones de aplicación FAIRINO"
+  description="Soldadura MIG, MIG/MAG y láser en carro, raíl y pórtico, carga de máquinas, pintura, lijado, paletizado con visión 3D, doble brazo, inspección móvil y humanoide."
+>
+  <PageHero
+    crumbs={[{ label: 'Aplicaciones', href: 'aplicaciones/' }, { label: 'Soluciones' }]}
+    eyebrow="Soluciones de aplicación"
+    title="Soluciones FAIRINO listas para trabajar"
+    lead={`${kits.length} equipos completos de FAIRINO, del carro de soldadura al robot de inspección. Te preparamos la propuesta y el precio para tu caso.`}
+  >
+    <nav aria-label="Grupos de soluciones" class="flex flex-wrap gap-2 pt-2">
+      {groups.map((g) => <a href={`#${g.id}`} class="btn btn-ghost btn-sm"><Icon name={g.icon} size={16} />{g.name}</a>)}
+    </nav>
+  </PageHero>
+
+  {
+    groups.map((g, n) => (
+      <section id={g.id} class:list={['section scroll-mt-24', n % 2 === 1 && 'bg-paper']} aria-labelledby={`${g.id}-title`}>
+        <div class="container-x">
+          <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <h2 id={`${g.id}-title`} class="h-section flex items-center gap-3"><Icon name={g.icon} size={26} class="text-signal" />{g.name}</h2>
+            {g.href && <a href={url(g.href)} class="link-arrow shrink-0">La aplicación <Icon name="arrow-right" size={17} /></a>}
+          </div>
+          <ul class="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {g.items.map((k, i) => (
+              <li data-reveal style={`--reveal-delay:${(i % 3) * 70}ms`}>
+                <KitCard kit={k} />
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    ))
+  }
+
+  <ContactBand />
+</BaseLayout>

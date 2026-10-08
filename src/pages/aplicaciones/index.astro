@@ -6,6 +6,8 @@ import SmartImage from '../../components/ui/SmartImage.astro';
 import IllustrativeBadge from '../../components/ui/IllustrativeBadge.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
 import ContactBand from '../../components/home/ContactBand.astro';
+import KitCard from '../../components/KitCard.astro';
+import { kits } from '../../data/kits';
 import { applications } from '../../data/applications';
 import { industries } from '../../data/industries';
 import { getProducts } from '../../lib/catalog';
@@ -57,6 +59,24 @@ const cobotsFor = (slug: string) => cobots.filter((c) => c.data.applications.inc
               </li>
             );
           })
+        }
+      </ul>
+    </div>
+  </section>
+
+  <section class="section pt-0" aria-labelledby="kits-title">
+    <div class="container-x">
+      <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <SectionHeading id="kits-title" eyebrow="Soluciones FAIRINO" title={`${kits.length} soluciones listas para trabajar`} lead="Equipos completos de FAIRINO para cada aplicación: soldadura en carro, raíl y pórtico, carga de máquinas, pintura, lijado, paletizado con visión 3D y más." />
+        <a href={url('aplicaciones/soluciones/')} class="link-arrow shrink-0" data-reveal>Ver por aplicación <Icon name="arrow-right" size={17} /></a>
+      </div>
+      <ul class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          kits.map((k, i) => (
+            <li data-reveal style={`--reveal-delay:${(i % 3) * 70}ms`}>
+              <KitCard kit={k} />
+            </li>
+          ))
         }
       </ul>
     </div>

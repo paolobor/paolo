@@ -251,3 +251,35 @@ Renders de FAIRINO España con una figura humana (`fairino-espana/mesa-trabajo-*
   fábrica `220b01bd-f73f-43e8-8ebf-e8f2d6ae62ee`.
 - Escena del foco con la figura humana a escala (a petición de FAIRINO España): `b5788be7-c68f-44f8-9e3a-e4b8790a3e7b`
   (alternativa desde la iso B: `5d112c2e-fdda-484f-9e15-51ef60ee35f7`).
+
+## ART7 R7: fotos del tríptico comercial (8/10/2026)
+
+En `fairino/art7-r7/`, para `tools/triptico/generar-art7-r7.mjs` (ver su LEEME). Nada generado con IA.
+
+- `teaser-*.jpg`: fotogramas del teaser oficial del ART7 R7 (`public/media/fairino-art7-r7-teaser.mp4`) a 33 s (alcance,
+  con sus rótulos en español), 37 s, 41 s (controlador y ROS2) y 48,5 s (la plataforma; en el tríptico se recorta sin
+  el título «ART7 R7» del vídeo).
+- `humanoides-*s.jpg`: fotogramas del anuncio oficial de los humanoides FAIRINO (`public/media/fairino-humanoide.mp4`)
+  a 22, 34, 52, 60, 80 (plataforma de dos brazos) y 86 s (la familia ART); los rótulos en inglés quedan fuera del recorte.
+- `controlador-art-documento.png`: foto del controlador de la serie ART, del documento del cliente «ART7. recopilatorio
+  de inform para catalogo comercial.docx» (imagen 3); se recorta solo la mano con el controlador, sin los textos en
+  chino de la imagen.
+
+## Cajas de los paletizadores FAIRINO (8/10/2026)
+
+Foto del cliente por WhatsApp (`fairino-espana/cajas-paletizadores-original.webp`, con la hora del chat abajo): cuatro
+cajas de madera FAIRINO sobre palés. gpt_image_2_5 solo cambió el entorno (almacén oscuro con luz naranja) y quitó la
+hora; las cajas, los logotipos, los pictogramas y las etiquetas se compararon con el original. Trabajo
+760830bd-07f2-4d03-bf4a-9c3b86da46b9 (se hicieron tres versiones; las otras, almacén claro y muelle de carga, no se usan).
+En la web: `src/assets/images/soluciones/fairino-paletizadores-escena-embalaje.webp` («Imagen ilustrativa»), en
+Soluciones llave en mano → Célula de paletizado. Coste: unos 4,5 créditos.
+
+## Soluciones de aplicación de FAIRINO (folleto South Europe, 8/10/2026)
+
+Folleto del cliente «servicios de FAIRINO COBOT South Europe» (`fairino/soluciones-south-europe/`, 14 páginas en
+imagen, chino e inglés). Para cada uno de los 13 casos se recortó la foto del equipo (`<slug>-producto-original.png`,
+con sus rótulos) y gpt_image_2_5 la puso en un taller oscuro con luz naranja, sin rótulos ni personas
+(`src/assets/images/aplicaciones/<slug>/fairino-<slug>-escena-principal.webp`, «Imagen ilustrativa»). Las fotos reales
+del folleto (`…-foto-N.jpg`) se recortaron y se ampliaron al doble en local (Lanczos y enfoque suave), sin IA; las que
+llevan textos en chino (pantallas, carteles) no se usan. Textos: traducidos y resumidos en `src/data/kits.ts`.
+Coste: unos 20 créditos (13 escenas, cuatro reintentos por límite de velocidad).

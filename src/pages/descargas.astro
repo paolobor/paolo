@@ -7,6 +7,7 @@ import { getImage } from 'astro:assets';
 import { downloadGroups } from '../data/downloads';
 import { site } from '../data/site';
 import catalogo from '../data/catalogo.json';
+import triptico from '../data/triptico-art7-r7.json';
 import { findImage } from '../lib/images';
 import { url } from '../lib/url';
 
@@ -17,6 +18,9 @@ const portada = portadaImg ? await getImage({ src: portadaImg, format: 'webp', w
 const pdfHref = url(catalogo.archivo);
 const mb = (catalogo.kb / 1024).toLocaleString('es-ES', { maximumFractionDigits: 1 });
 const desde = `${catalogo.desde.toLocaleString('de-DE')} €`;
+// Tríptico del ART7 R7 (tools/triptico/generar-art7-r7.mjs)
+const tripticoImg = findImage(triptico.portada);
+const tripticoThumb = tripticoImg ? await getImage({ src: tripticoImg, format: 'webp', width: 96 }) : null;
 const destacados = [
   { k: `${catalogo.cobots} cobots`, v: `desde ${desde}` },
   { k: `${catalogo.accesorios}`, v: 'accesorios y equipos' },
@@ -70,6 +74,14 @@ const destacados = [
           <a href={pdfHref} download class="btn btn-primary"><Icon name="download" size={18} />Descargar PDF</a>
           <span class="font-mono text-xs text-muted">PDF · {mb} MB · {catalogo.paginas} páginas</span>
         </div>
+        <a href={url(triptico.archivo)} download class="card card-hover flex items-center gap-4 p-3 pr-5">
+          {tripticoThumb && <img src={tripticoThumb.src} alt="" width="28" height="60" loading="lazy" decoding="async" class="h-[3.75rem] w-7 shrink-0 rounded-[3px] border border-signal/50 object-cover" />}
+          <span class="grid gap-0.5">
+            <span class="font-semibold">Tríptico ART7 R7 <span class="font-mono text-[0.68rem] font-medium uppercase tracking-wider text-signal">· Próximamente</span></span>
+            <span class="text-xs text-muted">Brazo humanoide con control de fuerza · PDF · {triptico.kb} KB</span>
+          </span>
+          <Icon name="download" size={18} class="ml-auto shrink-0 text-brand" />
+        </a>
       </div>
     </div>
   </section>

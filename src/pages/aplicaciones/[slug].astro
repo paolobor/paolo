@@ -8,6 +8,8 @@ import IllustrativeBadge from '../../components/ui/IllustrativeBadge.astro';
 import SectionHeading from '../../components/ui/SectionHeading.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import ContactBand from '../../components/home/ContactBand.astro';
+import KitCard from '../../components/KitCard.astro';
+import { kitsFor } from '../../data/kits';
 import { applications, type Application } from '../../data/applications';
 import { industries } from '../../data/industries';
 import { getProducts, sceneAlt } from '../../lib/catalog';
@@ -27,6 +29,7 @@ const cobots = all.filter((p) => p.data.category === 'cobot' && p.data.applicati
 const accessories = all.filter((p) => p.data.category === 'accesorio' && p.data.applications.includes(app.slug));
 const relatedIndustries = industries.filter((i) => i.applications.includes(app.slug));
 const others = applications.filter((a) => a.slug !== app.slug);
+const appKits = kitsFor(app.slug);
 const heroAlt = (await sceneAlt(app.image)) || app.imageHint;
 const gallery = await Promise.all(app.gallery.map(async (src) => ({ src, alt: await sceneAlt(src) })));
 // Póster del vídeo: imagen guardada en la web; YouTube solo se carga al pulsar «play».
@@ -180,10 +183,30 @@ const waMessage = `Hola, quiero automatizar una tarea de ${app.name.toLowerCase(
                 <figure class="grid gap-2">
                   <div class="relative aspect-[16/9] overflow-hidden rounded-[var(--radius-card)] border border-line">
                     <SmartImage src={g.src} alt={g.alt} widths={[640, 960, 1400]} sizes="(min-width: 768px) 50vw, 100vw" />
-                    <IllustrativeBadge />
+                    {isIllustrative(g.src) && <IllustrativeBadge />}
                   </div>
                   <figcaption class="text-sm text-muted">{g.alt}</figcaption>
                 </figure>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    appKits.length > 0 && (
+      <section class="section pt-0" aria-labelledby="kits-title">
+        <div class="container-x">
+          <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <SectionHeading id="kits-title" eyebrow="Soluciones FAIRINO" title={`${app.name}: soluciones listas para trabajar`} />
+            <a href={url('aplicaciones/soluciones/')} class="link-arrow shrink-0" data-reveal>Todas las soluciones <Icon name="arrow-right" size={17} /></a>
+          </div>
+          <ul class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {appKits.map((k) => (
+              <li data-reveal>
+                <KitCard kit={k} />
               </li>
             ))}
           </ul>

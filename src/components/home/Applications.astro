@@ -5,6 +5,8 @@ import SectionHeading from '../ui/SectionHeading.astro';
 import IllustrativeBadge from '../ui/IllustrativeBadge.astro';
 import { isIllustrative } from '../../lib/images';
 import { applications } from '../../data/applications';
+import { kits } from '../../data/kits';
+import KitCard from '../KitCard.astro';
 import { url } from '../../lib/url';
 ---
 
@@ -15,7 +17,7 @@ import { url } from '../../lib/url';
         id="apps-title"
         eyebrow="Aplicaciones"
         title="Qué puede hacer un cobot FAIRINO por tu planta"
-        lead="Ocho tareas en las que un cobot rinde desde el primer turno. Si la tuya no está, pregúntanos."
+        lead={`Ocho tareas en las que un cobot rinde desde el primer turno y ${kits.length} soluciones FAIRINO listas para trabajar. Si la tuya no está, pregúntanos.`}
       />
       <div class="flex shrink-0 flex-wrap gap-3" data-reveal>
         <a href={url('aplicaciones/')} class="btn btn-primary">Ver aplicaciones</a>
@@ -45,10 +47,44 @@ import { url } from '../../lib/url';
         ))
       }
     </ul>
+
+    <!-- Soluciones de aplicación FAIRINO (src/data/kits.ts): una a una, en una fila que se desliza -->
+    <div class="mt-14 flex flex-wrap items-end justify-between gap-4" data-reveal>
+      <div class="grid gap-1.5">
+        <p class="eyebrow flex items-center gap-2"><span class="kit-dot" aria-hidden="true"></span>Soluciones FAIRINO</p>
+        <h3 class="font-display text-[clamp(1.35rem,2.4vw,1.8rem)] font-bold" style="font-stretch:115%">{kits.length} soluciones listas para trabajar</h3>
+      </div>
+      <a href={url('aplicaciones/soluciones/')} class="link-arrow shrink-0">Ver todas <Icon name="arrow-right" size={17} /></a>
+    </div>
+    <ul class="kit-row mt-6" aria-label="Soluciones de aplicación FAIRINO">
+      {kits.map((k) => <li><KitCard kit={k} compact /></li>)}
+    </ul>
   </div>
 </section>
 
 <style>
+  .kit-row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(16rem, 74%);
+    gap: 1rem;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(255 122 26 / 0.5) transparent;
+    padding-bottom: 0.75rem;
+  }
+  .kit-row > li {
+    scroll-snap-align: start;
+  }
+  .kit-dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: var(--color-signal, #ff7a1a);
+    box-shadow: 0 0 0.6rem rgb(255 122 26 / 0.8);
+  }
   /* Solo fotos: las tarjetas no llevan a ninguna página (para eso está «Ver aplicaciones»). */
   /* En móvil la tarjeta es pequeña: solo icono y nombre. */
   .app-text {

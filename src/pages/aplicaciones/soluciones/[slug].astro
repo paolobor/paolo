@@ -1,0 +1,151 @@
+---
+// Página de cada solución de aplicación FAIRINO (src/data/kits.ts).
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Breadcrumbs from '../../../components/ui/Breadcrumbs.astro';
+import Icon from '../../../components/ui/Icon.astro';
+import SmartImage from '../../../components/ui/SmartImage.astro';
+import IllustrativeBadge from '../../../components/ui/IllustrativeBadge.astro';
+import SectionHeading from '../../../components/ui/SectionHeading.astro';
+import ProductCard from '../../../components/ProductCard.astro';
+import KitCard from '../../../components/KitCard.astro';
+import ContactBand from '../../../components/home/ContactBand.astro';
+import { kits, type Kit } from '../../../data/kits';
+import { applications } from '../../../data/applications';
+import { getProducts } from '../../../lib/catalog';
+import { isIllustrative } from '../../../lib/images';
+import { url } from '../../../lib/url';
+
+export const getStaticPaths = (() => kits.map((kit) => ({ params: { slug: kit.slug }, props: { kit } }))) satisfies GetStaticPaths;
+
+interface Props {
+  kit: Kit;
+}
+const { kit } = Astro.props;
+
+const parent = applications.find((a) => a.slug === kit.parent) ?? null;
+const all = await getProducts('cobot');
+const cobots = kit.cobots.map((id) => all.find((p) => p.id === id)).filter((p) => p != null);
+// Primero las de la misma aplicación, luego el resto.
+const others = [...kits.filter((k) => k.slug !== kit.slug && k.parent === kit.parent), ...kits.filter((k) => k.parent !== kit.parent)].slice(0, 3);
+const crumbs = [{ label: 'Aplicaciones', href: 'aplicaciones/' }, ...(parent ? [{ label: parent.name, href: `aplicaciones/${parent.slug}/` }] : []), { label: kit.name }];
+const quoteHref = url(`contacto/?asunto=presupuesto&aplicacion=${encodeURIComponent(kit.name)}`);
+const waMessage = `Hola, me interesa la solución «${kit.name}» de FAIRINO. ¿Me podéis dar más información?`;
+---
+
+<BaseLayout title={`${kit.name} con cobots FAIRINO`} description={`${kit.short} Solución de aplicación FAIRINO, con propuesta a medida de FAIRINO España.`.slice(0, 160)} whatsappMessage={waMessage}>
+  <section class="blueprint on-dark relative overflow-hidden text-white">
+    <div class="container-x grid items-center gap-10 py-12 md:py-16 lg:grid-cols-[1fr_1.1fr]">
+      <div class="grid content-start gap-5">
+        <Breadcrumbs items={crumbs} />
+        <p class="eyebrow flex items-center gap-2"><Icon name={kit.icon} size={16} />Solución de aplicación FAIRINO</p>
+        <h1 class="text-[clamp(2rem,4.4vw,3.3rem)] font-extrabold" style="font-stretch:118%">{kit.name}</h1>
+        <p class="lead">{kit.short}</p>
+        <div class="flex flex-wrap gap-3 pt-1">
+          <a href={quoteHref} class="btn btn-primary"><Icon name="send" size={18} />Pedir propuesta y precio</a>
+          {parent && <a href={url(`aplicaciones/${parent.slug}/`)} class="btn btn-secondary">Aplicación: {parent.name}</a>}
+        </div>
+      </div>
+      <div class="relative aspect-[3/2] overflow-hidden rounded-[var(--radius-card)] border border-white/10">
+        <SmartImage src={kit.image} alt={`${kit.name} con cobot FAIRINO`} tone="dark" widths={[640, 1024]} sizes="(min-width: 1024px) 52vw, 100vw" eager />
+        {isIllustrative(kit.image) && <IllustrativeBadge />}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="que-title">
+    <div class="container-x grid gap-10 lg:grid-cols-[1.1fr_1fr] lg:gap-16">
+      <div class="grid content-start gap-5" data-reveal>
+        <p class="eyebrow">Cómo funciona</p>
+        <h2 id="que-title" class="h-section">Qué hace</h2>
+        <p class="text-[1.05rem] leading-relaxed text-mist">{kit.intro}</p>
+        <div class="grid gap-2 pt-2">
+          <p class="font-mono text-[0.7rem] uppercase tracking-[0.12em] text-muted">El equipo</p>
+          <ul class="flex flex-wrap gap-2">{kit.parts.map((p) => <li class="chip">{p}</li>)}</ul>
+        </div>
+      </div>
+      <div class="card grid content-start gap-4 p-6 md:p-8" data-reveal>
+        <p class="font-mono text-[0.7rem] uppercase tracking-[0.12em] text-muted">Dónde se usa</p>
+        <ul class="grid gap-3">
+          {
+            kit.scenarios.map((t) => (
+              <li class="flex items-start gap-3">
+                <span class="mt-0.5 grid size-6 shrink-0 place-items-center rounded-full bg-brand text-ink">
+                  <Icon name="check" size={14} strokeWidth={3} />
+                </span>
+                {t}
+              </li>
+            ))
+          }
+        </ul>
+        <div class="mt-2 grid gap-1.5 border-t border-line pt-4">
+          <p class="font-mono text-[0.7rem] uppercase tracking-[0.12em] text-muted">{kit.model ? 'Modelo' : 'Cobots compatibles'}</p>
+          <p class="flex flex-wrap gap-1.5">
+            {kit.model && <span class="chip">{kit.model}</span>}
+            {cobots.map((p) => <a href={url(`productos/${p.id}/`)} class="chip hover:border-signal">{p.data.name}</a>)}
+          </p>
+          {kit.cobotsNote && <p class="text-sm text-muted">{kit.cobotsNote}</p>}
+        </div>
+      </div>
+    </div>
+
+    <div class="container-x mt-14 grid gap-4 sm:grid-cols-3" data-fx-cycle="3000">
+      {
+        kit.benefits.map((b, i) => (
+          <div class="card fx-spot grid content-start gap-2 overflow-hidden p-6" data-reveal style={`--reveal-delay:${i * 70}ms`}>
+            <span class="fx-progress" aria-hidden="true" />
+            <h3 class="font-display text-lg font-bold" style="font-stretch:112%">{b.title}</h3>
+            <p class="text-sm text-muted">{b.text}</p>
+          </div>
+        ))
+      }
+    </div>
+  </section>
+
+  {
+    kit.gallery.length > 0 && (
+      <section class="section pt-0" aria-labelledby="gal-title">
+        <div class="container-x">
+          <SectionHeading id="gal-title" eyebrow="En la práctica" title="Fotos de aplicaciones FAIRINO" />
+          <ul class:list={['mt-10 grid gap-4', kit.gallery.length === 2 ? 'grid-cols-2 lg:max-w-3xl' : 'grid-cols-2 md:grid-cols-3']}>
+            {kit.gallery.map((src, i) => (
+              <li data-reveal style={`--reveal-delay:${i * 70}ms`} class:list={[kit.gallery.length === 3 && i === 2 && 'col-span-2 md:col-span-1']}>
+                <div class="relative aspect-[5/6] overflow-hidden rounded-[var(--radius-card)] border border-line bg-black">
+                  <SmartImage src={src} alt={`${kit.name}: foto de una aplicación de FAIRINO`} widths={[360, 540]} sizes="(min-width: 768px) 30vw, 50vw" />
+                </div>
+              </li>
+            ))}
+          </ul>
+          <p class="mt-4 text-sm text-muted">Fotos del folleto de soluciones de FAIRINO.</p>
+        </div>
+      </section>
+    )
+  }
+
+  {
+    cobots.length > 0 && (
+      <section class="section bg-paper" aria-labelledby="cob-title">
+        <div class="container-x">
+          <SectionHeading id="cob-title" eyebrow="Modelos" title="Cobots compatibles" lead="Elige por carga útil y alcance. Si dudas, te ayudamos a calcularlo." />
+          <div class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+            {cobots.map((p) => <ProductCard product={p} />)}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section" aria-labelledby="more-title">
+    <div class="container-x">
+      <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+        <SectionHeading id="more-title" eyebrow="Más soluciones" title="Otras soluciones FAIRINO" />
+        <a href={url('aplicaciones/soluciones/')} class="link-arrow shrink-0" data-reveal>Ver las {kits.length} soluciones <Icon name="arrow-right" size={17} /></a>
+      </div>
+      <ul class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        {others.map((k) => <li><KitCard kit={k} /></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <ContactBand whatsappMessage={waMessage} />
+</BaseLayout>
