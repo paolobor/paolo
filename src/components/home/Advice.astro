@@ -21,7 +21,7 @@ const phone = site.contacts[0];
         <SmartImage src={advice.image} alt={advice.imageHint} sizes="(min-width: 1024px) 55vw, 100vw" />
         <span class="advice-scan" aria-hidden="true"></span>
         <span class="advice-live absolute top-4 right-4"><span class="advice-live-dot" aria-hidden="true"></span>Cobots en demostración</span>
-        <div class="absolute bottom-4 left-4 flex items-center gap-3 rounded-xl bg-surface/90 px-4 py-3 shadow-lg backdrop-blur">
+        <div class="absolute bottom-4 left-4 flex items-center gap-3 rounded-xl bg-surface/90 px-4 py-3 shadow-lg">
           <span class="fx-ping text-brand"><Icon name="map-pin" size={20} /></span>
           <span class="text-sm"><b class="block">{site.address.city}</b><span class="text-muted">{site.address.region}{site.address.street && ` · ${site.address.street}`}</span></span>
         </div>
@@ -97,19 +97,24 @@ const phone = site.contacts[0];
     inset: 0;
     z-index: -1;
     pointer-events: none;
+    -webkit-mask-image: radial-gradient(ellipse 75% 85% at 32% 50%, #000 15%, transparent 72%);
+    mask-image: radial-gradient(ellipse 75% 85% at 32% 50%, #000 15%, transparent 72%);
+    overflow: hidden;
+  }
+  /* La rejilla se desplaza con transform (sin repintar la sección en cada fotograma); la máscara queda quieta. */
+  .advice-grid::before {
+    content: '';
+    position: absolute;
+    inset: -44px 0 0 -44px;
     background-image:
       linear-gradient(rgb(255 122 26 / 0.07) 1px, transparent 1px),
       linear-gradient(90deg, rgb(255 122 26 / 0.07) 1px, transparent 1px);
     background-size: 44px 44px;
-    -webkit-mask-image: radial-gradient(ellipse 75% 85% at 32% 50%, #000 15%, transparent 72%);
-    mask-image: radial-gradient(ellipse 75% 85% at 32% 50%, #000 15%, transparent 72%);
     animation: advice-grid 30s linear infinite;
   }
   @keyframes advice-grid {
     to {
-      background-position:
-        0 44px,
-        44px 0;
+      transform: translate(44px, 44px);
     }
   }
   .advice-halo {
@@ -128,7 +133,7 @@ const phone = site.contacts[0];
     );
     filter: blur(70px);
     opacity: 0.55;
-    animation: fx-beam 16s linear infinite;
+    /* Quieto: girar un degradado con 70 px de desenfoque obligaba a recalcularlo en cada fotograma. */
   }
   /* Esquinas de encuadre, como un visor */
   .advice-frame {
@@ -209,8 +214,6 @@ const phone = site.contacts[0];
     border: 1px solid rgb(255 255 255 / 0.14);
     border-radius: 999px;
     background: rgb(7 5 4 / 0.62);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
     font-family: var(--font-mono);
     font-size: 0.62rem;
     letter-spacing: 0.14em;
@@ -254,7 +257,7 @@ const phone = site.contacts[0];
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    animation: advice-shine 7s ease-in-out infinite;
+    animation: advice-shine 7s ease-in-out 2;
   }
   @keyframes advice-shine {
     0%,

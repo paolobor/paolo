@@ -14,6 +14,9 @@ document.querySelectorAll<HTMLElement>('[data-bgvideo]').forEach((section) => {
   const video = section.querySelector<HTMLVideoElement>('[data-bgvideo-video]');
   const toggle = section.querySelector<HTMLButtonElement>('[data-bgvideo-toggle]');
   if (!video || reduce || saveData || !('IntersectionObserver' in window)) return;
+  // data-bgvideo-desktop: en el móvil se queda en el fotograma fijo (el texto lo tapa casi entero y así no hay dos
+  // vídeos a la vez en la primera pantalla).
+  if (section.hasAttribute('data-bgvideo-desktop') && window.matchMedia('(max-width: 767px)').matches) return;
 
   let visible = false;
   let userPaused = false;
@@ -26,14 +29,18 @@ document.querySelectorAll<HTMLElement>('[data-bgvideo]').forEach((section) => {
       toggle.innerHTML = userPaused ? ICON_PLAY : ICON_PAUSE;
     }
   };
+  // Se empieza a descargar un poco antes de llegar (200 px), pero solo se reproduce mientras se ve: dos vídeos a la vez
+  // pesan en móviles y ordenadores modestos.
   new IntersectionObserver(
     ([entry]) => {
-      visible = entry.isIntersecting;
-      if (visible && video.preload === 'none') video.preload = 'auto';
-      sync();
+      if (entry.isIntersecting && video.preload === 'none') video.preload = 'auto';
     },
     { rootMargin: '200px 0px' },
   ).observe(section);
+  new IntersectionObserver(([entry]) => {
+    visible = entry.isIntersecting;
+    sync();
+  }).observe(section);
   toggle?.addEventListener('click', () => {
     userPaused = !userPaused;
     sync();

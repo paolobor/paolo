@@ -1,0 +1,26 @@
+---
+// <source> de un vídeo de fondo: primero la versión ligera para el móvil (…-movil.webm/.mp4 en public/media, 480–540 p),
+// si existe, y después la normal. Así el móvil no decodifica vídeos de 1080p y la web va más fluida.
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+import { url } from '../../lib/url';
+
+interface Props {
+  webm?: string | null;
+  mp4?: string | null;
+}
+const { webm, mp4 } = Astro.props;
+const MOBILE = '(max-width: 767px)';
+const mobile = (p?: string | null) => {
+  if (!p) return null;
+  const m = p.replace(/\.(webm|mp4)$/, '-movil.$1');
+  return existsSync(join(process.cwd(), 'public', m)) ? m : null;
+};
+const mWebm = mobile(webm);
+const mMp4 = mobile(mp4);
+---
+
+{mWebm && <source src={url(mWebm)} type="video/webm" media={MOBILE} />}
+{mMp4 && <source src={url(mMp4)} type="video/mp4" media={MOBILE} />}
+{webm && <source src={url(webm)} type="video/webm" />}
+{mp4 && <source src={url(mp4)} type="video/mp4" />}

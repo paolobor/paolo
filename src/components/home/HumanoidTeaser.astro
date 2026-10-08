@@ -5,6 +5,7 @@ import { humanoid as h } from '../../data/humanoid';
 import triptico from '../../data/triptico-art7-r7.json';
 import { findImage } from '../../lib/images';
 import { url } from '../../lib/url';
+import VideoSources from '../ui/VideoSources.astro';
 
 // «Próximamente»: bloque de anuncio de los humanoides FAIRINO (inicio y tienda). De fondo, el anuncio oficial de los
 // humanoides sin sonido; al entrar en pantalla se abre como una cortinilla de cine, la frase aparece palabra a palabra
@@ -34,11 +35,10 @@ const tripticoPeso = triptico.kb >= 1024 ? `${(triptico.kb / 1024).toLocaleStrin
 const words = h.hook.split(' ');
 ---
 
-<section id={id} class="tz relative isolate overflow-hidden text-white" aria-labelledby={`${id}-title`} data-bgvideo data-teaser>
+<section id={id} class="tz relative isolate overflow-hidden text-white" aria-labelledby={`${id}-title`} data-bgvideo data-bgvideo-desktop data-teaser>
   <div class="tz-bg" aria-hidden="true">
     <video class="tz-video" muted loop playsinline preload="none" poster={bgPoster} disablepictureinpicture tabindex="-1" data-bgvideo-video>
-      <source src={url(h.background.webm)} type="video/webm" />
-      <source src={url(h.background.mp4)} type="video/mp4" />
+      <VideoSources webm={h.background.webm} mp4={h.background.mp4} />
     </video>
   </div>
   <div class="tz-shade" aria-hidden="true"></div>
@@ -385,7 +385,8 @@ const words = h.hook.split(' ');
     background-clip: text;
     color: transparent;
     filter: drop-shadow(0 0 40px rgb(255 122 26 / 0.18));
-    animation: tz-shine 6s ease-in-out infinite;
+    /* El brillo pasa dos veces y se queda quieto: repintar un texto tan grande con sombra en cada fotograma es caro. */
+    animation: tz-shine 6s ease-in-out 2;
   }
   @keyframes tz-shine {
     0%,
@@ -424,8 +425,6 @@ const words = h.hook.split(' ');
     gap: 0.35rem;
     padding: 0.9rem 1rem;
     background: rgb(8 5 3 / 0.82);
-    -webkit-backdrop-filter: blur(8px);
-    backdrop-filter: blur(8px);
   }
   .tz-spec-v {
     font-family: var(--font-mono);
@@ -440,23 +439,32 @@ const words = h.hook.split(' ');
     line-height: 1.35;
     color: rgb(245 238 232 / 0.6);
   }
+  /* Pulso del botón: un aro aparte que crece y se apaga (transform y opacidad, sin repintar la sombra). */
   .tz-cta {
-    box-shadow: 0 0 0 0 rgb(255 122 26 / 0.5);
+    position: relative;
+  }
+  .tz-cta::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 2px solid rgb(255 122 26 / 0.5);
+    pointer-events: none;
     animation: tz-pulse 2.6s ease-out infinite;
   }
   @keyframes tz-pulse {
     0% {
-      box-shadow: 0 0 0 0 rgb(255 122 26 / 0.5);
+      transform: scale(1);
+      opacity: 1;
     }
     70%,
     100% {
-      box-shadow: 0 0 0 14px rgb(255 122 26 / 0);
+      transform: scale(1.12, 1.45);
+      opacity: 0;
     }
   }
   .tz-glass {
-    background: rgb(5 3 2 / 0.5);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
+    background: rgb(5 3 2 / 0.72);
   }
   /* Botón del tríptico: miniatura de la portada y peso del PDF */
   .tz-doc {
@@ -540,9 +548,7 @@ const words = h.hook.split(' ');
     padding: 0.3rem 0.65rem;
     border: 1px solid rgb(255 122 26 / 0.5);
     border-radius: 999px;
-    background: rgb(5 3 2 / 0.6);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
+    background: rgb(5 3 2 / 0.75);
     font-family: var(--font-mono);
     font-size: 0.58rem;
     letter-spacing: 0.16em;
@@ -569,9 +575,7 @@ const words = h.hook.split(' ');
     height: 42px;
     border: 1px solid rgb(255 255 255 / 0.35);
     border-radius: 50%;
-    background: rgb(5 3 2 / 0.55);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
+    background: rgb(5 3 2 / 0.72);
     transition:
       background-color 0.3s ease,
       border-color 0.3s ease;

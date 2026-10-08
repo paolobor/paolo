@@ -112,7 +112,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
       </defs>
       <ellipse cx="200" cy="45" rx="190" ry="38" fill="url(#lamp-fill)" />
       <ellipse cx="200" cy="45" rx="150" ry="28" fill="none" stroke="#ff8a3d" stroke-width="2.4" filter="url(#plat-glow)" class="lamp-ring" />
-      <ellipse cx="200" cy="45" rx="174" ry="33" fill="none" stroke="#ff5a1f" stroke-width="1.8" stroke-dasharray="1 9" stroke-linecap="round" filter="url(#plat-glow)" class="plat-dots" />
+      <ellipse cx="200" cy="45" rx="174" ry="33" fill="none" stroke="#ff5a1f" stroke-width="1.8" stroke-dasharray="1 9" stroke-linecap="round" class="plat-dots" />
     </svg>
     <span class="spot" aria-hidden="true"></span>
     <svg class="platform" viewBox="0 0 400 90" aria-hidden="true">
@@ -136,7 +136,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
       <ellipse cx="200" cy="45" rx="196" ry="40" fill="url(#plat-fill)" />
       <ellipse cx="200" cy="45" rx="120" ry="20" fill="url(#plat-core)" />
       <ellipse cx="200" cy="45" rx="150" ry="28" fill="none" stroke="#ff8a3d" stroke-width="2.6" filter="url(#plat-glow)" class="plat-ring" />
-      <ellipse cx="200" cy="45" rx="176" ry="34" fill="none" stroke="#ff5a1f" stroke-width="2" stroke-dasharray="1 9" stroke-linecap="round" filter="url(#plat-glow)" class="plat-dots" />
+      <ellipse cx="200" cy="45" rx="176" ry="34" fill="none" stroke="#ff5a1f" stroke-width="2" stroke-dasharray="1 9" stroke-linecap="round" class="plat-dots" />
       <ellipse cx="200" cy="45" rx="196" ry="40" fill="none" stroke="#ff7a1a" stroke-opacity="0.35" stroke-width="1" />
     </svg>
 
@@ -344,13 +344,20 @@ const pad = (n: number) => String(n).padStart(2, '0');
   /* Botón para bajar al catálogo completo: naranja, con brillo que respira y flecha que invita a bajar. */
   .see-all {
     position: relative;
-    box-shadow:
-      0 0 0 0 rgb(255 122 26 / 0.55),
-      0 12px 36px -10px rgb(255 122 26 / 0.8);
+    box-shadow: 0 12px 36px -10px rgb(255 122 26 / 0.8);
+  }
+  .see-all::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    border: 2px solid rgb(255 122 26 / 0.55);
+    pointer-events: none;
     animation: see-all-pulse 2.6s ease-out infinite;
   }
-  .see-all:hover {
+  .see-all:hover::after {
     animation: none;
+    opacity: 0;
   }
   .see-all-arrow {
     animation: see-all-bounce 1.6s ease-in-out infinite;
@@ -361,15 +368,13 @@ const pad = (n: number) => String(n).padStart(2, '0');
   }
   @keyframes see-all-pulse {
     0% {
-      box-shadow:
-        0 0 0 0 rgb(255 122 26 / 0.55),
-        0 12px 36px -10px rgb(255 122 26 / 0.8);
+      transform: scale(1);
+      opacity: 1;
     }
     70%,
     100% {
-      box-shadow:
-        0 0 0 14px rgb(255 122 26 / 0),
-        0 12px 36px -10px rgb(255 122 26 / 0.8);
+      transform: scale(1.12, 1.4);
+      opacity: 0;
     }
   }
   @keyframes see-all-bounce {
@@ -382,7 +387,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     }
   }
   @media (prefers-reduced-motion: reduce) {
-    .see-all,
+    .see-all::after,
     .see-all-arrow {
       animation: none;
     }
@@ -481,8 +486,14 @@ const pad = (n: number) => String(n).padStart(2, '0');
     position: relative;
     display: block;
     height: 100%;
+  }
+  /* Solo flota el robot de delante: los de los lados llevan desenfoque, y moverlos obligaría a recalcularlo en cada
+     fotograma. */
+  .robot[data-active] .robot-btn {
     animation: float 6s ease-in-out infinite;
-    animation-delay: calc(var(--i, 0) * -0.8s);
+  }
+  .robot[data-active] {
+    filter: none;
   }
   @keyframes float {
     0%,
@@ -500,22 +511,34 @@ const pad = (n: number) => String(n).padStart(2, '0');
     z-index: 4;
     -webkit-mask: var(--mask) center / contain no-repeat;
     mask: var(--mask) center / contain no-repeat;
-    background: linear-gradient(180deg, transparent 0%, rgb(255 170 90 / 0) 40%, rgb(255 170 90 / 0.4) 50%, rgb(255 170 90 / 0) 60%, transparent 100%) 0 0 / 100% 260% no-repeat;
+    overflow: hidden;
     mix-blend-mode: screen;
     opacity: 0;
     pointer-events: none;
   }
+  /* La franja de luz se mueve con transform (no con background-position, que obliga a repintar en cada fotograma). */
+  .scan::before {
+    content: '';
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    height: 52%;
+    background: linear-gradient(180deg, transparent, rgb(255 170 90 / 0.4) 50%, transparent);
+    transform: translateY(160%);
+  }
   .robot[data-active] .scan {
     opacity: 1;
+  }
+  .robot[data-active] .scan::before {
     animation: scan 4.2s cubic-bezier(0.45, 0, 0.55, 1) infinite;
   }
   @keyframes scan {
     0% {
-      background-position: 0 120%;
+      transform: translateY(160%);
     }
     60%,
     100% {
-      background-position: 0 -20%;
+      transform: translateY(-110%);
     }
   }
   /* Contraluz cálido detrás del cobot activo: el nombre gigante queda en silueta delante. */
@@ -530,7 +553,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
       radial-gradient(ellipse 26% 40% at 50% 64%, rgb(255 150 70 / 0.32), transparent 72%),
       radial-gradient(ellipse 42% 58% at 50% 60%, rgb(255 96 20 / 0.24), transparent 72%),
       radial-gradient(ellipse 62% 70% at 46% 58%, rgb(190 40 14 / 0.18), transparent 75%);
-    filter: blur(8px);
     animation: backlight 7s ease-in-out infinite;
     pointer-events: none;
   }
@@ -581,17 +603,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
     background: linear-gradient(0deg, rgb(255 120 40 / 0.2), rgb(255 106 19 / 0.045) 55%, transparent);
     clip-path: polygon(18% 100%, 82% 100%, 62% 0, 38% 0);
     filter: blur(6px);
-    animation: beam 5s ease-in-out infinite;
+    opacity: 0.8;
     pointer-events: none;
-  }
-  @keyframes beam {
-    0%,
-    100% {
-      opacity: 0.55;
-    }
-    50% {
-      opacity: 1;
-    }
   }
   /* Foco de techo (más tenue que la peana) y su cono de luz, por delante del robot en modo «pantalla». */
   .lamp {
@@ -617,7 +630,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
     filter: blur(10px);
     mix-blend-mode: screen;
     z-index: 12;
-    animation: spot 6s ease-in-out infinite;
+    opacity: 0.9;
     pointer-events: none;
   }
   /* En móvil el contador va encima del escenario: el foco baja un poco para no taparlo. */
@@ -630,32 +643,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
       width: 44vw;
     }
   }
-  @keyframes spot {
-    0%,
-    100% {
-      opacity: 0.8;
-    }
-    50% {
-      opacity: 1;
-    }
-  }
-  .lamp-ring {
-    animation: ring 3s ease-in-out infinite;
-    animation-delay: -1.5s;
-  }
-  .plat-ring {
-    animation: ring 3s ease-in-out infinite;
-  }
-  @keyframes ring {
-    0%,
-    100% {
-      stroke-opacity: 0.75;
-    }
-    50% {
-      stroke-opacity: 1;
-      stroke-width: 3;
-    }
-  }
+  /* Los anillos con brillo (.lamp-ring, .plat-ring) van quietos: animar un trazo con filtro SVG obliga a repintarlo en
+     cada fotograma. */
   .side {
     position: absolute;
     top: 0;
@@ -758,7 +747,6 @@ const pad = (n: number) => String(n).padStart(2, '0');
     object-fit: contain;
     user-select: none;
     -webkit-user-drag: none;
-    filter: drop-shadow(0 0 1.5px rgb(255 150 70 / 0.22)) drop-shadow(0 0 20px rgb(255 96 20 / 0.13));
   }
   .robot[data-active] .robot-img {
     filter: drop-shadow(0 0 1.5px rgb(255 160 80 / 0.34)) drop-shadow(0 0 26px rgb(255 96 20 / 0.2));
@@ -781,6 +769,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
   .robot[data-active] .rim {
     opacity: 0.8;
   }
+  /* Los robots de los lados, sin contraluz: es una capa con máscara y fusión «pantalla» por robot. */
+  .robot:not([data-active]) .rim {
+    display: none;
+  }
   .contact {
     position: absolute;
     left: 50%;
@@ -791,8 +783,9 @@ const pad = (n: number) => String(n).padStart(2, '0');
     transform: translateX(-50%);
     border-radius: 50%;
     background: radial-gradient(closest-side, rgb(0 0 0 / 0.85), transparent);
+  }
+  .robot[data-active] .contact {
     animation: shadow 6s ease-in-out infinite;
-    animation-delay: calc(var(--i, 0) * -0.8s);
   }
   @keyframes shadow {
     0%,
@@ -894,14 +887,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
   }
   @media (prefers-reduced-motion: reduce) {
     .plat-dots,
-    .robot-btn,
-    .contact,
-    .robot[data-active] .scan,
-    .beam,
-    .spot,
-    .backlight,
-    .lamp-ring,
-    .plat-ring {
+    .robot[data-active] .robot-btn,
+    .robot[data-active] .contact,
+    .robot[data-active] .scan::before,
+    .backlight {
       animation: none;
     }
     .ghost-wrap {
@@ -1099,12 +1088,17 @@ const pad = (n: number) => String(n).padStart(2, '0');
       canvas.width = Math.round(w * dpr);
       canvas.height = Math.round(h * dpr);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const n = front ? Math.round(Math.min(6, w / 200)) : Math.round(Math.min(90, (w * h) / 13000));
+      // Fluidez: menos brasas que antes (se notan igual) y a 30 fotogramas por segundo.
+      const n = front ? Math.round(Math.min(6, w / 200)) : Math.round(Math.min(50, (w * h) / 22000));
       parts = Array.from({ length: n }, () => spawn(true));
     };
     let last = performance.now();
     let running = false;
     const frame = (now: number) => {
+      if (running && now - last < 30) {
+        requestAnimationFrame(frame);
+        return;
+      }
       const dt = Math.min(0.05, (now - last) / 1000);
       last = now;
       ctx.clearRect(0, 0, w, h);

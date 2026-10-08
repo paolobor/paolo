@@ -267,6 +267,16 @@
   transform: none;
 }
 
+/* Fluidez: las animaciones continuas (brillos, pulsos, rejillas, mapas) se paran cuando su sección no está a la vista
+   (scripts/fx.ts marca la sección con data-offscreen). */
+[data-offscreen]::before,
+[data-offscreen]::after,
+[data-offscreen] *,
+[data-offscreen] *::before,
+[data-offscreen] *::after {
+  animation-play-state: paused !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -386,7 +396,8 @@ body {
       linear-gradient(#000 0 0) content-box,
       linear-gradient(#000 0 0);
     mask-composite: exclude;
-    animation: fx-beam 9s linear infinite;
+    /* A saltos de 2°: el degradado cónico se repinta 20 veces por segundo en vez de 60, y se ve igual de fluido. */
+    animation: fx-beam 9s steps(180) infinite;
   }
   @keyframes fx-beam {
     to {

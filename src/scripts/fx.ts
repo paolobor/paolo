@@ -73,3 +73,12 @@ if (!reduce && 'IntersectionObserver' in window) {
 
 // Módulo propio: sus constantes no chocan con las de los otros scripts.
 export {};
+
+// Fluidez: las animaciones de cada sección solo corren mientras se ve (estilos [data-offscreen] en global.css).
+if ('IntersectionObserver' in window) {
+  const io = new IntersectionObserver(
+    (entries) => entries.forEach((e) => e.target.toggleAttribute('data-offscreen', !e.isIntersecting)),
+    { rootMargin: '120px 0px' },
+  );
+  document.querySelectorAll('main > section, main > div > section, main section[data-teaser], footer').forEach((s) => io.observe(s));
+}

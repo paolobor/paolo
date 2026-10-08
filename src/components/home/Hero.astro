@@ -6,6 +6,7 @@ import { findImage } from '../../lib/images';
 import SmartImage from '../ui/SmartImage.astro';
 import { hero } from '../../data/home';
 import { url, formatNumber } from '../../lib/url';
+import VideoSources from '../ui/VideoSources.astro';
 
 const { video, slides } = hero;
 const featured = hero.featuredSlug ? await getEntry('products', hero.featuredSlug) : undefined;
@@ -20,8 +21,7 @@ const poster = posterImg ? (await getImage({ src: posterImg, format: 'webp', wid
     {
       hasVideo ? (
         <video class="size-full object-cover" autoplay muted loop playsinline preload="metadata" poster={poster} data-hero-video>
-          {video.webm && <source src={url(video.webm)} type="video/webm" />}
-          {video.mp4 && <source src={url(video.mp4)} type="video/mp4" />}
+          <VideoSources webm={video.webm} mp4={video.mp4} />
         </video>
       ) : (
         <div class="hero-ph blueprint size-full">
@@ -70,7 +70,7 @@ const poster = posterImg ? (await getImage({ src: posterImg, format: 'webp', wid
             {i === 0 && featured && (
               <a
                 href={url(`productos/${featured.id}/`)}
-                class="group hidden w-[300px] justify-self-end overflow-hidden rounded-2xl border border-white/15 bg-ink/70 backdrop-blur-md transition-colors hover:border-signal lg:block"
+                class="group hidden w-[300px] justify-self-end overflow-hidden rounded-2xl border border-white/15 bg-ink/85 transition-colors hover:border-signal lg:block"
                 tabindex="-1"
               >
                 <div class="aspect-[4/3]">
@@ -268,5 +268,13 @@ const poster = posterImg ? (await getImage({ src: posterImg, format: 'webp', wid
 
     setPaused(paused);
     show(0);
+
+    // Fluidez: el vídeo de portada se para cuando la portada sale de la pantalla y sigue al volver (si no está en pausa).
+    if (video && !reduce && !saveData && 'IntersectionObserver' in window) {
+      new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting) video.pause();
+        else if (!paused) video.play().catch(() => {});
+      }).observe(root);
+    }
   }
 </script>
