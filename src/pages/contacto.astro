@@ -32,6 +32,8 @@ const a = site.address;
   <section class="section">
     <div class="container-x grid items-start gap-10 lg:grid-cols-[1fr_380px]">
       <form class="card grid gap-6 p-6 md:p-8" data-form="contact" data-success={url('gracias/')} data-contact-form novalidate>
+<!-- Trampa antispam (Web3Forms): invisible para las personas; si un robot la marca, el envío se rechaza. -->
+<input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none" />
         <h2 class="text-2xl font-bold" style="font-stretch:112%">Escríbenos</h2>
         <div class="form-grid">
           <div class="form-field"><label for="c-nombre">Nombre *</label><input id="c-nombre" name="nombre" required autocomplete="given-name" /></div>

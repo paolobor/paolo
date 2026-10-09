@@ -22,6 +22,11 @@ export async function submitForm(form: HTMLFormElement, extra: Record<string, st
   const status = form.querySelector<HTMLElement>('[data-form-status]');
   const data = Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
   Object.assign(data, extra);
+  // Trampa antispam marcada: es un robot. Se le dice que ha ido bien y no se envía nada.
+  if (data.botcheck) {
+    if (status) status.textContent = 'Recibido.';
+    return 'sent';
+  }
 
   if (!cfg.forms.accessKey) {
     const body = Object.entries(data)

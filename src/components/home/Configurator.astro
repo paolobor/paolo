@@ -74,6 +74,8 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
 
     <div class="mt-10 grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1fr)_380px] lg:gap-10" data-cfg>
       <form class="cfg-form min-w-0" data-form="configurator" novalidate>
+<!-- Trampa antispam (Web3Forms): invisible para las personas; si un robot la marca, el envío se rechaza. -->
+<input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none" />
         <!-- Pasos -->
         <ol class="cfg-steps mb-6 flex gap-1 overflow-x-auto pb-1" aria-label="Pasos del configurador">
           {

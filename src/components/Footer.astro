@@ -57,6 +57,8 @@ const columns = [
         <h3 class="font-mono text-xs font-medium uppercase tracking-[0.14em] text-signal">Newsletter</h3>
         <p class="mt-4 text-[0.95rem]">Novedades de producto y casos de aplicación, directamente en tu correo.</p>
         <form class="mt-4 grid gap-3" data-form="newsletter" novalidate>
+<!-- Trampa antispam (Web3Forms): invisible para las personas; si un robot la marca, el envío se rechaza. -->
+<input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none" />
           <label for="nl-email" class="sr-only">Correo electrónico</label>
           <div class="flex gap-2">
             <input

@@ -50,4 +50,11 @@ Options -Indexes
 <IfModule mod_headers.c>
   Header always set X-Content-Type-Options "nosniff"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  # Solo por https durante un año (el navegador ya no intenta http).
+  Header always set Strict-Transport-Security "max-age=31536000"
+  # Nadie puede meter la web dentro de otra página para engañar a los clientes (clickjacking).
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Content-Security-Policy "frame-ancestors 'self'"
+  # Sin cámara ni ubicación; el micrófono solo para el asistente de voz de la propia web.
+  Header always set Permissions-Policy "camera=(), geolocation=(), payment=(), usb=(), microphone=(self)"
 </IfModule>

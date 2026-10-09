@@ -39,6 +39,8 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
         )
       }
       <form class="card grid gap-6 p-6 md:p-8" data-form="order" data-order-form novalidate hidden={accountsOn}>
+<!-- Trampa antispam (Web3Forms): invisible para las personas; si un robot la marca, el envío se rechaza. -->
+<input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none" />
         <h2 class="text-2xl font-bold" style="font-stretch:112%">Datos de facturación y entrega</h2>
         <div class="form-grid">
           <div class="form-field"><label for="o-empresa">Empresa *</label><input id="o-empresa" name="empresa" required autocomplete="organization" /></div>
