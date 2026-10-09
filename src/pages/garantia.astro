@@ -28,7 +28,7 @@ const cobots = (await getProducts('cobot')).filter((c) => !c.data.upcoming);
           <div class="form-field"><label for="g-nombre">Nombre *</label><input id="g-nombre" name="nombre" required autocomplete="given-name" /></div>
           <div class="form-field"><label for="g-apellidos">Apellidos *</label><input id="g-apellidos" name="apellidos" required autocomplete="family-name" /></div>
           <div class="form-field"><label for="g-empresa">Empresa *</label><input id="g-empresa" name="empresa" required autocomplete="organization" /></div>
-          <div class="form-field"><label for="g-cif">CIF / NIF *</label><input id="g-cif" name="cif" required /></div>
+          <div class="form-field"><label for="g-cif">DNI, CIF o NIF *</label><input id="g-cif" name="cif" required /></div>
           <div class="form-field sm:col-span-2"><label for="g-dir">Dirección *</label><input id="g-dir" name="direccion" required autocomplete="street-address" /></div>
           <div class="form-field"><label for="g-email">Correo electrónico *</label><input id="g-email" name="email" type="email" required autocomplete="email" /></div>
           <div class="form-field"><label for="g-tel">Teléfono de contacto *</label><input id="g-tel" name="telefono" type="tel" required autocomplete="tel" /></div>
