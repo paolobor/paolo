@@ -145,130 +145,6 @@
   opacity: 0;
 }
 
-/* ---------- Tramo 1: título de entrada con la rueda del ratón ---------- */
-.fi-start {
-  position: absolute;
-  left: 50%;
-  bottom: calc(max(44px, (100vh - max(100vw / 2.39, 56vh)) / 2) + 5vh);
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  margin: 0;
-  font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.5em;
-  text-transform: uppercase;
-  white-space: nowrap;
-  color: rgba(236, 238, 241, 0.86);
-  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
-  opacity: 0;
-  transform: translateX(-50%);
-  pointer-events: none;
-}
-.fi-start > span:last-child {
-  padding-left: 0.5em;
-}
-.fi-mouse {
-  position: relative;
-  width: 22px;
-  height: 34px;
-  border: 1px solid rgba(236, 238, 241, 0.7);
-  border-radius: 12px;
-}
-.fi-mouse i {
-  position: absolute;
-  top: 7px;
-  left: 50%;
-  width: 2px;
-  height: 7px;
-  margin-left: -1px;
-  border-radius: 2px;
-  background: var(--fi-orange);
-  animation: fi-wheel 2.4s cubic-bezier(0.45, 0, 0.25, 1) infinite;
-}
-@keyframes fi-wheel {
-  0% { transform: translateY(0); opacity: 0; }
-  25% { opacity: 1; }
-  70% { transform: translateY(10px); opacity: 0; }
-  100% { transform: translateY(10px); opacity: 0; }
-}
-.fi-coarse .fi-mouse {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-}
-.fi-coarse .fi-mouse i {
-  top: 5px;
-  height: 6px;
-}
-
-/* ---------- Tramo 2: HUD ---------- */
-.fi-hud {
-  position: absolute;
-  left: max(clamp(20px, 4vw, 64px), env(safe-area-inset-left));
-  bottom: calc(max(44px, (100vh - max(100vw / 2.39, 56vh)) / 2) + 4vh);
-  z-index: 3;
-  display: grid;
-  gap: 12px;
-  font: 400 10.5px/1.2 'Inter', system-ui, sans-serif;
-  letter-spacing: 0.32em;
-  text-transform: uppercase;
-  color: rgba(236, 238, 241, 0.86);
-  pointer-events: none;
-  opacity: 0;
-}
-.fi-hud-line {
-  display: block;
-  width: 180px;
-  height: 1px;
-  background: linear-gradient(90deg, var(--fi-orange), rgba(236, 238, 241, 0.35) 40%, transparent);
-  transform-origin: left;
-}
-.fi-hud-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 0;
-  font-size: 11.5px;
-  color: #fff;
-}
-.fi-hud-title i {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--fi-orange);
-  box-shadow: 0 0 10px var(--fi-orange);
-  animation: fi-blink 2.4s ease-in-out infinite;
-}
-@keyframes fi-blink {
-  50% { opacity: 0.35; }
-}
-.fi-hud-data {
-  display: flex;
-  gap: clamp(18px, 2.6vw, 40px);
-  margin: 0;
-}
-.fi-hud-data div {
-  display: grid;
-  gap: 6px;
-  padding-left: 10px;
-  border-left: 1px solid rgba(236, 238, 241, 0.22);
-}
-.fi-hud-data dt {
-  font-size: 9px;
-  color: rgba(236, 238, 241, 0.55);
-}
-.fi-hud-data dd {
-  margin: 0;
-  font-size: 15px;
-  font-weight: 300;
-  letter-spacing: 0.12em;
-  font-variant-numeric: tabular-nums;
-  color: var(--fi-orange);
-}
-
 /* ---------- Tramo 3: marco del sistema de visión ---------- */
 .fi-lock {
   position: absolute;
@@ -318,9 +194,6 @@
 }
 .fi-enter:focus {
   outline: none;
-}
-.fi-intro:has(.fi-enter:focus-visible) .fi-start {
-  color: #fff;
 }
 .fi-intro.is-auto .fi-enter,
 .fi-intro.is-done .fi-enter {
@@ -559,12 +432,6 @@ html.fi-play body {
   .fi-spain {
     font-size: 11.5px;
   }
-  .fi-start {
-    letter-spacing: 0.36em;
-  }
-  .fi-hud-data dd {
-    font-size: 13px;
-  }
 }
 
 /* Movimiento reducido: tres imágenes fijas que se funden. */
@@ -582,7 +449,6 @@ html.fi-play body {
   .fi-grain {
     display: none;
   }
-  .fi-mouse i,
   .fi-hint span {
     animation: none;
   }

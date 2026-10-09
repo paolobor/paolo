@@ -18,15 +18,13 @@ móvil): así se puede ir adelante y atrás al instante y sin tirones.
 0. **Pantalla de inicio, la de siempre:** el bloque «FAIRINO SPAIN» con su destello, «Haz clic para entrar» y
    «Saltar intro». Mientras se ve, se descargan los fotogramas (primero el tramo aéreo).
 1. **Clic (o Intro, espacio, rueda o dedo):** la cámara cruza el hueco de la «O» y al otro lado está la fábrica desde
-   el aire, al anochecer; entran las bandas de cine (2,39:1). Abajo, como título de película: «Desliza o haz clic»,
-   con la rueda del ratón animada («Desliza para avanzar» en el móvil). Leve parallax con el ratón.
+   el aire; entran las bandas de cine (2,39:1). Leve parallax con el ratón.
 2. **Rueda o dedo:** aceleran la cámara con inercia, nunca a saltos ni hacia atrás. Si se deja de mover, la cámara
    sigue sola (`IDLE`): nunca se para. **Clic:** avanza sola a velocidad normal hasta el final
    (`AUTO`). La página de debajo no se mueve.
-3. **Dentro de la nave (desde 5,5 s):** cuando aparecen los 8 cobots entra el HUD (líneas finas, «8 cobots FAIRINO en
-   producción» y contadores de ciclos, piezas y tiempo sin parar) y vuelve el bloque «FAIRINO SPAIN», con su
-   animación de siempre, arriba de la imagen.
-4. **El cobot del final (desde 13,75 s):** el HUD se va y un marco naranja lo «fija», como un sistema de visión, y
+3. **Dentro de la nave (desde 5,5 s):** cuando aparecen los cobots vuelve el bloque «FAIRINO SPAIN», con su animación
+   de siempre, arriba de la imagen.
+4. **El cobot del final (desde 13,75 s):** el logotipo se va y un marco naranja lo «fija», como un sistema de visión, y
    le sigue mientras la cámara se acerca a su anillo.
 5. **Por el anillo:** al llegar al último fotograma, la cámara entra por el anillo, un destello
    anamórfico cruza la pantalla, las bandas se abren y la capa se funde dejando ver la home.
@@ -89,7 +87,7 @@ Para verla otra vez sin el parámetro, cierra la pestaña: sessionStorage se bor
 - **Teclado:** Intro o espacio = clic; flecha abajo y Av Pág adelantan la cámara.
 - **Movimiento reducido** (`prefers-reduced-motion`): sin recorrido; al hacer clic, fundidos entre tres imágenes fijas
   del vídeo (fábrica, nave y anillo) y paso a la web.
-- **Móvil:** fotogramas de 960 px, «Toca para entrar» y «Desliza para avanzar».
+- **Móvil:** fotogramas de 960 px y «Toca para entrar».
 - **Sin JavaScript:** la página suelta muestra el logotipo y un enlace a la web; dentro de la web, la intro no aparece.
 
 ## Cambiar el vídeo

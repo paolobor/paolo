@@ -50,16 +50,6 @@
         <canvas class="fi-canvas" data-canvas></canvas>
       </div>
 
-      <!-- Tramo 2: capa HUD mínima sobre la nave. -->
-      <div class="fi-hud" data-hud aria-hidden="true">
-        <span class="fi-hud-line" data-hud-in></span>
-        <p class="fi-hud-title" data-hud-in><i></i>8 cobots FAIRINO en producción</p>
-        <dl class="fi-hud-data">
-          <div data-hud-in><dt>Ciclos</dt><dd data-count="ciclos">0</dd></div>
-          <div data-hud-in><dt>Piezas</dt><dd data-count="piezas">0</dd></div>
-          <div data-hud-in><dt>Sin parar</dt><dd data-count="reloj">00:00:00</dd></div>
-        </dl>
-      </div>
       <!-- Tramo 3: el sistema de visión fija el cobot del final. -->
       <div class="fi-lock" data-lock aria-hidden="true">
         <span class="fi-lock-c fi-lock-c--tl"></span><span class="fi-lock-c fi-lock-c--tr"></span>
@@ -101,11 +91,6 @@
         <p class="fi-hint" data-hint><span>Haz clic para entrar</span></p>
       </div>
 
-      <!-- Tramo 1, ya dentro del recorrido: cómo se avanza. -->
-      <p class="fi-start" data-start>
-        <span class="fi-mouse" aria-hidden="true"><i></i></span>
-        <span data-start-text>Desliza o haz clic</span>
-      </p>
       <button class="fi-enter" type="button" data-enter aria-label="Entrar en FAIRINO Spain"></button>
 
       <div class="fi-flare" data-flare aria-hidden="true"></div>
@@ -128,7 +113,7 @@
     </main>
 
     <noscript>
-      <style>.fi-hint,.fi-start,.fi-enter,.fi-stage,.fi-hud,.fi-lock,.fi-bar{display:none}.fi-word{opacity:1}</style>
+      <style>.fi-hint,.fi-enter,.fi-stage,.fi-lock,.fi-bar{display:none}.fi-word{opacity:1}</style>
       <p class="fi-noscript"><a href="/">Entrar en la web</a></p>
     </noscript>
 

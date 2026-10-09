@@ -4,9 +4,9 @@
  * <canvas>; la cámara va siempre hacia delante, recta y sin pararse: la rueda o el dedo la aceleran, con inercia.
  *   Inicio   la pantalla de siempre: el bloque «FAIRINO SPAIN» con su destello y «Haz clic para entrar». Al hacer
  *            clic (o Intro, espacio, rueda o dedo), la cámara cruza el hueco de la «O» y empieza el recorrido.
- *   Tramo 1  la fábrica desde el aire: quieta pero viva (parallax) y «Desliza o haz clic», con la rueda animada.
- *   Tramo 2  dentro de la nave, los 8 FAIRINO: HUD mínimo con contadores y el bloque «FAIRINO SPAIN» de siempre.
- *   Tramo 3  la cámara elige el cobot del final (el HUD lo fija con un marco), todo se oscurece y entra por el anillo
+ *   Tramo 1  la fábrica desde el aire, quieta pero viva (parallax).
+ *   Tramo 2  dentro de la nave, los FAIRINO trabajando, y el bloque «FAIRINO SPAIN» de siempre.
+ *   Tramo 3  la cámara elige el cobot del final (un marco naranja lo fija), todo se oscurece y entra por el anillo
  *            naranja: las bandas de cine se abren y aparece la web.
  * Sin tocar nada, la cámara sigue avanzando a cámara muy lenta; con un clic, avanza sola a velocidad normal.
  * Dentro de la web (html.fi-play) es una capa encima de la página; la página suelta (intro/index.html) salta a
@@ -72,9 +72,6 @@
   var mark = $('[data-wordmark]');
   var shineGrad = $('[data-shine]');
   var spain = $('[data-spain]');
-  var start = $('[data-start]');
-  var hud = $('[data-hud]');
-  var hudIn = intro.querySelectorAll('[data-hud-in]');
   var lock = $('[data-lock]');
   var flare = $('[data-flare]');
   var skip = $('[data-skip]');
@@ -87,13 +84,7 @@
   var whiteout = $('[data-whiteout]');
   var hint = $('[data-hint]');
   var PATH = document.getElementById('fi-wm');
-  var counts = {
-    ciclos: $('[data-count="ciclos"]'),
-    piezas: $('[data-count="piezas"]'),
-    reloj: $('[data-count="reloj"]'),
-  };
   if (coarse) {
-    $('[data-start-text]').textContent = 'Desliza para avanzar';
     hint.querySelector('span').textContent = 'Toca para entrar';
   }
 
@@ -374,7 +365,6 @@
           intro.classList.add('is-flying');
           state = 'run';
           started = true;
-          gsap.to(start, { opacity: 1, duration: 1.2, ease: 'sine.inOut', delay: 0.2 });
           gsap.to(note, { opacity: 1, duration: 1.2, ease: 'sine.inOut', delay: 0.5 });
         }, null, 1.0);
     });
@@ -393,38 +383,6 @@
   }
   function logoOut() {
     gsap.to(word, { autoAlpha: 0, duration: 0.6, ease: 'sine.inOut' });
-  }
-
-  // ---------------------------------------------------------------- HUD
-  var hudOn = false;
-  var hudTl = null;
-  function showHud(on) {
-    if (on === hudOn) return;
-    hudOn = on;
-    if (hudTl) hudTl.kill();
-    if (on) {
-      hudTl = gsap
-        .timeline()
-        .set(hud, { opacity: 1 })
-        .fromTo(hudIn[0], { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.6, ease: 'power2.inOut' }, 0)
-        .fromTo([].slice.call(hudIn, 1), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.6, ease: 'sine.out', stagger: 0.15 }, 0.25);
-    } else {
-      hudTl = gsap.timeline().to(hud, { opacity: 0, duration: 0.5, ease: 'sine.in' });
-    }
-  }
-  // Contadores de la escena: avanzan mientras la cámara recorre la nave (8 cobots, un ciclo cada ~3 s).
-  var sim = { t: 0 };
-  var fmt = new Intl.NumberFormat('es-ES');
-  function tickCounts(dt) {
-    sim.t += dt;
-    var c = Math.floor(sim.t * 8 / 3.1);
-    counts.ciclos.textContent = fmt.format(c);
-    counts.piezas.textContent = fmt.format(c * 4);
-    var s = Math.floor(sim.t * 37);
-    var pad = function (n) {
-      return (n < 10 ? '0' : '') + n;
-    };
-    counts.reloj.textContent = pad(Math.floor(s / 3600)) + ':' + pad(Math.floor(s / 60) % 60) + ':' + pad(s % 60);
   }
 
   // Marco del sistema de visión sobre el cobot del final: aparece encogiéndose sobre él, parpadea al fijarlo y le
@@ -534,14 +492,9 @@
   // ---------------------------------------------------------------- recorrido
   var last = 0;
   var flags = { doors: false, logo: false };
-  var hinted = false;
   function begin(mode) {
     if (state === 'idle') return enter();
     if (state === 'enter' || state === 'out' || state === 'done') return;
-    if (!hinted && (mode === 'auto' || target > FRAMES.fps * 0.6)) {
-      hinted = true;
-      gsap.to(start, { opacity: 0, duration: 1, ease: 'sine.inOut', overwrite: true });
-    }
     if (mode === 'auto') {
       state = 'auto';
       intro.classList.add('is-auto');
@@ -577,10 +530,8 @@
     draw(pos);
     var t = pos / FRAMES.fps;
 
-    // Tramo 2: HUD y FAIRINO SPAIN en la nave.
+    // Tramo 2: FAIRINO SPAIN en la nave.
     var inHall = t >= SEG.nave + 0.8 && t < SEG.final;
-    showHud(inHall);
-    if (inHall) tickCounts(dt);
     if (inHall !== flags.logo) {
       flags.logo = inHall;
       if (inHall) logoIn();
@@ -607,10 +558,9 @@
     if (state === 'out' || state === 'done') return;
     state = 'out';
     remember();
-    showHud(false);
     showLock(false);
     logoOut();
-    gsap.to([start, note], { opacity: 0, duration: 0.5 });
+    gsap.to(note, { opacity: 0, duration: 0.5 });
     // La cámara entra por el anillo del último fotograma.
     var f = frameRect();
     var rx = f.x + RING.x * f.w;
