@@ -151,8 +151,11 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
 
         <!-- 3. Controlador -->
         <fieldset class="cfg-step" data-step="2">
-          <legend class="cfg-legend">3 · Controlador</legend>
-          <p class="cfg-hint">Alimentación a red (AC) o en continua (DC). Solo se activan los compatibles con el cobot elegido.</p>
+          <legend class="cfg-legend">3 · Controladora incluida: elige AC o DC</legend>
+          <p class="cfg-hint">
+            La controladora va en la caja con el cobot, junto con los cables y la seta de emergencia: no suma al precio. Solo
+            elige cómo la alimentas: a red (AC) para un puesto fijo, o en continua (DC) para AGV, robots móviles o batería.
+          </p>
           <div class="grid gap-3 sm:grid-cols-2">
             {
               controllers.map((p) => (
@@ -163,7 +166,8 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
                     value={p.id}
                     class="sr-only"
                     data-name={p.data.name}
-                    data-price={priceAttr(p)}
+                    data-price="0"
+                    data-included
                     data-compat={p.data.compatibleWith.join(',')}
                   />
                   <span class="opt-thumb" aria-hidden="true">
@@ -173,10 +177,10 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
                   </span>
                   <span class="grid">
                     <span class="font-semibold">{p.data.name}</span>
-                    <span class="opt-meta">{p.data.group === 'dc' ? 'Corriente continua' : 'Corriente alterna'}</span>
+                    <span class="opt-meta">{p.data.group === 'dc' ? 'Corriente continua · 30–60 V DC' : 'Corriente alterna · a red'}</span>
                     <span class="opt-meta opt-incompat">No compatible con el cobot elegido</span>
                   </span>
-                  {priceText(p) && <span class="opt-price ml-auto">{priceText(p)}</span>}
+                  <span class="opt-price ml-auto">Incluida</span>
                 </label>
               ))
             }
@@ -201,7 +205,7 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
           <div class="acc-filters" role="group" aria-label="Filtrar accesorios por familia" data-acc-filters>
             {
               families.map((f, i) => (
-                <button type="button" class="acc-chip" data-acc-filter={f.id} aria-pressed={String(i === 0)}>
+                <button type="button" class="acc-chip" data-acc-filter={f.id} aria-pressed={i === 0 ? 'true' : 'false'}>
                   <Icon name={f.icon} size={15} />
                   {f.label}
                   <span class="acc-chip-n">{f.items.length}</span>
@@ -220,7 +224,7 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
                 {f.subs.length > 0 && (
                   <div class="acc-subs" role="group" aria-label={`Apartados de ${f.label}`} data-acc-subs={f.id} hidden>
                     {f.subs.map((s, i) => (
-                      <button type="button" class="acc-sub" data-acc-sub={s.key} aria-pressed={String(i === 0)}>
+                      <button type="button" class="acc-sub" data-acc-sub={s.key} aria-pressed={i === 0 ? 'true' : 'false'}>
                         {s.label} <span class="acc-chip-n">{s.n}</span>
                       </button>
                     ))}
@@ -897,7 +901,7 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
           price: price(cobot),
         });
       }
-      if (ctrl) out.push({ label: 'Controlador', name: ctrl.dataset.name!, slot: 'controlador', price: price(ctrl) });
+      if (ctrl) out.push({ label: 'Controladora', name: ctrl.hasAttribute('data-included') ? `${ctrl.dataset.name} (incluida con el cobot)` : ctrl.dataset.name!, slot: 'controlador', price: price(ctrl) });
       accs.forEach((a) => out.push({ label: a.dataset.family || 'Accesorio', name: a.dataset.name!, slot: a.dataset.slot!, price: price(a) }));
       return out;
     };
@@ -1011,7 +1015,7 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
         if (cfg.showPrices) {
           const p = document.createElement('span');
           p.className = 'shrink-0 font-mono text-xs text-mist';
-          p.textContent = i.price != null ? fmt.format(i.price) : 'Consultar';
+          p.textContent = i.slot === 'controlador' && i.price === 0 ? 'Incluida' : i.price != null ? fmt.format(i.price) : 'Consultar';
           li.append(p);
         }
         list.append(li);

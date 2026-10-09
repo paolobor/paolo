@@ -1,6 +1,7 @@
 import { getImage } from 'astro:assets';
 import { getProducts, categoryMeta } from './catalog';
 import { url } from './url';
+import { hasBox, POWER } from '../data/caja';
 
 export interface StoreItem {
   id: string;
@@ -12,6 +13,19 @@ export interface StoreItem {
   img: string | null;
   href: string;
   shopifyVariantId: string | null;
+}
+
+// Versiones para el carrito. En los cobots se combina la versión (IP54/IP65) con la controladora incluida, AC o DC:
+// «estandar~dc» = «Estándar (IP54) · Controladora DC». Se mantienen también las versiones sueltas por si había
+// algo en un carrito guardado de antes.
+function versionsOf(p: Awaited<ReturnType<typeof getProducts>>[number]) {
+  const base = p.data.store.versions.map((v) => ({ id: v.id, label: v.label, delta: v.delta }));
+  if (!hasBox(p)) return base;
+  const power = POWER.map((w) => ({ id: w.id, label: `Controladora ${w.short}`, delta: 0 }));
+  const combined = (base.length ? base : [{ id: '', label: '', delta: 0 }]).flatMap((v) =>
+    power.map((w) => ({ id: v.id ? `${v.id}~${w.id}` : w.id, label: [v.label, w.label].filter(Boolean).join(' · '), delta: v.delta })),
+  );
+  return [...combined, ...base.filter((v) => !combined.some((c) => c.id === v.id))];
 }
 
 // Datos mínimos que necesita el carrito en el navegador.
@@ -29,7 +43,7 @@ export async function getStoreData(): Promise<Record<string, StoreItem>> {
           category: categoryMeta[p.data.category].singular,
           price: p.data.store.price,
           shipping: p.data.store.shipping,
-          versions: p.data.store.versions.map((v) => ({ id: v.id, label: v.label, delta: v.delta })),
+          versions: versionsOf(p),
           img,
           href: url(`productos/${p.id}/`),
           shopifyVariantId: p.data.store.shopifyVariantId,

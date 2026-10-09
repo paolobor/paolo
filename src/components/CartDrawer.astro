@@ -154,7 +154,10 @@ const vatNote = site.store.vatIncluded === true ? 'IVA incluido' : site.store.va
     if (add) {
       const id = add.dataset.addCart!;
       const sel = document.querySelector<HTMLSelectElement | HTMLInputElement>(`[data-version-for="${id}"]:is(select, input:checked)`);
-      addToCart(id, sel?.value ?? add.dataset.version ?? '');
+      // Cobots: la controladora incluida, AC o DC, va unida a la versión («estandar~dc»).
+      const power = document.querySelector<HTMLInputElement>(`[data-power-for="${id}"]:checked`)?.value ?? add.dataset.power;
+      const base = sel?.value ?? add.dataset.version ?? '';
+      addToCart(id, power ? (base ? `${base}~${power}` : power) : base);
       showToast(`${add.dataset.name ?? 'Producto'} añadido al carrito`);
       if (add.hasAttribute('data-open-cart')) open();
       return;

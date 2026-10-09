@@ -8,6 +8,8 @@ import Placeholder from '../../components/ui/Placeholder.astro';
 import ProductCard from '../../components/ProductCard.astro';
 import ContactBand from '../../components/home/ContactBand.astro';
 import HumanoidTeaser from '../../components/home/HumanoidTeaser.astro';
+import BoxContents from '../../components/store/BoxContents.astro';
+import { hasBox, SPARE_IDS, spareNote } from '../../data/caja';
 import { humanoid } from '../../data/humanoid';
 import { applications } from '../../data/applications';
 import { site } from '../../data/site';
@@ -65,7 +67,7 @@ const byId = (ids: string[]) => all.filter((p) => ids.includes(p.id));
 let compatible: { title: string; items: Product[] }[] = [];
 if (d.category === 'cobot') {
   compatible = [
-    { title: 'Controladores compatibles', items: byId(d.compatibleWith) },
+    { title: hasBox(product) ? 'Controladoras (una ya va incluida en la caja)' : 'Controladores compatibles', items: byId(d.compatibleWith) },
     { title: 'Accesorios compatibles', items: all.filter((p) => p.data.category === 'accesorio' && p.data.compatibleWith.includes(product.id)) },
   ];
 } else {
@@ -296,6 +298,18 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
                 </li>
               ))}
             </ul>
+          )
+        }
+
+        {hasBox(product) && <BoxContents product={product} />}
+        {
+          SPARE_IDS.includes(product.id) && (
+            <p class="flex items-start gap-3 rounded-xl border border-signal/30 bg-signal/5 p-4 text-sm">
+              <Icon name="package-check" size={20} class="shrink-0 text-signal" />
+              <span>
+                <b class="text-white">Recambio.</b> {spareNote(product.id)}
+              </span>
+            </p>
           )
         }
 

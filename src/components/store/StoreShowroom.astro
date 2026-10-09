@@ -3,6 +3,8 @@
 // nombre gigante detrás, peana luminosa (código, no imagen), cifras clave, precio y panel de especificaciones.
 import { getImage } from 'astro:assets';
 import Icon from '../ui/Icon.astro';
+import BoxContents from './BoxContents.astro';
+import { hasBox } from '../../data/caja';
 import { getProducts } from '../../lib/catalog';
 import { humanoid } from '../../data/humanoid';
 import { applications } from '../../data/applications';
@@ -58,6 +60,8 @@ const slides = await Promise.all(
       ],
       price: c.data.store.price,
       versions: c.data.store.versions,
+      product: c,
+      box: hasBox(c),
       specs: c.data.specs,
     };
   }),
@@ -209,13 +213,15 @@ const pad = (n: number) => String(n).padStart(2, '0');
             </fieldset>
           )}
 
+          {s.box && <BoxContents product={s.product} selectable class="max-w-3xl" />}
+
           <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
             <p class="font-mono">
               <span class="text-[0.62rem] uppercase tracking-[0.14em] text-mist">PVP</span>{' '}
               <span class="text-2xl text-white">{s.price != null ? formatEUR(s.price) : 'Consultar'}</span>
               {vatNote && <span class="ml-1 text-xs text-mist">{vatNote}</span>}
             </p>
-            <button type="button" class="btn btn-primary" data-add-cart={s.id} data-name={s.name} data-open-cart>
+            <button type="button" class="btn btn-primary" data-add-cart={s.id} data-name={s.name} data-version={s.versions[0]?.id} data-power={s.box ? 'ac' : undefined} data-open-cart>
               <Icon name="plus" size={18} />
               Añadir al carrito
             </button>
@@ -328,7 +334,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
           <div class="flex flex-wrap items-center gap-3 border-t border-line pt-5">
             <p class="mr-auto font-mono text-xl">{s.price != null ? formatEUR(s.price) : 'Consultar'} {vatNote && <span class="text-xs text-mist">{vatNote}</span>}</p>
-            <button type="button" class="btn btn-primary" data-add-cart={s.id} data-name={s.name} data-open-cart>
+            <button type="button" class="btn btn-primary" data-add-cart={s.id} data-name={s.name} data-version={s.versions[0]?.id} data-power={s.box ? 'ac' : undefined} data-open-cart>
               <Icon name="plus" size={18} />
               Añadir al carrito
             </button>
