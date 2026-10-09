@@ -22,9 +22,8 @@ móvil): así se puede ir adelante y atrás al instante y sin tirones.
 2. **Rueda o dedo:** aceleran la cámara con inercia, nunca a saltos ni hacia atrás. Si se deja de mover, la cámara
    sigue sola (`IDLE`): nunca se para. **Clic:** avanza sola a velocidad normal hasta el final
    (`AUTO`). La página de debajo no se mueve.
-3. **Dentro de la nave (desde 5,5 s):** cuando aparecen los cobots vuelve el bloque «FAIRINO SPAIN», con su animación
-   de siempre, arriba de la imagen.
-4. **El cobot del final (desde 13,75 s):** el logotipo se va y un marco naranja lo «fija», como un sistema de visión, y
+3. **Dentro de la nave (desde 5,5 s):** los cobots FAIRINO trabajando, sin textos encima.
+4. **El cobot del final (desde 13,75 s):** un marco naranja lo «fija», como un sistema de visión, y
    le sigue mientras la cámara se acerca a su anillo.
 5. **Por el anillo:** al llegar al último fotograma, la cámara entra por el anillo, un destello
    anamórfico cruza la pantalla, las bandas se abren y la capa se funde dejando ver la home.
@@ -53,8 +52,8 @@ index.html                 la página suelta (destino en <html data-target="http
 css/intro.css              estilos
 js/intro.js                guion de las escenas (GSAP)
 js/vendor/gsap.min.js      GSAP 3.15 (licencia gratuita de GSAP)
-assets/frames/1920/        fotogramas del recorrido para ordenador (719 WebP a 48 fps, unos 23 MB en total)
-assets/frames/960/         los mismos para el móvil y las pantallas pequeñas (unos 10 MB)
+assets/frames/1920/        fotogramas del recorrido para ordenador (719 WebP a 48 fps, unos 32 MB en total)
+assets/frames/960/         los mismos para el móvil y las pantallas pequeñas (unos 14 MB)
 assets/audio/              sonido opcional (ver «Sonido tipo tráiler»)
 assets/fonts/              Inter (Google Fonts, licencia OFL), servida desde la propia web
 assets/favicon.svg

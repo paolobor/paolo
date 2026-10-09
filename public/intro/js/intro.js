@@ -5,7 +5,7 @@
  *   Inicio   la pantalla de siempre: el bloque «FAIRINO SPAIN» con su destello y «Haz clic para entrar». Al hacer
  *            clic (o Intro, espacio, rueda o dedo), la cámara cruza el hueco de la «O» y empieza el recorrido.
  *   Tramo 1  la fábrica desde el aire, quieta pero viva (parallax).
- *   Tramo 2  dentro de la nave, los FAIRINO trabajando, y el bloque «FAIRINO SPAIN» de siempre.
+ *   Tramo 2  dentro de la nave, los FAIRINO trabajando.
  *   Tramo 3  la cámara elige el cobot del final (un marco naranja lo fija), todo se oscurece y entra por el anillo
  *            naranja: las bandas de cine se abren y aparece la web.
  * Sin tocar nada, la cámara sigue avanzando a cámara muy lenta; con un clic, avanza sola a velocidad normal.
@@ -31,7 +31,7 @@
   // medidos sobre los fotogramas del vídeo: aéreo, entrada (bajada y puertas), nave (luces y 8 cobots) y final
   // (cobot elegido, oscuridad, anillo). LOCK: dónde está el cobot del final al empezar el tramo 3 (proporciones del
   // fotograma 16:9). Si cambias el vídeo, cambia estos números (README).
-  var FRAMES = { count: 719, fps: 48, v: 4 };
+  var FRAMES = { count: 719, fps: 48, v: 5 };
   var SEG = { entrada: 3.5, nave: 5.5, final: 13.6 };
   // LOCK: marco sobre el cobot elegido, de un instante a otro (la cámara se le acerca). RING: el anillo en el último
   // fotograma (centro y radio exterior, respecto al ancho).
@@ -175,23 +175,15 @@
   };
   var drawn = -1;
   function draw(p) {
-    var i = Math.floor(p);
-    var f = p - i;
-    var key = Math.round(p * 20);
+    var key = Math.round(p);
     if (key === drawn) return;
     drawn = key;
-    var a = nearest(Math.min(i, LAST));
+    // A 48 fps basta con el fotograma más cercano: mezclar dos vecinos emborrona la imagen.
+    var a = nearest(Math.min(Math.round(p), LAST));
     if (!a) return;
     var r = cover(a);
-    ctx.globalAlpha = 1;
+    ctx.imageSmoothingQuality = 'high';
     ctx.drawImage(a, r[0], r[1], r[2], r[3]);
-    // Entre dos fotogramas, el siguiente se funde encima: el movimiento lento queda continuo, sin saltos.
-    var b = f > 0.02 && i + 1 <= LAST ? imgs[i + 1] : null;
-    if (b) {
-      ctx.globalAlpha = f;
-      ctx.drawImage(b, r[0], r[1], r[2], r[3]);
-      ctx.globalAlpha = 1;
-    }
   }
 
   // ---------------------------------------------------------------- tramo 1: quieto pero vivo
@@ -369,18 +361,6 @@
         }, null, 1.0);
     });
   }
-  var logoTl = null;
-  function logoIn() {
-    if (logoTl) return gsap.to(word, { autoAlpha: 1, duration: 0.7, ease: 'sine.inOut' });
-    var sh = { p: -0.4 };
-    gsap.set(word, { visibility: 'visible', scale: 1 });
-    logoTl = gsap.timeline();
-    logoTl
-      .fromTo(word, { opacity: 0 }, { opacity: 1, duration: 1.5, ease: 'power2.out' }, 0)
-      .fromTo(word, { filter: 'blur(16px)', scale: 1.035 }, { filter: 'blur(0px)', scale: 1, duration: 2.6, ease: 'expo.out', clearProps: 'filter' }, 0)
-      .to(sh, { p: 1.4, duration: 2.1, ease: 'power2.inOut', onUpdate: function () { setShine(sh.p); } }, 0.4)
-      .fromTo(spain, { opacity: 0, letterSpacing: '1.1em' }, { opacity: 1, letterSpacing: '0.62em', duration: 1.6, ease: 'expo.out' }, 1.5);
-  }
   function logoOut() {
     gsap.to(word, { autoAlpha: 0, duration: 0.6, ease: 'sine.inOut' });
   }
@@ -491,7 +471,7 @@
 
   // ---------------------------------------------------------------- recorrido
   var last = 0;
-  var flags = { doors: false, logo: false };
+  var flags = { doors: false };
   function begin(mode) {
     if (state === 'idle') return enter();
     if (state === 'enter' || state === 'out' || state === 'done') return;
@@ -530,13 +510,6 @@
     draw(pos);
     var t = pos / FRAMES.fps;
 
-    // Tramo 2: FAIRINO SPAIN en la nave.
-    var inHall = t >= SEG.nave + 0.8 && t < SEG.final;
-    if (inHall !== flags.logo) {
-      flags.logo = inHall;
-      if (inHall) logoIn();
-      else logoOut();
-    }
     // Tramo 3: el sistema de visión fija el cobot del final.
     var locked = t >= LOCK[0].t && t < LOCK[1].t + 0.25;
     if (locked) trackLock(t);
