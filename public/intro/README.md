@@ -10,8 +10,8 @@ Entrada animada con el logotipo oficial de FAIRINO. Funciona de dos formas:
 ## Recorrido: llegar en persona a una gran fábrica (estilo cine)
 
 Un único plano secuencia sin cortes, hecho con IA (Higgsfield · Kling 3.0 en 4K, 15 s; es imagen ilustrativa), que el
-visitante recorre con la rueda del ratón o el dedo, hacia delante y hacia atrás, como en las páginas de producto de
-Apple. El vídeo está convertido en fotogramas WebP que se pintan en un `<canvas>` (1920 px en ordenador, 960 px en
+visitante recorre con la rueda del ratón o el dedo, como en las páginas de producto de Apple. La cámara va siempre
+hacia delante, recta y sin pararse: la rueda o el dedo (en cualquier sentido) la aceleran, nunca la hacen volver. El vídeo está convertido en fotogramas WebP que se pintan en un `<canvas>` (1920 px en ordenador, 960 px en
 móvil): así se puede ir adelante y atrás al instante y sin tirones.
 
 0. **Pantalla de inicio, la de siempre:** el bloque «FAIRINO SPAIN» con su destello, «Haz clic para entrar» y
@@ -19,8 +19,8 @@ móvil): así se puede ir adelante y atrás al instante y sin tirones.
 1. **Clic (o Intro, espacio, rueda o dedo):** la cámara cruza el hueco de la «O» y al otro lado está la fábrica desde
    el aire, al anochecer; entran las bandas de cine (2,39:1). Abajo, como título de película: «Desliza o haz clic»,
    con la rueda del ratón animada («Desliza para avanzar» en el móvil). Leve parallax con el ratón.
-2. **Rueda o dedo:** mueven la cámara con inercia, nunca a saltos. Si se deja de mover, la cámara sigue sola a cámara
-   muy lenta (`IDLE`): los cobots nunca se quedan parados. **Clic:** avanza sola a velocidad normal hasta el final
+2. **Rueda o dedo:** aceleran la cámara con inercia, nunca a saltos ni hacia atrás. Si se deja de mover, la cámara
+   sigue sola (`IDLE`): nunca se para. **Clic:** avanza sola a velocidad normal hasta el final
    (`AUTO`). La página de debajo no se mueve.
 3. **Dentro de la nave (desde 5,5 s):** cuando aparecen los 8 cobots entra el HUD (líneas finas, «8 cobots FAIRINO en
    producción» y contadores de ciclos, piezas y tiempo sin parar) y vuelve el bloque «FAIRINO SPAIN», con su
@@ -83,7 +83,7 @@ Para verla otra vez sin el parámetro, cierra la pestaña: sessionStorage se bor
 - **Carga:** primero el tramo aéreo (para poder empezar en 2-3 s) y el resto en segundo plano, 6 a la vez. Si en
   8 s no ha llegado ni el primer fotograma, se entra en la web.
 - **«Saltar intro»** (arriba a la derecha) lleva directo a la web en cualquier momento; dentro de la web, también Esc.
-- **Teclado:** Intro o espacio = clic; flechas arriba/abajo y Re Pág/Av Pág mueven la cámara.
+- **Teclado:** Intro o espacio = clic; flecha abajo y Av Pág adelantan la cámara.
 - **Movimiento reducido** (`prefers-reduced-motion`): sin recorrido; al hacer clic, fundidos entre tres imágenes fijas
   del vídeo (fábrica, nave y anillo) y paso a la web.
 - **Móvil:** fotogramas de 960 px, «Toca para entrar» y «Desliza para avanzar».

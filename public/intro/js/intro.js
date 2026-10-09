@@ -1,7 +1,7 @@
 /*
  * Intro de FAIRINO Spain: llegar en persona a una gran fábrica, como el arranque de una película.
  * Un único plano secuencia (assets/recorrido.mp4, convertido en fotogramas WebP en assets/frames/) que se pinta en un
- * <canvas>; el visitante mueve la cámara con la rueda o el dedo, hacia delante y hacia atrás, con inercia.
+ * <canvas>; la cámara va siempre hacia delante, recta y sin pararse: la rueda o el dedo la aceleran, con inercia.
  *   Inicio   la pantalla de siempre: el bloque «FAIRINO SPAIN» con su destello y «Haz clic para entrar». Al hacer
  *            clic (o Intro, espacio, rueda o dedo), la cámara cruza el hueco de la «O» y empieza el recorrido.
  *   Tramo 1  la fábrica desde el aire: quieta pero viva (parallax) y «Desliza o haz clic», con la rueda animada.
@@ -31,7 +31,7 @@
   // medidos sobre los fotogramas del vídeo: aéreo, entrada (bajada y puertas), nave (luces y 8 cobots) y final
   // (cobot elegido, oscuridad, anillo). LOCK: dónde está el cobot del final al empezar el tramo 3 (proporciones del
   // fotograma 16:9). Si cambias el vídeo, cambia estos números (README).
-  var FRAMES = { count: 361, fps: 24, v: 1 };
+  var FRAMES = { count: 361, fps: 24, v: 2 };
   var SEG = { entrada: 3.5, nave: 5.5, final: 13.6 };
   // LOCK: marco sobre el cobot elegido, de un instante a otro (la cámara se le acerca). RING: el anillo en el último
   // fotograma (centro y radio exterior, respecto al ancho).
@@ -41,11 +41,11 @@
   ];
   var RING = { x: 0.49, y: 0.43, r: 0.14 };
   // Velocidades, en segundos de vídeo por segundo real: sola sin tocar nada, y tras un clic.
-  var IDLE = 0.22;
-  var AUTO = 1;
+  var IDLE = 0.6;
+  var AUTO = 1.7;
   // Rueda: segundos de vídeo por píxel de rueda; dedo: por píxel arrastrado.
-  var WHEEL = 0.0016;
-  var TOUCH = 0.008;
+  var WHEEL = 0.0032;
+  var TOUCH = 0.014;
   // Sonido tipo tráiler (opcional): si existen en assets/audio/, suenan tras el primer gesto, a volumen bajo, con el
   // botón «Sonido» para silenciarlo. Si no hay ninguno, no suena nada y el botón no aparece.
   var AUDIO = {
@@ -119,7 +119,7 @@
   function loadFrames(onFirst) {
     var next = 0;
     var active = 0;
-    var MAX = 6;
+    var MAX = 8;
     var pump = function () {
       while (active < MAX && next < N) {
         (function (i) {
@@ -359,7 +359,7 @@
         }, null, 0.3)
         .to(fly, {
           p: 1,
-          duration: 0.85,
+          duration: 0.6,
           ease: 'power2.in',
           onUpdate: function () {
             var sc = 1 / (1 - fly.p * (1 - 1 / S));
@@ -367,22 +367,22 @@
             hole(sc * 0.985);
           },
         }, 0.4)
-        .fromTo(bars, { scaleY: 0 }, { scaleY: 1, duration: 1.4, ease: 'power2.inOut' }, 0.7)
-        .set(word, { autoAlpha: 0 }, 1.25)
+        .fromTo(bars, { scaleY: 0 }, { scaleY: 1, duration: 0.9, ease: 'power2.inOut' }, 0.5)
+        .set(word, { autoAlpha: 0 }, 1.0)
         .call(function () {
           stage.style.clipPath = '';
           gsap.set(word, { scale: 1, transformOrigin: '50% 50%' });
           intro.classList.add('is-flying');
           state = 'run';
           started = true;
-          gsap.to(start, { opacity: 1, duration: 2, ease: 'sine.inOut', delay: 0.4 });
-          gsap.to(note, { opacity: 1, duration: 1.6, ease: 'sine.inOut', delay: 0.8 });
-        }, null, 1.25);
+          gsap.to(start, { opacity: 1, duration: 1.2, ease: 'sine.inOut', delay: 0.2 });
+          gsap.to(note, { opacity: 1, duration: 1.2, ease: 'sine.inOut', delay: 0.5 });
+        }, null, 1.0);
     });
   }
   var logoTl = null;
   function logoIn() {
-    if (logoTl) return gsap.to(word, { autoAlpha: 1, duration: 1.2, ease: 'sine.inOut' });
+    if (logoTl) return gsap.to(word, { autoAlpha: 1, duration: 0.7, ease: 'sine.inOut' });
     var sh = { p: -0.4 };
     gsap.set(word, { visibility: 'visible', scale: 1 });
     logoTl = gsap.timeline();
@@ -393,7 +393,7 @@
       .fromTo(spain, { opacity: 0, letterSpacing: '1.1em' }, { opacity: 1, letterSpacing: '0.62em', duration: 1.6, ease: 'expo.out' }, 1.5);
   }
   function logoOut() {
-    gsap.to(word, { autoAlpha: 0, duration: 1.2, ease: 'sine.inOut' });
+    gsap.to(word, { autoAlpha: 0, duration: 0.6, ease: 'sine.inOut' });
   }
 
   // ---------------------------------------------------------------- HUD
@@ -407,10 +407,10 @@
       hudTl = gsap
         .timeline()
         .set(hud, { opacity: 1 })
-        .fromTo(hudIn[0], { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 1.1, ease: 'power2.inOut' }, 0)
-        .fromTo([].slice.call(hudIn, 1), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 1.2, ease: 'sine.out', stagger: 0.28 }, 0.5);
+        .fromTo(hudIn[0], { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.6, ease: 'power2.inOut' }, 0)
+        .fromTo([].slice.call(hudIn, 1), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 0.6, ease: 'sine.out', stagger: 0.15 }, 0.25);
     } else {
-      hudTl = gsap.timeline().to(hud, { opacity: 0, duration: 0.9, ease: 'sine.in' });
+      hudTl = gsap.timeline().to(hud, { opacity: 0, duration: 0.5, ease: 'sine.in' });
     }
   }
   // Contadores de la escena: avanzan mientras la cámara recorre la nave (8 cobots, un ciclo cada ~3 s).
@@ -560,9 +560,9 @@
     if (state === 'run' || state === 'auto') {
       target += (state === 'auto' ? AUTO : IDLE) * FRAMES.fps * dt;
     }
-    target = Math.max(0, Math.min(target, LAST, ready < 0 ? 0 : ready));
+    target = Math.max(pos, Math.min(target, LAST, ready < 0 ? 0 : ready));
     // Inercia: la cámara alcanza el objetivo con suavidad, nunca a saltos.
-    pos += (target - pos) * (1 - Math.exp(-dt * (state === 'auto' ? 9 : 5)));
+    pos += (target - pos) * (1 - Math.exp(-dt * (state === 'auto' ? 12 : 9)));
     if (Math.abs(target - pos) < 0.002) pos = target;
     // Esperando fotogramas que aún no han llegado: la barra de carga lo indica.
     load.classList.toggle('is-waiting', target >= ready - 1 && ready < LAST);
@@ -625,20 +625,20 @@
     var far = Math.max(Math.hypot(rx, ry), Math.hypot(window.innerWidth - rx, window.innerHeight - ry), Math.hypot(rx, window.innerHeight - ry), Math.hypot(window.innerWidth - rx, ry));
     var S = (far / (rr * 0.55)) * 1.1;
     var tl = gsap.timeline();
-    tl.fromTo(portal, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1.1, duration: 0.5, ease: 'power2.out' }, 0)
+    tl.fromTo(portal, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1.1, duration: 0.3, ease: 'power2.out' }, 0)
       .call(function () {
         hit('golpe');
         bed = '';
         mix();
-      }, null, 0.45)
-      .to(stage, { scale: S, duration: 1.3, ease: 'power3.in' }, 0.35)
-      .to(portal, { scale: S * 0.9, opacity: 0, duration: 1.3, ease: 'power3.in' }, 0.35)
-      .fromTo(canvas, { filter: 'brightness(1)' }, { filter: 'brightness(1.6) saturate(1.3)', duration: 0.6, ease: 'power1.in' }, 0.4)
-      .fromTo(flare, { opacity: 0, scaleX: 0.15 }, { opacity: 1, scaleX: 1, duration: 0.35, ease: 'power2.out' }, 0.55)
-      .to(flare, { opacity: 0, duration: 0.9, ease: 'sine.in' }, 0.95)
-      .to(bars, { scaleY: 0, duration: 1.3, ease: 'power2.inOut' }, 0.6)
-      .to(whiteout, { opacity: 1, duration: 0.55, ease: 'power2.in' }, 1.15)
-      .call(go, null, 1.75);
+      }, null, 0.25)
+      .to(stage, { scale: S, duration: 0.85, ease: 'power3.in' }, 0.2)
+      .to(portal, { scale: S * 0.9, opacity: 0, duration: 0.85, ease: 'power3.in' }, 0.2)
+      .fromTo(canvas, { filter: 'brightness(1)' }, { filter: 'brightness(1.6) saturate(1.3)', duration: 0.4, ease: 'power1.in' }, 0.25)
+      .fromTo(flare, { opacity: 0, scaleX: 0.15 }, { opacity: 1, scaleX: 1, duration: 0.25, ease: 'power2.out' }, 0.35)
+      .to(flare, { opacity: 0, duration: 0.6, ease: 'sine.in' }, 0.6)
+      .to(bars, { scaleY: 0, duration: 0.8, ease: 'power2.inOut' }, 0.35)
+      .to(whiteout, { opacity: 1, duration: 0.35, ease: 'power2.in' }, 0.75)
+      .call(go, null, 1.1);
   }
 
   // ---------------------------------------------------------------- entrada en la web
@@ -673,7 +673,7 @@
   }
   function go() {
     remember();
-    if (OVERLAY) return close(0.9);
+    if (OVERLAY) return close(0.6);
     stopAudio(0.3);
     state = 'done';
     if (window.top !== window.self) {
@@ -768,9 +768,6 @@
     } else if (e.key === 'ArrowDown' || e.key === 'PageDown') {
       begin('run');
       target += FRAMES.fps * 0.8;
-    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-      begin('run');
-      target -= FRAMES.fps * 0.8;
     }
   });
   // Rueda: la cámara avanza o retrocede; la página de debajo no se mueve.
@@ -781,8 +778,8 @@
       if (state === 'out' || state === 'done') return;
       var d = e.deltaY * (e.deltaMode === 1 ? 32 : e.deltaMode === 2 ? window.innerHeight : 1);
       begin('run');
-      if (state === 'auto' && d < 0) state = 'run'; // hacia atrás manda la rueda
-      target += Math.max(-240, Math.min(240, d)) * WHEEL * FRAMES.fps;
+      // Siempre hacia delante: la rueda (en cualquier sentido) acelera la cámara, nunca la hace volver.
+      target += Math.min(240, Math.abs(d)) * WHEEL * FRAMES.fps;
     },
     { passive: false },
   );
@@ -802,8 +799,7 @@
       e.preventDefault();
       var y = e.touches[0].clientY;
       begin('run');
-      if (state === 'auto' && y > ty) state = 'run';
-      target += (ty - y) * TOUCH * FRAMES.fps;
+      target += Math.abs(ty - y) * TOUCH * FRAMES.fps;
       ty = y;
     },
     { passive: false },
