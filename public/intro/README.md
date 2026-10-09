@@ -31,8 +31,9 @@ móvil): así se puede ir adelante y atrás al instante y sin tirones.
 5. **El portal:** al llegar al último fotograma, el anillo se ilumina en el borde, la cámara lo atraviesa, un destello
    anamórfico cruza la pantalla, las bandas se abren y la capa se funde dejando ver la home.
 
-Acabado de cine: de noche desde fuera y cada vez más oscuro según se entra en la nave, aros de los ejes mate (sin
-brillo), corrección de color (sombras frías, luces cálidas que hacen saltar el naranja #fc5220) y destellos
+Acabado de cine: de día fuera; al cruzar las puertas se hace de noche y la nave se va oscureciendo según se entra; aros
+de los ejes mate (sin brillo); 48 fotogramas por segundo (interpolados por movimiento) para que vaya fluido;
+corrección de color (sombras frías, luces cálidas que hacen saltar el naranja #fc5220) y destellos
 anamórficos discretos en las luces fuertes, ya metidos en los fotogramas; grano y viñeta suaves en la página.
 Textos como títulos de película: fundidos lentos y letras muy espaciadas. Una barra naranja fina (en el borde de la
 banda de abajo) muestra la carga; la cámara no pasa a un tramo cuyos fotogramas aún no han llegado.
@@ -95,9 +96,11 @@ Para verla otra vez sin el parámetro, cierra la pestaña: sessionStorage se bor
 
 1. Pon el plano secuencia nuevo (15 s, 16:9, sin cortes) en `assets-src/intro/` (ahí está `recorrido-1080.mp4`, la
    copia en 1080p del actual; el original en 4K está en Higgsfield).
-2. Saca los fotogramas con el acabado de cine:
+2. Pásalo a 48 fotogramas por segundo (interpolación por movimiento, unos minutos) y saca los fotogramas con el
+   acabado de cine:
    ```bash
-   tools/videos/intro-fotogramas.sh assets-src/intro/recorrido-1080.mp4 public/intro/assets/frames
+   ffmpeg -i assets-src/intro/recorrido-1080.mp4 -vf "minterpolate=fps=48:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1" -c:v libx264 -crf 14 /tmp/recorrido-48.mp4
+   tools/videos/intro-fotogramas.sh /tmp/recorrido-48.mp4 public/intro/assets/frames
    ```
 3. En `js/intro.js`, actualiza:
    - `FRAMES.count` (lo dice el script) y súbele `v` para que el navegador no use los fotogramas guardados;
