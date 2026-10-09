@@ -199,14 +199,9 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
             con el cobot elegido te decimos cuánto queda para la pieza, y lo que no le encaja se desactiva.
           </p>
           <div class="acc-filters" role="group" aria-label="Filtrar accesorios por familia" data-acc-filters>
-            <button type="button" class="acc-chip" data-acc-filter="todos" aria-pressed="true">
-              <Icon name="layers" size={15} />
-              Todos
-              <span class="acc-chip-n">{accCount}</span>
-            </button>
             {
-              families.map((f) => (
-                <button type="button" class="acc-chip" data-acc-filter={f.id} aria-pressed="false">
+              families.map((f, i) => (
+                <button type="button" class="acc-chip" data-acc-filter={f.id} aria-pressed={String(i === 0)}>
                   <Icon name={f.icon} size={15} />
                   {f.label}
                   <span class="acc-chip-n">{f.items.length}</span>
@@ -1203,6 +1198,10 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
         });
       }),
     );
+
+    // Sin «Todos»: se abre en la primera familia (Garras y pinzas) y se cambia con los botones, para no tener que bajar
+    // por los 68 accesorios.
+    chips[0]?.click();
 
     restore();
     syncVersions();
