@@ -26,7 +26,7 @@
     <!-- Inter (Google Fonts, licencia OFL) servida desde la propia web: más rápida y sin enviar datos a terceros. -->
     <link rel="preload" href="assets/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin />
     <!-- ?v=: súbelo al cambiar intro.css o intro.js, para que el navegador no use la versión guardada. -->
-    <link rel="stylesheet" href="css/intro.css?v=6" />
+    <link rel="stylesheet" href="css/intro.css?v=7" />
     <style>
       html,
       body {
@@ -45,13 +45,30 @@
   <body>
     <!-- La intro (de aquí la toma también la web, que la muestra encima del inicio y de la tienda). -->
     <main class="fi-intro" data-intro>
-      <!-- Escena 2: el vídeo espera detrás, en negro. -->
-      <div class="fi-film" data-film aria-hidden="true">
-        <video data-video muted playsinline preload="auto" disablepictureinpicture disableremoteplayback tabindex="-1"></video>
+      <!-- El recorrido: fotogramas del plano secuencia (assets/frames/) pintados en un lienzo; la rueda mueve la cámara. -->
+      <div class="fi-stage" data-stage aria-hidden="true">
+        <canvas class="fi-canvas" data-canvas></canvas>
       </div>
 
-      <!-- Escena 1: el logotipo de FAIRINO con su destello. -->
-      <div class="fi-center">
+      <!-- Tramo 2: capa HUD mínima sobre la nave. -->
+      <div class="fi-hud" data-hud aria-hidden="true">
+        <span class="fi-hud-line" data-hud-in></span>
+        <p class="fi-hud-title" data-hud-in><i></i>8 cobots FAIRINO en producción</p>
+        <dl class="fi-hud-data">
+          <div data-hud-in><dt>Ciclos</dt><dd data-count="ciclos">0</dd></div>
+          <div data-hud-in><dt>Piezas</dt><dd data-count="piezas">0</dd></div>
+          <div data-hud-in><dt>Sin parar</dt><dd data-count="reloj">00:00:00</dd></div>
+        </dl>
+      </div>
+      <!-- Tramo 3: el sistema de visión fija el cobot del final. -->
+      <div class="fi-lock" data-lock aria-hidden="true">
+        <span class="fi-lock-c fi-lock-c--tl"></span><span class="fi-lock-c fi-lock-c--tr"></span>
+        <span class="fi-lock-c fi-lock-c--bl"></span><span class="fi-lock-c fi-lock-c--br"></span>
+        <p class="fi-lock-label">FAIRINO · Objetivo fijado</p>
+      </div>
+
+      <!-- Pantalla de inicio de siempre: el bloque FAIRINO SPAIN y «Haz clic para entrar» (no cambiar). -->
+      <div class="fi-center" data-center>
         <h1 class="fi-word" data-word aria-label="FAIRINO Spain">
           <svg class="fi-wordmark" data-wordmark viewBox="0 0 622 68.969" aria-hidden="true" focusable="false">
             <defs>
@@ -81,36 +98,43 @@
           </svg>
           <span class="fi-spain" data-spain aria-hidden="true">SPAIN</span>
         </h1>
-        <p class="fi-hint" data-hint><span>Desliza o haz clic</span></p>
+        <p class="fi-hint" data-hint><span>Haz clic para entrar</span></p>
       </div>
 
+      <!-- Tramo 1, ya dentro del recorrido: cómo se avanza. -->
+      <p class="fi-start" data-start>
+        <span class="fi-mouse" aria-hidden="true"><i></i></span>
+        <span data-start-text>Desliza o haz clic</span>
+      </p>
       <button class="fi-enter" type="button" data-enter aria-label="Entrar en FAIRINO Spain"></button>
 
-      <!-- Destello anamórfico (horizontal) al cruzar el anillo naranja. -->
+      <!-- Tramo 3: el anillo se convierte en portal. -->
+      <div class="fi-portal" data-portal aria-hidden="true"></div>
       <div class="fi-flare" data-flare aria-hidden="true"></div>
       <div class="fi-grain" aria-hidden="true"></div>
 
-      <!-- Formato cinemascope (2,39:1): bandas negras arriba y abajo, que se abren al cruzar el anillo. -->
+      <!-- Cinemascope 2,39:1: bandas negras que se abren al cruzar el anillo. -->
       <div class="fi-bar fi-bar--top" data-bar>
         <button class="fi-sound" type="button" data-sound aria-pressed="true" hidden>Sonido</button>
-        <a class="fi-skip" href="/" data-skip>Saltar intro</a>
       </div>
       <div class="fi-bar fi-bar--bottom" data-bar>
-        <p class="fi-slug" data-slug aria-hidden="true"></p>
+        <span class="fi-load" data-load aria-hidden="true"><i data-load-bar></i></span>
         <p class="fi-note" data-note aria-hidden="true">Imagen ilustrativa</p>
-        <p class="fi-tc" data-tc aria-hidden="true">00:00:00:00</p>
       </div>
+
+      <a class="fi-skip" href="/" data-skip>Saltar intro</a>
+
       <div class="fi-whiteout" data-whiteout aria-hidden="true">
         <a class="fi-whiteout-link" href="/" data-whiteout-link>Entrar en FAIRINO Spain</a>
       </div>
     </main>
 
     <noscript>
-      <style>.fi-hint,.fi-enter,.fi-film{display:none}.fi-word{opacity:1}</style>
+      <style>.fi-hint,.fi-start,.fi-enter,.fi-stage,.fi-hud,.fi-lock,.fi-bar{display:none}.fi-word{opacity:1}</style>
       <p class="fi-noscript"><a href="/">Entrar en la web</a></p>
     </noscript>
 
     <script src="js/vendor/gsap.min.js" defer></script>
-    <script src="js/intro.js?v=6" defer></script>
+    <script src="js/intro.js?v=7" defer></script>
   </body>
 </html>

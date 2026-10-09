@@ -1,14 +1,16 @@
 /*
- * Intro de FAIRINO Spain, como el arranque de una película: cinemascope (bandas negras 2,39:1), títulos con fundidos
- * lentos, grano y viñeta.
- *   Escena 1: el logotipo de FAIRINO se enfoca con un destello. Clic, deslizar (rueda o dedo), Intro o espacio.
- *   Escena 2: un destello recorre el logotipo, la cámara atraviesa la «O» y detrás arranca el vídeo (assets/):
- *             exterior de la fábrica de noche → nave con 8 cobots FAIRINO → primer plano de la tapa de una articulación
- *             con su aro naranja. El vídeo se para en el aro, la cámara entra por él, las bandas se abren y un
- *             destello anamórfico cruza la pantalla.
- *   Escena 3: fundido a negro con un resplandor naranja y
- *             - página suelta (intro/index.html): salto a la web (data-target en <html>);
- *             - dentro de la web (inicio y tienda, html.fi-play): la capa se funde y deja ver la página.
+ * Intro de FAIRINO Spain: llegar en persona a una gran fábrica, como el arranque de una película.
+ * Un único plano secuencia (assets/recorrido.mp4, convertido en fotogramas WebP en assets/frames/) que se pinta en un
+ * <canvas>; el visitante mueve la cámara con la rueda o el dedo, hacia delante y hacia atrás, con inercia.
+ *   Inicio   la pantalla de siempre: el bloque «FAIRINO SPAIN» con su destello y «Haz clic para entrar». Al hacer
+ *            clic (o Intro, espacio, rueda o dedo), la cámara cruza el hueco de la «O» y empieza el recorrido.
+ *   Tramo 1  la fábrica desde el aire: quieta pero viva (parallax) y «Desliza o haz clic», con la rueda animada.
+ *   Tramo 2  dentro de la nave, los 8 FAIRINO: HUD mínimo con contadores y el bloque «FAIRINO SPAIN» de siempre.
+ *   Tramo 3  la cámara elige el cobot del final (el HUD lo fija con un marco), todo se oscurece y entra por el anillo
+ *            naranja, que se convierte en portal: las bandas de cine se abren y aparece la web.
+ * Sin tocar nada, la cámara sigue avanzando a cámara muy lenta; con un clic, avanza sola a velocidad normal.
+ * Dentro de la web (html.fi-play) es una capa encima de la página; la página suelta (intro/index.html) salta a
+ * data-target al terminar.
  */
 (function () {
   'use strict';
@@ -24,83 +26,198 @@
   var TARGET = root.dataset.target || '/';
   var KEY = 'fairino-intro-vista';
 
+  // ---------------------------------------------------------------- el plano secuencia
+  // FRAMES: fotogramas de assets/frames/<ancho>/f0000.webp… (tools/videos/intro-fotogramas.sh). Tramos en segundos,
+  // medidos sobre los fotogramas del vídeo: aéreo, entrada (bajada y puertas), nave (luces y 8 cobots) y final
+  // (cobot elegido, oscuridad, anillo). LOCK: dónde está el cobot del final al empezar el tramo 3 (proporciones del
+  // fotograma 16:9). Si cambias el vídeo, cambia estos números (README).
+  var FRAMES = { count: 361, fps: 24, v: 1 };
+  var SEG = { entrada: 3.5, nave: 5.5, final: 13.6 };
+  // LOCK: marco sobre el cobot elegido, de un instante a otro (la cámara se le acerca). RING: el anillo en el último
+  // fotograma (centro y radio exterior, respecto al ancho).
+  var LOCK = [
+    { t: 13.75, x: 0.56, y: 0.5, w: 0.24, h: 0.62 },
+    { t: 14.3, x: 0.6, y: 0.55, w: 0.44, h: 0.8 },
+  ];
+  var RING = { x: 0.49, y: 0.43, r: 0.14 };
+  // Velocidades, en segundos de vídeo por segundo real: sola sin tocar nada, y tras un clic.
+  var IDLE = 0.22;
+  var AUTO = 1;
+  // Rueda: segundos de vídeo por píxel de rueda; dedo: por píxel arrastrado.
+  var WHEEL = 0.0016;
+  var TOUCH = 0.008;
+  // Sonido tipo tráiler (opcional): si existen en assets/audio/, suenan tras el primer gesto, a volumen bajo, con el
+  // botón «Sonido» para silenciarlo. Si no hay ninguno, no suena nada y el botón no aparece.
+  var AUDIO = {
+    viento: { src: 'audio/viento.mp3', loop: true, vol: 0.18 },
+    puertas: { src: 'audio/golpe-puertas.mp3', vol: 0.5 },
+    fabrica: { src: 'audio/fabrica.mp3', loop: true, vol: 0.2 },
+    latido: { src: 'audio/latido.mp3', loop: true, vol: 0.35 },
+    golpe: { src: 'audio/golpe-final.mp3', vol: 0.55 },
+  };
+
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var coarse = window.matchMedia('(pointer: coarse)').matches;
-  var mobile = coarse || Math.min(window.innerWidth, window.innerHeight) < 700;
-  // Móvil en vertical: el vídeo se ve entero (encajado y fundido en negro arriba y abajo), sin recortarlo.
-  var portrait = window.innerHeight > window.innerWidth * 1.15;
-  var FIT = portrait ? 'contain' : 'cover';
-  if (portrait) intro.classList.add('is-portrait');
-
-  // Aro naranja en el último fotograma del vídeo (proporciones del encuadre 16:9; cap = radio de la tapa blanca
-  // respecto al ancho) y segundo en que el vídeo se para para entrar por él. SHOTS: inicio de cada plano (títulos
-  // del pie). Si cambias el vídeo, cambia también estos números (README).
-  var RING = { x: 0.497, y: 0.5, cap: 0.284, at: 10.3 };
-  var SHOTS = [
-    { at: 0, slug: 'Ext. Fábrica — Noche' },
-    { at: 4.04, slug: 'Int. Nave de producción' },
-    { at: 7.33, slug: 'FAIRINO · Articulación' },
-  ];
-  var RATE = 1;
-  var PUSH = { scale: 1.03, duration: 0.35 };
-  var FPS = 24;
-  // Sonido tipo tráiler (opcional): si estos archivos existen en assets/audio/, suenan tras el primer gesto, a volumen
-  // bajo, y aparece el botón «Sonido» para silenciarlos. Si no existen, no pasa nada y el botón no se ve.
-  var AUDIO = { amb: 'audio/ambiente-fabrica.mp3', hall: 'audio/golpe-nave.mp3', ring: 'audio/golpe-anillo.mp3' };
-  var VOL = { amb: 0.22, hit: 0.5 };
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  var WIDTH = coarse || Math.max(window.innerWidth, window.innerHeight) * dpr <= 1400 ? 960 : 1920;
+  if (coarse) intro.classList.add('fi-coarse');
 
   var $ = function (s) {
     return intro.querySelector(s);
   };
+  var canvas = $('[data-canvas]');
+  var ctx = canvas.getContext('2d', { alpha: false });
+  var stage = $('[data-stage]');
   var word = $('[data-word]');
   var mark = $('[data-wordmark]');
   var shineGrad = $('[data-shine]');
   var spain = $('[data-spain]');
-  var hint = $('[data-hint]');
+  var start = $('[data-start]');
+  var hud = $('[data-hud]');
+  var hudIn = intro.querySelectorAll('[data-hud-in]');
+  var lock = $('[data-lock]');
+  var portal = $('[data-portal]');
+  var flare = $('[data-flare]');
   var skip = $('[data-skip]');
   var enterBtn = $('[data-enter]');
-  var film = $('[data-film]');
-  var video = $('[data-video]');
-  var whiteout = $('[data-whiteout]');
   var bars = intro.querySelectorAll('[data-bar]');
-  var slug = $('[data-slug]');
   var note = $('[data-note]');
-  var tc = $('[data-tc]');
-  var flare = $('[data-flare]');
+  var load = $('[data-load]');
+  var loadBar = $('[data-load-bar]');
   var soundBtn = $('[data-sound]');
+  var whiteout = $('[data-whiteout]');
+  var hint = $('[data-hint]');
   var PATH = document.getElementById('fi-wm');
-  var state = 'idle';
-  var revealTl = null;
-  if (coarse) hint.querySelector('span').textContent = 'Desliza o toca';
-
-  // ---------------------------------------------------------------- vídeo (se descarga entero en la escena 1)
-  var isSafari = /^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
-  var dpr = Math.min(window.devicePixelRatio || 1, 2);
-  var small = mobile || Math.max(window.innerWidth, window.innerHeight) * dpr <= 1400;
-  var webm = !isSafari && video.canPlayType('video/webm; codecs="vp9"') === 'probably';
-  // ?v=: súbelo al cambiar los vídeos, para que el navegador no use el guardado.
-  var src = ASSETS + 'fairino-intro' + (small ? '-720' : '') + (webm ? '.webm' : '.mp4') + '?v=3';
-  var setSrc = function (u) {
-    if (video.getAttribute('src')) return;
-    video.src = u;
-    video.load();
+  var counts = {
+    ciclos: $('[data-count="ciclos"]'),
+    piezas: $('[data-count="piezas"]'),
+    reloj: $('[data-count="reloj"]'),
   };
-  if (!reduce) {
-    if (/^https?:/.test(location.protocol) && window.fetch && window.URL) {
-      fetch(src)
-        .then(function (r) {
-          if (!r.ok) throw new Error(r.status);
-          return r.blob();
-        })
-        .then(function (b) {
-          setSrc(URL.createObjectURL(b));
-        })
-        .catch(function () {
-          setSrc(src);
-        });
-    } else {
-      setSrc(src);
+  if (coarse) {
+    $('[data-start-text]').textContent = 'Desliza para avanzar';
+    hint.querySelector('span').textContent = 'Toca para entrar';
+  }
+
+  var N = FRAMES.count;
+  var LAST = N - 1;
+  var state = 'idle'; // idle → run (rueda/dedo) | auto (clic) → out → done
+  var pos = 0; // fotograma que se ve (con decimales: se funden los dos vecinos)
+  var target = 0; // a dónde va la cámara
+  var started = false;
+  var revealTl = null;
+
+  // ---------------------------------------------------------------- carga de fotogramas
+  // Primero el tramo aéreo (para empezar en 2-3 s) y después el resto, en orden, en segundo plano. La cámara no puede
+  // pasar del último fotograma seguido ya cargado.
+  var imgs = new Array(N);
+  var ok = new Array(N);
+  var ready = -1; // último fotograma cargado sin huecos desde el principio
+  var loaded = 0;
+  var frameUrl = function (i) {
+    return ASSETS + 'frames/' + WIDTH + '/f' + ('000' + i).slice(-4) + '.webp?v=' + FRAMES.v;
+  };
+  function loadFrames(onFirst) {
+    var next = 0;
+    var active = 0;
+    var MAX = 6;
+    var pump = function () {
+      while (active < MAX && next < N) {
+        (function (i) {
+          active++;
+          var img = new Image();
+          img.decoding = 'async';
+          var done = function (good) {
+            active--;
+            ok[i] = good;
+            loaded++;
+            if (good) imgs[i] = img;
+            while (ready + 1 < N && ok[ready + 1] !== undefined) ready++;
+            loadBar.style.transform = 'scaleX(' + (loaded / N).toFixed(3) + ')';
+            if (loaded === N) load.classList.add('is-done');
+            if (i === 0 && onFirst) onFirst(good);
+            pump();
+          };
+          img.onload = function () {
+            (img.decode ? img.decode() : Promise.resolve()).then(
+              function () {
+                done(true);
+              },
+              function () {
+                done(true);
+              },
+            );
+          };
+          img.onerror = function () {
+            done(false);
+          };
+          img.src = frameUrl(i);
+        })(next++);
+      }
+    };
+    pump();
+  }
+
+  // ---------------------------------------------------------------- lienzo
+  var cw = 0;
+  var ch = 0;
+  function resize() {
+    var r = canvas.getBoundingClientRect();
+    cw = Math.max(1, Math.round(r.width * dpr));
+    ch = Math.max(1, Math.round(r.height * dpr));
+    canvas.width = cw;
+    canvas.height = ch;
+    drawn = -1;
+  }
+  // Encaje «cover» del fotograma 16:9 en el lienzo.
+  function cover(img) {
+    var iw = img.naturalWidth;
+    var ih = img.naturalHeight;
+    var s = Math.max(cw / iw, ch / ih);
+    return [(cw - iw * s) / 2, (ch - ih * s) / 2, iw * s, ih * s];
+  }
+  var nearest = function (i) {
+    // El fotograma cargado más cercano (por si alguno ha fallado).
+    for (var d = 0; d < 6; d++) {
+      if (imgs[i - d]) return imgs[i - d];
+      if (imgs[i + d]) return imgs[i + d];
     }
+    return null;
+  };
+  var drawn = -1;
+  function draw(p) {
+    var i = Math.floor(p);
+    var f = p - i;
+    var key = Math.round(p * 20);
+    if (key === drawn) return;
+    drawn = key;
+    var a = nearest(Math.min(i, LAST));
+    if (!a) return;
+    var r = cover(a);
+    ctx.globalAlpha = 1;
+    ctx.drawImage(a, r[0], r[1], r[2], r[3]);
+    // Entre dos fotogramas, el siguiente se funde encima: el movimiento lento queda continuo, sin saltos.
+    var b = f > 0.02 && i + 1 <= LAST ? imgs[i + 1] : null;
+    if (b) {
+      ctx.globalAlpha = f;
+      ctx.drawImage(b, r[0], r[1], r[2], r[3]);
+      ctx.globalAlpha = 1;
+    }
+  }
+
+  // ---------------------------------------------------------------- tramo 1: quieto pero vivo
+  var par = { x: 0, y: 0 };
+  window.addEventListener('pointermove', function (e) {
+    if (coarse || reduce) return;
+    par.x = (e.clientX / window.innerWidth - 0.5) * 2;
+    par.y = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+  var px = 0;
+  var py = 0;
+
+  // ---------------------------------------------------------------- bloque FAIRINO SPAIN (sin cambios)
+  function setShine(p) {
+    shineGrad.setAttribute('x1', (p - 0.14).toFixed(4));
+    shineGrad.setAttribute('x2', (p + 0.1).toFixed(4));
   }
 
   // ---------------------------------------------------------------- medidas del logotipo
@@ -183,8 +300,9 @@
     shineGrad.setAttribute('x2', (p + 0.1).toFixed(4));
   }
 
-  // ---------------------------------------------------------------- escena 1
+  // ---------------------------------------------------------------- pantalla de inicio (la de siempre)
   function reveal() {
+    gsap.set(word, { autoAlpha: 1, opacity: 0 });
     if (reduce) {
       gsap.to(word, { opacity: 1, duration: 1, ease: 'power1.out' });
       gsap.to(spain, { opacity: 1, duration: 1, delay: 0.3 });
@@ -195,288 +313,351 @@
     var tl = (revealTl = gsap.timeline({ delay: 0.3 }));
     tl.fromTo(word, { opacity: 0 }, { opacity: 1, duration: 1.5, ease: 'power2.out' }, 0)
       .fromTo(word, { filter: 'blur(16px)', scale: 1.035 }, { filter: 'blur(0px)', scale: 1, duration: 2.6, ease: 'expo.out', clearProps: 'filter' }, 0)
-      .to(
-        sh,
-        {
-          p: 1.4,
-          duration: 2.1,
-          ease: 'power2.inOut',
-          onUpdate: function () {
-            setShine(sh.p);
-          },
-        },
-        0.4,
-      )
+      .to(sh, { p: 1.4, duration: 2.1, ease: 'power2.inOut', onUpdate: function () { setShine(sh.p); } }, 0.4)
       .fromTo(spain, { opacity: 0, letterSpacing: '1.1em' }, { opacity: 1, letterSpacing: '0.62em', duration: 1.6, ease: 'expo.out' }, 1.5)
-      .to(skip, { opacity: 1, duration: 2.2, ease: 'sine.inOut' }, 1.3)
-      .to(hint, { opacity: 1, duration: 2.4, ease: 'sine.inOut' }, 2.2);
+      .to(skip, { opacity: 1, duration: 1.2, ease: 'power2.out' }, 1.3)
+      .to(hint, { opacity: 1, duration: 1.4, ease: 'power2.out' }, 2.2);
   }
 
-  // ---------------------------------------------------------------- escena 2
+  // Clic en la pantalla de inicio: un destello recorre el logotipo, la cámara atraviesa la «O» y al otro lado está
+  // la fábrica desde el aire; entran las bandas de cine.
   function enter() {
     if (state !== 'idle') return;
     state = 'enter';
     remember();
-    intro.classList.add('is-entering');
-    // Si se entra antes de que acabe la escena 1, su animación no debe volver a encender «Haz clic para entrar».
-    if (revealTl) revealTl.kill();
-    gsap.killTweensOf([hint, skip, spain]);
-    gsap.to(skip, { opacity: 1, duration: 1.2, ease: 'sine.inOut' });
     startAudio();
-
-    if (reduce) {
-      gsap
-        .timeline()
-        .to([word, hint], { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 0)
-        .to(bars, { scaleY: 0, duration: 0.8, ease: 'power2.inOut' }, 0.3)
-        .to(whiteout, { opacity: 1, duration: 0.6, ease: 'power1.inOut' }, 0.4)
-        .call(go, null, 1.1);
-      return;
-    }
-
-    gsap.killTweensOf(word);
-    gsap.set(word, { scale: 1, filter: 'none' });
+    intro.classList.add('is-entering');
+    if (revealTl) revealTl.kill();
+    gsap.killTweensOf([hint, spain, word]);
+    gsap.set(word, { scale: 1, filter: 'none', opacity: 1 });
+    gsap.set(spain, { opacity: 1 });
     measure().then(function () {
       var o = geo.o;
-
-      // Escala a la que el hueco de la «O» cubre toda la pantalla.
       var W = window.innerWidth;
       var H = window.innerHeight;
       var S = Math.max(Math.max(o.x, W - o.x) / o.hx, Math.max(o.y, H - o.y) / o.hy) * 1.18;
       var wr = word.getBoundingClientRect();
       gsap.set(word, { transformOrigin: o.x - wr.left + 'px ' + (o.y - wr.top) + 'px' });
       var fly = { p: 0 };
-      var portal = function (sc) {
+      var hole = function (sc) {
         var hx = o.hx * sc;
         var hy = o.hy * sc;
-        film.style.clipPath =
+        stage.style.clipPath =
           'inset(' + Math.max(0, o.y - hy).toFixed(1) + 'px ' + Math.max(0, W - o.x - hx).toFixed(1) + 'px ' +
           Math.max(0, H - o.y - hy).toFixed(1) + 'px ' + Math.max(0, o.x - hx).toFixed(1) + 'px round ' + (o.rad * sc).toFixed(1) + 'px)';
       };
-
       var sh = { p: -0.4 };
-      var tl = gsap.timeline();
-      tl.to(hint, { opacity: 0, duration: 0.6, ease: 'sine.out' }, 0)
-        // Un destello recorre el logotipo, que se encoge un poco antes de lanzarse.
+      gsap
+        .timeline()
+        .to(hint, { opacity: 0, duration: 0.35, ease: 'power2.out' }, 0)
         .to(sh, { p: 1.4, duration: 0.62, ease: 'power2.inOut', onUpdate: function () { setShine(sh.p); } }, 0)
         .to(word, { scale: 0.986, duration: 0.16, ease: 'power2.out' }, 0)
         .to(word, { scale: 1, duration: 0.22, ease: 'power2.inOut' }, 0.16)
-        // La cámara atraviesa la «O»: el vídeo solo se ve por su hueco, que crece con la letra hasta llenar la pantalla.
         .call(function () {
-          portal(1);
-          film.style.opacity = '1';
+          hole(1);
+          gsap.set(stage, { opacity: 1 });
         }, null, 0.3)
-        .to(
-          fly,
-          {
-            p: 1,
-            duration: 0.8,
-            ease: 'power2.in',
-            onUpdate: function () {
-              var sc = 1 / (1 - fly.p * (1 - 1 / S));
-              gsap.set(word, { scale: sc });
-              portal(sc * 0.985);
-            },
+        .to(fly, {
+          p: 1,
+          duration: 0.85,
+          ease: 'power2.in',
+          onUpdate: function () {
+            var sc = 1 / (1 - fly.p * (1 - 1 / S));
+            gsap.set(word, { scale: sc });
+            hole(sc * 0.985);
           },
-          0.4,
-        )
-        .call(playVideo, null, 0.92)
-        .set(word, { visibility: 'hidden' }, 1.2)
+        }, 0.4)
+        .fromTo(bars, { scaleY: 0 }, { scaleY: 1, duration: 1.4, ease: 'power2.inOut' }, 0.7)
+        .set(word, { autoAlpha: 0 }, 1.25)
         .call(function () {
-          film.style.clipPath = '';
-        }, null, 1.2);
+          stage.style.clipPath = '';
+          gsap.set(word, { scale: 1, transformOrigin: '50% 50%' });
+          intro.classList.add('is-flying');
+          state = 'run';
+          started = true;
+          gsap.to(start, { opacity: 1, duration: 2, ease: 'sine.inOut', delay: 0.4 });
+          gsap.to(note, { opacity: 1, duration: 1.6, ease: 'sine.inOut', delay: 0.8 });
+        }, null, 1.25);
     });
   }
-
-  function playVideo() {
-    state = 'video';
-    intro.classList.add('is-video');
-    if (!video.getAttribute('src')) setSrc(src); // la descarga previa no ha terminado: se reproduce en streaming
-    var done = false;
-    var stop = function (fn) {
-      if (done) return;
-      done = true;
-      fn();
-    };
-    video.playbackRate = RATE;
-    var p = video.play();
-    if (p && p.catch) {
-      p.catch(function () {
-        stop(finish);
-      });
-    }
-    gsap.to([slug, tc], { opacity: 1, duration: 1.6, ease: 'sine.inOut', delay: 0.4 });
-    gsap.to(note, { opacity: 1, duration: 1.6, ease: 'sine.inOut', delay: 0.8 });
-    var shot = -1;
-    var check = function () {
-      if (done) return;
-      var t = video.currentTime;
-      timecode(t);
-      var n = 0;
-      for (var i = 0; i < SHOTS.length; i++) if (t >= SHOTS[i].at) n = i;
-      if (n !== shot) {
-        if (shot >= 0) hit('hall', n === 1);
-        shot = n;
-        title(SHOTS[n].slug);
-      }
-      if (t >= RING.at - 0.01) return stop(zoom);
-      if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(check);
-      else requestAnimationFrame(check);
-    };
-    check();
-    // Si el vídeo no avanza (red lenta o error) durante 3 s, se sigue igual.
-    var last = -1;
-    var lastMove = performance.now();
-    (function watch() {
-      if (done) return;
-      if (video.currentTime !== last) {
-        last = video.currentTime;
-        lastMove = performance.now();
-      }
-      if (performance.now() - lastMove > 3000) stop(finish);
-      else setTimeout(watch, 400);
-    })();
+  var logoTl = null;
+  function logoIn() {
+    if (logoTl) return gsap.to(word, { autoAlpha: 1, duration: 1.2, ease: 'sine.inOut' });
+    var sh = { p: -0.4 };
+    gsap.set(word, { visibility: 'visible', scale: 1 });
+    logoTl = gsap.timeline();
+    logoTl
+      .fromTo(word, { opacity: 0 }, { opacity: 1, duration: 1.5, ease: 'power2.out' }, 0)
+      .fromTo(word, { filter: 'blur(16px)', scale: 1.035 }, { filter: 'blur(0px)', scale: 1, duration: 2.6, ease: 'expo.out', clearProps: 'filter' }, 0)
+      .to(sh, { p: 1.4, duration: 2.1, ease: 'power2.inOut', onUpdate: function () { setShine(sh.p); } }, 0.4)
+      .fromTo(spain, { opacity: 0, letterSpacing: '1.1em' }, { opacity: 1, letterSpacing: '0.62em', duration: 1.6, ease: 'expo.out' }, 1.5);
+  }
+  function logoOut() {
+    gsap.to(word, { autoAlpha: 0, duration: 1.2, ease: 'sine.inOut' });
   }
 
-  // Código de tiempo HH:MM:SS:FF del vídeo, en el pie.
-  function timecode(t) {
-    var f = Math.floor(t * FPS);
+  // ---------------------------------------------------------------- HUD
+  var hudOn = false;
+  var hudTl = null;
+  function showHud(on) {
+    if (on === hudOn) return;
+    hudOn = on;
+    if (hudTl) hudTl.kill();
+    if (on) {
+      hudTl = gsap
+        .timeline()
+        .set(hud, { opacity: 1 })
+        .fromTo(hudIn[0], { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 1.1, ease: 'power2.inOut' }, 0)
+        .fromTo([].slice.call(hudIn, 1), { opacity: 0, y: 6 }, { opacity: 1, y: 0, duration: 1.2, ease: 'sine.out', stagger: 0.28 }, 0.5);
+    } else {
+      hudTl = gsap.timeline().to(hud, { opacity: 0, duration: 0.9, ease: 'sine.in' });
+    }
+  }
+  // Contadores de la escena: avanzan mientras la cámara recorre la nave (8 cobots, un ciclo cada ~3 s).
+  var sim = { t: 0 };
+  var fmt = new Intl.NumberFormat('es-ES');
+  function tickCounts(dt) {
+    sim.t += dt;
+    var c = Math.floor(sim.t * 8 / 3.1);
+    counts.ciclos.textContent = fmt.format(c);
+    counts.piezas.textContent = fmt.format(c * 4);
+    var s = Math.floor(sim.t * 37);
     var pad = function (n) {
       return (n < 10 ? '0' : '') + n;
     };
-    tc.textContent = '00:00:' + pad(Math.floor(f / FPS)) + ':' + pad(f % FPS);
+    counts.reloj.textContent = pad(Math.floor(s / 3600)) + ':' + pad(Math.floor(s / 60) % 60) + ':' + pad(s % 60);
   }
 
-  // Título de escena en el pie: fundido lento de salida y de entrada.
-  function title(text) {
-    gsap.killTweensOf(slug, 'opacity');
-    if (!slug.textContent) {
-      slug.textContent = text;
-      return;
-    }
-    gsap.to(slug, {
-      opacity: 0,
-      duration: 0.45,
-      ease: 'sine.in',
-      onComplete: function () {
-        slug.textContent = text;
-        gsap.to(slug, { opacity: 1, duration: 1.1, ease: 'sine.out' });
-      },
-    });
+  // Marco del sistema de visión sobre el cobot del final: aparece encogiéndose sobre él, parpadea al fijarlo y le
+  // sigue mientras la cámara se acerca.
+  var lockOn = false;
+  // Rectángulo del fotograma 16:9 en pantalla (encaje «cover» del lienzo).
+  function frameRect() {
+    var r = canvas.getBoundingClientRect();
+    var s = Math.max(r.width / 16, r.height / 9);
+    return { x: r.left + (r.width - 16 * s) / 2, y: r.top + (r.height - 9 * s) / 2, w: 16 * s, h: 9 * s };
   }
-
-  function zoom() {
-    state = 'zoom';
-    video.pause();
-    var W = window.innerWidth;
-    var H = window.innerHeight;
-    var VW = video.videoWidth || 1920;
-    var VH = video.videoHeight || 1080;
-    // Dónde queda el anillo en pantalla (object-fit: cover en horizontal, contain en el móvil en vertical).
-    var s = FIT === 'contain' ? Math.min(W / VW, H / VH) : Math.max(W / VW, H / VH);
-    var dw = VW * s;
-    var dh = VH * s;
-    var rx = (W - dw) / 2 + RING.x * dw;
-    var ry = (H - dh) / 2 + RING.y * dh;
-    var cap = RING.cap * dw;
-    var far = Math.max(Math.hypot(rx, ry), Math.hypot(W - rx, ry), Math.hypot(rx, H - ry), Math.hypot(W - rx, H - ry));
-    var S = (far / cap) * 1.12;
-    gsap.set(film, { transformOrigin: rx + 'px ' + ry + 'px' });
-    // El resplandor del fundido sale del anillo.
-    whiteout.style.setProperty('--fi-rx', ((rx / W) * 100).toFixed(1) + '%');
-    whiteout.style.setProperty('--fi-ry', ((ry / H) * 100).toFixed(1) + '%');
-    flare.style.setProperty('--fi-ry', ((ry / H) * 100).toFixed(1) + '%');
-    // Un instante quieto en el aro y la cámara entra por él: las bandas de cine se abren, un destello anamórfico
-    // cruza la pantalla y suena el golpe.
-    var t = PUSH.duration;
-    var tl = gsap.timeline();
-    tl.to(film, { scale: PUSH.scale, duration: t, ease: 'sine.inOut' }, 0)
-      .to(film, { scale: S, duration: 1.25, ease: 'power3.in' }, t)
-      .to([slug, note, tc], { opacity: 0, duration: 0.6, ease: 'sine.in' }, t)
-      .to(bars, { scaleY: 0, duration: 1.3, ease: 'power2.inOut' }, t + 0.1)
-      .call(function () {
-        hit('ring', true);
-      }, null, t + 0.55)
-      .fromTo(flare, { opacity: 0, scaleX: 0.15 }, { opacity: 1, scaleX: 1, duration: 0.35, ease: 'power2.out' }, t + 0.55)
-      .to(flare, { opacity: 0, duration: 0.9, ease: 'sine.in' }, t + 0.9)
-      // Al acercarse, la imagen se oscurece (la tapa del anillo es clara: así no se llena la pantalla de gris).
-      .fromTo(video, { filter: 'brightness(1) saturate(1)' }, { filter: 'brightness(0.08) saturate(1.4)', duration: 0.85, ease: 'power1.in' }, t + 0.15)
-      .to(whiteout, { opacity: 1, duration: 0.45, ease: 'power2.in' }, t + 0.85)
-      .call(go, null, t + 1.35);
+  function trackLock(t) {
+    var a = LOCK[0];
+    var b = LOCK[1];
+    var k = Math.max(0, Math.min(1, (t - a.t) / (b.t - a.t)));
+    var e = k * k * (3 - 2 * k);
+    var f = frameRect();
+    var w = (a.w + (b.w - a.w) * e) * f.w;
+    var h = (a.h + (b.h - a.h) * e) * f.h;
+    lock.style.left = (f.x + (a.x + (b.x - a.x) * e) * f.w - w / 2).toFixed(1) + 'px';
+    lock.style.top = (f.y + (a.y + (b.y - a.y) * e) * f.h - h / 2).toFixed(1) + 'px';
+    lock.style.width = w.toFixed(1) + 'px';
+    lock.style.height = h.toFixed(1) + 'px';
+  }
+  function showLock(on) {
+    if (on === lockOn) return;
+    lockOn = on;
+    gsap.killTweensOf(lock);
+    if (!on) return gsap.to(lock, { opacity: 0, scale: 1, duration: 0.5 });
+    gsap.fromTo(lock, { opacity: 0, scale: 1.5 }, { opacity: 1, scale: 1, duration: 0.7, ease: 'expo.out' });
+    gsap.to(lock, { opacity: 0.35, duration: 0.1, repeat: 3, yoyo: true, delay: 0.7 });
   }
 
   // ---------------------------------------------------------------- sonido (opcional)
-  var sounds = null;
+  var sounds = {};
+  var hasSound = false;
   var muted = false;
   function startAudio() {
-    if (sounds || reduce || !window.fetch || !/^https?:/.test(location.protocol)) return;
-    sounds = {};
-    var url = function (k) {
-      return ASSETS + AUDIO[k];
-    };
-    fetch(url('amb'), { method: 'HEAD' })
+    if (reduce || !window.fetch || !/^https?:/.test(location.protocol) || startAudio.done) return;
+    startAudio.done = true;
+    // Primero se mira si está el primero; si no, no hay sonido y no se pide nada más.
+    var keys = Object.keys(AUDIO);
+    fetch(ASSETS + AUDIO[keys[0]].src, { method: 'HEAD' })
       .then(function (r) {
-        if (!r.ok) throw new Error(r.status);
-        Object.keys(AUDIO).forEach(function (k) {
-          var a = new Audio(url(k));
-          a.preload = 'auto';
-          a.loop = k === 'amb';
-          a.volume = 0;
-          sounds[k] = a;
-        });
-        soundBtn.hidden = false;
-        gsap.fromTo(soundBtn, { opacity: 0 }, { opacity: 1, duration: 1.6, ease: 'sine.inOut' });
-        var amb = sounds.amb;
-        var p = amb.play();
-        if (p && p.catch) p.catch(function () {});
-        gsap.to(amb, { volume: muted ? 0 : VOL.amb, duration: 2.5, ease: 'sine.inOut' });
+        if (r.ok) keys.forEach(probe);
       })
       .catch(function () {});
+    function probe(k) {
+      fetch(ASSETS + AUDIO[k].src, { method: 'HEAD' })
+        .then(function (r) {
+          if (!r.ok) return;
+          var a = new Audio(ASSETS + AUDIO[k].src);
+          a.preload = 'auto';
+          a.loop = !!AUDIO[k].loop;
+          a.volume = 0;
+          sounds[k] = a;
+          if (!hasSound) {
+            hasSound = true;
+            soundBtn.hidden = false;
+            gsap.fromTo(soundBtn, { opacity: 0 }, { opacity: 1, duration: 1.6, ease: 'sine.inOut' });
+          }
+          mix();
+        })
+        .catch(function () {});
+    }
   }
-  function hit(k, on) {
-    var a = on && sounds && sounds[k];
+  // Qué suena en cada tramo: viento arriba, fábrica dentro, latido en el final.
+  var bed = '';
+  function mix() {
+    var t = pos / FRAMES.fps;
+    var want = state === 'out' || state === 'done' ? '' : t < SEG.entrada + 1.5 ? 'viento' : t < SEG.final + 0.5 ? 'fabrica' : 'latido';
+    ['viento', 'fabrica', 'latido'].forEach(function (k) {
+      var a = sounds[k];
+      if (!a) return;
+      var on = k === want && !muted;
+      if (on && a.paused) {
+        var p = a.play();
+        if (p && p.catch) p.catch(function () {});
+      }
+      gsap.to(a, {
+        volume: on ? AUDIO[k].vol : 0,
+        duration: 1.2,
+        overwrite: true,
+        onComplete: function () {
+          if (!on) a.pause();
+        },
+      });
+    });
+    bed = want;
+  }
+  function hit(k) {
+    var a = sounds[k];
     if (!a || muted) return;
     a.currentTime = 0;
-    a.volume = VOL.hit;
+    a.volume = AUDIO[k].vol;
     var p = a.play();
     if (p && p.catch) p.catch(function () {});
-  }
-  function stopAudio(d) {
-    if (!sounds || !sounds.amb) return;
-    gsap.to(sounds.amb, {
-      volume: 0,
-      duration: d,
-      onComplete: function () {
-        Object.keys(sounds).forEach(function (k) {
-          sounds[k].pause();
-        });
-      },
-    });
   }
   soundBtn.addEventListener('click', function (e) {
     e.stopPropagation();
     muted = !muted;
     soundBtn.setAttribute('aria-pressed', String(!muted));
-    if (sounds && sounds.amb) gsap.to(sounds.amb, { volume: muted ? 0 : VOL.amb, duration: 0.4 });
+    bed = '';
+    mix();
   });
 
-  // ---------------------------------------------------------------- escena 3
+  // ---------------------------------------------------------------- recorrido
+  var last = 0;
+  var flags = { doors: false, logo: false };
+  var hinted = false;
+  function begin(mode) {
+    if (state === 'idle') return enter();
+    if (state === 'enter' || state === 'out' || state === 'done') return;
+    if (!hinted && (mode === 'auto' || target > FRAMES.fps * 0.6)) {
+      hinted = true;
+      gsap.to(start, { opacity: 0, duration: 1, ease: 'sine.inOut', overwrite: true });
+    }
+    if (mode === 'auto') {
+      state = 'auto';
+      intro.classList.add('is-auto');
+    } else if (state !== 'auto') {
+      state = 'run';
+    }
+  }
+
+  function tick() {
+    var now = performance.now();
+    var dt = Math.min(0.05, last ? (now - last) / 1000 : 0);
+    last = now;
+    if (state === 'done') return;
+
+    if (state === 'run' || state === 'auto') {
+      target += (state === 'auto' ? AUTO : IDLE) * FRAMES.fps * dt;
+    }
+    target = Math.max(0, Math.min(target, LAST, ready < 0 ? 0 : ready));
+    // Inercia: la cámara alcanza el objetivo con suavidad, nunca a saltos.
+    pos += (target - pos) * (1 - Math.exp(-dt * (state === 'auto' ? 9 : 5)));
+    if (Math.abs(target - pos) < 0.002) pos = target;
+    // Esperando fotogramas que aún no han llegado: la barra de carga lo indica.
+    load.classList.toggle('is-waiting', target >= ready - 1 && ready < LAST);
+
+    // Parallax leve en el tramo aéreo (se apaga al avanzar).
+    if (state !== 'out') {
+      var amt = Math.max(0, 1 - pos / (FRAMES.fps * 1.5));
+      px += (par.x * amt - px) * 0.06;
+      py += (par.y * amt - py) * 0.06;
+      stage.style.transform = 'translate3d(' + (-px * 1.4).toFixed(2) + '%,' + (-py * 1.1).toFixed(2) + '%,0)';
+    }
+
+    draw(pos);
+    var t = pos / FRAMES.fps;
+
+    // Tramo 2: HUD y FAIRINO SPAIN en la nave.
+    var inHall = t >= SEG.nave + 0.8 && t < SEG.final;
+    showHud(inHall);
+    if (inHall) tickCounts(dt);
+    if (inHall !== flags.logo) {
+      flags.logo = inHall;
+      if (inHall) logoIn();
+      else logoOut();
+    }
+    // Tramo 3: el sistema de visión fija el cobot del final.
+    var locked = t >= LOCK[0].t && t < LOCK[1].t + 0.25;
+    if (locked) trackLock(t);
+    showLock(locked);
+    if (!flags.doors && t >= SEG.entrada + 2.2) {
+      flags.doors = true;
+      hit('puertas');
+    }
+    if (hasSound) {
+      var want = t < SEG.entrada + 1.5 ? 'viento' : t < SEG.final + 0.5 ? 'fabrica' : 'latido';
+      if (want !== bed) mix();
+    }
+
+    if (pos >= LAST - 0.05 && ready >= LAST) finale();
+  }
+
+  // ---------------------------------------------------------------- el anillo se convierte en portal
+  function finale() {
+    if (state === 'out' || state === 'done') return;
+    state = 'out';
+    remember();
+    showHud(false);
+    showLock(false);
+    logoOut();
+    gsap.to([start, note], { opacity: 0, duration: 0.5 });
+    // El portal nace en el anillo del último fotograma y la cámara entra por él.
+    var f = frameRect();
+    var rx = f.x + RING.x * f.w;
+    var ry = f.y + RING.y * f.h;
+    var rr = RING.r * f.w;
+    gsap.set(portal, { left: rx, top: ry, width: rr * 2, height: rr * 2, margin: -rr + 'px 0 0 ' + -rr + 'px' });
+    gsap.set(stage, { transformOrigin: rx + 'px ' + ry + 'px' });
+    flare.style.setProperty('--fi-ry', ((ry / window.innerHeight) * 100).toFixed(1) + '%');
+    whiteout.style.setProperty('--fi-rx', ((rx / window.innerWidth) * 100).toFixed(1) + '%');
+    whiteout.style.setProperty('--fi-ry', ((ry / window.innerHeight) * 100).toFixed(1) + '%');
+    var far = Math.max(Math.hypot(rx, ry), Math.hypot(window.innerWidth - rx, window.innerHeight - ry), Math.hypot(rx, window.innerHeight - ry), Math.hypot(window.innerWidth - rx, ry));
+    var S = (far / (rr * 0.55)) * 1.1;
+    var tl = gsap.timeline();
+    tl.fromTo(portal, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1.1, duration: 0.5, ease: 'power2.out' }, 0)
+      .call(function () {
+        hit('golpe');
+        bed = '';
+        mix();
+      }, null, 0.45)
+      .to(stage, { scale: S, duration: 1.3, ease: 'power3.in' }, 0.35)
+      .to(portal, { scale: S * 0.9, opacity: 0, duration: 1.3, ease: 'power3.in' }, 0.35)
+      .fromTo(canvas, { filter: 'brightness(1)' }, { filter: 'brightness(1.6) saturate(1.3)', duration: 0.6, ease: 'power1.in' }, 0.4)
+      .fromTo(flare, { opacity: 0, scaleX: 0.15 }, { opacity: 1, scaleX: 1, duration: 0.35, ease: 'power2.out' }, 0.55)
+      .to(flare, { opacity: 0, duration: 0.9, ease: 'sine.in' }, 0.95)
+      .to(bars, { scaleY: 0, duration: 1.3, ease: 'power2.inOut' }, 0.6)
+      .to(whiteout, { opacity: 1, duration: 0.55, ease: 'power2.in' }, 1.15)
+      .call(go, null, 1.75);
+  }
+
+  // ---------------------------------------------------------------- entrada en la web
   function remember() {
     try {
       sessionStorage.setItem(KEY, '1');
     } catch (e) {}
   }
-
-  function finish() {
-    state = 'out';
-    gsap.to(whiteout, { opacity: 1, duration: 0.45, ease: 'power2.inOut', onComplete: go });
+  function stopAudio(d) {
+    Object.keys(sounds).forEach(function (k) {
+      gsap.to(sounds[k], { volume: 0, duration: d, overwrite: true, onComplete: function () { sounds[k].pause(); } });
+    });
   }
-
-  // Dentro de la web: la capa (ya en blanco o en negro) se funde y deja la página a la vista.
+  // Dentro de la web: la capa se funde y deja la página a la vista.
   function close(duration) {
     state = 'done';
     remember();
     stopAudio(duration);
+    gsap.ticker.remove(tick);
     var host = intro.closest('.fi-overlay') || intro;
     window.scrollTo(0, 0);
     gsap.to(host, {
@@ -485,20 +666,17 @@
       ease: 'power2.inOut',
       onComplete: function () {
         root.classList.remove('fi-play');
-        video.pause();
-        video.removeAttribute('src');
-        video.load();
         host.remove();
+        imgs = [];
       },
     });
   }
-
   function go() {
     remember();
-    if (!OVERLAY) stopAudio(0.3);
     if (OVERLAY) return close(0.9);
+    stopAudio(0.3);
+    state = 'done';
     if (window.top !== window.self) {
-      // Dentro de un iframe (vista previa): enlace por si el marco no deja salir solo.
       whiteout.classList.add('is-fallback');
       try {
         window.top.location.href = TARGET;
@@ -507,53 +685,149 @@
     }
     window.location.replace(TARGET);
   }
-
-  // ---------------------------------------------------------------- eventos
-  enterBtn.addEventListener('click', enter);
-  window.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && OVERLAY && state !== 'done') return close(0.5);
-    if (state !== 'idle') return;
-    if ((e.key === 'Enter' || e.key === ' ') && document.activeElement !== skip && document.activeElement !== soundBtn) {
-      e.preventDefault();
-      enter();
-    }
-  });
-  // Deslizar: rueda del ratón o el dedo hacia arriba (o hacia abajo).
-  intro.addEventListener('wheel', function (e) {
-    if (state === 'idle' && Math.abs(e.deltaY) > 8) enter();
-  }, { passive: true });
-  var touchY = null;
-  intro.addEventListener('touchstart', function (e) {
-    touchY = e.touches[0].clientY;
-  }, { passive: true });
-  intro.addEventListener('touchmove', function (e) {
-    if (touchY !== null && state === 'idle' && Math.abs(e.touches[0].clientY - touchY) > 30) {
-      touchY = null;
-      enter();
-    }
-  }, { passive: true });
-  skip.addEventListener('click', function (e) {
-    e.preventDefault();
-    e.stopPropagation();
+  function skipNow() {
     if (state === 'out' || state === 'done') return;
     if (OVERLAY) return close(0.5);
     state = 'out';
     gsap.to(whiteout, { opacity: 1, duration: 0.35, ease: 'power1.inOut', onComplete: go });
+  }
+
+  // ---------------------------------------------------------------- movimiento reducido: tres imágenes fijas
+  function reducedMotion() {
+    var picks = [Math.round(1.5 * FRAMES.fps), Math.round((SEG.nave + 3) * FRAMES.fps), LAST];
+    var els = picks.map(function (i) {
+      var im = document.createElement('img');
+      im.className = 'fi-still';
+      im.alt = '';
+      im.src = frameUrl(i);
+      stage.appendChild(im);
+      return im;
+    });
+    canvas.style.display = 'none';
+    load.classList.add('is-done');
+    var tl = gsap.timeline({ paused: true });
+    tl.to([hint, word], { opacity: 0, duration: 0.6 })
+      .set(stage, { opacity: 1 })
+      .to(bars, { scaleY: 1, duration: 0.6 }, 0.2)
+      .to(els[0], { opacity: 1, duration: 1 }, 0.4)
+      .to(els[1], { opacity: 1, duration: 1.2 }, 2.6)
+      .call(function () {
+        intro.classList.add('is-flying');
+      }, null, 2.8)
+      .to(word, { opacity: 1, duration: 1 }, 2.9)
+      .to(els[2], { opacity: 1, duration: 1.2 }, 5)
+      .to(word, { opacity: 0, duration: 0.8 }, 5)
+      .to(bars, { scaleY: 0, duration: 0.8 }, 6.4)
+      .to(whiteout, { opacity: 1, duration: 0.6 }, 6.6)
+      .call(go, null, 7.3);
+    var run = function () {
+      if (state !== 'idle') return;
+      state = 'auto';
+      remember();
+      tl.play();
+    };
+    enterBtn.addEventListener('click', run);
+    window.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') run();
+    });
+  }
+
+  // ---------------------------------------------------------------- eventos
+  skip.addEventListener('click', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    skipNow();
+  });
+  window.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && OVERLAY && state !== 'done') return close(0.5);
   });
   if (!OVERLAY) {
     whiteout.querySelector('[data-whiteout-link]').href = TARGET;
     skip.href = TARGET;
   }
+  gsap.set(word, { autoAlpha: 0 });
+
+  if (reduce) {
+    gsap.set(bars, { scaleY: 0 });
+    gsap.set(stage, { opacity: 0 });
+    reveal();
+    reducedMotion();
+    return;
+  }
+
+  enterBtn.addEventListener('click', function () {
+    if (state === 'idle') return enter();
+    if (state === 'run') begin('auto');
+  });
+  window.addEventListener('keydown', function (e) {
+    if (state === 'out' || state === 'done') return;
+    if ((e.key === 'Enter' || e.key === ' ') && document.activeElement !== skip && document.activeElement !== soundBtn) {
+      e.preventDefault();
+      if (state === 'idle') enter();
+      else begin('auto');
+    } else if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+      begin('run');
+      target += FRAMES.fps * 0.8;
+    } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+      begin('run');
+      target -= FRAMES.fps * 0.8;
+    }
+  });
+  // Rueda: la cámara avanza o retrocede; la página de debajo no se mueve.
+  intro.addEventListener(
+    'wheel',
+    function (e) {
+      e.preventDefault();
+      if (state === 'out' || state === 'done') return;
+      var d = e.deltaY * (e.deltaMode === 1 ? 32 : e.deltaMode === 2 ? window.innerHeight : 1);
+      begin('run');
+      if (state === 'auto' && d < 0) state = 'run'; // hacia atrás manda la rueda
+      target += Math.max(-240, Math.min(240, d)) * WHEEL * FRAMES.fps;
+    },
+    { passive: false },
+  );
+  // Dedo: arrastrar hacia arriba avanza, hacia abajo retrocede.
+  var ty = null;
+  intro.addEventListener(
+    'touchstart',
+    function (e) {
+      ty = e.touches[0].clientY;
+    },
+    { passive: true },
+  );
+  intro.addEventListener(
+    'touchmove',
+    function (e) {
+      if (ty === null || state === 'out' || state === 'done') return;
+      e.preventDefault();
+      var y = e.touches[0].clientY;
+      begin('run');
+      if (state === 'auto' && y > ty) state = 'run';
+      target += (ty - y) * TOUCH * FRAMES.fps;
+      ty = y;
+    },
+    { passive: false },
+  );
+  intro.addEventListener('touchend', function () {
+    ty = null;
+  });
 
   var resizeT;
   window.addEventListener('resize', function () {
     clearTimeout(resizeT);
-    resizeT = setTimeout(function () {
-      if (state === 'idle') measure();
-    }, 150);
+    resizeT = setTimeout(resize, 120);
   });
 
-  // Arranca cuando el logotipo tiene su tamaño y la fuente de «SPAIN» está lista (sin esperar más de 0,8 s).
+  // ---------------------------------------------------------------- arranque
+  resize();
+  gsap.set(stage, { opacity: 0 });
+  gsap.set(bars, { scaleY: 0 });
+  // Los fotogramas se descargan mientras se ve la pantalla de inicio (primero el tramo aéreo).
+  loadFrames(function () {
+    draw(0);
+  });
+  gsap.ticker.add(tick);
+  // La pantalla de inicio sale cuando el logotipo tiene su tamaño y la fuente de «SPAIN» está lista (máx. 0,8 s).
   var fontsReady = document.fonts && document.fonts.load ? document.fonts.load('500 16px Inter') : Promise.resolve();
   Promise.race([fontsReady, new Promise(function (res) { setTimeout(res, 800); })])
     .then(measure)

@@ -47,36 +47,73 @@
   background: radial-gradient(ellipse 75% 70% at 50% 50%, transparent 55%, rgba(0, 0, 0, 0.55));
   transition: opacity 0.8s var(--fi-ease);
 }
-.fi-intro.is-video::after {
-  opacity: 0.9;
+.fi-intro::after {
+  background: radial-gradient(ellipse 80% 75% at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.6));
 }
 
-/* ---------- Vídeo (escena 2) ---------- */
-.fi-film {
+/* ---------- El recorrido: lienzo a pantalla completa ---------- */
+.fi-stage {
   position: absolute;
   inset: 0;
   z-index: 0;
-  opacity: 0;
+  overflow: hidden;
   background: #000;
-  will-change: transform;
 }
-.fi-film video {
+.fi-canvas {
+  position: absolute;
+  inset: -2%;
+  width: 104%;
+  height: 104%;
   display: block;
-  width: 100%;
-  height: 100%;
-  max-width: none;
-  object-fit: cover;
-  background: #000;
+  will-change: transform;
 }
 
 /* ---------- Logotipo ---------- */
 .fi-center {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: clamp(40px, 8vh, 84px);
+  pointer-events: none;
+}
+/* Ya dentro del recorrido, el bloque FAIRINO SPAIN vuelve a salir arriba de la imagen, sobre la nave. */
+.fi-intro.is-flying .fi-center {
+  position: absolute;
+  top: calc(max(44px, (100vh - max(100vw / 2.39, 56vh)) / 2) + 7vh);
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* ---------- Pantalla de inicio: «Haz clic para entrar» (como siempre) ---------- */
+.fi-hint {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--fi-muted);
+  opacity: 0;
+  pointer-events: none;
+}
+.fi-hint span {
+  display: inline-block;
+  padding-left: 0.34em; /* compensa el espaciado de la última letra */
+  animation: fi-pulse 2.8s ease-in-out infinite;
+}
+@keyframes fi-pulse {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+.fi-intro:has(.fi-enter:focus-visible) .fi-hint span {
+  color: #fff;
 }
 
 .fi-word {
@@ -108,21 +145,181 @@
   opacity: 0;
 }
 
-/* ---------- Textos pequeños ---------- */
-.fi-hint {
+/* ---------- Tramo 1: título de entrada con la rueda del ratón ---------- */
+.fi-start {
+  position: absolute;
+  left: 50%;
+  bottom: calc(max(44px, (100vh - max(100vw / 2.39, 56vh)) / 2) + 5vh);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
   margin: 0;
   font-size: 11px;
-  font-weight: 300;
+  font-weight: 400;
   letter-spacing: 0.5em;
   text-transform: uppercase;
   white-space: nowrap;
-  color: var(--fi-muted);
+  color: rgba(236, 238, 241, 0.86);
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.6);
   opacity: 0;
+  transform: translateX(-50%);
   pointer-events: none;
 }
-.fi-hint span {
-  display: inline-block;
-  padding-left: 0.5em; /* compensa el espaciado de la última letra */
+.fi-start > span:last-child {
+  padding-left: 0.5em;
+}
+.fi-mouse {
+  position: relative;
+  width: 22px;
+  height: 34px;
+  border: 1px solid rgba(236, 238, 241, 0.7);
+  border-radius: 12px;
+}
+.fi-mouse i {
+  position: absolute;
+  top: 7px;
+  left: 50%;
+  width: 2px;
+  height: 7px;
+  margin-left: -1px;
+  border-radius: 2px;
+  background: var(--fi-orange);
+  animation: fi-wheel 2.4s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+}
+@keyframes fi-wheel {
+  0% { transform: translateY(0); opacity: 0; }
+  25% { opacity: 1; }
+  70% { transform: translateY(10px); opacity: 0; }
+  100% { transform: translateY(10px); opacity: 0; }
+}
+.fi-coarse .fi-mouse {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+}
+.fi-coarse .fi-mouse i {
+  top: 5px;
+  height: 6px;
+}
+
+/* ---------- Tramo 2: HUD ---------- */
+.fi-hud {
+  position: absolute;
+  left: max(clamp(20px, 4vw, 64px), env(safe-area-inset-left));
+  bottom: calc(max(44px, (100vh - max(100vw / 2.39, 56vh)) / 2) + 4vh);
+  z-index: 3;
+  display: grid;
+  gap: 12px;
+  font: 400 10.5px/1.2 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: rgba(236, 238, 241, 0.86);
+  pointer-events: none;
+  opacity: 0;
+}
+.fi-hud-line {
+  display: block;
+  width: 180px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--fi-orange), rgba(236, 238, 241, 0.35) 40%, transparent);
+  transform-origin: left;
+}
+.fi-hud-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 11.5px;
+  color: #fff;
+}
+.fi-hud-title i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--fi-orange);
+  box-shadow: 0 0 10px var(--fi-orange);
+  animation: fi-blink 2.4s ease-in-out infinite;
+}
+@keyframes fi-blink {
+  50% { opacity: 0.35; }
+}
+.fi-hud-data {
+  display: flex;
+  gap: clamp(18px, 2.6vw, 40px);
+  margin: 0;
+}
+.fi-hud-data div {
+  display: grid;
+  gap: 6px;
+  padding-left: 10px;
+  border-left: 1px solid rgba(236, 238, 241, 0.22);
+}
+.fi-hud-data dt {
+  font-size: 9px;
+  color: rgba(236, 238, 241, 0.55);
+}
+.fi-hud-data dd {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  font-variant-numeric: tabular-nums;
+  color: var(--fi-orange);
+}
+
+/* ---------- Tramo 3: marco del sistema de visión ---------- */
+.fi-lock {
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  pointer-events: none;
+  opacity: 0;
+}
+.fi-lock-c {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  border: 0 solid var(--fi-orange);
+  filter: drop-shadow(0 0 6px rgba(252, 82, 32, 0.6));
+}
+.fi-lock-c--tl { left: 0; top: 0; border-left-width: 1.5px; border-top-width: 1.5px; }
+.fi-lock-c--tr { right: 0; top: 0; border-right-width: 1.5px; border-top-width: 1.5px; }
+.fi-lock-c--bl { left: 0; bottom: 0; border-left-width: 1.5px; border-bottom-width: 1.5px; }
+.fi-lock-c--br { right: 0; bottom: 0; border-right-width: 1.5px; border-bottom-width: 1.5px; }
+.fi-lock-label {
+  position: absolute;
+  left: 0;
+  top: calc(100% + 10px);
+  margin: 0;
+  font: 400 9.5px/1 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--fi-orange);
+}
+
+/* ---------- Tramo 3: portal ---------- */
+.fi-portal {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 2;
+  width: 40vmin;
+  height: 40vmin;
+  margin: -20vmin 0 0 -20vmin;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0;
+  box-shadow:
+    0 0 0 2px rgba(255, 190, 140, 0.9),
+    0 0 40px 12px rgba(252, 82, 32, 0.75),
+    inset 0 0 60px 20px rgba(252, 82, 32, 0.55);
+  mix-blend-mode: screen;
 }
 
 .fi-enter {
@@ -141,23 +338,18 @@
 .fi-enter:focus {
   outline: none;
 }
-.fi-enter:focus-visible ~ .fi-center .fi-hint span,
-.fi-intro:has(.fi-enter:focus-visible) .fi-hint span {
+.fi-intro:has(.fi-enter:focus-visible) .fi-start {
   color: #fff;
 }
-/* «Haz clic para entrar» no vuelve a salir una vez dentro del vídeo. */
-.fi-intro.is-video .fi-hint {
-  opacity: 0 !important;
-}
-.fi-intro.is-entering .fi-enter {
+.fi-intro.is-auto .fi-enter,
+.fi-intro.is-done .fi-enter {
   cursor: default;
-  pointer-events: none;
 }
 
-.fi-skip,
 .fi-sound {
   position: absolute;
   top: 50%;
+  left: max(clamp(20px, 3.4vw, 48px), env(safe-area-inset-left));
   z-index: 1;
   padding: 10px 0;
   border: 0;
@@ -165,28 +357,46 @@
   font: 400 10.5px/1 'Inter', system-ui, sans-serif;
   letter-spacing: 0.42em;
   text-transform: uppercase;
-  text-decoration: none;
   color: rgba(236, 238, 241, 0.72);
   cursor: pointer;
   transform: translateY(-50%);
   transition: color 0.8s var(--fi-ease);
 }
-.fi-skip {
-  right: max(clamp(20px, 3.4vw, 48px), env(safe-area-inset-right));
-  margin-right: -0.42em;
-  opacity: 0;
-}
-.fi-sound {
-  left: max(clamp(20px, 3.4vw, 48px), env(safe-area-inset-left));
-}
 .fi-sound[aria-pressed='false'] {
   text-decoration: line-through;
   color: rgba(236, 238, 241, 0.38);
 }
-.fi-skip:hover,
-.fi-skip:focus-visible,
 .fi-sound:hover,
 .fi-sound:focus-visible {
+  color: #fff;
+  outline: none;
+}
+
+/* «Saltar intro», en la esquina (como siempre). */
+.fi-skip {
+  position: absolute;
+  top: max(clamp(20px, 3.2vw, 44px), env(safe-area-inset-top));
+  right: max(clamp(20px, 3.4vw, 48px), env(safe-area-inset-right));
+  z-index: 9;
+  padding: 11px 16px 10px;
+  border: 1px solid var(--fi-faint);
+  border-radius: 999px;
+  font: 500 10.5px/1 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: rgba(236, 238, 241, 0.74);
+  background: rgba(0, 0, 0, 0.25);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  opacity: 0;
+  transition:
+    border-color 0.5s var(--fi-ease),
+    color 0.5s var(--fi-ease);
+}
+.fi-skip:hover,
+.fi-skip:focus-visible {
+  border-color: rgba(252, 82, 32, 0.75);
   color: #fff;
   outline: none;
 }
@@ -212,46 +422,41 @@
   bottom: 0;
   transform-origin: bottom;
 }
-/* Títulos del pie: escena, nota y código de tiempo, como en el arranque de una película. */
-.fi-slug,
-.fi-note,
-.fi-tc {
+/* Pie: nota «Imagen ilustrativa» y barra de carga naranja (fina, en el borde de la imagen). */
+.fi-note {
   position: absolute;
   top: 50%;
+  left: 50%;
   margin: 0;
-  font: 400 11px/1 'Inter', system-ui, sans-serif;
+  font: 400 9.5px/1 'Inter', system-ui, sans-serif;
   letter-spacing: 0.42em;
   text-transform: uppercase;
   white-space: nowrap;
-  color: rgba(236, 238, 241, 0.78);
-  opacity: 0;
-  transform: translateY(-50%);
-}
-.fi-slug {
-  left: max(clamp(20px, 3.4vw, 48px), env(safe-area-inset-left));
-}
-.fi-note {
-  left: 50%;
-  font-size: 9.5px;
   color: rgba(236, 238, 241, 0.5);
   transform: translate(-50%, -50%);
+  opacity: 0;
 }
-.fi-tc {
-  right: max(clamp(20px, 3.4vw, 48px), env(safe-area-inset-right));
-  margin-right: -0.42em;
-  font-variant-numeric: tabular-nums;
-  letter-spacing: 0.28em;
-  color: rgba(252, 82, 32, 0.8);
+.fi-load {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgba(236, 238, 241, 0.08);
+  transition: opacity 1.2s ease;
 }
-@media (max-width: 640px) {
-  .fi-note {
-    display: none;
-  }
-  .fi-slug,
-  .fi-tc {
-    font-size: 9px;
-    letter-spacing: 0.3em;
-  }
+.fi-load i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: var(--fi-orange);
+  box-shadow: 0 0 8px rgba(252, 82, 32, 0.8);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+.fi-load.is-done {
+  opacity: 0;
 }
 
 /* Destello anamórfico: una raya horizontal de luz que cruza la pantalla al entrar por el anillo. */
@@ -360,27 +565,35 @@ html.fi-play body {
   overflow: hidden;
 }
 
-/* ---------- Móvil en vertical: el vídeo entero, centrado y fundido en negro arriba y abajo ---------- */
-.fi-intro.is-portrait .fi-film video {
-  object-fit: contain;
-  /* el fotograma ocupa 56,25vw de alto (16:9 a todo el ancho): se funden sus bordes con el negro */
-  -webkit-mask-image: linear-gradient(to bottom, transparent calc(50% - 28.2vw), #000 calc(50% - 19vw), #000 calc(50% + 19vw), transparent calc(50% + 28.2vw));
-  mask-image: linear-gradient(to bottom, transparent calc(50% - 28.2vw), #000 calc(50% - 19vw), #000 calc(50% + 19vw), transparent calc(50% + 28.2vw));
-}
-
-/* ---------- Móvil en vertical: logotipo más grande, un poco por encima del centro ---------- */
+/* ---------- Móvil en vertical: logotipo más grande ---------- */
 @media (max-aspect-ratio: 4/5) {
   .fi-intro {
     --fi-w: min(80vw, 520px);
     place-items: start center;
     padding-top: 36vh;
   }
-  .fi-spain {
-    font-size: 11.5px;
-  }
   .fi-center {
     gap: 9vh;
   }
+  .fi-spain {
+    font-size: 11.5px;
+  }
+  .fi-start {
+    letter-spacing: 0.36em;
+  }
+  .fi-hud-data dd {
+    font-size: 13px;
+  }
+}
+
+/* Movimiento reducido: tres imágenes fijas que se funden. */
+.fi-still {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
 }
 
 /* ---------- Movimiento reducido ---------- */
@@ -388,7 +601,16 @@ html.fi-play body {
   .fi-grain {
     display: none;
   }
+  .fi-mouse i,
   .fi-hint span {
-    opacity: 0.8;
+    animation: none;
   }
+}
+
+/* Esperando fotogramas: la barra de carga late hasta que llegan. */
+.fi-load.is-waiting i {
+  animation: fi-wait 1.2s ease-in-out infinite;
+}
+@keyframes fi-wait {
+  50% { opacity: 0.35; }
 }

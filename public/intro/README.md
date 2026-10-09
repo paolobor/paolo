@@ -7,33 +7,43 @@ Entrada animada con el logotipo oficial de FAIRINO. Funciona de dos formas:
 - **Suelta** (esta carpeta tal cual, `index.html`): página propia que al terminar salta a https://fairino.es/,
   para GitHub Pages, WordPress o cualquier hosting estático. HTML, CSS y JavaScript sin compilar.
 
-## Recorrido (unos 14 s desde el clic), estilo cine
+## Recorrido: llegar en persona a una gran fábrica (estilo cine)
 
-Toda la intro va en **cinemascope**: bandas negras arriba y abajo (2,39:1; en el móvil en vertical la franja de imagen
-es más alta). Los textos son títulos de película: fundidos lentos y letras muy espaciadas. Grano de película y viñeta
-suaves (`css/intro.css`).
+Un único plano secuencia sin cortes, hecho con IA (Higgsfield · Kling 3.0 en 4K, 15 s; es imagen ilustrativa), que el
+visitante recorre con la rueda del ratón o el dedo, hacia delante y hacia atrás, como en las páginas de producto de
+Apple. El vídeo está convertido en fotogramas WebP que se pintan en un `<canvas>` (1920 px en ordenador, 960 px en
+móvil): así se puede ir adelante y atrás al instante y sin tirones.
 
-1. **El logotipo de FAIRINO.** Las letras oficiales se enfocan desde un desenfoque con un destello; después aparece
-   «SPAIN» en naranja y, con un fundido lento, «Desliza o haz clic» («Desliza o toca» en el móvil).
-2. **Clic, deslizar (rueda o dedo), Intro o espacio.** La cámara cruza por el hueco de la «O» y detrás arranca el vídeo:
-   - **Exterior, de noche:** la cámara avanza hacia las puertas de cristal de una fábrica, que se abren
-     (imagen ilustrativa hecha con IA, sin robots).
-   - **Interior:** nave con 8 cobots FAIRINO en dos filas junto a las cintas, paletizando a la vez. Los robots son el
-     **modelo 3D oficial** (no IA), con sus aros naranjas, tornillos y brida (`tools/cad/nave.html`).
-   - **Primer plano:** la cámara se lanza hacia la tapa del codo de un FAIRINO hasta que el aro naranja llena la imagen.
-   - Cortes secos de montaje con desenfoque de movimiento, corrección de color común (sombras frías, luces cálidas) y
-     destellos anamórficos horizontales en las luces fuertes.
-   - En la banda de abajo: el título de cada plano, «Imagen ilustrativa» y el código de tiempo.
-3. **Por el aro:** el vídeo se para, la cámara entra por la tapa, las bandas se abren, un destello anamórfico naranja
-   cruza la pantalla y todo funde a negro con un resplandor naranja; aparece la web a pantalla completa.
+0. **Pantalla de inicio, la de siempre:** el bloque «FAIRINO SPAIN» con su destello, «Haz clic para entrar» y
+   «Saltar intro». Mientras se ve, se descargan los fotogramas (primero el tramo aéreo).
+1. **Clic (o Intro, espacio, rueda o dedo):** la cámara cruza el hueco de la «O» y al otro lado está la fábrica desde
+   el aire, al anochecer; entran las bandas de cine (2,39:1). Abajo, como título de película: «Desliza o haz clic»,
+   con la rueda del ratón animada («Desliza para avanzar» en el móvil). Leve parallax con el ratón.
+2. **Rueda o dedo:** mueven la cámara con inercia, nunca a saltos. Si se deja de mover, la cámara sigue sola a cámara
+   muy lenta (`IDLE`): los cobots nunca se quedan parados. **Clic:** avanza sola a velocidad normal hasta el final
+   (`AUTO`). La página de debajo no se mueve.
+3. **Dentro de la nave (desde 5,5 s):** cuando aparecen los 8 cobots entra el HUD (líneas finas, «8 cobots FAIRINO en
+   producción» y contadores de ciclos, piezas y tiempo sin parar) y vuelve el bloque «FAIRINO SPAIN», con su
+   animación de siempre, arriba de la imagen.
+4. **El cobot del final (desde 13,75 s):** el HUD se va y un marco naranja lo «fija», como un sistema de visión, y
+   le sigue mientras la cámara se acerca a su anillo.
+5. **El portal:** al llegar al último fotograma, el anillo se ilumina en el borde, la cámara lo atraviesa, un destello
+   anamórfico cruza la pantalla, las bandas se abren y la capa se funde dejando ver la home.
 
-**Sonido (opcional):** ambiente grave de fábrica, un golpe al entrar en la nave y otro al cruzar el aro. Arranca tras
-el primer gesto, a volumen bajo, con el botón «Sonido» (arriba a la izquierda) para silenciarlo. Basta con poner estos
-archivos en `assets/audio/`: `ambiente-fabrica.mp3`, `golpe-nave.mp3` y `golpe-anillo.mp3` (`AUDIO` en
-`js/intro.js`). Si no están, no suena nada y el botón no aparece.
+Acabado de cine: corrección de color (sombras frías, luces cálidas que hacen saltar el naranja #fc5220) y destellos
+anamórficos discretos en las luces fuertes, ya metidos en los fotogramas; grano y viñeta suaves en la página.
+Textos como títulos de película: fundidos lentos y letras muy espaciadas. Una barra naranja fina (en el borde de la
+banda de abajo) muestra la carga; la cámara no pasa a un tramo cuyos fotogramas aún no han llegado.
 
-Se ve una vez por sesión del navegador; nunca la ven los buscadores ni las fichas de producto. Al final, dentro de
-la web la capa se funde y aparece la página; la página suelta salta a fairino.es.
+**Sonido tipo tráiler (opcional):** viento en el tramo aéreo, golpe grave al abrirse las puertas, zumbido de fábrica
+dentro, un latido grave en el anillo y un golpe final al cruzarlo. Arranca tras el primer gesto, a volumen bajo, con
+el botón «Sonido» (arriba a la izquierda) para silenciarlo. Basta con poner en `assets/audio/` los archivos de
+`AUDIO` en `js/intro.js`: `viento.mp3`, `golpe-puertas.mp3`, `fabrica.mp3`, `latido.mp3` y `golpe-final.mp3`. Si no
+está `viento.mp3`, no se pide ninguno, no suena nada y el botón no aparece.
+
+Se ve una vez por sesión del navegador (sessionStorage); nunca la ven los buscadores ni las fichas de producto. Dentro
+de la web es una capa a pantalla completa encima de la página (no una página aparte ni una redirección), así que no
+afecta al posicionamiento en Google.
 
 ## Estructura
 
@@ -42,9 +52,9 @@ index.html                 la página suelta (destino en <html data-target="http
 css/intro.css              estilos
 js/intro.js                guion de las escenas (GSAP)
 js/vendor/gsap.min.js      GSAP 3.15 (licencia gratuita de GSAP)
-assets/fairino-intro.mp4   vídeo 1080p H.264 · .webm VP9
-assets/fairino-intro-720.* vídeo 720p para el móvil y las pantallas pequeñas
-assets/audio/              sonido opcional (ver «Sonido»)
+assets/frames/1920/        fotogramas del recorrido para ordenador (361 WebP, unos 21 MB en total)
+assets/frames/960/         los mismos para el móvil y las pantallas pequeñas (unos 9 MB)
+assets/audio/              sonido opcional (ver «Sonido tipo tráiler»)
 assets/fonts/              Inter (Google Fonts, licencia OFL), servida desde la propia web
 assets/favicon.svg
 ```
@@ -70,36 +80,29 @@ Para verla otra vez sin el parámetro, cierra la pestaña: sessionStorage se bor
 
 ## Comportamiento
 
-- **Precarga:** el vídeo se descarga entero mientras se ve la escena 1, para que arranque al instante tras el clic.
-  - Chrome, Edge y Firefox reciben WebM; Safari recibe MP4.
-  - El móvil y las pantallas pequeñas reciben 720p. En el móvil en vertical el vídeo se ve entero (encajado,
-    con los bordes fundidos en negro), no recortado.
-  - Dentro de la web, los estilos, scripts y el vídeo de la intro solo se descargan si toca verla.
-- **«Saltar intro»** (en la banda de arriba, a la derecha) lleva directo a la web en cualquier momento (dentro de la web, también la tecla Esc).
-- **Movimiento reducido** (`prefers-reduced-motion`): sin vídeo. El texto aparece con un fundido y, al hacer clic, funde a negro y entra.
-- **Móvil:** logotipo más grande y algo por encima del centro, y «Toca para entrar» en lugar de «Haz clic».
-- **Si el vídeo no carga** (red lenta) o se queda parado 3 s, la intro no se queda colgada: funde a negro y entra. Si se entra antes de que termine la descarga previa, el vídeo se reproduce mientras llega.
-- **Sin JavaScript:** la página suelta muestra el logotipo y un enlace «Entrar en fairino.es»; dentro de la web, la
-  intro no aparece.
+- **Carga:** primero el tramo aéreo (para poder empezar en 2-3 s) y el resto en segundo plano, 6 a la vez. Si en
+  8 s no ha llegado ni el primer fotograma, se entra en la web.
+- **«Saltar intro»** (arriba a la derecha) lleva directo a la web en cualquier momento; dentro de la web, también Esc.
+- **Teclado:** Intro o espacio = clic; flechas arriba/abajo y Re Pág/Av Pág mueven la cámara.
+- **Movimiento reducido** (`prefers-reduced-motion`): sin recorrido; al hacer clic, fundidos entre tres imágenes fijas
+  del vídeo (fábrica, nave y anillo) y paso a la web.
+- **Móvil:** fotogramas de 960 px, «Toca para entrar» y «Desliza para avanzar».
+- **Sin JavaScript:** la página suelta muestra el logotipo y un enlace a la web; dentro de la web, la intro no aparece.
 
 ## Cambiar el vídeo
 
-El vídeo (unos 10 s, 24 fps) se monta con `tools/videos/intro-montaje.sh`:
-
-```bash
-# 1. Robots FAIRINO reales en 3D (sirviendo la raíz del repo en el puerto 4600):
-python3 -m http.server 4600 --bind 127.0.0.1 &
-Q='shot=interior&t0=0.6&dur=4' FROM=0 TO=96 OUT=/tmp/interior PW=/opt/node-tools/node_modules/playwright node tools/cad/render-nave.cjs
-Q='shot=cerca&dur=3&hero=1'    FROM=0 TO=73 OUT=/tmp/cerca    PW=/opt/node-tools/node_modules/playwright node tools/cad/render-nave.cjs
-# 2. Montaje con el exterior (Higgsfield, Kling 3.0, 5 s, 16:9) y codificación 1080p/720p, MP4 y WebM:
-tools/videos/intro-montaje.sh exterior.mp4 /tmp/interior /tmp/cerca public/intro/assets
-```
-
-Si cambias el vídeo, actualiza en `js/intro.js`:
-- `RING`: **posición** del aro en el último fotograma (proporción del ancho y del alto), **radio** de su tapa blanca
-  (proporción del ancho) y **segundo** en que se para el vídeo para entrar por él;
-- `SHOTS`: segundo en que empieza cada plano y su título;
-- el `?v=` de `src`, para que el navegador no use el vídeo guardado.
+1. Pon el plano secuencia nuevo (15 s, 16:9, sin cortes) en `assets-src/intro/` (ahí está `recorrido-1080.mp4`, la
+   copia en 1080p del actual; el original en 4K está en Higgsfield).
+2. Saca los fotogramas con el acabado de cine:
+   ```bash
+   tools/videos/intro-fotogramas.sh assets-src/intro/recorrido.mp4 public/intro/assets/frames
+   ```
+3. En `js/intro.js`, actualiza:
+   - `FRAMES.count` (lo dice el script) y súbele `v` para que el navegador no use los fotogramas guardados;
+   - `SEG`: segundo en que empieza cada tramo (entrada, nave, final); mira fotogramas sueltos con
+     `ffmpeg -i video.mp4 -vf "fps=2,scale=400:-2,tile=6x5" hoja.jpg`;
+   - `LOCK`: dónde está el cobot elegido al principio y al final del marco (proporciones del fotograma);
+   - `RING`: centro y radio del anillo en el último fotograma.
 
 ## Publicar en GitHub Pages
 
@@ -116,31 +119,56 @@ queda la página suelta en `/intro/`.
 
 Todas las rutas son relativas, así que funciona en cualquier subcarpeta.
 
-## Integrarla en WordPress (fairino.es)
+## Integrarla en WordPress (como capa encima de la home)
 
-1. **Subir la carpeta.** Súbela por FTP o desde el gestor de archivos del hosting a la raíz de WordPress, por ejemplo `public_html/intro/`. Los archivos estáticos se sirven tal cual: `https://fairino.es/intro/`.
-2. **Destino.** En `intro/index.html`, cambia el destino a la portada del mismo dominio: `<html lang="es" data-target="/">`.
-3. **Mostrarla antes de la portada.** Añade en la portada este código, en el `<head>` de la plantilla o con un plugin como WPCode, solo en la página de inicio:
+La intro va encima de la portada, en la misma página: nada de redirecciones ni páginas aparte, así Google sigue viendo
+la portada de siempre.
 
-   ```html
-   <script>
-     try {
-       if (!/bot|crawl|spider|slurp|lighthouse|preview/i.test(navigator.userAgent) &&
-           !sessionStorage.getItem('fairino-intro-vista')) {
-         location.replace('/intro/');
+1. **Subir la carpeta** `intro/` a la raíz de WordPress (por ejemplo `public_html/intro/`), por FTP o desde el gestor
+   de archivos del hosting.
+2. **En la portada**, solo en la página de inicio (en la plantilla o con un plugin como WPCode):
+   - en el `<head>`:
+     ```html
+     <script>
+       (function () {
+         try {
+           var q = new URLSearchParams(location.search);
+           if (q.has('intro') || (!/bot|crawl|spider|slurp|lighthouse|preview/i.test(navigator.userAgent) &&
+               sessionStorage.getItem('fairino-intro-vista') !== '1')) {
+             document.documentElement.classList.add('fi-play');
+           }
+         } catch (e) {}
+       })();
+     </script>
+     <style>html.fi-play .fi-overlay{display:block;position:fixed;inset:0;z-index:2147483000;background:#000}
+       .fi-overlay{display:none}</style>
+     <link rel="stylesheet" href="/intro/css/intro.css" />
+     ```
+   - justo después de abrir el `<body>`: `<div class="fi-overlay">` + el bloque `<main class="fi-intro" …>…</main>`
+     copiado tal cual de `intro/index.html` + `</div>`;
+   - al final del `<body>`:
+     ```html
+     <script>
+       if (document.documentElement.classList.contains('fi-play')) {
+         ['/intro/js/vendor/gsap.min.js', '/intro/js/intro.js'].forEach(function (src) {
+           var s = document.createElement('script');
+           s.src = src;
+           s.async = false;
+           document.body.appendChild(s);
+         });
+       } else {
+         var o = document.querySelector('.fi-overlay');
+         if (o) o.remove();
        }
-     } catch (e) {}
-   </script>
-   ```
+     </script>
+     ```
+3. Probar con `https://tu-dominio/?intro=1` (fuerza la intro aunque ya se haya visto).
 
-   Al estar en el mismo dominio, la portada y la intro comparten sessionStorage: la intro se ve una vez por sesión y después la portada carga normal.
-
-   El filtro de robots evita que Google indexe la intro en lugar de la portada. La intro, además, lleva `rel="canonical"` a https://fairino.es/.
+Así lo hace también esta web (Astro): `src/layouts/BaseLayout.astro` y `src/components/IntroOverlay.astro`.
 
 ## Licencias
 
 - **GSAP:** licencia estándar gratuita de GreenSock (https://gsap.com/standard-license).
 - **Inter:** SIL Open Font License (`assets/fonts/OFL.txt`).
 - **Logotipo de FAIRINO:** marca de FAIRINO, del SVG oficial de fairino.com (original en `assets-src/marca/`).
-- **Vídeo:** exterior generado con IA (Higgsfield, imagen ilustrativa); interior y primer plano renderizados con el
-  modelo 3D oficial de FAIRINO.
+- **Vídeo:** plano secuencia generado con IA (Higgsfield · Kling 3.0); imagen ilustrativa.
