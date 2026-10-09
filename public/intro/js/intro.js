@@ -31,7 +31,7 @@
   // medidos sobre los fotogramas del vídeo: aéreo, entrada (bajada y puertas), nave (luces y 8 cobots) y final
   // (cobot elegido, oscuridad, anillo). LOCK: dónde está el cobot del final al empezar el tramo 3 (proporciones del
   // fotograma 16:9). Si cambias el vídeo, cambia estos números (README).
-  var FRAMES = { count: 361, fps: 24, v: 3 };
+  var FRAMES = { count: 719, fps: 48, v: 4 };
   var SEG = { entrada: 3.5, nave: 5.5, final: 13.6 };
   // LOCK: marco sobre el cobot elegido, de un instante a otro (la cámara se le acerca). RING: el anillo en el último
   // fotograma (centro y radio exterior, respecto al ancho).
@@ -109,7 +109,7 @@
   function loadFrames(onFirst) {
     var next = 0;
     var active = 0;
-    var MAX = 8;
+    var MAX = 10;
     var pump = function () {
       while (active < MAX && next < N) {
         (function (i) {

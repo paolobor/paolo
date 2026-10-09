@@ -53,8 +53,8 @@ index.html                 la página suelta (destino en <html data-target="http
 css/intro.css              estilos
 js/intro.js                guion de las escenas (GSAP)
 js/vendor/gsap.min.js      GSAP 3.15 (licencia gratuita de GSAP)
-assets/frames/1920/        fotogramas del recorrido para ordenador (361 WebP, unos 11 MB en total)
-assets/frames/960/         los mismos para el móvil y las pantallas pequeñas (unos 5 MB)
+assets/frames/1920/        fotogramas del recorrido para ordenador (719 WebP a 48 fps, unos 23 MB en total)
+assets/frames/960/         los mismos para el móvil y las pantallas pequeñas (unos 10 MB)
 assets/audio/              sonido opcional (ver «Sonido tipo tráiler»)
 assets/fonts/              Inter (Google Fonts, licencia OFL), servida desde la propia web
 assets/favicon.svg
@@ -81,7 +81,7 @@ Para verla otra vez sin el parámetro, cierra la pestaña: sessionStorage se bor
 
 ## Comportamiento
 
-- **Carga:** primero el tramo aéreo (para poder empezar en 2-3 s) y el resto en segundo plano, 6 a la vez. Si en
+- **Carga:** primero el tramo aéreo (para poder empezar en 2-3 s) y el resto en segundo plano, 10 a la vez. Si en
   8 s no ha llegado ni el primer fotograma, se entra en la web.
 - **«Saltar intro»** (arriba a la derecha) lleva directo a la web en cualquier momento; dentro de la web, también Esc.
 - **Teclado:** Intro o espacio = clic; flecha abajo y Av Pág adelantan la cámara.
