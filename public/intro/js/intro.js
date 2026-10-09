@@ -35,11 +35,11 @@
   // Aro naranja en el último fotograma del vídeo (proporciones del encuadre 16:9; cap = radio de la tapa blanca
   // respecto al ancho) y segundo en que el vídeo se para para entrar por él. SHOTS: inicio de cada plano (títulos
   // del pie). Si cambias el vídeo, cambia también estos números (README).
-  var RING = { x: 0.5, y: 0.5, cap: 0.155, at: 10.2 };
+  var RING = { x: 0.497, y: 0.5, cap: 0.284, at: 10.3 };
   var SHOTS = [
     { at: 0, slug: 'Ext. Fábrica — Noche' },
-    { at: 3.96, slug: 'Int. Nave de producción' },
-    { at: 7.25, slug: 'FAIRINO · Articulación' },
+    { at: 4.04, slug: 'Int. Nave de producción' },
+    { at: 7.33, slug: 'FAIRINO · Articulación' },
   ];
   var RATE = 1;
   var PUSH = { scale: 1.03, duration: 0.35 };

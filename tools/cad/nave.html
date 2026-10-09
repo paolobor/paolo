@@ -162,8 +162,8 @@
   // ---------------------------------------------------------------- cintas, palés y cajas
   const ROWS = [-1, 1];
   const CONV_X = 2.85, ROBOT_X = 1.8;
-  const ROBOT_Z = [-1.5, -5.5, -9.5, -13.5];
-  const CONV_LEN = 34, CONV_Z = -8;
+  const ROBOT_Z = [-1.5, -5.5, -9.5, -13.5, -17.5, -21.5, -25.5];
+  const CONV_LEN = 44, CONV_Z = -13;
   const alu = mat(0xb9bec4, 0.35, 0.8);
   const roller = mat(0xd5d9dd, 0.25, 0.9);
   const card = new THREE.MeshStandardMaterial({ color: 0xb98a58, roughness: 0.85 });
@@ -208,10 +208,10 @@
     }
     scene.add(conv);
     // Cajas que avanzan por la cinta hacia el fondo.
-    for (let i = 0; i < 14; i++) {
+    for (let i = 0; i < 18; i++) {
       const b = box(0.36, 0.26, 0.42);
       b.position.set(s * CONV_X, H0 + 0.045 + 0.13, 0);
-      b.userData.z0 = CONV_Z + CONV_LEN / 2 - i * (CONV_LEN / 14);
+      b.userData.z0 = CONV_Z + CONV_LEN / 2 - i * (CONV_LEN / 18);
       scene.add(b);
       moving.push(b);
     }
@@ -243,6 +243,103 @@
       }
       scene.add(p);
     }
+  }
+
+  // ---------------------------------------------------------------- nave llena: estanterías, máquinas, techo
+  const blueSteel = mat(0x1d4f8f, 0.45, 0.5);
+  const orangeBeam = mat(0xe8541f, 0.45, 0.3);
+  const greySteel = mat(0x5b6168, 0.5, 0.6);
+  // Estanterías de palés a lo largo de las dos paredes, con palés y cajas en 3 niveles.
+  for (const s of ROWS) {
+    const x = s * 6.75;
+    for (let z = 5; z > -42; z -= 2.8) {
+      for (const dx of [-0.55, 0.55]) {
+        const up = new THREE.Mesh(new THREE.BoxGeometry(0.09, 5.4, 0.09), blueSteel);
+        up.position.set(x + dx, 2.7, z);
+        scene.add(up);
+      }
+      for (let lv = 0; lv < 4; lv++) {
+        const y = 0.12 + lv * 1.45;
+        for (const dx of [-0.55, 0.55]) {
+          const beam = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.12, 2.8), orangeBeam);
+          beam.position.set(x + dx, y + 0.06, z - 1.4);
+          scene.add(beam);
+        }
+        if (lv === 3) continue;
+        for (const k of [0, 1]) {
+          if ((Math.abs(z * 7 + lv * 3 + k) % 5) === 0) continue; // algún hueco, como en una nave de verdad
+          const zz = z - 0.7 - k * 1.4;
+          const deck = new THREE.Mesh(new THREE.BoxGeometry(1.0, 0.13, 1.2), wood);
+          deck.position.set(x, y + 0.2, zz);
+          scene.add(deck);
+          const h = 0.5 + ((lv + k) % 3) * 0.22;
+          const b = box(0.95, h, 1.1);
+          b.position.set(x, y + 0.27 + h / 2, zz);
+          scene.add(b);
+        }
+      }
+    }
+  }
+  // Máquinas al fondo (centros de mecanizado / embaladoras): cuerpo gris, ventana oscura, piloto verde.
+  const glass = new THREE.MeshPhysicalMaterial({ color: 0x0d1418, roughness: 0.08, metalness: 0, clearcoat: 1 });
+  const pilot = new THREE.MeshBasicMaterial({ color: new THREE.Color(0.2, 1, 0.45).multiplyScalar(2), toneMapped: false });
+  for (const [x, z, w] of [[-4.2, -31, 2.6], [-1.3, -33.5, 2.4], [1.4, -33.5, 2.4], [4.3, -31, 2.6], [-4.6, -38, 3], [0, -40, 3.4], [4.6, -38, 3]]) {
+    const m = new THREE.Group();
+    const body = new THREE.Mesh(new THREE.BoxGeometry(w, 2.3, 1.8), mat(0xc5c9cd, 0.4, 0.2));
+    body.position.y = 1.15;
+    body.castShadow = body.receiveShadow = true;
+    const win = new THREE.Mesh(new THREE.BoxGeometry(w * 0.55, 0.9, 0.02), glass);
+    win.position.set(-w * 0.12, 1.35, 0.91);
+    const band = new THREE.Mesh(new THREE.BoxGeometry(w, 0.12, 1.82), orangeBeam);
+    band.position.y = 2.2;
+    const lamp = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.35, 12), pilot);
+    lamp.position.set(w / 2 - 0.2, 2.5, 0.6);
+    const panel = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.55, 0.12), mat(0x23272b, 0.5));
+    panel.position.set(w / 2 - 0.35, 1.4, 0.95);
+    m.add(body, win, band, lamp, panel);
+    m.position.set(x, 0, z);
+    scene.add(m);
+  }
+  // AGV en el pasillo, al fondo, con una carga.
+  const agv = new THREE.Group();
+  const agvBody = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.32, 1.3), mat(0x2b2f34, 0.5, 0.3));
+  agvBody.position.y = 0.16;
+  const agvStripe = new THREE.Mesh(new THREE.BoxGeometry(0.92, 0.05, 1.32), orangeBeam);
+  agvStripe.position.y = 0.3;
+  const agvLoad = box(0.8, 0.55, 1.1);
+  agvLoad.position.y = 0.6;
+  agv.add(agvBody, agvStripe, agvLoad);
+  agv.position.set(0.25, 0, -19);
+  scene.add(agv);
+  // Techo: cerchas metálicas, bandejas de cables y carteles colgados (sin texto).
+  for (let z = 6; z > -46; z -= 6) {
+    const truss = new THREE.Mesh(new THREE.BoxGeometry(HALL.w, 0.35, 0.18), greySteel);
+    truss.position.set(0, HALL.h - 0.6, z);
+    scene.add(truss);
+  }
+  for (const x of [-3.9, 3.9]) {
+    const tray = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.08, HALL.z0 - HALL.z1), greySteel);
+    tray.position.set(x, HALL.h - 1.1, (HALL.z0 + HALL.z1) / 2);
+    scene.add(tray);
+  }
+  for (const [x, z] of [[-1.8, -10], [1.8, -16], [-1.8, -24]]) {
+    const sign = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.45, 0.04), mat(0x1c2024, 0.6));
+    sign.position.set(x, 4.4, z);
+    const stripe = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.06, 0.05), orangeBeam);
+    stripe.position.set(x, 4.2, z);
+    scene.add(sign, stripe);
+    for (const dx of [-0.6, 0.6]) {
+      const wire = new THREE.Mesh(new THREE.CylinderGeometry(0.006, 0.006, HALL.h - 4.6, 4), greySteel);
+      wire.position.set(x + dx, 4.6 + (HALL.h - 4.6) / 2, z);
+      scene.add(wire);
+    }
+  }
+  // Pasillos peatonales en amarillo junto a las estanterías.
+  for (const x of [-5.6, 5.6]) {
+    const l = new THREE.Mesh(new THREE.PlaneGeometry(0.1, HALL.z0 - HALL.z1), mat(0xe2b11c, 0.5));
+    l.rotation.x = -Math.PI / 2;
+    l.position.set(x, 0.004, (HALL.z0 + HALL.z1) / 2);
+    scene.add(l);
   }
 
   // ---------------------------------------------------------------- robots reales
@@ -293,7 +390,7 @@
       holder.add(r);
       scene.add(holder);
       // Foco cálido sobre cada robot: el robot destaca sobre la nave.
-      const spot = new THREE.SpotLight(0xfff0e2, Number(q.get('spot') || 9), 9, 0.42, 0.7, 2);
+      const spot = new THREE.SpotLight(0xfff0e2, Number(q.get('spot') || 3.5), 9, 0.42, 0.7, 2);
       spot.position.set(s * ROBOT_X * 0.8, 5.2, z + 0.6);
       spot.target.position.set(s * ROBOT_X, 1.0, z - 0.3);
       scene.add(spot, spot.target);
@@ -339,7 +436,7 @@
   composer.addPass(new RenderPass(scene, camera));
   const bokeh = SHOT === 'cerca' ? new BokehPass(scene, camera, { focus: 0.6, aperture: Number(q.get('ap') || 0.03), maxblur: 0.02 }) : null;
   if (bokeh) composer.addPass(bokeh);
-  composer.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), 0.3, 0.5, 1.0));
+  composer.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), 0.22, 0.4, 1.05));
   composer.addPass(new OutputPass());
 
   const hero = robots[Number(q.get('hero') || 1)];

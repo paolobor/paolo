@@ -162,11 +162,11 @@
   padding: 10px 0;
   border: 0;
   background: none;
-  font: 300 10px/1 'Inter', system-ui, sans-serif;
+  font: 400 10.5px/1 'Inter', system-ui, sans-serif;
   letter-spacing: 0.42em;
   text-transform: uppercase;
   text-decoration: none;
-  color: rgba(236, 238, 241, 0.62);
+  color: rgba(236, 238, 241, 0.72);
   cursor: pointer;
   transform: translateY(-50%);
   transition: color 0.8s var(--fi-ease);
@@ -219,11 +219,11 @@
   position: absolute;
   top: 50%;
   margin: 0;
-  font: 300 10px/1 'Inter', system-ui, sans-serif;
+  font: 400 11px/1 'Inter', system-ui, sans-serif;
   letter-spacing: 0.42em;
   text-transform: uppercase;
   white-space: nowrap;
-  color: rgba(236, 238, 241, 0.7);
+  color: rgba(236, 238, 241, 0.78);
   opacity: 0;
   transform: translateY(-50%);
 }
@@ -232,8 +232,8 @@
 }
 .fi-note {
   left: 50%;
-  font-size: 9px;
-  color: rgba(236, 238, 241, 0.42);
+  font-size: 9.5px;
+  color: rgba(236, 238, 241, 0.5);
   transform: translate(-50%, -50%);
 }
 .fi-tc {
