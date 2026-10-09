@@ -67,7 +67,12 @@ export const site = {
   // funciona como antes. Dónde sale: consola de Firebase → Configuración del proyecto → Tus apps → app web
   // («firebaseConfig»). Son datos públicos: la seguridad la ponen las reglas de tools/firebase/firestore.rules.
   accounts: {
-    firebase: null as null | { apiKey: string; authDomain: string; projectId: string; appId: string },
+    firebase: {
+      apiKey: 'AIzaSyCmtf-uMaf5zIrUiR6miKXO2y-BbxqtYiI',
+      authDomain: 'fairinocobot.firebaseapp.com',
+      projectId: 'fairinocobot',
+      appId: '1:271044825844:web:2256f52a62f3a475c3c4a1',
+    } as null | { apiKey: string; authDomain: string; projectId: string; appId: string },
   },
 
   // Asistente virtual (ElevenLabs Agents): voz y chat de texto en todas las páginas. Mientras agentId sea null no se
