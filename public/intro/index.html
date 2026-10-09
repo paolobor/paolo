@@ -26,7 +26,7 @@
     <!-- Inter (Google Fonts, licencia OFL) servida desde la propia web: más rápida y sin enviar datos a terceros. -->
     <link rel="preload" href="assets/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin />
     <!-- ?v=: súbelo al cambiar intro.css o intro.js, para que el navegador no use la versión guardada. -->
-    <link rel="stylesheet" href="css/intro.css?v=5" />
+    <link rel="stylesheet" href="css/intro.css?v=6" />
     <style>
       html,
       body {
@@ -81,13 +81,25 @@
           </svg>
           <span class="fi-spain" data-spain aria-hidden="true">SPAIN</span>
         </h1>
-        <p class="fi-hint" data-hint><span>Haz clic para entrar</span></p>
+        <p class="fi-hint" data-hint><span>Desliza o haz clic</span></p>
       </div>
 
       <button class="fi-enter" type="button" data-enter aria-label="Entrar en FAIRINO Spain"></button>
-      <a class="fi-skip" href="/" data-skip>Saltar intro</a>
 
+      <!-- Destello anamórfico (horizontal) al cruzar el anillo naranja. -->
+      <div class="fi-flare" data-flare aria-hidden="true"></div>
       <div class="fi-grain" aria-hidden="true"></div>
+
+      <!-- Formato cinemascope (2,39:1): bandas negras arriba y abajo, que se abren al cruzar el anillo. -->
+      <div class="fi-bar fi-bar--top" data-bar>
+        <button class="fi-sound" type="button" data-sound aria-pressed="true" hidden>Sonido</button>
+        <a class="fi-skip" href="/" data-skip>Saltar intro</a>
+      </div>
+      <div class="fi-bar fi-bar--bottom" data-bar>
+        <p class="fi-slug" data-slug aria-hidden="true"></p>
+        <p class="fi-note" data-note aria-hidden="true">Imagen ilustrativa</p>
+        <p class="fi-tc" data-tc aria-hidden="true">00:00:00:00</p>
+      </div>
       <div class="fi-whiteout" data-whiteout aria-hidden="true">
         <a class="fi-whiteout-link" href="/" data-whiteout-link>Entrar en FAIRINO Spain</a>
       </div>
@@ -99,6 +111,6 @@
     </noscript>
 
     <script src="js/vendor/gsap.min.js" defer></script>
-    <script src="js/intro.js?v=5" defer></script>
+    <script src="js/intro.js?v=6" defer></script>
   </body>
 </html>

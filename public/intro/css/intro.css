@@ -48,7 +48,7 @@
   transition: opacity 0.8s var(--fi-ease);
 }
 .fi-intro.is-video::after {
-  opacity: 0.35;
+  opacity: 0.9;
 }
 
 /* ---------- Vídeo (escena 2) ---------- */
@@ -112,8 +112,8 @@
 .fi-hint {
   margin: 0;
   font-size: 11px;
-  font-weight: 400;
-  letter-spacing: 0.34em;
+  font-weight: 300;
+  letter-spacing: 0.5em;
   text-transform: uppercase;
   white-space: nowrap;
   color: var(--fi-muted);
@@ -122,17 +122,7 @@
 }
 .fi-hint span {
   display: inline-block;
-  padding-left: 0.34em; /* compensa el espaciado de la última letra */
-  animation: fi-pulse 2.8s ease-in-out infinite;
-}
-@keyframes fi-pulse {
-  0%,
-  100% {
-    opacity: 0.45;
-  }
-  50% {
-    opacity: 1;
-  }
+  padding-left: 0.5em; /* compensa el espaciado de la última letra */
 }
 
 .fi-enter {
@@ -164,32 +154,122 @@
   pointer-events: none;
 }
 
-.fi-skip {
+.fi-skip,
+.fi-sound {
   position: absolute;
-  top: max(clamp(20px, 3.2vw, 44px), env(safe-area-inset-top));
-  right: max(clamp(20px, 3.4vw, 48px), env(safe-area-inset-right));
-  z-index: 6;
-  padding: 11px 16px 10px;
-  border: 1px solid var(--fi-faint);
-  border-radius: 999px;
-  font: 500 10.5px/1 'Inter', system-ui, sans-serif;
-  letter-spacing: 0.24em;
+  top: 50%;
+  z-index: 1;
+  padding: 10px 0;
+  border: 0;
+  background: none;
+  font: 300 10px/1 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.42em;
   text-transform: uppercase;
   text-decoration: none;
-  color: rgba(236, 238, 241, 0.74);
-  background: rgba(0, 0, 0, 0.25);
-  -webkit-backdrop-filter: blur(8px);
-  backdrop-filter: blur(8px);
+  color: rgba(236, 238, 241, 0.62);
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: color 0.8s var(--fi-ease);
+}
+.fi-skip {
+  right: max(clamp(20px, 3.4vw, 48px), env(safe-area-inset-right));
+  margin-right: -0.42em;
   opacity: 0;
-  transition:
-    border-color 0.5s var(--fi-ease),
-    color 0.5s var(--fi-ease);
+}
+.fi-sound {
+  left: max(clamp(20px, 3.4vw, 48px), env(safe-area-inset-left));
+}
+.fi-sound[aria-pressed='false'] {
+  text-decoration: line-through;
+  color: rgba(236, 238, 241, 0.38);
 }
 .fi-skip:hover,
-.fi-skip:focus-visible {
-  border-color: rgba(252, 82, 32, 0.75);
+.fi-skip:focus-visible,
+.fi-sound:hover,
+.fi-sound:focus-visible {
   color: #fff;
   outline: none;
+}
+
+/* ---------- Cinemascope 2,39:1 ----------
+   Bandas negras arriba y abajo durante toda la intro; en el móvil en vertical, la franja de imagen es más alta. */
+.fi-bar {
+  --fi-band: max(100vw / 2.39, 56vh);
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 7;
+  height: max(0px, calc((100vh - var(--fi-band)) / 2));
+  min-height: 44px;
+  background: #000;
+  will-change: transform;
+}
+.fi-bar--top {
+  top: 0;
+  transform-origin: top;
+}
+.fi-bar--bottom {
+  bottom: 0;
+  transform-origin: bottom;
+}
+/* Títulos del pie: escena, nota y código de tiempo, como en el arranque de una película. */
+.fi-slug,
+.fi-note,
+.fi-tc {
+  position: absolute;
+  top: 50%;
+  margin: 0;
+  font: 300 10px/1 'Inter', system-ui, sans-serif;
+  letter-spacing: 0.42em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: rgba(236, 238, 241, 0.7);
+  opacity: 0;
+  transform: translateY(-50%);
+}
+.fi-slug {
+  left: max(clamp(20px, 3.4vw, 48px), env(safe-area-inset-left));
+}
+.fi-note {
+  left: 50%;
+  font-size: 9px;
+  color: rgba(236, 238, 241, 0.42);
+  transform: translate(-50%, -50%);
+}
+.fi-tc {
+  right: max(clamp(20px, 3.4vw, 48px), env(safe-area-inset-right));
+  margin-right: -0.42em;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.28em;
+  color: rgba(252, 82, 32, 0.8);
+}
+@media (max-width: 640px) {
+  .fi-note {
+    display: none;
+  }
+  .fi-slug,
+  .fi-tc {
+    font-size: 9px;
+    letter-spacing: 0.3em;
+  }
+}
+
+/* Destello anamórfico: una raya horizontal de luz que cruza la pantalla al entrar por el anillo. */
+.fi-flare {
+  position: absolute;
+  left: -20%;
+  right: -20%;
+  top: var(--fi-ry, 50%);
+  z-index: 6;
+  height: 2px;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 140, 70, 0.25) 18%, rgba(255, 214, 180, 0.95) 50%, rgba(255, 140, 70, 0.25) 82%, transparent);
+  box-shadow:
+    0 0 18px 3px rgba(252, 82, 32, 0.55),
+    0 0 60px 10px rgba(252, 82, 32, 0.18);
+  transform: translateY(-50%) scaleX(0.2);
+  mix-blend-mode: screen;
 }
 
 /* ---------- Grano de película ---------- */
@@ -309,7 +389,6 @@ html.fi-play body {
     display: none;
   }
   .fi-hint span {
-    animation: none;
     opacity: 0.8;
   }
 }

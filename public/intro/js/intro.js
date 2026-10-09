@@ -1,10 +1,11 @@
 /*
- * Intro de FAIRINO Spain.
- *   Escena 1: el logotipo de FAIRINO se enfoca con un destello. Clic (o Intro / espacio).
- *   Escena 2: un destello recorre el logotipo, la cámara atraviesa la «O» y detrás arranca el vídeo, algo más
- *             lento que el original; el cobot sale de la sombra, la cámara se queda un momento en el plano del
- *             anillo rojo de una articulación, se acerca despacio y entra por él. Todo en la escena oscura del vídeo:
- *             el plano blanco que viene después no se ve.
+ * Intro de FAIRINO Spain, como el arranque de una película: cinemascope (bandas negras 2,39:1), títulos con fundidos
+ * lentos, grano y viñeta.
+ *   Escena 1: el logotipo de FAIRINO se enfoca con un destello. Clic, deslizar (rueda o dedo), Intro o espacio.
+ *   Escena 2: un destello recorre el logotipo, la cámara atraviesa la «O» y detrás arranca el vídeo (assets/):
+ *             exterior de la fábrica de noche → nave con 8 cobots FAIRINO → primer plano de la tapa de una articulación
+ *             con su aro naranja. El vídeo se para en el aro, la cámara entra por él, las bandas se abren y un
+ *             destello anamórfico cruza la pantalla.
  *   Escena 3: fundido a negro con un resplandor naranja y
  *             - página suelta (intro/index.html): salto a la web (data-target en <html>);
  *             - dentro de la web (inicio y tienda, html.fi-play): la capa se funde y deja ver la página.
@@ -31,14 +32,22 @@
   var FIT = portrait ? 'contain' : 'cover';
   if (portrait) intro.classList.add('is-portrait');
 
-  // Anillo rojo en el fotograma congelado del vídeo (proporciones del encuadre 16:9; cap = radio de la tapa
-  // respecto al ancho) y momento del zoom: a 1,2 s, todavía en la escena oscura (a los 2,1 s el vídeo corta a un
-  // plano blanco, que así no llega a verse).
-  var RING = { x: 0.588, y: 0.285, cap: 0.067, at: 1.2 };
-  // Velocidad del vídeo (más lento que el original, para que la escena del cobot dure más) y acercamiento lento al
-  // anillo antes de entrar por él.
-  var RATE = 0.85;
-  var PUSH = { scale: 1.08, duration: 1 };
+  // Aro naranja en el último fotograma del vídeo (proporciones del encuadre 16:9; cap = radio de la tapa blanca
+  // respecto al ancho) y segundo en que el vídeo se para para entrar por él. SHOTS: inicio de cada plano (títulos
+  // del pie). Si cambias el vídeo, cambia también estos números (README).
+  var RING = { x: 0.5, y: 0.5, cap: 0.155, at: 10.2 };
+  var SHOTS = [
+    { at: 0, slug: 'Ext. Fábrica — Noche' },
+    { at: 3.96, slug: 'Int. Nave de producción' },
+    { at: 7.25, slug: 'FAIRINO · Articulación' },
+  ];
+  var RATE = 1;
+  var PUSH = { scale: 1.03, duration: 0.35 };
+  var FPS = 24;
+  // Sonido tipo tráiler (opcional): si estos archivos existen en assets/audio/, suenan tras el primer gesto, a volumen
+  // bajo, y aparece el botón «Sonido» para silenciarlos. Si no existen, no pasa nada y el botón no se ve.
+  var AUDIO = { amb: 'audio/ambiente-fabrica.mp3', hall: 'audio/golpe-nave.mp3', ring: 'audio/golpe-anillo.mp3' };
+  var VOL = { amb: 0.22, hit: 0.5 };
 
   var $ = function (s) {
     return intro.querySelector(s);
@@ -53,10 +62,16 @@
   var film = $('[data-film]');
   var video = $('[data-video]');
   var whiteout = $('[data-whiteout]');
+  var bars = intro.querySelectorAll('[data-bar]');
+  var slug = $('[data-slug]');
+  var note = $('[data-note]');
+  var tc = $('[data-tc]');
+  var flare = $('[data-flare]');
+  var soundBtn = $('[data-sound]');
   var PATH = document.getElementById('fi-wm');
   var state = 'idle';
   var revealTl = null;
-  if (coarse) hint.querySelector('span').textContent = 'Toca para entrar';
+  if (coarse) hint.querySelector('span').textContent = 'Desliza o toca';
 
   // ---------------------------------------------------------------- vídeo (se descarga entero en la escena 1)
   var isSafari = /^((?!chrome|android|crios|fxios|edg).)*safari/i.test(navigator.userAgent);
@@ -64,8 +79,9 @@
   var small = mobile || Math.max(window.innerWidth, window.innerHeight) * dpr <= 1400;
   var webm = !isSafari && video.canPlayType('video/webm; codecs="vp9"') === 'probably';
   // ?v=: súbelo al cambiar los vídeos, para que el navegador no use el guardado.
-  var src = ASSETS + 'fairino-intro' + (small ? '-720' : '') + (webm ? '.webm' : '.mp4') + '?v=2';
+  var src = ASSETS + 'fairino-intro' + (small ? '-720' : '') + (webm ? '.webm' : '.mp4') + '?v=3';
   var setSrc = function (u) {
+    if (video.getAttribute('src')) return;
     video.src = u;
     video.load();
   };
@@ -192,8 +208,8 @@
         0.4,
       )
       .fromTo(spain, { opacity: 0, letterSpacing: '1.1em' }, { opacity: 1, letterSpacing: '0.62em', duration: 1.6, ease: 'expo.out' }, 1.5)
-      .to(skip, { opacity: 1, duration: 1.2, ease: 'power2.out' }, 1.3)
-      .to(hint, { opacity: 1, duration: 1.4, ease: 'power2.out' }, 2.2);
+      .to(skip, { opacity: 1, duration: 2.2, ease: 'sine.inOut' }, 1.3)
+      .to(hint, { opacity: 1, duration: 2.4, ease: 'sine.inOut' }, 2.2);
   }
 
   // ---------------------------------------------------------------- escena 2
@@ -205,11 +221,14 @@
     // Si se entra antes de que acabe la escena 1, su animación no debe volver a encender «Haz clic para entrar».
     if (revealTl) revealTl.kill();
     gsap.killTweensOf([hint, skip, spain]);
+    gsap.to(skip, { opacity: 1, duration: 1.2, ease: 'sine.inOut' });
+    startAudio();
 
     if (reduce) {
       gsap
         .timeline()
-        .to([word, hint, skip], { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 0)
+        .to([word, hint], { opacity: 0, duration: 0.5, ease: 'power1.inOut' }, 0)
+        .to(bars, { scaleY: 0, duration: 0.8, ease: 'power2.inOut' }, 0.3)
         .to(whiteout, { opacity: 1, duration: 0.6, ease: 'power1.inOut' }, 0.4)
         .call(go, null, 1.1);
       return;
@@ -237,7 +256,7 @@
 
       var sh = { p: -0.4 };
       var tl = gsap.timeline();
-      tl.to([hint, skip], { opacity: 0, duration: 0.35, ease: 'power2.out' }, 0)
+      tl.to(hint, { opacity: 0, duration: 0.6, ease: 'sine.out' }, 0)
         // Un destello recorre el logotipo, que se encoge un poco antes de lanzarse.
         .to(sh, { p: 1.4, duration: 0.62, ease: 'power2.inOut', onUpdate: function () { setShine(sh.p); } }, 0)
         .to(word, { scale: 0.986, duration: 0.16, ease: 'power2.out' }, 0)
@@ -272,7 +291,7 @@
   function playVideo() {
     state = 'video';
     intro.classList.add('is-video');
-    var started = performance.now();
+    if (!video.getAttribute('src')) setSrc(src); // la descarga previa no ha terminado: se reproduce en streaming
     var done = false;
     var stop = function (fn) {
       if (done) return;
@@ -286,23 +305,64 @@
         stop(finish);
       });
     }
-    var tooLong = function () {
-      return performance.now() - started > (video.currentTime > 0 ? 5000 : 2600);
-    };
+    gsap.to([slug, tc], { opacity: 1, duration: 1.6, ease: 'sine.inOut', delay: 0.4 });
+    gsap.to(note, { opacity: 1, duration: 1.6, ease: 'sine.inOut', delay: 0.8 });
+    var shot = -1;
     var check = function () {
       if (done) return;
-      if (video.currentTime >= RING.at - 0.01) return stop(zoom);
-      if (tooLong()) return stop(finish);
+      var t = video.currentTime;
+      timecode(t);
+      var n = 0;
+      for (var i = 0; i < SHOTS.length; i++) if (t >= SHOTS[i].at) n = i;
+      if (n !== shot) {
+        if (shot >= 0) hit('hall', n === 1);
+        shot = n;
+        title(SHOTS[n].slug);
+      }
+      if (t >= RING.at - 0.01) return stop(zoom);
       if (video.requestVideoFrameCallback) video.requestVideoFrameCallback(check);
       else requestAnimationFrame(check);
     };
     check();
-    // Si el vídeo no avanza (red lenta o error), se sigue igual.
+    // Si el vídeo no avanza (red lenta o error) durante 3 s, se sigue igual.
+    var last = -1;
+    var lastMove = performance.now();
     (function watch() {
       if (done) return;
-      if (tooLong()) stop(finish);
+      if (video.currentTime !== last) {
+        last = video.currentTime;
+        lastMove = performance.now();
+      }
+      if (performance.now() - lastMove > 3000) stop(finish);
       else setTimeout(watch, 400);
     })();
+  }
+
+  // Código de tiempo HH:MM:SS:FF del vídeo, en el pie.
+  function timecode(t) {
+    var f = Math.floor(t * FPS);
+    var pad = function (n) {
+      return (n < 10 ? '0' : '') + n;
+    };
+    tc.textContent = '00:00:' + pad(Math.floor(f / FPS)) + ':' + pad(f % FPS);
+  }
+
+  // Título de escena en el pie: fundido lento de salida y de entrada.
+  function title(text) {
+    gsap.killTweensOf(slug, 'opacity');
+    if (!slug.textContent) {
+      slug.textContent = text;
+      return;
+    }
+    gsap.to(slug, {
+      opacity: 0,
+      duration: 0.45,
+      ease: 'sine.in',
+      onComplete: function () {
+        slug.textContent = text;
+        gsap.to(slug, { opacity: 1, duration: 1.1, ease: 'sine.out' });
+      },
+    });
   }
 
   function zoom() {
@@ -325,16 +385,80 @@
     // El resplandor del fundido sale del anillo.
     whiteout.style.setProperty('--fi-rx', ((rx / W) * 100).toFixed(1) + '%');
     whiteout.style.setProperty('--fi-ry', ((ry / H) * 100).toFixed(1) + '%');
-    // Primero se acerca despacio al anillo y después entra por él.
+    flare.style.setProperty('--fi-ry', ((ry / H) * 100).toFixed(1) + '%');
+    // Un instante quieto en el aro y la cámara entra por él: las bandas de cine se abren, un destello anamórfico
+    // cruza la pantalla y suena el golpe.
     var t = PUSH.duration;
     var tl = gsap.timeline();
     tl.to(film, { scale: PUSH.scale, duration: t, ease: 'sine.inOut' }, 0)
       .to(film, { scale: S, duration: 1.25, ease: 'power3.in' }, t)
+      .to([slug, note, tc], { opacity: 0, duration: 0.6, ease: 'sine.in' }, t)
+      .to(bars, { scaleY: 0, duration: 1.3, ease: 'power2.inOut' }, t + 0.1)
+      .call(function () {
+        hit('ring', true);
+      }, null, t + 0.55)
+      .fromTo(flare, { opacity: 0, scaleX: 0.15 }, { opacity: 1, scaleX: 1, duration: 0.35, ease: 'power2.out' }, t + 0.55)
+      .to(flare, { opacity: 0, duration: 0.9, ease: 'sine.in' }, t + 0.9)
       // Al acercarse, la imagen se oscurece (la tapa del anillo es clara: así no se llena la pantalla de gris).
       .fromTo(video, { filter: 'brightness(1) saturate(1)' }, { filter: 'brightness(0.08) saturate(1.4)', duration: 0.85, ease: 'power1.in' }, t + 0.15)
       .to(whiteout, { opacity: 1, duration: 0.45, ease: 'power2.in' }, t + 0.85)
       .call(go, null, t + 1.35);
   }
+
+  // ---------------------------------------------------------------- sonido (opcional)
+  var sounds = null;
+  var muted = false;
+  function startAudio() {
+    if (sounds || reduce || !window.fetch || !/^https?:/.test(location.protocol)) return;
+    sounds = {};
+    var url = function (k) {
+      return ASSETS + AUDIO[k];
+    };
+    fetch(url('amb'), { method: 'HEAD' })
+      .then(function (r) {
+        if (!r.ok) throw new Error(r.status);
+        Object.keys(AUDIO).forEach(function (k) {
+          var a = new Audio(url(k));
+          a.preload = 'auto';
+          a.loop = k === 'amb';
+          a.volume = 0;
+          sounds[k] = a;
+        });
+        soundBtn.hidden = false;
+        gsap.fromTo(soundBtn, { opacity: 0 }, { opacity: 1, duration: 1.6, ease: 'sine.inOut' });
+        var amb = sounds.amb;
+        var p = amb.play();
+        if (p && p.catch) p.catch(function () {});
+        gsap.to(amb, { volume: muted ? 0 : VOL.amb, duration: 2.5, ease: 'sine.inOut' });
+      })
+      .catch(function () {});
+  }
+  function hit(k, on) {
+    var a = on && sounds && sounds[k];
+    if (!a || muted) return;
+    a.currentTime = 0;
+    a.volume = VOL.hit;
+    var p = a.play();
+    if (p && p.catch) p.catch(function () {});
+  }
+  function stopAudio(d) {
+    if (!sounds || !sounds.amb) return;
+    gsap.to(sounds.amb, {
+      volume: 0,
+      duration: d,
+      onComplete: function () {
+        Object.keys(sounds).forEach(function (k) {
+          sounds[k].pause();
+        });
+      },
+    });
+  }
+  soundBtn.addEventListener('click', function (e) {
+    e.stopPropagation();
+    muted = !muted;
+    soundBtn.setAttribute('aria-pressed', String(!muted));
+    if (sounds && sounds.amb) gsap.to(sounds.amb, { volume: muted ? 0 : VOL.amb, duration: 0.4 });
+  });
 
   // ---------------------------------------------------------------- escena 3
   function remember() {
@@ -352,6 +476,7 @@
   function close(duration) {
     state = 'done';
     remember();
+    stopAudio(duration);
     var host = intro.closest('.fi-overlay') || intro;
     window.scrollTo(0, 0);
     gsap.to(host, {
@@ -370,6 +495,7 @@
 
   function go() {
     remember();
+    if (!OVERLAY) stopAudio(0.3);
     if (OVERLAY) return close(0.9);
     if (window.top !== window.self) {
       // Dentro de un iframe (vista previa): enlace por si el marco no deja salir solo.
@@ -385,14 +511,27 @@
   // ---------------------------------------------------------------- eventos
   enterBtn.addEventListener('click', enter);
   window.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && OVERLAY && state !== 'done') return close(0.5);
     if (state !== 'idle') return;
-    if ((e.key === 'Enter' || e.key === ' ') && document.activeElement !== skip) {
+    if ((e.key === 'Enter' || e.key === ' ') && document.activeElement !== skip && document.activeElement !== soundBtn) {
       e.preventDefault();
       enter();
-    } else if (e.key === 'Escape' && OVERLAY) {
-      close(0.5);
     }
   });
+  // Deslizar: rueda del ratón o el dedo hacia arriba (o hacia abajo).
+  intro.addEventListener('wheel', function (e) {
+    if (state === 'idle' && Math.abs(e.deltaY) > 8) enter();
+  }, { passive: true });
+  var touchY = null;
+  intro.addEventListener('touchstart', function (e) {
+    touchY = e.touches[0].clientY;
+  }, { passive: true });
+  intro.addEventListener('touchmove', function (e) {
+    if (touchY !== null && state === 'idle' && Math.abs(e.touches[0].clientY - touchY) > 30) {
+      touchY = null;
+      enter();
+    }
+  }, { passive: true });
   skip.addEventListener('click', function (e) {
     e.preventDefault();
     e.stopPropagation();

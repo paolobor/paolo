@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<title>Nave FAIRINO (intro)</title>
+<style>
+  html, body { margin: 0; background: #000; overflow: hidden; }
+  canvas { display: block; }
+</style>
+<script type="importmap">
+  { "imports": { "three": "/node_modules/three/build/three.module.js", "three/addons/": "/node_modules/three/examples/jsm/" } }
+</script>
+</head>
+<body>
+<script type="module">
+  // Planos de la intro con el FAIRINO real (modelo oficial + aros de tools/cad/trim.js), sin IA en el robot:
+  //   ?shot=interior  nave con 8 cobots en dos filas junto a las cintas, cámara a la altura de los ojos que avanza despacio;
+  //   ?shot=cerca     primer plano de la tapa del codo (J3) con su aro naranja: la cámara se acerca hasta llenarlo.
+  // tools/cad/render-nave.cjs llama a window.renderAt(t) fotograma a fotograma.
+  import * as THREE from 'three';
+  import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+  import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+  import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+  import { Reflector } from 'three/addons/objects/Reflector.js';
+  import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+  import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+  import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+  import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
+  import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+  import { addRealTrim } from './trim.js';
+
+  const q = new URLSearchParams(location.search);
+  const W = Number(q.get('w') || 1920), H = Number(q.get('h') || 1080);
+  const SHOT = q.get('shot') || 'interior';
+  const DUR = Number(q.get('dur') || 4);
+  const MODEL = q.get('model') || 'fr10';
+
+  const renderer = new THREE.WebGLRenderer({ antialias: true, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(1);
+  renderer.setSize(W, H);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = Number(q.get('exp') || 0.95);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  document.body.appendChild(renderer.domElement);
+
+  const scene = new THREE.Scene();
+  const HAZE = new THREE.Color(q.get('haze') || '#56626c');
+  scene.background = HAZE.clone();
+  scene.fog = new THREE.FogExp2(HAZE, Number(q.get('fog') || 0.028));
+  const pmrem = new THREE.PMREMGenerator(renderer);
+  scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+  scene.environmentIntensity = 0.4;
+
+  // ---------------------------------------------------------------- nave
+  const HALL = { w: 16, h: 8.5, z0: 8, z1: -46 };
+  const mat = (color, rough = 0.7, metal = 0) => new THREE.MeshStandardMaterial({ color, roughness: rough, metalness: metal });
+
+  // Suelo de epoxi gris pulido: espejo debajo y una capa gris semitransparente encima (reflejo suave).
+  const mirror = new Reflector(new THREE.PlaneGeometry(HALL.w, HALL.z0 - HALL.z1), {
+    textureWidth: W / 2, textureHeight: H / 2, color: 0x6c7176,
+  });
+  mirror.rotation.x = -Math.PI / 2;
+  mirror.position.set(0, 0, (HALL.z0 + HALL.z1) / 2);
+  scene.add(mirror);
+  const epoxy = new THREE.Mesh(
+    new THREE.PlaneGeometry(HALL.w, HALL.z0 - HALL.z1),
+    new THREE.MeshStandardMaterial({ color: 0x7d838a, roughness: 0.32, metalness: 0, transparent: true, opacity: 0.72 }),
+  );
+  epoxy.rotation.x = -Math.PI / 2;
+  epoxy.position.set(0, 0.002, (HALL.z0 + HALL.z1) / 2);
+  epoxy.receiveShadow = true;
+  scene.add(epoxy);
+  // Líneas de seguridad del pasillo central.
+  for (const x of [-1.15, 1.15]) {
+    const l = new THREE.Mesh(new THREE.PlaneGeometry(0.07, HALL.z0 - HALL.z1), mat(0xd9dde0, 0.5));
+    l.rotation.x = -Math.PI / 2;
+    l.position.set(x, 0.004, (HALL.z0 + HALL.z1) / 2);
+    scene.add(l);
+  }
+
+  // Paredes y techo claros con paneles.
+  const wallMat = mat(0x7a828a, 0.85);
+  const ceilMat = mat(0x2e3338, 0.9);
+  for (const s of [-1, 1]) {
+    const wall = new THREE.Mesh(new THREE.PlaneGeometry(HALL.z0 - HALL.z1, HALL.h), wallMat);
+    wall.rotation.y = -s * Math.PI / 2;
+    wall.position.set(s * HALL.w / 2, HALL.h / 2, (HALL.z0 + HALL.z1) / 2);
+    scene.add(wall);
+    for (let z = HALL.z0; z > HALL.z1; z -= 6) {
+      const col = new THREE.Mesh(new THREE.BoxGeometry(0.35, HALL.h, 0.35), mat(0xb3b9bf, 0.6));
+      col.position.set(s * (HALL.w / 2 - 0.18), HALL.h / 2, z);
+      scene.add(col);
+    }
+  }
+  const back = new THREE.Mesh(new THREE.PlaneGeometry(HALL.w, HALL.h), wallMat);
+  back.position.set(0, HALL.h / 2, HALL.z1);
+  scene.add(back);
+  const ceil = new THREE.Mesh(new THREE.PlaneGeometry(HALL.w, HALL.z0 - HALL.z1), ceilMat);
+  ceil.rotation.x = Math.PI / 2;
+  ceil.position.set(0, HALL.h, (HALL.z0 + HALL.z1) / 2);
+  scene.add(ceil);
+
+  // Líneas de LED blancas en el techo (con resplandor por el bloom).
+  const led = new THREE.MeshBasicMaterial({ color: new THREE.Color(1, 1, 1).multiplyScalar(3.2), toneMapped: false, fog: false });
+  for (const x of [-5.5, -2.6, 0, 2.6, 5.5]) {
+    const strip = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.03, HALL.z0 - HALL.z1 - 2), led);
+    strip.position.set(x, HALL.h - 0.03, (HALL.z0 + HALL.z1) / 2);
+    scene.add(strip);
+  }
+  for (let z = HALL.z0 - 3; z > HALL.z1; z -= 7) {
+    const strip = new THREE.Mesh(new THREE.BoxGeometry(HALL.w - 1, 0.03, 0.07), led);
+    strip.position.set(0, HALL.h - 0.04, z);
+    scene.add(strip);
+  }
+
+  // Haces de luz en la neblina: planos aditivos con degradado vertical, inclinados desde el techo.
+  function beamTexture() {
+    const c = document.createElement('canvas');
+    c.width = 64; c.height = 256;
+    const g = c.getContext('2d');
+    const v = g.createLinearGradient(0, 0, 0, 256);
+    v.addColorStop(0, 'rgba(255,255,255,0.9)');
+    v.addColorStop(0.6, 'rgba(255,255,255,0.25)');
+    v.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = v;
+    g.fillRect(0, 0, 64, 256);
+    const h = g.createLinearGradient(0, 0, 64, 0);
+    h.addColorStop(0, 'rgba(0,0,0,1)');
+    h.addColorStop(0.5, 'rgba(0,0,0,0)');
+    h.addColorStop(1, 'rgba(0,0,0,1)');
+    g.globalCompositeOperation = 'destination-out';
+    g.fillStyle = h;
+    g.fillRect(0, 0, 64, 256);
+    return new THREE.CanvasTexture(c);
+  }
+  const beamMat = new THREE.MeshBasicMaterial({ map: beamTexture(), transparent: true, opacity: 0.07, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false, color: 0xfff1e0 });
+  for (let z = 2; z > -36; z -= 7) {
+    for (const x of [-2.6, 2.6]) {
+      const b = new THREE.Mesh(new THREE.PlaneGeometry(1.4, HALL.h * 1.1), beamMat);
+      b.position.set(x * 1.05, HALL.h * 0.48, z);
+      b.rotation.set(0, 0, x > 0 ? 0.22 : -0.22);
+      scene.add(b);
+    }
+  }
+
+  // Luces: cielo y suelo claros, una principal desde arriba con sombras y un contraluz cálido al fondo.
+  scene.add(new THREE.HemisphereLight(0xe8eef4, 0x3a4047, Number(q.get('hemi') || 0.42)));
+  const sun = new THREE.DirectionalLight(0xffffff, Number(q.get('sun') || 1.3));
+  sun.position.set(3, 12, 4);
+  sun.target.position.set(0, 0, -8);
+  sun.castShadow = true;
+  sun.shadow.mapSize.set(2048, 2048);
+  Object.assign(sun.shadow.camera, { left: -8, right: 8, top: 14, bottom: -14, near: 1, far: 40 });
+  sun.shadow.bias = -0.0005;
+  sun.shadow.radius = 4;
+  scene.add(sun, sun.target);
+  const warm = new THREE.PointLight(0xffa060, 18, 30, 2);
+  warm.position.set(0, 3.2, -30);
+  scene.add(warm);
+
+  // ---------------------------------------------------------------- cintas, palés y cajas
+  const ROWS = [-1, 1];
+  const CONV_X = 2.85, ROBOT_X = 1.8;
+  const ROBOT_Z = [-1.5, -5.5, -9.5, -13.5];
+  const CONV_LEN = 34, CONV_Z = -8;
+  const alu = mat(0xb9bec4, 0.35, 0.8);
+  const roller = mat(0xd5d9dd, 0.25, 0.9);
+  const card = new THREE.MeshStandardMaterial({ color: 0xb98a58, roughness: 0.85 });
+  const tape = new THREE.MeshStandardMaterial({ color: 0xa47648, roughness: 0.6 });
+  const wood = mat(0xc49a66, 0.9);
+  const dark = mat(0x2b2f34, 0.55, 0.3);
+
+  function box(w, h, d) {
+    const g = new THREE.Group();
+    const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), card);
+    m.castShadow = m.receiveShadow = true;
+    const t = new THREE.Mesh(new THREE.BoxGeometry(w * 0.18, 0.002, d + 0.002), tape);
+    t.position.y = h / 2 + 0.001;
+    g.add(m, t);
+    return g;
+  }
+
+  const moving = [];
+  for (const s of ROWS) {
+    const conv = new THREE.Group();
+    conv.position.set(s * CONV_X, 0, CONV_Z);
+    const H0 = 0.78;
+    for (const side of [-1, 1]) {
+      const rail = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.12, CONV_LEN), alu);
+      rail.position.set(side * 0.33, H0, 0);
+      rail.castShadow = true;
+      conv.add(rail);
+    }
+    const rollers = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.024, 0.024, 0.62, 12), roller, Math.floor(CONV_LEN / 0.11));
+    for (let i = 0; i < rollers.count; i++) {
+      const m = new THREE.Matrix4().makeRotationZ(Math.PI / 2).setPosition(0, H0 + 0.02, -CONV_LEN / 2 + i * 0.11);
+      rollers.setMatrixAt(i, m);
+    }
+    rollers.receiveShadow = true;
+    conv.add(rollers);
+    for (let z = -CONV_LEN / 2 + 0.5; z < CONV_LEN / 2; z += 2) {
+      for (const side of [-1, 1]) {
+        const leg = new THREE.Mesh(new THREE.BoxGeometry(0.05, H0, 0.05), alu);
+        leg.position.set(side * 0.3, H0 / 2, z);
+        conv.add(leg);
+      }
+    }
+    scene.add(conv);
+    // Cajas que avanzan por la cinta hacia el fondo.
+    for (let i = 0; i < 14; i++) {
+      const b = box(0.36, 0.26, 0.42);
+      b.position.set(s * CONV_X, H0 + 0.045 + 0.13, 0);
+      b.userData.z0 = CONV_Z + CONV_LEN / 2 - i * (CONV_LEN / 14);
+      scene.add(b);
+      moving.push(b);
+    }
+  }
+  const BELT_SPEED = 0.45;
+  const beltBoxes = (t) => moving.forEach((b) => {
+    const span = CONV_LEN - 0.6;
+    let z = b.userData.z0 - BELT_SPEED * t;
+    z = CONV_Z + CONV_LEN / 2 - 0.3 - ((((CONV_Z + CONV_LEN / 2 - 0.3) - z) % span) + span) % span;
+    b.position.z = z;
+  });
+
+  // Palés con cajas apiladas detrás de cada robot.
+  for (const s of ROWS) {
+    for (const z of ROBOT_Z) {
+      const p = new THREE.Group();
+      p.position.set(s * 1.6, 0, z - 1.35);
+      const deck = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.14, 1.0), wood);
+      deck.position.y = 0.07;
+      deck.castShadow = deck.receiveShadow = true;
+      p.add(deck);
+      for (let layer = 0; layer < 3; layer++) {
+        for (let i = 0; i < 3; i++) for (let k = 0; k < 2; k++) {
+          if (layer === 2 && i * 2 + k > 2) continue;
+          const b = box(0.38, 0.27, 0.46);
+          b.position.set(-0.4 + i * 0.4, 0.14 + 0.135 + layer * 0.275, -0.24 + k * 0.48);
+          p.add(b);
+        }
+      }
+      scene.add(p);
+    }
+  }
+
+  // ---------------------------------------------------------------- robots reales
+  const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder);
+  const proto = (await loader.loadAsync(`/public/models/${MODEL}.glb`)).scene;
+  proto.traverse((o) => {
+    if (o.isMesh) {
+      o.material = new THREE.MeshPhysicalMaterial({ color: o.material.color.clone(), roughness: 0.36, metalness: 0, clearcoat: 0.4, clearcoatRoughness: 0.25 });
+      o.castShadow = o.receiveShadow = true;
+    }
+  });
+  addRealTrim(proto, {});
+  // Ventosa de vacío sencilla en la brida (accesorio neutro, negro).
+  const flange = proto.getObjectByName('wrist3_link');
+    const tool = new THREE.Group();
+  tool.name = 'tool';
+  const toolBody = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.08, 32), dark);
+  toolBody.rotation.x = Math.PI / 2;
+  toolBody.position.z = 0.04;
+  const plate = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.16, 0.02), dark);
+  plate.position.z = 0.09;
+  tool.add(toolBody, plate);
+  for (const [x, y] of [[-0.07, -0.05], [0.07, -0.05], [-0.07, 0.05], [0.07, 0.05]]) {
+    const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.016, 0.03, 16), mat(0x111214, 0.8));
+    cup.rotation.x = Math.PI / 2;
+    cup.position.set(x, y, 0.115);
+    tool.add(cup);
+  }
+  tool.traverse((o) => o.isMesh && (o.castShadow = true));
+  // La cara de la brida está al final del eslabón, sobre su eje Z local.
+  tool.position.z = Number(q.get('toolz') || 0.098);
+  flange.add(tool);
+
+  const jointsOf = (r) => ['j1_rot', 'j2_rot', 'j3_rot', 'j4_rot', 'j5_rot', 'j6_rot'].map((n) => r.getObjectByName(n));
+  const setPose = (js, p) => js.forEach((j, i) => j.quaternion.setFromAxisAngle(new THREE.Vector3(...j.userData.axis).normalize(), p[i] ?? 0));
+
+  const robots = [];
+  for (const s of ROWS) {
+    for (const z of ROBOT_Z) {
+      const holder = new THREE.Group();
+      holder.position.set(s * ROBOT_X, 0, z);
+      const ped = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.62, 0.42), mat(0x50565d, 0.5, 0.4));
+      ped.position.y = 0.31;
+      ped.castShadow = ped.receiveShadow = true;
+      holder.add(ped);
+      const r = proto.clone(true);
+      r.position.y = 0.62;
+      holder.add(r);
+      scene.add(holder);
+      // Foco cálido sobre cada robot: el robot destaca sobre la nave.
+      const spot = new THREE.SpotLight(0xfff0e2, Number(q.get('spot') || 9), 9, 0.42, 0.7, 2);
+      spot.position.set(s * ROBOT_X * 0.8, 5.2, z + 0.6);
+      spot.target.position.set(s * ROBOT_X, 1.0, z - 0.3);
+      scene.add(spot, spot.target);
+      robots.push({ s, holder, r, js: jointsOf(r), carry: null });
+    }
+  }
+
+  // Poses (en radianes) de un ciclo de paletizado; la fila de la derecha va en espejo (giro de J1).
+  const P = {
+    pick: (q.get('pick') || '0,-1.2,1.75,-2.12,-1.5708,0').split(',').map(Number),
+    lift: (q.get('lift') || '0,-1.55,1.65,-1.67,-1.5708,0').split(',').map(Number),
+    place: (q.get('place') || '-1.75,-1.3,1.2,-1.47,-1.5708,0').split(',').map(Number),
+  };
+  const yaw = Number(q.get('yaw') || 0);
+  const ease = (x) => 0.5 - 0.5 * Math.cos(Math.PI * Math.min(1, Math.max(0, x)));
+  const lerpPose = (a, b, k) => a.map((v, i) => v + (b[i] - v) * k);
+  const CYCLE = Number(q.get('cycle') || 3.6);
+  function cyclePose(t) {
+    const u = ((t / CYCLE) % 1 + 1) % 1;
+    // 0–0.12 baja a la cinta · 0.12–0.24 sube · 0.24–0.5 gira al palé · 0.5–0.62 deja · 0.62–1 vuelve
+    if (u < 0.12) return lerpPose(P.lift, P.pick, ease(u / 0.12));
+    if (u < 0.24) return lerpPose(P.pick, P.lift, ease((u - 0.12) / 0.12));
+    if (u < 0.5) return lerpPose(P.lift, P.place, ease((u - 0.24) / 0.26));
+    if (u < 0.62) return P.place;
+    return lerpPose(P.place, P.lift, ease((u - 0.62) / 0.38));
+  }
+  const carried = (t) => { const u = ((t / CYCLE) % 1 + 1) % 1; return u > 0.12 && u < 0.56; };
+  robots.forEach((rb) => {
+    rb.r.rotation.y = 0;
+    rb.holder.rotation.y = rb.s < 0 ? yaw : Math.PI - yaw;
+    const b = box(0.36, 0.26, 0.42);
+    b.rotation.x = Math.PI / 2;
+    b.position.z = 0.125 + 0.13;
+    rb.r.getObjectByName('tool').add(b);
+    rb.carry = b;
+  });
+
+  // ---------------------------------------------------------------- cámara y postproceso
+  const camera = new THREE.PerspectiveCamera(Number(q.get('fov') || 30), W / H, 0.01, 120);
+  const composer = new EffectComposer(renderer);
+  composer.setPixelRatio(1);
+  composer.setSize(W, H);
+  composer.addPass(new RenderPass(scene, camera));
+  const bokeh = SHOT === 'cerca' ? new BokehPass(scene, camera, { focus: 0.6, aperture: Number(q.get('ap') || 0.03), maxblur: 0.02 }) : null;
+  if (bokeh) composer.addPass(bokeh);
+  composer.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), 0.3, 0.5, 1.0));
+  composer.addPass(new OutputPass());
+
+  const hero = robots[Number(q.get('hero') || 1)];
+  const cap = () => {
+    const g = hero.r.getObjectByName(q.get('cap') || 'j3_aro');
+    const p = g.getWorldPosition(new THREE.Vector3());
+    const n = new THREE.Vector3(0, 1, 0).transformDirection(g.matrixWorld);
+    return { p, n };
+  };
+
+  function place(t) {
+    const k = t / DUR;
+    if (SHOT === 'look') {
+      const hp = hero.holder.position;
+      camera.position.set(hp.x * 0.1 + Number(q.get('lx') || 0), 1.4, hp.z + Number(q.get('lz') || 3.2));
+      camera.lookAt(hp.x, 0.9, hp.z - 0.6);
+    } else if (SHOT === 'interior') {
+      // A la altura de los ojos, en el eje del pasillo, avanzando muy despacio.
+      const z = 6.5 - Number(q.get('push') || 2.2) * ease(k * 0.5 + 0.25) ;
+      camera.position.set(0, 1.62, z);
+      camera.lookAt(0, 1.25, z - 20);
+    } else {
+      // Desde 0,9 m hasta casi tocar la tapa, ligeramente de lado al principio.
+      const { p, n } = cap();
+      // Tamaño aparente lineal (1/distancia) con aceleración y frenada suaves: empuje rápido y fluido.
+      const x = Math.min(1, Math.max(0, k));
+      const kk = x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
+      const d = 1 / THREE.MathUtils.lerp(1 / Number(q.get('d0') || 0.8), 1 / Number(q.get('d1') || 0.165), kk);
+      const side = new THREE.Vector3().crossVectors(n, new THREE.Vector3(0, 1, 0)).normalize();
+      const pos = p.clone().addScaledVector(n, d).addScaledVector(side, 0.32 * (1 - kk)).add(new THREE.Vector3(0, 0.12 * (1 - kk), 0));
+      camera.position.copy(pos);
+      camera.up.set(0, 1, 0);
+      camera.lookAt(p);
+      if (bokeh) bokeh.uniforms.focus.value = camera.position.distanceTo(p);
+    }
+  }
+
+  window.renderAt = (t) => {
+    const T = t + Number(q.get('t0') || 0);
+    beltBoxes(T);
+    robots.forEach((rb) => {
+      const cp = cyclePose(T);
+      if (rb.s > 0) cp[0] = -cp[0];
+      setPose(rb.js, cp);
+      rb.carry.visible = carried(T);
+    });
+    if (SHOT === 'cerca') {
+      // En el primer plano el robot hace un movimiento lento y continuo (sin cortes del ciclo).
+      const p = lerpPose(P.lift, P.place, 0.15 + 0.08 * Math.sin(T * 0.6));
+      setPose(hero.js, p);
+      hero.carry.visible = false;
+    }
+    scene.updateMatrixWorld(true);
+    place(t);
+    camera.updateProjectionMatrix();
+    composer.render();
+    return true;
+  };
+  window.__info = () => {
+    const { p, n } = cap();
+    const v = p.clone().project(camera);
+    return { capScreen: [(v.x + 1) / 2, (1 - v.y) / 2], n: n.toArray() };
+  };
+  window.__ready = true;
+</script>
+</body>
+</html>
