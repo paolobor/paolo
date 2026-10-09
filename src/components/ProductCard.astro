@@ -33,6 +33,7 @@ const readout =
 ---
 
 <article class="card card-hover group flex h-full flex-col overflow-hidden">
+ <div class="relative">
  <a href={url(`productos/${product.id}/`)} class="relative block aspect-[4/3] overflow-hidden bg-[radial-gradient(ellipse_at_50%_85%,rgba(255,106,19,0.22),transparent_60%),radial-gradient(circle_at_50%_40%,#1a110c,#0b0705_75%)]" tabindex="-1" aria-hidden="true">
     {
       d.upcoming && (
@@ -54,6 +55,20 @@ const readout =
     />
     </div>
   </a>
+  {
+    d.images.length > 0 && (
+      <button
+        type="button"
+        class="absolute right-3 top-3 z-10 inline-flex cursor-zoom-in items-center gap-1.5 rounded-full border border-white/20 bg-black/65 px-2.5 py-1 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.08em] text-white transition-colors hover:border-signal hover:bg-signal hover:text-ink"
+        data-lb-open={product.id}
+        aria-label={`Ver las fotos de ${d.name}`}
+      >
+        <Icon name="expand" size={12} />
+        {d.images.length > 1 ? `${d.images.length} fotos` : 'Ver foto'}
+      </button>
+    )
+  }
+  </div>
   <div class="flex flex-1 flex-col gap-4 p-5">
     <div class="flex items-baseline justify-between gap-3">
       <H class="font-display text-2xl font-extrabold leading-tight" style="font-stretch:120%">

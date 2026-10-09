@@ -22,6 +22,8 @@
   --color-muted: #c4b7ac;
   --color-mist: #d8cdc4;
   --color-wa: #25d366;
+  /* Verde de «incluido en el precio» (caja del cobot, carrito, configurador). */
+  --color-ok: #7ee2a4;
   --color-surface: #0b0705;
   --color-surface-2: #140d09;
   --color-red: #e0401f;

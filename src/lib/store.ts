@@ -1,7 +1,7 @@
 import { getImage } from 'astro:assets';
 import { getProducts, categoryMeta } from './catalog';
 import { url } from './url';
-import { hasBox, POWER } from '../data/caja';
+import { hasBox, includedText, POWER } from '../data/caja';
 
 export interface StoreItem {
   id: string;
@@ -9,7 +9,9 @@ export interface StoreItem {
   category: string;
   price: number | null;
   shipping: number | null;
-  versions: { id: string; label: string; delta: number }[];
+  versions: { id: string; label: string; delta: number; includes?: string }[];
+  // Lo que ya va en el precio (cobots: controladora, sus cables y la seta de emergencia); sale en el carrito y el pedido.
+  includes: string | null;
   img: string | null;
   href: string;
   shopifyVariantId: string | null;
@@ -21,9 +23,14 @@ export interface StoreItem {
 function versionsOf(p: Awaited<ReturnType<typeof getProducts>>[number]) {
   const base = p.data.store.versions.map((v) => ({ id: v.id, label: v.label, delta: v.delta }));
   if (!hasBox(p)) return base;
-  const power = POWER.map((w) => ({ id: w.id, label: `Controladora ${w.short}`, delta: 0 }));
+  const power = POWER.map((w) => ({ id: w.id, label: `Controladora ${w.short}`, includes: includedText(w.short) }));
   const combined = (base.length ? base : [{ id: '', label: '', delta: 0 }]).flatMap((v) =>
-    power.map((w) => ({ id: v.id ? `${v.id}~${w.id}` : w.id, label: [v.label, w.label].filter(Boolean).join(' · '), delta: v.delta })),
+    power.map((w) => ({
+      id: v.id ? `${v.id}~${w.id}` : w.id,
+      label: [v.label, w.label].filter(Boolean).join(' · '),
+      delta: v.delta,
+      includes: w.includes,
+    })),
   );
   return [...combined, ...base.filter((v) => !combined.some((c) => c.id === v.id))];
 }
@@ -44,6 +51,7 @@ export async function getStoreData(): Promise<Record<string, StoreItem>> {
           price: p.data.store.price,
           shipping: p.data.store.shipping,
           versions: versionsOf(p),
+          includes: hasBox(p) ? includedText() : null,
           img,
           href: url(`productos/${p.id}/`),
           shopifyVariantId: p.data.store.shopifyVariantId,

@@ -1,6 +1,7 @@
 ---
 // «Qué incluye la caja» de un cobot FAIRINO y el selector de la controladora incluida: AC (a red) o DC (a batería).
 // Con `selectable` los botones AC/DC son radios que lee el carrito (data-power-for); sin él, solo explica las dos opciones.
+// Los textos con data-power-label-for cambian a «AC» o «DC» al elegir (script en CartDrawer.astro).
 import Icon from '../ui/Icon.astro';
 import { BOX_ITEMS, POWER } from '../../data/caja';
 import { getProducts, type Product } from '../../lib/catalog';
@@ -24,7 +25,7 @@ const tp = (await getProducts()).find((p) => p.id === 'teach-pendant' && p.data.
   <div class="grid gap-2.5">
     <p class="bx-k">
       <Icon name="cpu" size={14} />
-      {selectable ? 'Elige tu controladora · incluida en el precio' : 'Controladora incluida · tú eliges la alimentación'}
+      {selectable ? 'Controladora incluida en el precio · elige AC o DC' : 'Controladora incluida en el precio · AC o DC, la que elijas'}
     </p>
     <div class="grid gap-2.5 @min-[30rem]:grid-cols-2" role={selectable ? 'radiogroup' : undefined} aria-label={selectable ? `Alimentación de la controladora del ${product.data.name}` : undefined}>
       {
@@ -40,6 +41,10 @@ const tp = (await getProducts()).find((p) => p.id === 'teach-pendant' && p.data.
                   <b>{w.short}</b> {w.name}
                 </span>
                 <span class="pw-text">{w.text}</span>
+                <span class="pw-inc">
+                  <Icon name="check" size={12} strokeWidth={3} />
+                  Incluida en el precio
+                </span>
               </span>
               {selectable && (
                 <span class="pw-tick" aria-hidden="true">
@@ -54,57 +59,67 @@ const tp = (await getProducts()).find((p) => p.id === 'teach-pendant' && p.data.
   </div>
 
   <div class="bx-box">
-    <p class="bx-k">
-      <Icon name="package-check" size={14} />
-      Qué incluye la caja <span class="bx-free">Todo incluido en el precio</span>
-    </p>
+    <div class="bx-head">
+      <span class="bx-head-ico">
+        <Icon name="package-check" size={22} />
+      </span>
+      <span class="grid gap-0.5">
+        <span class="bx-title">Todo esto va incluido en el precio</span>
+        <span class="bx-sub">Viene en la caja del cobot, sin coste adicional.</span>
+      </span>
+    </div>
     <ul class="grid grid-cols-2 gap-2 @min-[40rem]:grid-cols-4">
       {
         BOX_ITEMS.map((it) => (
           <li class="bx-item">
             <Icon name={it.icon} size={20} class="text-signal" />
             <span class="bx-name">{it.name}</span>
-            <span class="bx-note" data-box-note={it.icon === 'cpu' ? '' : undefined}>
-              {it.icon === 'cpu' ? (selectable ? `${ctrlModel} · AC` : `${ctrlModel} · AC o DC`) : it.note}
+            <span class="bx-note">
+              {it.icon === 'cpu' ? (
+                selectable ? (
+                  <>
+                    {ctrlModel} · <span data-power-label-for={product.id}>AC</span>
+                  </>
+                ) : (
+                  `${ctrlModel} · AC o DC`
+                )
+              ) : (
+                it.note
+              )}
+            </span>
+            <span class="bx-inc">
+              <Icon name="check" size={11} strokeWidth={3} />
+              {it.inc}
             </span>
           </li>
         ))
       }
     </ul>
-    {
-      tp && (
-        <p class="bx-tp">
-          <span class="flex items-center gap-2">
-            <Icon name="plus" size={14} class="text-signal" />
-            <span>
-              <a href={url(`productos/${tp.id}/`)} class="font-semibold text-white hover:text-signal">Consola {tp.data.name}</a>: no va en la caja, se compra aparte
-              {tp.data.store.price != null && <span class="font-mono"> · {formatEUR(tp.data.store.price)}</span>}
-            </span>
-          </span>
-          {selectable && (
-            <button type="button" class="bx-tp-btn" data-add-cart={tp.id} data-name={tp.data.name}>
-              Añadir
-            </button>
-          )}
-        </p>
-      )
-    }
   </div>
-</div>
 
-{
-  selectable && (
-    <script>
-      // La nota de la controladora en «Qué incluye la caja» sigue a la opción elegida.
-      document.addEventListener('change', (e) => {
-        const r = e.target as HTMLInputElement;
-        if (!r.matches?.('[data-power-for]')) return;
-        const note = document.querySelector<HTMLElement>(`[data-box="${r.dataset.powerFor}"] [data-box-note]`);
-        if (note) note.textContent = note.textContent!.replace(/(AC|DC)$/, r.value.toUpperCase());
-      });
-    </script>
-  )
-}
+  {
+    tp && (
+      <p class="bx-tp">
+        <span class="flex items-center gap-2">
+          <span class="bx-tp-k">Aparte</span>
+          <span>
+            <a href={url(`productos/${tp.id}/`)} class="font-semibold text-white hover:text-signal">
+              Consola {tp.data.name}
+            </a>
+            : no va en la caja, se compra aparte
+            {tp.data.store.price != null && <span class="font-mono"> · {formatEUR(tp.data.store.price)}</span>}
+          </span>
+        </span>
+        {selectable && (
+          <button type="button" class="bx-tp-btn" data-add-cart={tp.id} data-name={tp.data.name}>
+            <Icon name="plus" size={14} />
+            Añadir
+          </button>
+        )}
+      </p>
+    )
+  }
+</div>
 
 <style>
   .bx-k {
@@ -120,15 +135,6 @@ const tp = (await getProducts()).find((p) => p.id === 'teach-pendant' && p.data.
   }
   .bx-k :global(svg) {
     color: var(--color-signal);
-  }
-  .bx-free {
-    margin-left: auto;
-    border-radius: 999px;
-    border: 1px solid rgb(37 211 102 / 0.35);
-    background: rgb(37 211 102 / 0.1);
-    padding: 0.15rem 0.6rem;
-    color: #7ee2a4;
-    letter-spacing: 0.1em;
   }
   .pw-card {
     position: relative;
@@ -177,6 +183,20 @@ const tp = (await getProducts()).find((p) => p.id === 'teach-pendant' && p.data.
     line-height: 1.4;
     color: var(--color-muted);
   }
+  .pw-inc,
+  .bx-inc {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.64rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ok);
+  }
+  .pw-inc {
+    margin-top: 0.35rem;
+  }
   .pw-tick {
     position: absolute;
     top: 0.7rem;
@@ -210,35 +230,41 @@ const tp = (await getProducts()).find((p) => p.id === 'teach-pendant' && p.data.
     outline: 3px solid var(--color-signal);
     outline-offset: 2px;
   }
+  /* Caja: borde verde, porque todo lo de dentro va incluido en el precio. */
   .bx-box {
     display: grid;
-    gap: 0.75rem;
+    gap: 0.85rem;
     border-radius: 14px;
-    border: 1px dashed rgb(255 255 255 / 0.18);
-    padding: 0.9rem;
+    border: 1px solid rgb(126 226 164 / 0.35);
+    background: linear-gradient(160deg, rgb(126 226 164 / 0.08), rgb(126 226 164 / 0.015));
+    padding: 0.95rem;
   }
-  .bx-tp {
+  .bx-head {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    justify-content: space-between;
-    gap: 0.5rem 1rem;
-    border-top: 1px solid rgb(255 255 255 / 0.1);
-    padding-top: 0.7rem;
-    font-size: 0.8rem;
-    color: var(--color-muted);
+    gap: 0.8rem;
   }
-  .bx-tp-btn {
+  .bx-head-ico {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
     border-radius: 999px;
-    border: 1px solid rgb(255 122 26 / 0.5);
-    padding: 0.3rem 0.85rem;
-    font-size: 0.78rem;
-    font-weight: 600;
-    color: var(--color-brand);
-    transition: background-color 0.2s;
+    background: var(--color-ok);
+    color: var(--color-ink);
   }
-  .bx-tp-btn:hover {
-    background: rgb(255 122 26 / 0.15);
+  .bx-title {
+    font-family: var(--font-display);
+    font-size: 1.08rem;
+    font-weight: 700;
+    font-stretch: 112%;
+    line-height: 1.2;
+    color: #fff;
+  }
+  .bx-sub {
+    font-size: 0.82rem;
+    color: var(--color-muted);
   }
   .bx-item {
     display: grid;
@@ -246,7 +272,7 @@ const tp = (await getProducts()).find((p) => p.id === 'teach-pendant' && p.data.
     justify-items: start;
     gap: 0.2rem;
     border-radius: 10px;
-    background: rgb(255 255 255 / 0.04);
+    background: rgb(0 0 0 / 0.28);
     padding: 0.7rem;
   }
   .bx-name {
@@ -260,5 +286,46 @@ const tp = (await getProducts()).find((p) => p.id === 'teach-pendant' && p.data.
     font-family: var(--font-mono);
     font-size: 0.66rem;
     color: var(--color-mist);
+  }
+  .bx-inc {
+    margin-top: 0.3rem;
+  }
+  .bx-tp {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem 1rem;
+    border-radius: 12px;
+    border: 1px dashed rgb(255 255 255 / 0.16);
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+    color: var(--color-muted);
+  }
+  .bx-tp-k {
+    flex-shrink: 0;
+    border-radius: 999px;
+    border: 1px solid rgb(255 255 255 / 0.2);
+    padding: 0.1rem 0.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-mist);
+  }
+  .bx-tp-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border-radius: 999px;
+    border: 1px solid rgb(255 122 26 / 0.5);
+    padding: 0.3rem 0.85rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--color-brand);
+    transition: background-color 0.2s;
+  }
+  .bx-tp-btn:hover {
+    background: rgb(255 122 26 / 0.15);
   }
 </style>

@@ -84,8 +84,8 @@ export const GET: APIRoute = async () => {
   h('Cobots FAIRINO');
   out.push('Robots colaborativos de seis ejes. Se programan con la consola o llevando el brazo con la mano (arrastre).');
   out.push(
-    'Qué incluye la caja de cada cobot FAIRINO (del FR3 al FR30): el brazo robot, la controladora, los cables de conexión y el módulo de seguridad (seta de emergencia), todo incluido en el precio del cobot.',
-    'La controladora incluida se elige al comprar: en corriente alterna (AC), que se enchufa a la red eléctrica, para puestos fijos en planta; o en corriente continua (DC), con entrada de 30 a 60 V DC, para robots móviles, AGV y equipos con batería. Del FR3 al FR16 es la Mini de 2 kW; el FR20 y el FR30 llevan la de 5 kW.',
+    'Qué incluye la caja de cada cobot FAIRINO (del FR3 al FR30), todo incluido en el precio del cobot, sin coste adicional: el brazo robot, la controladora, los cables de la controladora y la seta de emergencia (módulo de seguridad).',
+    'La controladora incluida se elige al comprar, al mismo precio: en corriente alterna (AC), que se enchufa a la red eléctrica, para puestos fijos en planta; o en corriente continua (DC), con entrada de 30 a 60 V DC, para robots móviles, AGV y equipos con batería. Del FR3 al FR16 es la Mini de 2 kW; el FR20 y el FR30 llevan la de 5 kW.',
     'La consola Teach Pendant no va en la caja: se compra aparte. Las controladoras y el módulo de seguridad que se venden sueltos son recambios o unidades adicionales.',
   );
   products.filter((p) => p.data.category === 'cobot').forEach(producto);

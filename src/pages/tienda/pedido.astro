@@ -41,7 +41,13 @@ import { url } from '../../lib/url';
           <div class="flex justify-between text-base text-white"><dt>Total</dt><dd data-order-total>—</dd></div>
         </dl>
         <p class="text-sm text-muted" data-order-empty hidden>Tu carrito está vacío. <a href={url('tienda/')} class="text-brand underline">Ir a la tienda</a>.</p>
-        <button type="button" class="justify-self-start text-sm font-semibold text-brand hover:underline" data-cart-open>Editar carrito</button>
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <button type="button" class="text-sm font-semibold text-brand hover:underline" data-cart-open>Editar carrito</button>
+          <a href={url('tienda/#productos')} class="btn btn-ghost btn-sm">
+            <Icon name="arrow-left" size={16} />
+            Seguir comprando
+          </a>
+        </div>
       </aside>
     </div>
   </section>
@@ -60,7 +66,14 @@ import { url } from '../../lib/url';
       const li = document.createElement('li');
       li.className = 'flex justify-between gap-3';
       const a = document.createElement('span');
+      a.className = 'grid gap-0.5';
       a.textContent = `${r.q} × ${r.item.name}${r.version ? ` · ${r.version}` : ''}`;
+      if (r.includes) {
+        const inc = document.createElement('span');
+        inc.className = 'text-xs leading-snug text-ok';
+        inc.textContent = `✓ ${r.includes}`;
+        a.append(inc);
+      }
       const b = document.createElement('span');
       b.className = 'font-mono';
       b.textContent = r.unit != null ? s.fmt(r.unit * r.q) : 'Consultar';

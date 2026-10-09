@@ -7,6 +7,7 @@ import { hero } from '../../data/home';
 import { url, formatNumber, formatPrice } from '../../lib/url';
 import { accessoryFamilies, configSlot, familyOf, isOnWrist, needs, specWeightKg, formatWeight } from '../../data/configurator';
 import { shopCategories } from '../../data/shop';
+import { hasBox } from '../../data/caja';
 
 interface Props {
   // Encabezado propio en /configurador/ (allí el título es el h1 de la página).
@@ -50,7 +51,7 @@ const priceAttr = (p: Priced) => (site.showPrices && priceOf(p) != null ? String
 const priceText = (p: Priced) =>
   site.showPrices ? (priceOf(p) != null ? formatPrice(priceOf(p)!, site.currency) : 'Consultar') : null;
 
-const steps = ['Cobot', 'Versión', 'Controlador', 'Accesorios', 'Presupuesto'];
+const steps = ['Cobot', 'Versión', 'Controladora', 'Accesorios', 'Presupuesto'];
 const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
 ---
 
@@ -66,7 +67,7 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
         )
       }
       <p class="lead">
-        Elige cobot, versión, controlador y accesorios. Te devolvemos una propuesta con lo que necesitas y nada más. Si dudas en
+        Elige cobot, versión, controladora y accesorios. Te devolvemos una propuesta con lo que necesitas y nada más. Si dudas en
         algún paso, márcalo y te asesoramos.
       </p>
     </div>
@@ -88,9 +89,12 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
         </ol>
 
         <!-- 1. Cobot -->
-        <fieldset class="cfg-step" data-step="0" data-current>
+        <fieldset class="cfg-step" data-lb-scope data-step="0" data-current>
           <legend class="cfg-legend">1 · Elige el cobot</legend>
-          <p class="cfg-hint">Ordenados por carga útil. La carga incluye garra y pieza.</p>
+          <p class="cfg-hint">
+            Ordenados por carga útil. La carga incluye garra y pieza. El precio de cada cobot ya incluye la controladora, sus cables y
+            la seta de emergencia.
+          </p>
           <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
             {
               cobots.map((p) => (
@@ -104,12 +108,19 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
                     data-name={p.data.name}
                     data-price={priceAttr(p)}
                     data-payload={p.data.payloadKg ?? undefined}
+                    data-box={hasBox(p) ? '' : undefined}
                   />
                   <span class="opt-img" aria-hidden="true">
                     <span class="absolute inset-0">
                       <SmartImage src={p.data.images[0]?.src} alt="" hint={`${p.data.name}, foto oficial`} tone="dark" fit="contain" sizes="(min-width: 1024px) 300px, 45vw" class="p-3 transition-transform duration-500" />
                     </span>
                   </span>
+                  {p.data.images.length > 0 && (
+                    <button type="button" class="opt-photos" data-lb-open={p.id} data-lb-section="Paso 1 · Cobot" aria-label={`Ver las fotos del ${p.data.name}`}>
+                      <Icon name="expand" size={13} />
+                      Fotos
+                    </button>
+                  )}
                   <span class="font-display text-2xl font-extrabold" style="font-stretch:125%">{p.data.name}</span>
                   <span class="opt-meta">
                     {p.data.payloadKg != null ? `${formatNumber(p.data.payloadKg)} kg` : '[DATO: carga]'}
@@ -117,6 +128,12 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
                     {p.data.reachMm != null ? `${formatNumber(p.data.reachMm)} mm` : '[DATO: alcance]'}
                   </span>
                   {priceText(p) && <span class="opt-price">{priceText(p)}</span>}
+                  {hasBox(p) && (
+                    <span class="opt-inc">
+                      <Icon name="check" size={11} strokeWidth={3.5} />
+                      Controladora, cables y seta incluidos
+                    </span>
+                  )}
                 </label>
               ))
             }
@@ -130,7 +147,7 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
         </fieldset>
 
         <!-- 2. Versión -->
-        <fieldset class="cfg-step" data-step="1">
+        <fieldset class="cfg-step" data-lb-scope data-step="1">
           <legend class="cfg-legend">2 · Versión</legend>
           <p class="cfg-hint">Variantes disponibles para el modelo elegido. ¿Necesitas otra? Cuéntanoslo en el último paso.</p>
           {
@@ -150,12 +167,16 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
         </fieldset>
 
         <!-- 3. Controlador -->
-        <fieldset class="cfg-step" data-step="2">
-          <legend class="cfg-legend">3 · Controladora incluida: elige AC o DC</legend>
-          <p class="cfg-hint">
-            La controladora va en la caja con el cobot, junto con los cables y la seta de emergencia: no suma al precio. Solo
-            elige cómo la alimentas: a red (AC) para un puesto fijo, o en continua (DC) para AGV, robots móviles o batería.
-          </p>
+        <fieldset class="cfg-step" data-lb-scope data-step="2">
+          <legend class="cfg-legend">3 · Controladora: incluida en el precio</legend>
+          <div class="cfg-inc-banner">
+            <span class="cfg-inc-ico"><Icon name="package-check" size={20} /></span>
+            <p>
+              <b>Ya va incluido en el precio del cobot:</b> la controladora, sus cables y la seta de emergencia. Aquí solo eliges cómo
+              alimentas la controladora: a red (AC) para un puesto fijo, o en continua (DC) para AGV, robots móviles o batería. El
+              precio no cambia.
+            </p>
+          </div>
           <div class="grid gap-3 sm:grid-cols-2">
             {
               controllers.map((p) => (
@@ -170,17 +191,27 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
                     data-included
                     data-compat={p.data.compatibleWith.join(',')}
                   />
-                  <span class="opt-thumb" aria-hidden="true">
-                    <span class="absolute inset-0">
-                      <SmartImage src={p.data.images[0]?.src} alt="" hint={p.data.name} tone="dark" fit="contain" sizes="72px" class="p-1.5" />
+                  <span class="opt-thumb-wrap">
+                    <span class="opt-thumb" aria-hidden="true">
+                      <span class="absolute inset-0">
+                        <SmartImage src={p.data.images[0]?.src} alt="" hint={p.data.name} tone="dark" fit="contain" sizes="72px" class="p-1.5" />
+                      </span>
                     </span>
+                    {p.data.images.length > 0 && (
+                      <button type="button" class="opt-thumb-zoom" data-lb-open={p.id} data-lb-section="Paso 3 · Controladora" aria-label={`Ver las fotos de ${p.data.name}`}>
+                        <span><Icon name="expand" size={11} /></span>
+                      </button>
+                    )}
                   </span>
                   <span class="grid">
                     <span class="font-semibold">{p.data.name}</span>
                     <span class="opt-meta">{p.data.group === 'dc' ? 'Corriente continua · 30–60 V DC' : 'Corriente alterna · a red'}</span>
                     <span class="opt-meta opt-incompat">No compatible con el cobot elegido</span>
+                    <span class="opt-price opt-price-inc mt-1 justify-self-start">
+                      <Icon name="check" size={12} strokeWidth={3.5} />
+                      Incluida en el precio
+                    </span>
                   </span>
-                  <span class="opt-price ml-auto">Incluida</span>
                 </label>
               ))
             }
@@ -196,7 +227,7 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
         </fieldset>
 
         <!-- 4. Accesorios -->
-        <fieldset class="cfg-step" data-step="3">
+        <fieldset class="cfg-step" data-lb-scope data-step="3">
           <legend class="cfg-legend">4 · Accesorios</legend>
           <p class="cfg-hint">
             Los {accCount} accesorios del catálogo, para cualquier cobot FAIRINO. Lo que va en la muñeca resta de la carga útil:
@@ -249,10 +280,17 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
                       <span class="check" aria-hidden="true">
                         <Icon name="check" size={14} strokeWidth={3} />
                       </span>
-                      <span class="opt-thumb" aria-hidden="true">
-                        <span class="absolute inset-0">
-                          <SmartImage src={p.data.images[0]?.src} alt="" hint={p.data.name} tone="dark" fit="contain" sizes="72px" class="p-1.5" />
+                      <span class="opt-thumb-wrap">
+                        <span class="opt-thumb" aria-hidden="true">
+                          <span class="absolute inset-0">
+                            <SmartImage src={p.data.images[0]?.src} alt="" hint={p.data.name} tone="dark" fit="contain" sizes="72px" class="p-1.5" />
+                          </span>
                         </span>
+                        {p.data.images.length > 0 && (
+                          <button type="button" class="opt-thumb-zoom" data-lb-open={p.id} data-lb-section={`Paso 4 · ${f.label}`} aria-label={`Ver las fotos de ${p.data.name}`}>
+                            <span><Icon name="expand" size={11} /></span>
+                          </button>
+                        )}
                       </span>
                       <span class="grid min-w-0 gap-0.5">
                         <span class="opt-meta uppercase tracking-[0.1em]">{p.data.brand}</span>
@@ -277,7 +315,7 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
         </fieldset>
 
         <!-- 5. Presupuesto -->
-        <fieldset class="cfg-step" data-step="4">
+        <fieldset class="cfg-step" data-lb-scope data-step="4">
           <legend class="cfg-legend">5 · Solicita tu presupuesto</legend>
           <p class="cfg-hint">Te contestamos con una propuesta para esta configuración. Sin compromiso.</p>
           <div class="grid gap-4 sm:grid-cols-2">
@@ -420,6 +458,10 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
                 </p>
               )
             }
+            <p class="flex items-start gap-1.5 text-xs leading-snug text-ok" data-cfg-inc hidden>
+              <Icon name="check" size={13} strokeWidth={3} class="mt-px shrink-0" />
+              El precio del cobot ya incluye la controladora, sus cables y la seta de emergencia.
+            </p>
             <button type="button" class="btn btn-light w-full whitespace-normal text-center leading-snug" data-step-go="4">
               Solicitar presupuesto de esta configuración
             </button>
@@ -550,6 +592,71 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
     border-radius: 10px;
     border: 1px solid rgb(255 255 255 / 0.08);
   }
+  /* Fotos en grande (ProductLightbox): botón «Fotos» en los cobots y la miniatura entera en el resto. */
+  .opt-photos {
+    position: absolute;
+    top: 0.6rem;
+    right: 0.6rem;
+    z-index: 2;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    border-radius: 999px;
+    border: 1px solid rgb(255 255 255 / 0.22);
+    background: rgb(0 0 0 / 0.62);
+    padding: 0.3rem 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #fff;
+    cursor: zoom-in;
+    transition:
+      background-color 0.2s,
+      color 0.2s,
+      border-color 0.2s;
+  }
+  .opt-photos:hover,
+  .opt-photos:focus-visible {
+    border-color: var(--color-signal);
+    background: var(--color-signal);
+    color: var(--color-ink);
+  }
+  .opt-thumb-wrap {
+    position: relative;
+    flex-shrink: 0;
+  }
+  .opt-thumb-zoom {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    border-radius: 10px;
+    padding: 3px;
+    cursor: zoom-in;
+  }
+  .opt-thumb-zoom > span {
+    display: grid;
+    place-items: center;
+    width: 1.15rem;
+    height: 1.15rem;
+    border-radius: 999px;
+    background: rgb(0 0 0 / 0.7);
+    color: #fff;
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+  .opt-thumb-zoom:hover > span,
+  .opt-thumb-zoom:focus-visible > span {
+    background: var(--color-signal);
+    color: var(--color-ink);
+  }
+  .opt-thumb-zoom:hover {
+    box-shadow: inset 0 0 0 1.5px var(--color-signal);
+  }
   .opt:hover .opt-img :global(img) {
     transform: scale(1.05);
   }
@@ -567,6 +674,51 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
     font-family: var(--font-mono);
     font-size: 0.8rem;
     color: #fff;
+  }
+  /* «Incluido en el precio»: verde, en los cobots (paso 1) y en las controladoras (paso 3). */
+  .opt-inc,
+  .opt-price-inc {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: var(--font-mono);
+    font-size: 0.66rem;
+    line-height: 1.3;
+    color: var(--color-ok);
+  }
+  .opt-price-inc {
+    flex-shrink: 0;
+    border-radius: 999px;
+    border: 1px solid rgb(126 226 164 / 0.4);
+    background: rgb(126 226 164 / 0.1);
+    padding: 0.2rem 0.55rem;
+    font-size: 0.72rem;
+  }
+  .cfg-inc-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.8rem;
+    margin-bottom: 1rem;
+    border-radius: 14px;
+    border: 1px solid rgb(126 226 164 / 0.35);
+    background: rgb(126 226 164 / 0.08);
+    padding: 0.85rem 1rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--color-muted);
+  }
+  .cfg-inc-banner b {
+    color: var(--color-ok);
+  }
+  .cfg-inc-ico {
+    display: grid;
+    flex-shrink: 0;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 999px;
+    background: var(--color-ok);
+    color: var(--color-ink);
   }
   .opt:has(input:checked) {
     border-color: var(--color-signal);
@@ -589,6 +741,9 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
   .opt:has(input:disabled) .opt-incompat {
     display: block;
     color: #f3d98a;
+  }
+  .opt:has(input:disabled) .opt-price-inc {
+    display: none;
   }
   .opt-load.is-tight {
     color: #f3d98a;
@@ -855,6 +1010,7 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
     const list = root.querySelector<HTMLUListElement>('[data-cfg-list]')!;
     const count = root.querySelector<HTMLElement>('[data-cfg-count]');
     const totalEl = root.querySelector<HTMLElement>('[data-cfg-total]');
+    const incNote = root.querySelector<HTMLElement>('[data-cfg-inc]');
     const diagram = root.querySelector<SVGElement>('[data-cfg-diagram]');
     const modelLabel = root.querySelector<SVGTextElement>('[data-cfg-model]');
     const versionGroups = [...form.querySelectorAll<HTMLElement>('[data-versions-for]')];
@@ -878,7 +1034,8 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
       return c && c.value !== 'asesoramiento' && payload > 0 ? { id: c.value, name: c.dataset.name!, payload } : null;
     };
 
-    type Item = { label: string; name: string; slot: string; price: number | null };
+    // `inc`: va incluido en el precio del cobot (sale «✓ Incluida» en lugar del precio).
+    type Item = { label: string; name: string; slot: string; price: number | null; inc?: string };
 
     const readState = () => {
       const cobot = checked('cobot');
@@ -901,14 +1058,21 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
           price: price(cobot),
         });
       }
-      if (ctrl) out.push({ label: 'Controladora', name: ctrl.hasAttribute('data-included') ? `${ctrl.dataset.name} (incluida con el cobot)` : ctrl.dataset.name!, slot: 'controlador', price: price(ctrl) });
+      // Los cobots FR traen en la caja la controladora (AC o DC), sus cables y la seta de emergencia.
+      const box = Boolean(cobot?.hasAttribute('data-box'));
+      if (ctrl) out.push({ label: 'Controladora', name: ctrl.dataset.name!, slot: 'controlador', price: price(ctrl), inc: ctrl.hasAttribute('data-included') ? 'Incluida' : undefined });
+      else if (box) out.push({ label: 'Controladora', name: 'AC o DC, elígela en el paso 3', slot: 'controlador', price: 0, inc: 'Incluida' });
+      if (box) {
+        out.push({ label: 'En la caja', name: 'Cables de la controladora', slot: 'incluido', price: 0, inc: 'Incluidos' });
+        out.push({ label: 'En la caja', name: 'Seta de emergencia', slot: 'incluido', price: 0, inc: 'Incluida' });
+      }
       accs.forEach((a) => out.push({ label: a.dataset.family || 'Accesorio', name: a.dataset.name!, slot: a.dataset.slot!, price: price(a) }));
       return out;
     };
 
     const summaryText = () =>
       items()
-        .map((i) => `- ${i.label}: ${i.name}`)
+        .map((i) => `- ${i.label}: ${i.name}${i.inc ? ` (${i.inc.toLowerCase()} en el precio)` : ''}`)
         .join('\n');
 
     const syncVersions = () => {
@@ -992,6 +1156,7 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
 
     const render = () => {
       const its = items();
+      if (incNote) incNote.hidden = !checked('cobot')?.hasAttribute('data-box');
       list.innerHTML = '';
       if (!its.length) {
         const li = document.createElement('li');
@@ -1014,8 +1179,8 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
         li.append(left);
         if (cfg.showPrices) {
           const p = document.createElement('span');
-          p.className = 'shrink-0 font-mono text-xs text-mist';
-          p.textContent = i.slot === 'controlador' && i.price === 0 ? 'Incluida' : i.price != null ? fmt.format(i.price) : 'Consultar';
+          p.className = `shrink-0 font-mono text-xs ${i.inc ? 'text-ok' : 'text-mist'}`;
+          p.textContent = i.inc ? `✓ ${i.inc}` : i.price != null ? fmt.format(i.price) : 'Consultar';
           li.append(p);
         }
         list.append(li);
@@ -1204,6 +1369,22 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
     // Sin «Todos»: se abre en la primera familia (Garras y pinzas) y se cambia con los botones, para no tener que bajar
     // por los 68 accesorios.
     chips[0]?.click();
+
+    // El visor de fotos recorre solo el paso en el que estás (cada paso es su propia lista). Al cerrarlo en otro
+    // accesorio, el configurador pasa a su familia y apartado, para que quede a la vista.
+    form.addEventListener('lb:land', (e) => {
+      const t = e.target as HTMLElement;
+      const step = t.closest<HTMLElement>('fieldset[data-step]');
+      if (step) go(Number(step.dataset.step), false);
+      const fam = t.closest<HTMLElement>('[data-acc-family]');
+      if (fam?.hidden) chips.find((c) => c.dataset.accFilter === fam.dataset.accFamily)?.click();
+      const opt = t.closest<HTMLElement>('[data-acc-cats]');
+      const box = fam?.querySelector<HTMLElement>('[data-acc-subs]');
+      if (opt?.hidden && box) {
+        const key = opt.dataset.accCats!.split(' ').find((k) => box.querySelector(`[data-acc-sub="${k}"]`));
+        if (key) setSub(box, key);
+      }
+    });
 
     restore();
     syncVersions();

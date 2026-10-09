@@ -1,0 +1,32 @@
+---
+// Aviso verde junto al precio de un cobot: el precio ya incluye la controladora, sus cables y la seta de emergencia.
+// Con `id`, el «AC»/«DC» sigue al selector de ese cobot (data-power-label-for, script en CartDrawer.astro).
+import Icon from '../ui/Icon.astro';
+import { includedText } from '../../data/caja';
+
+interface Props {
+  id?: string;
+  // Versión corta para las tarjetas estrechas de la tienda.
+  short?: boolean;
+  class?: string;
+}
+const { id, short = false, class: className } = Astro.props;
+const [before, after] = includedText('§').split('§');
+---
+
+<p class:list={['inc-note inline-flex items-start gap-1.5 text-left leading-snug text-ok', short ? 'text-xs' : 'text-[0.85rem]', className]}>
+  <span class="mt-px grid size-4 shrink-0 place-items-center rounded-full bg-ok text-ink">
+    <Icon name="check" size={11} strokeWidth={3.5} />
+  </span>
+  {
+    short ? (
+      <span>Precio con controladora, cables y seta de emergencia incluidos</span>
+    ) : (
+      <span>
+        {before}
+        <b class="font-semibold" data-power-label-for={id}>{id ? 'AC' : 'AC o DC'}</b>
+        {after}
+      </span>
+    )
+  }
+</p>

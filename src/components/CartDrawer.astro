@@ -47,7 +47,10 @@ const vatNote = site.store.vatIncluded === true ? 'IVA incluido' : site.store.va
       Tramitar pedido
       <Icon name="arrow-right" size={18} />
     </a>
-    <button type="button" class="text-sm font-semibold text-muted hover:text-white" data-cart-close>Seguir comprando</button>
+    <button type="button" class="btn btn-ghost w-full" data-cart-close>
+      <Icon name="arrow-left" size={18} />
+      Seguir comprando
+    </button>
   </footer>
 </aside>
 
@@ -65,7 +68,7 @@ const vatNote = site.store.vatIncluded === true ? 'IVA incluido' : site.store.va
 </style>
 
 <script>
-  import { addToCart, cartSummary, readCart, setQty } from '../scripts/cart';
+  import { addToCart, cartSummary, chosenVersion, readCart, setQty } from '../scripts/cart';
 
   const drawer = document.querySelector<HTMLElement>('[data-cart]');
   const overlay = document.querySelector<HTMLElement>('[data-cart-overlay]');
@@ -108,6 +111,7 @@ const vatNote = site.store.vatIncluded === true ? 'IVA incluido' : site.store.va
         <div class="grid min-w-0 flex-1 gap-1">
           <a class="font-semibold hover:text-signal"></a>
           <span class="font-mono text-xs text-muted"></span>
+          <span class="flex items-start gap-1.5 text-xs leading-snug text-ok" data-inc hidden><span aria-hidden="true">✓</span><span></span></span>
           <div class="mt-1 flex items-center justify-between gap-3">
             <div class="inline-flex items-center rounded-full border border-line">
               <button type="button" class="grid size-8 place-items-center hover:text-signal" aria-label="Quitar uno">−</button>
@@ -128,6 +132,9 @@ const vatNote = site.store.vatIncluded === true ? 'IVA incluido' : site.store.va
       }
       name.textContent = r.item.name;
       li.querySelector('.font-mono.text-xs')!.textContent = [r.item.category, r.version].filter(Boolean).join(' · ');
+      const inc = li.querySelector<HTMLElement>('[data-inc]')!;
+      inc.hidden = !r.includes;
+      inc.lastElementChild!.textContent = r.includes;
       li.querySelector('.min-w-6')!.textContent = String(r.q);
       li.querySelector('.justify-between > .font-mono')!.textContent = r.unit != null ? s.fmt(r.unit * r.q) : 'Consultar';
       const [minus, plus] = li.querySelectorAll('button');
@@ -153,11 +160,8 @@ const vatNote = site.store.vatIncluded === true ? 'IVA incluido' : site.store.va
     const add = t.closest<HTMLElement>('[data-add-cart]');
     if (add) {
       const id = add.dataset.addCart!;
-      const sel = document.querySelector<HTMLSelectElement | HTMLInputElement>(`[data-version-for="${id}"]:is(select, input:checked)`);
       // Cobots: la controladora incluida, AC o DC, va unida a la versión («estandar~dc»).
-      const power = document.querySelector<HTMLInputElement>(`[data-power-for="${id}"]:checked`)?.value ?? add.dataset.power;
-      const base = sel?.value ?? add.dataset.version ?? '';
-      addToCart(id, power ? (base ? `${base}~${power}` : power) : base);
+      addToCart(id, chosenVersion(id, add.dataset.version ?? '', add.dataset.power));
       showToast(`${add.dataset.name ?? 'Producto'} añadido al carrito`);
       if (add.hasAttribute('data-open-cart')) open();
       return;
@@ -166,6 +170,16 @@ const vatNote = site.store.vatIncluded === true ? 'IVA incluido' : site.store.va
     if (t.closest('[data-cart-close]') || t === overlay) close();
   });
   document.addEventListener('keydown', (e) => e.key === 'Escape' && drawer && !drawer.hidden && close());
+
+  // Controladora AC/DC de cada cobot: los textos que la nombran («El precio incluye la controladora AC…») siguen a la
+  // opción marcada, también si el navegador la recuerda al volver atrás.
+  const syncPower = (r: HTMLInputElement) =>
+    document.querySelectorAll<HTMLElement>(`[data-power-label-for="${r.dataset.powerFor}"]`).forEach((el) => (el.textContent = r.value.toUpperCase()));
+  document.addEventListener('change', (e) => {
+    const r = e.target as HTMLInputElement;
+    if (r.matches?.('[data-power-for]')) syncPower(r);
+  });
+  document.querySelectorAll<HTMLInputElement>('[data-power-for]:checked').forEach(syncPower);
   window.addEventListener('cart:change', render);
   window.addEventListener('storage', (e) => e.key === 'fairino-cart' && render());
   if (readCart().length >= 0) render();

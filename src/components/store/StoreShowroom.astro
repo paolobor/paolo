@@ -4,6 +4,7 @@
 import { getImage } from 'astro:assets';
 import Icon from '../ui/Icon.astro';
 import BoxContents from './BoxContents.astro';
+import IncludedNote from './IncludedNote.astro';
 import { hasBox } from '../../data/caja';
 import { getProducts } from '../../lib/catalog';
 import { humanoid } from '../../data/humanoid';
@@ -62,6 +63,7 @@ const slides = await Promise.all(
       versions: c.data.store.versions,
       product: c,
       box: hasBox(c),
+      photos: c.data.images.length,
       specs: c.data.specs,
     };
   }),
@@ -70,7 +72,7 @@ const total = slides.length;
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
-<section class="showroom relative isolate overflow-hidden bg-ink text-white" aria-roledescription="carrusel" aria-label="Cobots FAIRINO" data-showroom>
+<section class="showroom relative isolate overflow-hidden bg-ink text-white" aria-roledescription="carrusel" aria-label="Cobots FAIRINO" data-showroom data-lb-scope>
   <div class="showroom-glow pointer-events-none absolute inset-0 -z-10" aria-hidden="true"></div>
   <canvas class="pointer-events-none absolute inset-0 -z-5 h-full w-full" data-embers="back" aria-hidden="true"></canvas>
 
@@ -180,7 +182,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
   <div class="container-x relative pb-8">
     {
       slides.map((s) => (
-        <div class="info grid justify-items-center gap-4 text-center" data-info={s.i} data-series={s.series} hidden={s.i !== 0} id={`cobot-${s.id}`}>
+        <div class="info grid justify-items-center gap-4 text-center" data-info={s.i} data-series={s.series} hidden={s.i !== 0} id={`cobot-${s.id}`} data-lb-item>
           <p class="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-mist">{s.tags}</p>
           <h2 class="model-name text-[clamp(2.4rem,5.5vw,4rem)] font-extrabold leading-none" style="font-stretch:125%">{s.name}</h2>
           <dl class="grid grid-cols-2 gap-x-10 gap-y-4 sm:grid-cols-4">
@@ -215,16 +217,26 @@ const pad = (n: number) => String(n).padStart(2, '0');
 
           {s.box && <BoxContents product={s.product} selectable class="max-w-3xl" />}
 
-          <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
+          <div class:list={['grid justify-items-center gap-1.5', s.box && 'price-card']}>
             <p class="font-mono">
               <span class="text-[0.62rem] uppercase tracking-[0.14em] text-mist">PVP</span>{' '}
               <span class="text-2xl text-white">{s.price != null ? formatEUR(s.price) : 'Consultar'}</span>
               {vatNote && <span class="ml-1 text-xs text-mist">{vatNote}</span>}
             </p>
+            {s.box && <IncludedNote id={s.id} />}
+          </div>
+
+          <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
             <button type="button" class="btn btn-primary" data-add-cart={s.id} data-name={s.name} data-version={s.versions[0]?.id} data-power={s.box ? 'ac' : undefined} data-open-cart>
               <Icon name="plus" size={18} />
               Añadir al carrito
             </button>
+            {s.photos > 0 && (
+              <button type="button" class="btn btn-ghost" data-lb-open={s.id} data-lb-section="Cobots FAIRINO">
+                <Icon name="expand" size={18} />
+                Ver fotos
+              </button>
+            )}
             <button type="button" class="btn btn-ghost" data-specs-open={s.i}>
               <Icon name="sliders-horizontal" size={18} />
               Ver especificaciones
@@ -333,7 +345,10 @@ const pad = (n: number) => String(n).padStart(2, '0');
           </section>
 
           <div class="flex flex-wrap items-center gap-3 border-t border-line pt-5">
-            <p class="mr-auto font-mono text-xl">{s.price != null ? formatEUR(s.price) : 'Consultar'} {vatNote && <span class="text-xs text-mist">{vatNote}</span>}</p>
+            <div class="mr-auto grid gap-1.5">
+              <p class="font-mono text-xl">{s.price != null ? formatEUR(s.price) : 'Consultar'} {vatNote && <span class="text-xs text-mist">{vatNote}</span>}</p>
+              {s.box && <IncludedNote id={s.id} />}
+            </div>
             <button type="button" class="btn btn-primary" data-add-cart={s.id} data-name={s.name} data-version={s.versions[0]?.id} data-power={s.box ? 'ac' : undefined} data-open-cart>
               <Icon name="plus" size={18} />
               Añadir al carrito
@@ -815,6 +830,13 @@ const pad = (n: number) => String(n).padStart(2, '0');
     font-size: 0.75rem;
     color: var(--color-mist);
   }
+  /* Precio del cobot con el aviso de lo que incluye, en una placa con borde verde. */
+  .price-card {
+    border-radius: 16px;
+    border: 1px solid rgb(126 226 164 / 0.35);
+    background: rgb(126 226 164 / 0.06);
+    padding: 0.7rem 1.2rem;
+  }
   .vpill span {
     display: inline-flex;
     border-radius: 999px;
@@ -979,6 +1001,12 @@ const pad = (n: number) => String(n).padStart(2, '0');
         }
       }
     };
+
+    // Al cerrar el visor de fotos en otro cobot, el escaparate pasa a ese modelo.
+    root.addEventListener('lb:land', (e) => {
+      const i = ids.indexOf((e as CustomEvent<{ id: string }>).detail.id);
+      if (i >= 0) show(i);
+    });
 
     const openSpecs = () => {
       if (!specs || !specsOverlay) return;

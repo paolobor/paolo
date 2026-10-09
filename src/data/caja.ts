@@ -1,5 +1,5 @@
 // Lo que trae la caja de cada cobot FAIRINO (FR3 a FR30) y la alimentación de la controladora, AC o DC.
-// La controladora, sus cables y el módulo de seguridad van incluidos en el precio del cobot: el cliente solo elige
+// La controladora, sus cables y la seta de emergencia (módulo de seguridad) van incluidos en el precio del cobot: el cliente solo elige
 // si la quiere en alterna o en continua. Mismo precio en las dos.
 import type { Product } from '../lib/catalog';
 
@@ -20,22 +20,18 @@ export const POWER = [
   },
 ] as const;
 
-export type PowerId = (typeof POWER)[number]['id'];
-
 export const BOX_ITEMS = [
-  { icon: 'bot', name: 'Brazo robot FAIRINO', note: '6 ejes' },
-  { icon: 'cpu', name: 'Controladora', note: 'AC o DC, la que elijas' },
-  { icon: 'cable', name: 'Cables de conexión', note: 'Brazo y controladora' },
-  { icon: 'octagon-x', name: 'Módulo de seguridad', note: 'Seta de emergencia' },
+  { icon: 'bot', name: 'Brazo robot FAIRINO', note: '6 ejes', inc: 'Incluido' },
+  { icon: 'cpu', name: 'Controladora', note: 'AC o DC, la que elijas', inc: 'Incluida' },
+  { icon: 'cable', name: 'Cables de la controladora', note: 'Para conectarla al brazo', inc: 'Incluidos' },
+  { icon: 'octagon-x', name: 'Seta de emergencia', note: 'Módulo de seguridad', inc: 'Incluida' },
 ] as const;
+
+// Frase de junto al precio, del carrito y del pedido. Sin `power`, «AC o DC».
+export const includedText = (power?: string) => `El precio incluye la controladora ${power ?? 'AC o DC'}, sus cables y la seta de emergencia`;
 
 // Cobots de la serie FR (no el humanoide, que aún no se vende).
 export const hasBox = (p: Product) => p.data.category === 'cobot' && !p.data.upcoming;
-
-// La controladora que corresponde a cada alimentación según el modelo (compatibleWith): Mini 2 kW o 5 kW.
-export const controllerFor = (p: Product, power: PowerId) => p.data.compatibleWith.find((id) => id.startsWith(`${power}-`)) ?? null;
-
-export const powerLabel = (power: PowerId) => `Controladora ${POWER.find((x) => x.id === power)!.short}`;
 
 // Controladoras y módulo de seguridad sueltos: ya vienen con el cobot, en la tienda son recambio o unidad adicional.
 export const SPARE_IDS = ['ac-mini-controller-2kw', 'dc-mini-controller-2kw', 'ac-controller-5kw', 'dc-controller-5kw', 'modulo-seguridad'];

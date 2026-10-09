@@ -4,6 +4,7 @@ import Icon from '../ui/Icon.astro';
 import SmartImage from '../ui/SmartImage.astro';
 import { formatEUR } from '../../lib/store';
 import { url } from '../../lib/url';
+import IncludedNote from './IncludedNote.astro';
 import { hasBox, SPARE_IDS, spareNote } from '../../data/caja';
 
 interface Props {
@@ -15,15 +16,23 @@ const { product, selectable = false } = Astro.props;
 const d = product.data;
 const box = hasBox(product);
 const spare = SPARE_IDS.includes(product.id);
+// En la tienda, pulsar la foto abre el visor de fotos (ProductLightbox) y elige el producto para ver sus compatibles.
+const photos = d.images.length;
 const Media = selectable ? 'button' : 'a';
 const mediaAttrs = selectable
-  ? { type: 'button' as const, 'data-select': product.id, 'aria-label': `Elegir ${d.name} y ver productos compatibles` }
+  ? {
+      type: 'button' as const,
+      'data-select': product.id,
+      'data-lb-open': photos ? product.id : undefined,
+      'aria-label': photos ? `Ver las fotos de ${d.name}` : `Elegir ${d.name} y ver productos compatibles`,
+    }
   : { href: url(`productos/${product.id}/`), tabindex: -1, 'aria-hidden': true };
 ---
 
 <article
   class="store-card group relative flex h-full flex-col overflow-hidden rounded-[var(--radius-card)] border border-line bg-surface transition-[border-color,box-shadow] hover:border-signal/40 hover:shadow-[0_18px_50px_-20px_rgba(255,106,19,0.35)]"
   data-card={product.id}
+  data-lb-item
 >
   {
     selectable && (
@@ -43,13 +52,24 @@ const mediaAttrs = selectable
   }
   <Media
     {...mediaAttrs}
-    class="relative block aspect-square w-full overflow-hidden bg-[radial-gradient(ellipse_at_50%_80%,rgba(255,106,19,0.2),transparent_60%),radial-gradient(circle_at_50%_40%,#1a110c,#0b0705_75%)]"
+    class:list={[
+      'relative block aspect-square w-full overflow-hidden bg-[radial-gradient(ellipse_at_50%_80%,rgba(255,106,19,0.2),transparent_60%),radial-gradient(circle_at_50%_40%,#1a110c,#0b0705_75%)]',
+      selectable && photos > 0 && 'cursor-zoom-in',
+    ]}
   >
     <div class="absolute inset-0">
       <SmartImage src={d.images[0]?.src} alt="" hint={`${d.name}, foto oficial`} tone="dark" fit="contain" widths={[320, 480, 640]} sizes="(min-width: 1024px) 25vw, 50vw" class="p-6 transition-transform duration-500 group-hover:scale-105" />
     </div>
     {
-      selectable && (
+      selectable && photos > 0 && (
+        <span class="photo-tag pointer-events-none absolute bottom-2.5 left-2.5 inline-flex items-center gap-1.5 rounded-full bg-black/70 px-2.5 py-1 font-mono text-[0.62rem] font-semibold uppercase tracking-[0.08em] text-white transition-colors group-hover:bg-signal group-hover:text-ink">
+          <Icon name="expand" size={12} />
+          {photos > 1 ? `${photos} fotos` : 'Ver foto'}
+        </span>
+      )
+    }
+    {
+      selectable && !photos && (
         <span class="absolute inset-x-3 bottom-3 rounded-full bg-black/75 px-3 py-1.5 text-center text-xs font-semibold text-white opacity-0 transition-opacity group-hover:opacity-100">
           Ver lo que encaja con este producto
         </span>
@@ -63,14 +83,6 @@ const mediaAttrs = selectable
     </h3>
     <p class="text-sm text-muted">{d.tagline}</p>
     {
-      box && (
-        <p class="flex items-start gap-1.5 text-xs text-mist">
-          <Icon name="package-check" size={14} class="mt-px shrink-0 text-signal" />
-          Incluye controladora AC o DC, cables y seta de emergencia
-        </p>
-      )
-    }
-    {
       spare && (
         <p class="flex items-start gap-1.5 text-xs text-mist">
           <span class="rounded-full border border-signal/40 px-1.5 font-mono text-[0.6rem] uppercase tracking-wide text-brand">Recambio</span>
@@ -79,7 +91,8 @@ const mediaAttrs = selectable
       )
     }
     <!-- En tarjetas estrechas (la tienda en el móvil va a dos columnas), precio arriba y botón debajo a todo lo ancho. -->
-    <div class="mt-auto flex flex-col gap-2 pt-3 @min-[15rem]:flex-row @min-[15rem]:items-center @min-[15rem]:justify-between @min-[15rem]:gap-3">
+    {box && <IncludedNote short class="mt-auto pt-2" />}
+    <div class:list={['flex flex-col gap-2 @min-[15rem]:flex-row @min-[15rem]:items-center @min-[15rem]:justify-between @min-[15rem]:gap-3', box ? 'pt-1' : 'mt-auto pt-3']}>
       <span class="font-mono text-lg">{d.store.price != null ? formatEUR(d.store.price) : 'Consultar'}</span>
       <button type="button" class="btn btn-primary btn-sm w-full @min-[15rem]:w-auto" data-add-cart={product.id} data-name={d.name} data-version={box ? d.store.versions[0]?.id : undefined} data-power={box ? 'ac' : undefined} aria-label={`Añadir ${d.name} al carrito`}>
         <Icon name="plus" size={16} />

@@ -10,7 +10,8 @@ interface StoreItem {
   category: string;
   price: number | null;
   shipping: number | null;
-  versions: { id: string; label: string; delta: number }[];
+  versions: { id: string; label: string; delta: number; includes?: string }[];
+  includes: string | null;
   img: string | null;
   href: string;
   shopifyVariantId: string | null;
@@ -47,6 +48,15 @@ export function addToCart(id: string, v = '', q = 1) {
   writeCart(lines);
 }
 
+// Versión elegida en la página para un producto: la de su selector de versión y, en los cobots, la controladora AC o DC
+// («estandar~dc»). Si la página no tiene selector, `base` y `power`.
+export function chosenVersion(id: string, base = '', power?: string) {
+  const sel = document.querySelector<HTMLSelectElement | HTMLInputElement>(`[data-version-for="${id}"]:is(select, input:checked)`);
+  const pw = document.querySelector<HTMLInputElement>(`[data-power-for="${id}"]:checked`)?.value ?? power;
+  const v = sel?.value ?? base;
+  return pw ? (v ? `${v}~${pw}` : pw) : v;
+}
+
 export function setQty(id: string, v: string, q: number) {
   writeCart(readCart().map((l) => (l.id === id && l.v === v ? { ...l, q } : l)).filter((l) => l.q > 0));
 }
@@ -67,7 +77,7 @@ export function cartSummary(lines = readCart()) {
       if (unit == null) unpriced = true;
       else subtotal += unit * l.q;
       shipping += (it.shipping ?? 0) * l.q;
-      return { ...l, item: it, version: ver?.label ?? '', unit };
+      return { ...l, item: it, version: ver?.label ?? '', includes: ver?.includes ?? it.includes ?? '', unit };
     });
   const count = rows.reduce((n, r) => n + r.q, 0);
   return { rows, count, subtotal, shipping, total: subtotal + shipping, unpriced, fmt: (n: number) => fmt.format(n) };
@@ -76,7 +86,10 @@ export function cartSummary(lines = readCart()) {
 export function cartText(lines = readCart()) {
   const s = cartSummary(lines);
   return [
-    ...s.rows.map((r) => `- ${r.q} × ${r.item.name}${r.version ? ` (${r.version})` : ''}${r.unit != null ? ` · ${s.fmt(r.unit)}/ud.` : ''}`),
+    ...s.rows.flatMap((r) => [
+      `- ${r.q} × ${r.item.name}${r.version ? ` (${r.version})` : ''}${r.unit != null ? ` · ${s.fmt(r.unit)}/ud.` : ''}`,
+      ...(r.includes ? [`  ${r.includes}.`] : []),
+    ]),
     `Subtotal: ${s.fmt(s.subtotal)}${s.unpriced ? ' + artículos a consultar' : ''}`,
     `Envío: ${s.fmt(s.shipping)}`,
   ].join('\n');

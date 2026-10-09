@@ -9,9 +9,10 @@ import SmartImage from '../../components/ui/SmartImage.astro';
 import IllustrativeBadge from '../../components/ui/IllustrativeBadge.astro';
 import { applications } from '../../data/applications';
 import { solutions } from '../../data/solutions';
-import { shopCategories } from '../../data/shop';
+import { shopCategories, shopSection } from '../../data/shop';
 import { isIllustrative } from '../../lib/images';
 import { url } from '../../lib/url';
+import { hasBox, includedText } from '../../data/caja';
 
 const products = await getProducts();
 
@@ -19,18 +20,13 @@ const products = await getProducts();
 type Rec = { id: string; reason: string };
 const appName = (slug: string) => applications.find((a) => a.slug === slug)?.name ?? slug;
 const shared = (a: Product, b: Product) => a.data.applications.filter((x) => b.data.applications.includes(x));
-const relations: Record<string, { groups: { title: string; note?: string; items: Rec[] }[] }> = {};
+// `info`: aviso en verde bajo el producto elegido (en los cobots, lo que ya va incluido en el precio).
+const relations: Record<string, { info?: string; groups: { title: string; note?: string; items: Rec[] }[] }> = {};
 for (const p of products) {
   const d = p.data;
   const groups: { title: string; note?: string; items: Rec[] }[] = [];
   if (d.category === 'cobot') {
-    groups.push({
-      title: 'Controlador',
-      note: 'Imprescindible: elige uno (red AC o continua DC).',
-      items: products
-        .filter((x) => x.data.category === 'controlador' && d.compatibleWith.includes(x.id))
-        .map((x) => ({ id: x.id, reason: x.data.group === 'dc' ? 'Corriente continua' : 'Corriente alterna' })),
-    });
+    // La controladora (AC o DC), sus cables y la seta de emergencia ya vienen en la caja: no se recomiendan aparte.
     const accs = products
       .filter((x) => x.data.category === 'accesorio' && x.data.compatibleWith.includes(p.id))
       .map((x) => ({ x, common: shared(p, x) }))
@@ -61,8 +57,12 @@ for (const p of products) {
     if (others.length)
       groups.push({ title: 'Combina bien con', items: others.map((x) => ({ id: x.id, reason: `También para ${shared(p, x).map(appName).join(' y ').toLowerCase()}` })) });
   }
-  relations[p.id] = { groups: groups.filter((g) => g.items.length) };
+  relations[p.id] = { info: hasBox(p) ? `${includedText()}.` : undefined, groups: groups.filter((g) => g.items.length) };
 }
+// En «Todos», los productos van agrupados por apartado en el orden de las pestañas (Cobots, Controladores, Accesorios
+// FAIRINO, Pinzas eléctricas…), y dentro de cada apartado por su orden. El visor de fotos sigue el mismo orden.
+const sectionOf = (p: Product) => shopSection(p.data.category, p.data.shopCategories);
+const gridProducts = [...products].sort((a, b) => sectionOf(a).rank - sectionOf(b).rank || a.data.order - b.data.order);
 // Pestañas: cobots y controladores por categoría; los accesorios, por tipo de producto (src/data/shop.ts).
 const catsOf = (p: Product) => [p.data.category, ...p.data.shopCategories];
 // Filtro de precio: de 0 al producto más caro. Con todos los precios a 0 el filtro se queda desactivado.
@@ -174,17 +174,17 @@ const emptyCats = shopCategories.flatMap((c) => [c, ...(c.subs ?? [])]).filter((
             <span class="grid size-11 place-items-center rounded-xl bg-signal/10 text-signal"><Icon name="layers" size={22} /></span>
             <p class="font-display text-lg font-bold" style="font-stretch:112%">Elige un producto</p>
             <p class="text-sm text-muted">
-              Pulsa la imagen de cualquier producto y aquí te mostramos lo que encaja con él: controlador, accesorios o cobots compatibles. Marca lo que necesites y añádelo todo al carrito.
+              Pulsa la foto de cualquier producto: se abren sus fotos en grande y aquí te mostramos lo que encaja con él (accesorios o cobots compatibles). Marca lo que necesites y añádelo todo al carrito.
             </p>
           </div>
           <div class="grid gap-5 p-5" data-reco-body hidden></div>
         </aside>
         </div>
 
-        <ul class="grid grid-cols-2 gap-4 md:grid-cols-3" data-shop-grid>
+        <ul class="grid grid-cols-2 gap-4 md:grid-cols-3" data-shop-grid data-lb-scope>
           {
-            products.map((p) => (
-              <li data-cats={catsOf(p).join(' ')} data-price={priceOf(p) ?? undefined}>
+            gridProducts.map((p) => (
+              <li data-cats={catsOf(p).join(' ')} data-price={priceOf(p) ?? undefined} data-tab-key={sectionOf(p).tab} data-sub-key={sectionOf(p).sub || undefined}>
                 <StoreCard product={p} selectable />
               </li>
             ))
@@ -423,7 +423,7 @@ const emptyCats = shopCategories.flatMap((c) => [c, ...(c.subs ?? [])]).filter((
 </style>
 
 <script>
-  import { addToCart, storeData } from '../../scripts/cart';
+  import { addToCart, chosenVersion, storeData } from '../../scripts/cart';
 
   type Rec = { id: string; reason: string };
   const shop = document.querySelector<HTMLElement>('[data-shop]');
@@ -433,7 +433,7 @@ const emptyCats = shopCategories.flatMap((c) => [c, ...(c.subs ?? [])]).filter((
     const reco = shop.querySelector<HTMLElement>('[data-reco]')!;
     const empty = reco.querySelector<HTMLElement>('[data-reco-empty]')!;
     const body = reco.querySelector<HTMLElement>('[data-reco-body]')!;
-    const relations: Record<string, { groups: { title: string; note?: string; items: Rec[] }[] }> = JSON.parse(
+    const relations: Record<string, { info?: string; groups: { title: string; note?: string; items: Rec[] }[] }> = JSON.parse(
       document.getElementById('shop-relations')?.textContent || '{}',
     );
     const data = storeData();
@@ -541,7 +541,8 @@ const emptyCats = shopCategories.flatMap((c) => [c, ...(c.subs ?? [])]).filter((
       if (btn) btn.textContent = n > 1 ? `Añadir ${n} productos al carrito` : 'Añadir al carrito';
     };
 
-    const select = (id: string) => {
+    // `scroll`: en móvil, bajar hasta el panel (no cuando se abren las fotos del producto).
+    const select = (id: string, scroll = true) => {
       const it = data[id];
       if (!it) return;
       shop.querySelectorAll('[data-card]').forEach((c) => c.toggleAttribute('data-selected', (c as HTMLElement).dataset.card === id));
@@ -566,6 +567,8 @@ const emptyCats = shopCategories.flatMap((c) => [c, ...(c.subs ?? [])]).filter((
       });
       head.append(close);
       body.append(head);
+      const info = relations[id]?.info;
+      if (info) body.append(el('p', 'rounded-xl border border-ok/35 bg-ok/10 p-3 text-xs leading-snug text-ok', `✓ ${info}`));
 
       // Grupos recomendados
       for (const g of relations[id]?.groups ?? []) {
@@ -599,7 +602,8 @@ const emptyCats = shopCategories.flatMap((c) => [c, ...(c.subs ?? [])]).filter((
       add.type = 'button';
       add.dataset.recoAdd = '';
       add.addEventListener('click', () => {
-        addToCart(id);
+        // Cobot: con la versión y la controladora (AC/DC) marcadas en el escaparate; si no, la primera y AC.
+        addToCart(id, it.includes ? chosenVersion(id, it.versions[0]?.id.split('~')[0] ?? '', 'ac') : '');
         body.querySelectorAll<HTMLInputElement>('input[data-reco-pick]:checked').forEach((c) => addToCart(c.dataset.recoPick!));
         document.querySelector<HTMLElement>('[data-cart-open]')?.click();
       });
@@ -610,9 +614,21 @@ const emptyCats = shopCategories.flatMap((c) => [c, ...(c.subs ?? [])]).filter((
       updateButton();
 
       // En móvil el panel está encima: lo traemos a la vista.
-      if (window.matchMedia('(max-width: 1023px)').matches) reco.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (scroll && window.matchMedia('(max-width: 1023px)').matches) reco.scrollIntoView({ behavior: 'smooth', block: 'start' });
     };
 
-    shop.querySelectorAll<HTMLElement>('[data-select]').forEach((b) => b.addEventListener('click', () => select(b.dataset.select!)));
+    shop.querySelectorAll<HTMLElement>('[data-select]').forEach((b) => b.addEventListener('click', () => select(b.dataset.select!, !b.hasAttribute('data-lb-open'))));
+
+    // Al cerrar el visor de fotos en otro producto: queda elegido y la tienda pasa a su apartado.
+    shop.querySelector('[data-shop-grid]')?.addEventListener('lb:land', (e) => {
+      const li = (e.target as HTMLElement).closest('li');
+      if (li?.hidden) {
+        // A la pestaña (y subapartado) del producto; si aun así no se ve (filtro de precio), a «Todos».
+        filter(li.dataset.tabKey ?? 'todos');
+        if (li.dataset.subKey) setSub(li.dataset.subKey);
+        if (li.hidden) filter('todos');
+      }
+      select((e as CustomEvent<{ id: string }>).detail.id, false);
+    });
   }
 </script>

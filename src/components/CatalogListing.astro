@@ -3,6 +3,7 @@ import type { CollectionEntry } from 'astro:content';
 import ProductCard from './ProductCard.astro';
 import Icon from './ui/Icon.astro';
 import { url } from '../lib/url';
+import { shopSection } from '../data/shop';
 
 export interface FilterGroup {
   key: string;
@@ -18,7 +19,10 @@ interface Props {
 }
 const { products, filters, tags, noun } = Astro.props;
 
-const tagged = products.map((p) => ({ p, t: tags(p) }));
+// Agrupados por apartado, en el orden de las pestañas de la tienda (en los accesorios: Accesorios FAIRINO, Pinzas
+// eléctricas…); dentro de cada uno, en el orden de siempre. Así la lista y el visor de fotos van en el mismo orden.
+const rank = (p: CollectionEntry<'products'>) => shopSection(p.data.category, p.data.shopCategories).rank;
+const tagged = [...products].sort((a, b) => rank(a) - rank(b)).map((p) => ({ p, t: tags(p) }));
 // Solo se ofrecen opciones que tengan algún producto.
 const groups = filters
   .map((g) => ({ ...g, options: g.options.filter((o) => tagged.some(({ t }) => t[g.key]?.includes(o.value))) }))
