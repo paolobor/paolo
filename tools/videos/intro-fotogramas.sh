@@ -14,10 +14,10 @@ set -euo pipefail
 SRC=$1 OUT=$2
 FPS=${FPS:-48}
 # Fuera de día, tal cual; al cruzar las puertas (3,8 s → 5,2 s) se hace de noche y la nave se va oscureciendo
-# según se entra (brillo en función del segundo t). Los aros naranjas de los ejes, mate y sin brillo (se apagan solo
-# los rojos intensos); las cajas conservan su color cartón (se refuerzan un poco los amarillos).
-NIGHT="eq=eval=frame:brightness='if(lt(t,3.8),0,if(lt(t,5.2),-0.17*(t-3.8)/1.4,-0.13-0.008*t))':contrast='if(lt(t,3.8),1,1.12)':saturation=0.95,huesaturation=colors=r:intensity=-0.35:saturation=-0.3:strength=40,huesaturation=colors=y:saturation=0.35:intensity=0.06:strength=60"
-GRADE="fps=$FPS,$NIGHT,eq=contrast=1.06:saturation=1.06:gamma=0.98,colorbalance=rs=-0.04:gs=-0.01:bs=0.06:rm=0.02:bm=-0.01:rh=0.06:gh=0.02:bh=-0.05,split[g0][g1];[g1]colorlevels=rimin=0.93:gimin=0.93:bimin=0.93,gblur=sigma=70:sigmaV=0.8,colorchannelmixer=rr=0.6:gg=0.8:bb=1.2[fl];[g0][fl]blend=all_mode=screen:all_opacity=0.25"
+# según se entra (brillo en función del segundo t). Color: medios cálidos y algo de viveza para que las cajas se vean
+# de cartón y los robots blancos; los rojos más intensos se apagan un poco para que los aros no brillen.
+NIGHT="eq=eval=frame:brightness='if(lt(t,3.8),0,if(lt(t,5.2),-0.17*(t-3.8)/1.4,-0.13-0.008*t))':contrast='if(lt(t,3.8),1,1.12)':saturation=0.95"
+GRADE="fps=$FPS,$NIGHT,eq=contrast=1.06:saturation=1.06:gamma=0.98,colorbalance=rs=-0.02:bs=0.03:rm=0.06:gm=0.025:bm=-0.05:rh=0.05:gh=0.02:bh=-0.04,vibrance=0.3,huesaturation=colors=r:intensity=-0.3:saturation=-0.25:strength=12,split[g0][g1];[g1]colorlevels=rimin=0.93:gimin=0.93:bimin=0.93,gblur=sigma=70:sigmaV=0.8,colorchannelmixer=rr=0.6:gg=0.8:bb=1.2[fl];[g0][fl]blend=all_mode=screen:all_opacity=0.25"
 for W in 1920 960; do
   rm -rf "$OUT/$W" && mkdir -p "$OUT/$W"
   Q=$([ $W = 1920 ] && echo 72 || echo 68)
