@@ -9,7 +9,8 @@ Entrada animada con el logotipo oficial de FAIRINO. Funciona de dos formas:
 
 ## Recorrido: llegar en persona a una gran fábrica (estilo cine)
 
-Un único plano secuencia sin cortes, hecho con IA (Higgsfield · Kling 3.0 en 4K, 15 s; es imagen ilustrativa), que el
+Un único plano secuencia sin cortes, hecho con IA (Higgsfield · Kling 3.0, 15 s, con los robots cambiados por el
+FAIRINO real con Genjutsu a partir de sus fotos; es imagen ilustrativa), que el
 visitante recorre con la rueda del ratón o el dedo, como en las páginas de producto de Apple. La cámara va siempre
 hacia delante, recta y sin pararse: la rueda o el dedo (en cualquier sentido) la aceleran, nunca la hacen volver. El vídeo está convertido en fotogramas WebP que se pintan en un `<canvas>` (1920 px en ordenador, 960 px en
 móvil): así se puede ir adelante y atrás al instante y sin tirones.
@@ -30,7 +31,8 @@ móvil): así se puede ir adelante y atrás al instante y sin tirones.
 5. **El portal:** al llegar al último fotograma, el anillo se ilumina en el borde, la cámara lo atraviesa, un destello
    anamórfico cruza la pantalla, las bandas se abren y la capa se funde dejando ver la home.
 
-Acabado de cine: corrección de color (sombras frías, luces cálidas que hacen saltar el naranja #fc5220) y destellos
+Acabado de cine: de noche desde fuera y cada vez más oscuro según se entra en la nave, aros de los ejes mate (sin
+brillo), corrección de color (sombras frías, luces cálidas que hacen saltar el naranja #fc5220) y destellos
 anamórficos discretos en las luces fuertes, ya metidos en los fotogramas; grano y viñeta suaves en la página.
 Textos como títulos de película: fundidos lentos y letras muy espaciadas. Una barra naranja fina (en el borde de la
 banda de abajo) muestra la carga; la cámara no pasa a un tramo cuyos fotogramas aún no han llegado.
@@ -52,8 +54,8 @@ index.html                 la página suelta (destino en <html data-target="http
 css/intro.css              estilos
 js/intro.js                guion de las escenas (GSAP)
 js/vendor/gsap.min.js      GSAP 3.15 (licencia gratuita de GSAP)
-assets/frames/1920/        fotogramas del recorrido para ordenador (361 WebP, unos 21 MB en total)
-assets/frames/960/         los mismos para el móvil y las pantallas pequeñas (unos 9 MB)
+assets/frames/1920/        fotogramas del recorrido para ordenador (361 WebP, unos 11 MB en total)
+assets/frames/960/         los mismos para el móvil y las pantallas pequeñas (unos 5 MB)
 assets/audio/              sonido opcional (ver «Sonido tipo tráiler»)
 assets/fonts/              Inter (Google Fonts, licencia OFL), servida desde la propia web
 assets/favicon.svg
@@ -95,7 +97,7 @@ Para verla otra vez sin el parámetro, cierra la pestaña: sessionStorage se bor
    copia en 1080p del actual; el original en 4K está en Higgsfield).
 2. Saca los fotogramas con el acabado de cine:
    ```bash
-   tools/videos/intro-fotogramas.sh assets-src/intro/recorrido.mp4 public/intro/assets/frames
+   tools/videos/intro-fotogramas.sh assets-src/intro/recorrido-1080.mp4 public/intro/assets/frames
    ```
 3. En `js/intro.js`, actualiza:
    - `FRAMES.count` (lo dice el script) y súbele `v` para que el navegador no use los fotogramas guardados;

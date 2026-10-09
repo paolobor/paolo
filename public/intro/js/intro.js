@@ -31,15 +31,15 @@
   // medidos sobre los fotogramas del vídeo: aéreo, entrada (bajada y puertas), nave (luces y 8 cobots) y final
   // (cobot elegido, oscuridad, anillo). LOCK: dónde está el cobot del final al empezar el tramo 3 (proporciones del
   // fotograma 16:9). Si cambias el vídeo, cambia estos números (README).
-  var FRAMES = { count: 361, fps: 24, v: 2 };
+  var FRAMES = { count: 361, fps: 24, v: 3 };
   var SEG = { entrada: 3.5, nave: 5.5, final: 13.6 };
   // LOCK: marco sobre el cobot elegido, de un instante a otro (la cámara se le acerca). RING: el anillo en el último
   // fotograma (centro y radio exterior, respecto al ancho).
   var LOCK = [
-    { t: 13.75, x: 0.56, y: 0.5, w: 0.24, h: 0.62 },
-    { t: 14.3, x: 0.6, y: 0.55, w: 0.44, h: 0.8 },
+    { t: 13.75, x: 0.58, y: 0.5, w: 0.24, h: 0.55 },
+    { t: 14.3, x: 0.64, y: 0.58, w: 0.36, h: 0.8 },
   ];
-  var RING = { x: 0.49, y: 0.43, r: 0.14 };
+  var RING = { x: 0.516, y: 0.49, r: 0.2 };
   // Velocidades, en segundos de vídeo por segundo real: sola sin tocar nada, y tras un clic.
   var IDLE = 0.6;
   var AUTO = 1.7;
