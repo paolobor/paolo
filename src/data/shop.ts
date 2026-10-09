@@ -46,7 +46,7 @@ export function shopSection(category: 'cobot' | 'controlador' | 'accesorio', cat
   if (category === 'controlador') return { tab: 'controlador', sub: '', label: 'Controladores', rank: 1 };
   const top = cats.map((k) => shopCategories.findIndex((c) => c.key === k)).find((i) => i >= 0) ?? -1;
   const cat = shopCategories[top];
-  if (!cat) return { tab: 'todos', sub: '', label: 'Accesorios', rank: 2 + shopCategories.length };
+  if (!cat) return { tab: shopCategories[0].key, sub: '', label: 'Accesorios', rank: 2 + shopCategories.length };
   const subI = cat.subs?.findIndex((x) => cats.includes(x.key)) ?? -1;
   const sub = subI >= 0 ? cat.subs![subI] : undefined;
   return { tab: cat.key, sub: sub?.key ?? '', label: sub ? `${cat.label} · ${sub.label}` : cat.label, rank: 2 + top + (subI + 1) / 100 };
