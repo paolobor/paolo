@@ -219,11 +219,8 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
                 </h3>
                 {f.subs.length > 0 && (
                   <div class="acc-subs" role="group" aria-label={`Apartados de ${f.label}`} data-acc-subs={f.id} hidden>
-                    <button type="button" class="acc-sub" data-acc-sub="" aria-pressed="true">
-                      Todo <span class="acc-chip-n">{f.items.length}</span>
-                    </button>
-                    {f.subs.map((s) => (
-                      <button type="button" class="acc-sub" data-acc-sub={s.key} aria-pressed="false">
+                    {f.subs.map((s, i) => (
+                      <button type="button" class="acc-sub" data-acc-sub={s.key} aria-pressed={String(i === 0)}>
                         {s.label} <span class="acc-chip-n">{s.n}</span>
                       </button>
                     ))}
@@ -1194,7 +1191,8 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
         families.forEach((b) => (b.hidden = f !== 'todos' && b.dataset.accFamily !== f));
         subBoxes.forEach((box) => {
           box.hidden = box.dataset.accSubs !== f;
-          setSub(box, '');
+          // Sin «Todo»: se abre en el primer apartado (p. ej. Tracks).
+          setSub(box, box.querySelector<HTMLElement>('[data-acc-sub]')?.dataset.accSub ?? '');
         });
       }),
     );
