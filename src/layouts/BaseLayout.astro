@@ -49,6 +49,10 @@ const clientConfig = {
   showPrices: site.showPrices,
   currency: site.currency,
   base: import.meta.env.BASE_URL,
+  // Con PUBLIC_FIREBASE_EMULATOR=1 (solo para probar en local) las cuentas usan los emuladores de Firebase.
+  accounts: import.meta.env.PUBLIC_FIREBASE_EMULATOR === '1'
+    ? { firebase: { apiKey: 'demo', authDomain: 'demo-fairino.firebaseapp.com', projectId: 'demo-fairino', appId: 'demo' }, emulator: true }
+    : { firebase: site.accounts.firebase, emulator: false },
 };
 ---
 

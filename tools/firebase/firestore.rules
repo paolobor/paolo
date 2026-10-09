@@ -1,0 +1,23 @@
+rules_version = '2';
+
+// Reglas de la base de datos de clientes de FAIRINO España (Cloud Firestore).
+// Se pegan en la consola de Firebase: Firestore Database → Reglas → Publicar.
+// Cada cliente solo puede leer y cambiar su ficha y ver sus propios pedidos; nadie más puede leer nada.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Ficha del cliente (nombre, empresa, CIF, teléfono, dirección): solo él.
+    match /clientes/{uid} {
+      allow read, create, update, delete: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // Pedidos: el cliente los crea a su nombre y los ve; no puede cambiarlos ni borrarlos.
+    match /pedidos/{pedido} {
+      allow create: if request.auth != null
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.estado == 'Recibido';
+      allow read: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow update, delete: if false;
+    }
+  }
+}

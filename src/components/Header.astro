@@ -5,6 +5,7 @@ import Logo from './ui/Logo.astro';
 import { nav } from '../data/navigation';
 import { url } from '../lib/url';
 import { formatNumber } from '../lib/url';
+import { site } from '../data/site';
 
 interface Props {
   // true: transparente sobre un hero oscuro hasta que se hace scroll.
@@ -26,6 +27,8 @@ const accessoryGroups = [
 ].map((g) => ({ ...g, items: accessories.filter((a) => a.data.group === g.key) }));
 // En el menú, como mucho 4 por grupo; el resto, en la página de accesorios.
 const MENU_MAX = 4;
+// Cuentas de cliente (site.accounts): botón «Iniciar sesión o registrarse» / «Hola, Nombre · Mi cuenta» junto al carrito.
+const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIREBASE_EMULATOR === '1';
 ---
 
 <header
@@ -73,9 +76,10 @@ const MENU_MAX = 4;
       </nav>
 
       <div class="ml-auto hidden items-center gap-4 xl:flex">
-        <a href={url(nav.warranty.href)} class="hdr-muted inline-flex items-center gap-1.5 whitespace-nowrap text-sm font-medium">
+        <!-- Entre 1280 y 1440 px solo el escudo, para que quepa «Iniciar sesión o registrarse». -->
+        <a href={url(nav.warranty.href)} class="hdr-muted inline-flex items-center gap-1.5 whitespace-nowrap text-sm font-medium" title={nav.warranty.label} aria-label={nav.warranty.label}>
           <Icon name="shield-check" size={17} />
-          {nav.warranty.label}
+          <span class="hidden min-[1440px]:inline">{nav.warranty.label}</span>
         </a>
         <a href={url(nav.booking.href)} class="btn btn-primary btn-sm">
           <Icon name="calendar" size={17} />
@@ -83,7 +87,18 @@ const MENU_MAX = 4;
         </a>
       </div>
 
-      <button type="button" class="cart-btn hdr-fg relative ml-auto inline-flex size-11 items-center justify-center rounded-full xl:ml-0" aria-label="Abrir carrito" data-cart-open>
+      {
+        accountsOn && (
+          <a href={url('cuenta/')} class="acct-btn hdr-fg ml-auto inline-flex h-11 items-center gap-2 rounded-full px-2 xl:ml-0" aria-label="Iniciar sesión o registrarse" data-account-link>
+            <Icon name="user" size={22} />
+            <span class="acct-txt hidden min-[375px]:grid">
+              <span class="acct-l1" data-account-l1>Iniciar sesión</span>
+              <span class="acct-l2" data-account-l2>o registrarse</span>
+            </span>
+          </a>
+        )
+      }
+      <button type="button" class:list={['cart-btn hdr-fg relative inline-flex size-11 items-center justify-center rounded-full xl:ml-0', !accountsOn && 'ml-auto']} aria-label="Abrir carrito" data-cart-open>
         <Icon name="shopping-basket" size={23} />
         <span class="absolute -right-0.5 -top-0.5 grid min-w-5 place-items-center rounded-full bg-signal px-1 font-mono text-[0.65rem] font-bold leading-5 text-ink" data-cart-count hidden>0</span>
       </button>
@@ -192,6 +207,14 @@ const MENU_MAX = 4;
   <!-- Menú móvil -->
   <div id="mobile-menu" class="drawer xl:hidden" hidden data-drawer>
     <nav aria-label="Principal móvil" class="container-x flex h-full flex-col gap-2 overflow-y-auto pb-6 pt-2">
+      {
+        accountsOn && (
+          <a href={url('cuenta/')} class="drawer-link inline-flex items-center gap-2" data-account-drawer>
+            <Icon name="user" size={20} class="text-signal" />
+            <span data-account-drawer-txt>Iniciar sesión o registrarse</span>
+          </a>
+        )
+      }
       <a href={url(nav.home.href)} class="drawer-link" aria-current={isHome ? 'page' : undefined}>{nav.home.label}</a>
       <a href={url(nav.store.href)} class="drawer-link inline-flex items-center gap-2 text-signal">{nav.store.label}</a>
       <details class="drawer-group">
@@ -227,6 +250,44 @@ const MENU_MAX = 4;
 </header>
 
 <style>
+  /* Cuenta: texto en dos líneas («Iniciar sesión / o registrarse»), y con la sesión iniciada el icono en naranja. */
+  .acct-txt {
+    max-width: 8.5rem;
+    line-height: 1.15;
+    text-align: left;
+  }
+  .acct-l1 {
+    overflow: hidden;
+    font-size: 0.7rem;
+    font-weight: 500;
+    opacity: 0.75;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .acct-l2 {
+    font-size: 0.84rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  /* En el móvil, más pequeño para que quepa junto al logo. */
+  @media (max-width: 639px) {
+    .acct-btn {
+      gap: 0.3rem;
+      padding-inline: 0.25rem;
+    }
+    .acct-l1 {
+      font-size: 0.6rem;
+    }
+    .acct-l2 {
+      font-size: 0.7rem;
+    }
+  }
+  .acct-btn.is-in :global(svg) {
+    color: var(--color-signal);
+  }
+  .acct-btn:hover {
+    color: var(--color-signal);
+  }
   .hdr {
     --hdr-fg: #fff;
     --hdr-muted: rgb(255 255 255 / 0.75);
@@ -367,6 +428,31 @@ const MENU_MAX = 4;
     font-weight: 500;
   }
 </style>
+
+<script>
+  // Botón de cuenta: con la sesión iniciada saluda con el nombre (lo guarda src/scripts/account.ts al entrar).
+  const syncAccount = () => {
+    const link = document.querySelector<HTMLElement>('[data-account-link]');
+    if (!link) return;
+    let nombre = '';
+    try {
+      nombre = JSON.parse(localStorage.getItem('fairino-cuenta') || 'null')?.nombre ?? '';
+    } catch {
+      /* sin almacenamiento */
+    }
+    const first = nombre.split(/[\s@]/)[0];
+    // Sin sesión: «Iniciar sesión / o registrarse»; con sesión: «Hola, Laura / Mi cuenta».
+    link.querySelector('[data-account-l1]')!.textContent = first ? `Hola, ${first}` : 'Iniciar sesión';
+    link.querySelector('[data-account-l2]')!.textContent = first ? 'Mi cuenta' : 'o registrarse';
+    link.setAttribute('aria-label', first ? `Mi cuenta (${nombre})` : 'Iniciar sesión o registrarse');
+    link.classList.toggle('is-in', Boolean(first));
+    const drawer = document.querySelector('[data-account-drawer-txt]');
+    if (drawer) drawer.textContent = first ? `Mi cuenta (${first})` : 'Iniciar sesión o registrarse';
+  };
+  syncAccount();
+  window.addEventListener('account:change', syncAccount);
+  window.addEventListener('storage', (e) => e.key === 'fairino-cuenta' && syncAccount());
+</script>
 
 <script>
   const header = document.getElementById('site-header');

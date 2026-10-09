@@ -24,6 +24,7 @@ const l = site.legal;
     <tbody>
       <tr><td>Contacto</td><td>Nombre, apellidos, correo, teléfono, empresa, población y mensaje</td><td>Responder a tu consulta.</td></tr>
       <tr><td>Configurador y presupuesto</td><td>Datos de contacto y configuración elegida</td><td>Prepararte un presupuesto.</td></tr>
+      <tr><td>Cuenta de cliente</td><td>Nombre y apellidos, empresa, CIF/NIF, teléfono, correo, contraseña (la guarda cifrada nuestro proveedor; nosotros no la vemos), dirección de entrega y pedidos</td><td>Crear y gestionar tu cuenta, tramitar tus compras y que puedas ver tus pedidos.</td></tr>
       <tr><td>Pedido de la tienda</td><td>Datos de facturación y entrega, y productos</td><td>Gestionar el pedido, la entrega y la facturación.</td></tr>
       <tr><td>Reservar cita</td><td>Datos de contacto, fecha y franja preferidas</td><td>Organizar la visita o la videollamada.</td></tr>
       <tr><td>Validar garantía</td><td>Datos del titular, CIF, número de serie, fecha de compra y vendedor</td><td>Registrar y gestionar la garantía del cobot.</td></tr>
@@ -41,7 +42,7 @@ const l = site.legal;
   <h2>3. Base legal</h2>
   <ul>
     <li><b>Consentimiento</b>: consultas, citas, boletín y conversaciones con el asistente virtual (que inicias tú). Puedes retirarlo cuando quieras.</li>
-    <li><b>Medidas precontractuales y contrato</b>: presupuestos, pedidos y garantía.</li>
+    <li><b>Medidas precontractuales y contrato</b>: cuenta de cliente, presupuestos, pedidos y garantía.</li>
     <li><b>Obligación legal</b>: conservación de facturas y documentación contable y fiscal.</li>
   </ul>
 
@@ -49,6 +50,8 @@ const l = site.legal;
   <p>
     Mientras dure la relación o el tiempo necesario para atender tu solicitud y, después, durante los plazos legales de prescripción.
     Los datos de facturación se conservan el tiempo que exige la normativa fiscal y mercantil. Los del boletín, hasta que te des de baja.
+    Los de tu cuenta de cliente, mientras la tengas abierta: puedes borrarla tú mismo desde «Mi cuenta» (los pedidos ya hechos se
+    conservan el tiempo que exige la ley).
     Las conversaciones con el asistente virtual, <span class="todo">[DATO: plazo de conservación configurado en ElevenLabs]</span>.
   </p>
 
@@ -60,6 +63,7 @@ const l = site.legal;
     <li>correo electrónico <span class="todo">[DATO: proveedor de correo]</span>;</li>
     <li>asistente virtual de voz y chat: ElevenLabs, que procesa la voz y el texto de la conversación para generar las respuestas.</li>
     <li>estadísticas de visitas: Google Analytics (Google Ireland Ltd.), solo si aceptas las cookies de análisis.</li>
+    <li>cuentas de cliente: Firebase (Google Ireland Ltd.), que guarda tu cuenta de forma segura (la contraseña, cifrada), tus datos de cliente y tus pedidos.</li>
   </ul>
   <p>
     Si alguno de ellos trata datos fuera del Espacio Económico Europeo, lo hace con las garantías del RGPD (decisión de adecuación o

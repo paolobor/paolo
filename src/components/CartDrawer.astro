@@ -6,6 +6,8 @@ import { url } from '../lib/url';
 
 const storeData = await getStoreData();
 const vatNote = site.store.vatIncluded === true ? 'IVA incluido' : site.store.vatIncluded === false ? 'IVA no incluido' : '';
+// Cuentas de cliente: aviso de que al tramitar se pedirá iniciar sesión o crear cuenta.
+const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIREBASE_EMULATOR === '1';
 ---
 
 <script type="application/json" id="store-data" set:html={JSON.stringify(storeData)} />
@@ -47,6 +49,7 @@ const vatNote = site.store.vatIncluded === true ? 'IVA incluido' : site.store.va
       Tramitar pedido
       <Icon name="arrow-right" size={18} />
     </a>
+    {accountsOn && <p class="text-center text-xs text-muted" data-cart-account-note>Para comprar te pediremos iniciar sesión o registrarte.</p>}
     <button type="button" class="btn btn-ghost w-full" data-cart-close>
       <Icon name="arrow-left" size={18} />
       Seguir comprando
@@ -180,6 +183,18 @@ const vatNote = site.store.vatIncluded === true ? 'IVA incluido' : site.store.va
     if (r.matches?.('[data-power-for]')) syncPower(r);
   });
   document.querySelectorAll<HTMLInputElement>('[data-power-for]:checked').forEach(syncPower);
+  // Con la sesión iniciada ya no hace falta avisar de que se pedirá cuenta.
+  const syncNote = () => {
+    const note = document.querySelector<HTMLElement>('[data-cart-account-note]');
+    if (!note) return;
+    try {
+      note.hidden = Boolean(localStorage.getItem('fairino-cuenta'));
+    } catch {
+      /* sin almacenamiento */
+    }
+  };
+  syncNote();
+  window.addEventListener('account:change', syncNote);
   window.addEventListener('cart:change', render);
   window.addEventListener('storage', (e) => e.key === 'fairino-cart' && render());
   if (readCart().length >= 0) render();

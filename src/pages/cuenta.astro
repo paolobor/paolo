@@ -1,0 +1,213 @@
+---
+// Mi cuenta: iniciar sesión o crear cuenta y, con la sesión iniciada, los datos del cliente y sus pedidos
+// (src/scripts/account.ts). Mientras no haya Firebase configurado (site.accounts) se explica que llega pronto.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/ui/PageHero.astro';
+import Icon from '../components/ui/Icon.astro';
+import AccountForms from '../components/AccountForms.astro';
+import { site } from '../data/site';
+import { url } from '../lib/url';
+
+const on = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIREBASE_EMULATOR === '1';
+---
+
+<BaseLayout title="Mi cuenta" description="Inicia sesión o regístrate como cliente de FAIRINO España para comprar en la tienda y ver tus pedidos." noindex>
+  <PageHero crumbs={[{ label: 'Mi cuenta' }]} eyebrow="Clientes" title="Mi cuenta" compact />
+
+  <section class="section">
+    <div class="container-x">
+      {
+        on ? (
+          <>
+            <p class="flex items-center gap-2 text-muted" data-acc-loading>
+              <Icon name="refresh-cw" size={17} class="animate-spin" />
+              Comprobando tu sesión…
+            </p>
+
+            <div class="card mx-auto max-w-xl p-6 md:p-8" data-acc-out hidden>
+              <AccountForms title="Inicia sesión o regístrate" lead="Con tu cuenta compras en la tienda, guardamos tus datos de facturación y ves tus pedidos." />
+            </div>
+
+            <div class="grid items-start gap-8 lg:grid-cols-[1fr_1.1fr]" data-acc-in hidden>
+              <div class="card grid gap-6 p-6 md:p-8">
+                <div class="grid gap-1">
+                  <p class="eyebrow">Hola</p>
+                  <h2 class="text-3xl font-extrabold" style="font-stretch:118%" data-acc-hello />
+                  <p class="font-mono text-sm text-mist" data-acc-email />
+                </div>
+                <p class="acc-note" data-acc-verify hidden>
+                  Confirma tu correo con el enlace que te hemos enviado.
+                  <button type="button" class="font-semibold text-brand underline" data-acc-resend>Volver a enviarlo</button>
+                </p>
+
+                <form class="grid gap-4" data-acc-profile novalidate>
+                  <h3 class="font-display text-lg font-bold" style="font-stretch:112%">Mis datos</h3>
+                  <div class="form-grid">
+                    <div class="form-field sm:col-span-2"><label for="p-nombre">Nombre y apellidos *</label><input id="p-nombre" name="nombre" required autocomplete="name" /></div>
+                    <div class="form-field"><label for="p-empresa">Empresa *</label><input id="p-empresa" name="empresa" required autocomplete="organization" /></div>
+                    <div class="form-field"><label for="p-cif">CIF / NIF *</label><input id="p-cif" name="cif" required /></div>
+                    <div class="form-field"><label for="p-tel">Teléfono *</label><input id="p-tel" name="telefono" type="tel" required autocomplete="tel" /></div>
+                    <div class="form-field"><label for="p-cp">Código postal</label><input id="p-cp" name="codigo_postal" autocomplete="postal-code" /></div>
+                    <div class="form-field sm:col-span-2"><label for="p-dir">Dirección de entrega</label><input id="p-dir" name="direccion" autocomplete="street-address" /></div>
+                    <div class="form-field"><label for="p-pob">Población</label><input id="p-pob" name="poblacion" autocomplete="address-level2" /></div>
+                    <div class="form-field"><label for="p-prov">Provincia</label><input id="p-prov" name="provincia" autocomplete="address-level1" /></div>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-3">
+                    <button type="submit" class="btn btn-primary btn-sm">Guardar mis datos</button>
+                    <p class="text-sm" aria-live="polite" data-acc-saved></p>
+                  </div>
+                </form>
+
+                <div class="flex flex-wrap gap-3 border-t border-line pt-5">
+                  <a href={url('tienda/')} class="btn btn-secondary btn-sm">
+                    <Icon name="shopping-basket" size={17} />
+                    Ir a la tienda
+                  </a>
+                  <button type="button" class="btn btn-ghost btn-sm" data-acc-logout>
+                    <Icon name="log-out" size={17} />
+                    Cerrar sesión
+                  </button>
+                </div>
+
+                <details class="text-sm text-muted">
+                  <summary class="cursor-pointer font-semibold">Borrar mi cuenta</summary>
+                  <div class="mt-3 grid gap-3">
+                    <p>Se borran tu cuenta y tus datos. Los pedidos ya hechos se conservan el tiempo que exige la ley para la facturación.</p>
+                    <button type="button" class="btn btn-ghost btn-sm justify-self-start text-[#ffb4a3]" data-acc-delete>Borrar mi cuenta para siempre</button>
+                    <p aria-live="polite" data-acc-delete-msg></p>
+                  </div>
+                </details>
+              </div>
+
+              <div class="card grid gap-4 p-6 md:p-8" id="pedidos">
+                <h2 class="font-display text-2xl font-bold" style="font-stretch:112%">Mis pedidos</h2>
+                <ul class="grid gap-3" data-acc-orders />
+                <p class="text-muted" data-acc-noorders hidden>
+                  Aún no tienes pedidos. <a href={url('tienda/')} class="font-semibold text-brand underline">Ir a la tienda</a>
+                </p>
+              </div>
+            </div>
+          </>
+        ) : (
+          <div class="card mx-auto grid max-w-xl gap-3 p-6 md:p-8">
+            <h2 class="text-2xl font-bold" style="font-stretch:112%">Las cuentas de cliente llegan muy pronto</h2>
+            <p class="text-muted">Mientras tanto, puedes comprar desde la tienda o escribirnos y te ayudamos con tu pedido.</p>
+            <a href={url('tienda/')} class="btn btn-primary justify-self-start">Ir a la tienda</a>
+          </div>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .acc-note {
+    border-radius: 12px;
+    border: 1px solid rgb(255 122 26 / 0.35);
+    background: rgb(255 122 26 / 0.08);
+    padding: 0.7rem 0.9rem;
+    font-size: 0.88rem;
+  }
+</style>
+
+<script>
+  import { deleteAccount, enabled, errorText, getProfile, logout, myOrders, onUser, resendVerification, saveProfile, type User } from '../scripts/account';
+
+  if (enabled) {
+    const $ = <T extends HTMLElement = HTMLElement>(k: string) => document.querySelector<T>(`[data-acc-${k}]`)!;
+    const form = $<HTMLFormElement>('profile');
+    const fmt = new Intl.NumberFormat('es-ES', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 });
+    let user: User | null = null;
+
+    const fill = async (u: User) => {
+      $('hello').textContent = u.displayName || 'Cliente';
+      $('email').textContent = u.email ?? '';
+      $('verify').hidden = u.emailVerified;
+      try {
+        const p = await getProfile(u);
+        if (p) for (const [k, v] of Object.entries(p)) {
+          const input = form.elements.namedItem(k) as HTMLInputElement | null;
+          if (input && typeof v === 'string') input.value = v;
+        }
+      } catch {
+        /* sin ficha todavía */
+      }
+      const list = $('orders');
+      list.innerHTML = '';
+      try {
+        const orders = await myOrders(u);
+        $('noorders').hidden = orders.length > 0;
+        for (const o of orders) {
+          const li = document.createElement('li');
+          li.className = 'grid gap-2 rounded-xl border border-line bg-surface-2 p-4';
+          const head = document.createElement('div');
+          head.className = 'flex flex-wrap items-center justify-between gap-2';
+          const date = document.createElement('span');
+          date.className = 'font-mono text-xs text-mist';
+          date.textContent = o.fecha ? o.fecha.toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' }) : 'Ahora mismo';
+          const state = document.createElement('span');
+          state.className = 'rounded-full border border-ok/40 bg-ok/10 px-2.5 py-0.5 font-mono text-[0.65rem] uppercase tracking-wide text-ok';
+          state.textContent = o.estado;
+          head.append(date, state);
+          const lines = document.createElement('ul');
+          lines.className = 'grid gap-1 text-sm';
+          for (const l of o.lineas) {
+            const x = document.createElement('li');
+            x.textContent = `${l.cantidad} × ${l.nombre}${l.version ? ` · ${l.version}` : ''}`;
+            lines.append(x);
+          }
+          const total = document.createElement('p');
+          total.className = 'font-mono text-sm text-white';
+          total.textContent = `Total: ${fmt.format(o.total)}${o.pendiente ? ' + artículos a consultar' : ''}`;
+          li.append(head, lines, total);
+          list.append(li);
+        }
+      } catch {
+        $('noorders').hidden = false;
+      }
+    };
+
+    onUser((u) => {
+      user = u;
+      $('loading').hidden = true;
+      $('out').hidden = Boolean(u);
+      $('in').hidden = !u;
+      if (u) fill(u);
+    });
+
+    // Recién registrado: la ficha se acaba de guardar, se vuelve a leer.
+    document.addEventListener('account:registered', () => user && fill(user));
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!user || !form.reportValidity()) return;
+      const data = Object.fromEntries([...new FormData(form).entries()].map(([k, v]) => [k, String(v).trim()]));
+      const msg = $('saved');
+      try {
+        await saveProfile(user, data);
+        $('hello').textContent = data.nombre;
+        msg.textContent = '✓ Guardado';
+        msg.className = 'text-sm text-ok';
+      } catch (err) {
+        msg.textContent = errorText(err);
+        msg.className = 'text-sm text-[#ffb4a3]';
+      }
+    });
+
+    $('resend').addEventListener('click', async () => {
+      if (!user) return;
+      await resendVerification(user).catch(() => {});
+      $('verify').textContent = 'Te lo hemos vuelto a enviar. Mira también en la carpeta de spam.';
+    });
+    $('logout').addEventListener('click', () => logout());
+    $('delete').addEventListener('click', async () => {
+      if (!user || !confirm('¿Seguro que quieres borrar tu cuenta? No se puede deshacer.')) return;
+      try {
+        await deleteAccount(user);
+        $('delete-msg').textContent = 'Tu cuenta se ha borrado.';
+      } catch (err) {
+        $('delete-msg').textContent = errorText(err);
+      }
+    });
+  }
+</script>

@@ -11,3 +11,8 @@ __pycache__/
 # Caché del generador del catálogo (tools/catalogo)
 tools/catalogo/.cache/
 tools/triptico/.cache/
+
+# Registros de los emuladores de Firebase (pruebas locales)
+firestore-debug.log
+firebase-debug.log
+ui-debug.log

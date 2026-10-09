@@ -49,6 +49,9 @@ import { url } from '../lib/url';
 <script>
   const KEY = 'fairino-consent';
   const VERSION = 1;
+  // La elección vale 6 meses: después el aviso vuelve a salir y no se carga nada hasta que se elija de nuevo
+  // (la guía de la AEPD pide renovarlo como mucho cada 24 meses).
+  const MAX_AGE = 1000 * 60 * 60 * 24 * 183;
   type Consent = { v: number; date: string; analytics: boolean; marketing: boolean };
 
   const banner = document.getElementById('cookie-banner');
@@ -57,7 +60,7 @@ import { url } from '../lib/url';
   const read = (): Consent | null => {
     try {
       const c = JSON.parse(localStorage.getItem(KEY) || 'null');
-      return c && c.v === VERSION ? c : null;
+      return c && c.v === VERSION && Date.now() - Date.parse(c.date) < MAX_AGE ? c : null;
     } catch {
       return null;
     }

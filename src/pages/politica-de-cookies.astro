@@ -20,7 +20,9 @@ import { url } from '../lib/url';
       <tr><th>Nombre</th><th>Tipo</th><th>Para qué</th><th>Duración</th></tr>
     </thead>
     <tbody>
-      <tr><td><code>fairino-consent</code></td><td>Técnica, propia (almacenamiento local)</td><td>Recordar tu elección sobre cookies.</td><td>Hasta que la borres o cambies tu elección</td></tr>
+      <tr><td><code>fairino-consent</code></td><td>Técnica, propia (almacenamiento local)</td><td>Recordar tu elección sobre cookies.</td><td>6 meses; después te lo volvemos a preguntar</td></tr>
+      <tr><td><code>firebaseLocalStorageDb</code></td><td>Técnica, de Firebase (Google), almacenamiento local</td><td>Mantener tu sesión iniciada si tienes cuenta de cliente.</td><td>Hasta que cierres sesión</td></tr>
+      <tr><td><code>fairino-cuenta</code></td><td>Técnica, propia (almacenamiento local)</td><td>Saludarte por tu nombre en la cabecera cuando tienes la sesión iniciada.</td><td>Hasta que cierres sesión</td></tr>
       <tr><td><code>fairino-cart</code></td><td>Técnica, propia (almacenamiento local)</td><td>Guardar los productos del carrito de la tienda.</td><td>Hasta que vacíes el carrito o lo borres</td></tr>
       <tr><td><code>fairino-config</code></td><td>Técnica, propia (almacenamiento local)</td><td>Recordar la célula que has preparado en el configurador.</td><td>Hasta que la borres</td></tr>
       <tr><td><code>_ga</code></td><td>Análisis, de terceros (Google Analytics); solo con tu consentimiento</td><td>Distinguir visitas para contar usuarios de forma estadística.</td><td>2 años</td></tr>

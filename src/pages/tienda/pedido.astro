@@ -2,7 +2,13 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import PageHero from '../../components/ui/PageHero.astro';
 import Icon from '../../components/ui/Icon.astro';
+import AccountForms from '../../components/AccountForms.astro';
+import { site } from '../../data/site';
 import { url } from '../../lib/url';
+
+// Como en Amazon: para comprar hay que iniciar sesión o crear una cuenta (src/scripts/account.ts). Sin Firebase
+// configurado (site.accounts) el pedido funciona como antes, sin cuenta.
+const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIREBASE_EMULATOR === '1';
 ---
 
 <BaseLayout title="Tramitar pedido" description="Revisa tu carrito y envía tu pedido a FAIRINO España." noindex>
@@ -10,7 +16,29 @@ import { url } from '../../lib/url';
 
   <section class="section">
     <div class="container-x grid items-start gap-10 lg:grid-cols-[1fr_400px]">
-      <form class="card grid gap-6 p-6 md:p-8" data-form="order" data-order-form novalidate>
+      <div class="grid content-start gap-6">
+      {
+        accountsOn && (
+          <>
+            <p class="flex items-center gap-2 text-muted" data-order-checking>
+              <Icon name="refresh-cw" size={17} class="animate-spin" />
+              Comprobando tu sesión…
+            </p>
+            <div class="card p-6 md:p-8" data-order-gate hidden>
+              <AccountForms
+                title="Para comprar, inicia sesión o regístrate"
+                lead="Así guardamos tus datos de facturación y entrega para la próxima vez y puedes ver tus pedidos cuando quieras. Es un minuto."
+              />
+            </div>
+            <p class="buyer" data-order-buyer hidden>
+              <Icon name="user" size={18} class="shrink-0 text-signal" />
+              <span>Compras como <b class="text-white" data-order-who /></span>
+              <button type="button" class="ml-auto font-semibold text-brand underline" data-order-logout>No soy yo</button>
+            </p>
+          </>
+        )
+      }
+      <form class="card grid gap-6 p-6 md:p-8" data-form="order" data-order-form novalidate hidden={accountsOn}>
         <h2 class="text-2xl font-bold" style="font-stretch:112%">Datos de facturación y entrega</h2>
         <div class="form-grid">
           <div class="form-field"><label for="o-empresa">Empresa *</label><input id="o-empresa" name="empresa" required autocomplete="organization" /></div>
@@ -31,6 +59,7 @@ import { url } from '../../lib/url';
         <button type="submit" class="btn btn-primary justify-self-start"><Icon name="send" size={18} />Enviar pedido</button>
         <p class="text-sm text-muted" data-form-status aria-live="polite">Recibirás la confirmación del pedido con las condiciones de pago y entrega.</p>
       </form>
+      </div>
 
       <aside class="card grid gap-4 p-6 lg:sticky lg:top-24" aria-labelledby="sum-title">
         <h2 id="sum-title" class="text-xl font-bold" style="font-stretch:112%">Resumen</h2>
@@ -56,6 +85,7 @@ import { url } from '../../lib/url';
 <script>
   import { cartSummary, cartText, clearCart } from '../../scripts/cart';
   import { submitForm } from '../../scripts/forms';
+  import { getConfig } from '../../scripts/config';
 
   const lines = document.querySelector<HTMLUListElement>('[data-order-lines]');
   const render = () => {
@@ -89,15 +119,103 @@ import { url } from '../../lib/url';
   render();
 
   const form = document.querySelector<HTMLFormElement>('[data-order-form]');
+
+  // Cuentas de cliente: Firebase solo se descarga si están activadas.
+  type Account = typeof import('../../scripts/account');
+  let acc: Account | null = null;
+  let user: import('../../scripts/account').User | null = null;
+  const fields = ['empresa', 'cif', 'nombre', 'telefono', 'codigo_postal', 'direccion', 'poblacion', 'provincia'] as const;
+  // Rellena el formulario con la ficha del cliente, sin pisar lo que ya haya escrito.
+  const prefill = (p: object | null, email?: string | null) => {
+    if (!form) return;
+    for (const k of fields) {
+      const input = form.elements.namedItem(k) as HTMLInputElement | null;
+      const v = (p as Record<string, unknown> | null)?.[k];
+      if (input && !input.value && typeof v === 'string' && v) input.value = v;
+    }
+    const mail = form.elements.namedItem('email') as HTMLInputElement | null;
+    if (mail && email) mail.value = email;
+  };
+
+  if (getConfig().accounts?.firebase && form) {
+    import('../../scripts/account').then((mod) => {
+      acc = mod;
+      const $ = (k: string) => document.querySelector<HTMLElement>(`[data-order-${k}]`)!;
+      mod.onUser(async (u) => {
+        user = u;
+        $('checking').hidden = true;
+        $('gate').hidden = Boolean(u);
+        $('buyer').hidden = !u;
+        form.hidden = !u;
+        if (!u) return;
+        $('who').textContent = u.displayName ? `${u.displayName} (${u.email})` : (u.email ?? '');
+        prefill(await mod.getProfile(u).catch(() => null), u.email);
+      });
+      // Recién registrado: la ficha llega con el aviso del formulario de alta.
+      document.addEventListener('account:registered', (e) => {
+        const p = (e as CustomEvent<Record<string, string>>).detail;
+        prefill(p, user?.email);
+        $('who').textContent = `${p.nombre} (${p.email})`;
+      });
+      $('logout').addEventListener('click', () => mod.logout());
+    });
+  }
+
   form?.addEventListener('submit', async (e) => {
     e.preventDefault();
     if (!form.reportValidity()) return;
-    if (cartSummary().rows.length === 0) {
-      const st = form.querySelector('[data-form-status]');
+    const st = form.querySelector<HTMLElement>('[data-form-status]');
+    const s = cartSummary();
+    if (s.rows.length === 0) {
       if (st) st.textContent = 'Añade al menos un producto al carrito.';
       return;
     }
-    const result = await submitForm(form, { pedido: cartText() });
-    if (result === 'sent') clearCart();
+    const extra: Record<string, string> = { pedido: cartText() };
+    if (acc && user) {
+      // Se guarda en la cuenta (Mis pedidos) con la dirección para la próxima vez. Si falla, llega igual por correo.
+      const data = Object.fromEntries([...new FormData(form).entries()].map(([k, v]) => [k, String(v).trim()]));
+      const entrega = Object.fromEntries(fields.map((k) => [k, data[k] ?? '']));
+      extra.cuenta = `${user.email} (cliente registrado)`;
+      try {
+        extra.referencia = await acc.saveOrder(user, {
+          lineas: s.rows.map((r) => ({ id: r.id, nombre: r.item.name, version: r.version, incluye: r.includes, cantidad: r.q, precio: r.unit })),
+          subtotal: s.subtotal,
+          envio: s.shipping,
+          total: s.total,
+          pendiente: s.unpriced,
+          entrega,
+        });
+        acc.saveProfile(user, entrega).catch(() => {});
+      } catch {
+        /* sin guardar en la cuenta: el correo con el pedido sale igual */
+      }
+    }
+    const result = await submitForm(form, extra);
+    if (result === 'sent') {
+      clearCart();
+      if (user && st) {
+        st.innerHTML = '';
+        const a = document.createElement('a');
+        a.href = `${getConfig().base.replace(/\/$/, '')}/cuenta/#pedidos`;
+        a.className = 'font-semibold text-brand underline';
+        a.textContent = 'Ver mis pedidos';
+        st.append('✓ Pedido recibido. Te enviaremos la confirmación con las condiciones de pago y entrega. ', a);
+        st.className = 'text-sm text-ok';
+      }
+    }
   });
 </script>
+
+<style>
+  .buyer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    border-radius: 14px;
+    border: 1px solid rgb(126 226 164 / 0.35);
+    background: rgb(126 226 164 / 0.07);
+    padding: 0.8rem 1rem;
+    font-size: 0.92rem;
+  }
+</style>

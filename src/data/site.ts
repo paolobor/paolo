@@ -62,6 +62,14 @@ export const site = {
     fallbackEmail: 'po@fairino.es',
   },
 
+  // Cuentas de cliente (Firebase Authentication + Cloud Firestore, de Google; plan gratuito Spark). Para comprar hay que
+  // iniciar sesión o crear una cuenta, como en Amazon. Mientras firebase sea null no se pide cuenta y el pedido
+  // funciona como antes. Dónde sale: consola de Firebase → Configuración del proyecto → Tus apps → app web
+  // («firebaseConfig»). Son datos públicos: la seguridad la ponen las reglas de tools/firebase/firestore.rules.
+  accounts: {
+    firebase: null as null | { apiKey: string; authDomain: string; projectId: string; appId: string },
+  },
+
   // Asistente virtual (ElevenLabs Agents): voz y chat de texto en todas las páginas. Mientras agentId sea null no se
   // carga nada. En el panel del agente: idioma español, entrada de texto en Widget → Interface y el dominio de la web en
   // Security → Allowlist. La posición (abajo a la izquierda) y los textos del widget van en AssistantWidget.astro.

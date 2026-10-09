@@ -1,6 +1,22 @@
 // Envío de formularios sin servidor (Web3Forms). Si aún no hay clave configurada, se ofrece correo y WhatsApp.
 import { getConfig, whatsappUrl } from './config';
 
+// Envía datos al correo de FAIRINO España sin formulario en pantalla (p. ej. el aviso de cada cliente nuevo).
+export async function sendToInbox(data: Record<string, string>): Promise<boolean> {
+  const cfg = getConfig();
+  if (!cfg.forms.accessKey) return false;
+  try {
+    const res = await fetch(cfg.forms.endpoint, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ access_key: cfg.forms.accessKey, ...data }),
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 export async function submitForm(form: HTMLFormElement, extra: Record<string, string> = {}): Promise<'sent' | 'fallback' | 'error'> {
   const cfg = getConfig();
   const status = form.querySelector<HTMLElement>('[data-form-status]');

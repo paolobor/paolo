@@ -4,6 +4,8 @@ export interface ClientConfig {
   showPrices: boolean;
   currency: string;
   base: string;
+  // Cuentas de cliente (src/scripts/account.ts). emulator: solo en pruebas locales con los emuladores de Firebase.
+  accounts: { firebase: { apiKey: string; authDomain: string; projectId: string; appId: string } | null; emulator: boolean };
 }
 
 export function getConfig(): ClientConfig {

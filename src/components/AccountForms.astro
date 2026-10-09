@@ -1,0 +1,281 @@
+---
+// «Iniciar sesión» y «Registrarse» (src/scripts/account.ts), en dos pestañas. Se usa en /cuenta/ y al tramitar el
+// pedido. Al entrar o registrarse avisa con los eventos «account:signed-in» y «account:registered» (con la ficha).
+import Icon from './ui/Icon.astro';
+import { url } from '../lib/url';
+
+interface Props {
+  title: string;
+  lead: string;
+  // Pestaña con la que se abre.
+  start?: 'login' | 'register';
+}
+const { title, lead, start = 'login' } = Astro.props;
+---
+
+<div class="acc grid gap-6" data-acc-forms>
+  <div class="grid gap-2">
+    <h2 class="text-2xl font-bold" style="font-stretch:112%">{title}</h2>
+    <p class="text-muted">{lead}</p>
+  </div>
+
+  <div class="acc-tabs" role="tablist" aria-label="Iniciar sesión o registrarse">
+    <button type="button" role="tab" class="acc-tab" aria-selected={start === 'login' ? 'true' : 'false'} data-acc-tab="login">
+      <Icon name="user" size={17} />
+      Iniciar sesión
+    </button>
+    <button type="button" role="tab" class="acc-tab" aria-selected={start === 'register' ? 'true' : 'false'} data-acc-tab="register">
+      <Icon name="plus" size={17} />
+      Registrarse
+    </button>
+  </div>
+
+  <form class="grid gap-4" data-acc-panel="login" hidden={start !== 'login'} novalidate>
+    <div class="form-field">
+      <label for="acc-l-email">Correo electrónico</label>
+      <input id="acc-l-email" name="email" type="email" required autocomplete="email" />
+    </div>
+    <div class="form-field">
+      <label for="acc-l-pass">Contraseña</label>
+      <div class="acc-pass">
+        <input id="acc-l-pass" name="password" type="password" required autocomplete="current-password" />
+        <button type="button" class="acc-eye" aria-label="Mostrar la contraseña" data-acc-eye>
+          <Icon name="eye" size={18} />
+        </button>
+      </div>
+    </div>
+    <button type="submit" class="btn btn-primary w-full">
+      <Icon name="lock" size={17} />
+      Iniciar sesión
+    </button>
+    <button type="button" class="acc-link justify-self-start" data-acc-forgot>¿Has olvidado tu contraseña?</button>
+    <p class="acc-msg" aria-live="polite" data-acc-msg></p>
+    <p class="border-t border-line pt-4 text-sm text-muted">
+      ¿Es tu primera compra? <button type="button" class="acc-link" data-acc-go="register">Regístrate en un minuto</button>
+    </p>
+  </form>
+
+  <form class="grid gap-4" data-acc-panel="register" hidden={start !== 'register'} novalidate>
+    <div class="form-grid">
+      <div class="form-field sm:col-span-2">
+        <label for="acc-r-nombre">Nombre y apellidos *</label>
+        <input id="acc-r-nombre" name="nombre" required autocomplete="name" />
+      </div>
+      <div class="form-field">
+        <label for="acc-r-empresa">Empresa *</label>
+        <input id="acc-r-empresa" name="empresa" required autocomplete="organization" />
+      </div>
+      <div class="form-field">
+        <label for="acc-r-cif">CIF / NIF *</label>
+        <input id="acc-r-cif" name="cif" required />
+      </div>
+      <div class="form-field">
+        <label for="acc-r-tel">Teléfono *</label>
+        <input id="acc-r-tel" name="telefono" type="tel" required autocomplete="tel" />
+      </div>
+      <div class="form-field">
+        <label for="acc-r-email">Correo electrónico *</label>
+        <input id="acc-r-email" name="email" type="email" required autocomplete="email" />
+      </div>
+      <div class="form-field sm:col-span-2">
+        <label for="acc-r-pass">Contraseña * <span class="font-normal text-muted">(mínimo 8 caracteres)</span></label>
+        <div class="acc-pass">
+          <input id="acc-r-pass" name="password" type="password" required minlength="8" autocomplete="new-password" />
+          <button type="button" class="acc-eye" aria-label="Mostrar la contraseña" data-acc-eye>
+            <Icon name="eye" size={18} />
+          </button>
+        </div>
+      </div>
+    </div>
+    <label class="form-check">
+      <input type="checkbox" name="privacidad" required />
+      <span>He leído y acepto la <a href={url('politica-de-privacidad/')} class="text-brand underline">política de privacidad</a>. *</span>
+    </label>
+    <button type="submit" class="btn btn-primary w-full">
+      <Icon name="user" size={17} />
+      Registrarme
+    </button>
+    <p class="acc-msg" aria-live="polite" data-acc-msg></p>
+    <p class="border-t border-line pt-4 text-sm text-muted">
+      ¿Ya tienes cuenta? <button type="button" class="acc-link" data-acc-go="login">Inicia sesión</button>
+    </p>
+  </form>
+</div>
+
+<style>
+  .acc-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.35rem;
+    border-radius: 999px;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface-2);
+    padding: 0.3rem;
+  }
+  .acc-tab {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    border-radius: 999px;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: var(--color-muted);
+    transition:
+      background-color 0.2s,
+      color 0.2s;
+  }
+  .acc-tab[aria-selected='true'] {
+    background: var(--color-signal);
+    color: var(--color-ink);
+  }
+  .acc-tab:not([aria-selected='true']):hover {
+    color: #fff;
+  }
+  .acc-pass {
+    position: relative;
+  }
+  .acc-pass input {
+    width: 100%;
+    padding-right: 3rem;
+  }
+  .acc-eye {
+    position: absolute;
+    top: 50%;
+    right: 0.5rem;
+    display: grid;
+    place-items: center;
+    width: 2.2rem;
+    height: 2.2rem;
+    border-radius: 999px;
+    color: var(--color-mist);
+    transform: translateY(-50%);
+  }
+  .acc-eye:hover {
+    color: var(--color-signal);
+  }
+  .acc-link {
+    font-weight: 600;
+    color: var(--color-brand);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .acc-msg:empty {
+    display: none;
+  }
+  .acc-msg {
+    border-radius: 12px;
+    border: 1px solid rgb(255 255 255 / 0.12);
+    background: rgb(255 255 255 / 0.04);
+    padding: 0.7rem 0.9rem;
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+  .acc-msg[data-tone='error'] {
+    border-color: rgb(224 64 31 / 0.5);
+    background: rgb(224 64 31 / 0.1);
+    color: #ffb4a3;
+  }
+  .acc-msg[data-tone='ok'] {
+    border-color: rgb(126 226 164 / 0.4);
+    background: rgb(126 226 164 / 0.1);
+    color: var(--color-ok);
+  }
+</style>
+
+<script>
+  import { errorText, login, register, resetPassword } from '../scripts/account';
+
+  document.querySelectorAll<HTMLElement>('[data-acc-forms]').forEach((root) => {
+    const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-acc-tab]')];
+    const panels = [...root.querySelectorAll<HTMLFormElement>('[data-acc-panel]')];
+    const show = (key: string) => {
+      tabs.forEach((t) => t.setAttribute('aria-selected', String(t.dataset.accTab === key)));
+      panels.forEach((p) => (p.hidden = p.dataset.accPanel !== key));
+      panels.find((p) => !p.hidden)?.querySelector<HTMLInputElement>('input')?.focus({ preventScroll: true });
+    };
+    tabs.forEach((t) => t.addEventListener('click', () => show(t.dataset.accTab!)));
+    root.querySelectorAll<HTMLElement>('[data-acc-go]').forEach((b) => b.addEventListener('click', () => show(b.dataset.accGo!)));
+
+    // Ver u ocultar la contraseña.
+    root.querySelectorAll<HTMLButtonElement>('[data-acc-eye]').forEach((b) =>
+      b.addEventListener('click', () => {
+        const input = b.parentElement!.querySelector('input')!;
+        const visible = input.type === 'text';
+        input.type = visible ? 'password' : 'text';
+        b.setAttribute('aria-label', visible ? 'Mostrar la contraseña' : 'Ocultar la contraseña');
+        b.classList.toggle('text-signal', !visible);
+      }),
+    );
+
+    const say = (form: HTMLFormElement, text: string, tone: 'ok' | 'error' | '' = '') => {
+      const m = form.querySelector<HTMLElement>('[data-acc-msg]')!;
+      m.textContent = text;
+      m.dataset.tone = tone;
+    };
+    const busy = (form: HTMLFormElement, on: boolean) => {
+      const b = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+      b.disabled = on;
+      b.classList.toggle('opacity-60', on);
+    };
+    const field = (form: HTMLFormElement, name: string) => (form.elements.namedItem(name) as HTMLInputElement).value.trim();
+
+    const loginForm = panels.find((p) => p.dataset.accPanel === 'login')!;
+    loginForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!loginForm.reportValidity()) return;
+      busy(loginForm, true);
+      say(loginForm, 'Entrando…');
+      try {
+        await login(field(loginForm, 'email'), (loginForm.elements.namedItem('password') as HTMLInputElement).value);
+        say(loginForm, '¡Hola de nuevo!', 'ok');
+        root.dispatchEvent(new CustomEvent('account:signed-in', { bubbles: true }));
+      } catch (err) {
+        say(loginForm, errorText(err), 'error');
+      } finally {
+        busy(loginForm, false);
+      }
+    });
+
+    root.querySelector<HTMLButtonElement>('[data-acc-forgot]')?.addEventListener('click', async () => {
+      const email = field(loginForm, 'email');
+      const input = loginForm.elements.namedItem('email') as HTMLInputElement;
+      if (!email || !input.checkValidity()) {
+        say(loginForm, 'Escribe arriba tu correo y vuelve a pulsar «¿Has olvidado tu contraseña?».', 'error');
+        input.focus();
+        return;
+      }
+      try {
+        await resetPassword(email);
+        say(loginForm, `Si hay una cuenta con ${email}, te llegará un correo para crear una contraseña nueva. Mira también en la carpeta de spam.`, 'ok');
+      } catch (err) {
+        say(loginForm, errorText(err), 'error');
+      }
+    });
+
+    const regForm = panels.find((p) => p.dataset.accPanel === 'register')!;
+    regForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (!regForm.reportValidity()) return;
+      busy(regForm, true);
+      say(regForm, 'Registrándote…');
+      const profile = {
+        nombre: field(regForm, 'nombre'),
+        empresa: field(regForm, 'empresa'),
+        cif: field(regForm, 'cif'),
+        telefono: field(regForm, 'telefono'),
+      };
+      const email = field(regForm, 'email');
+      try {
+        await register(email, (regForm.elements.namedItem('password') as HTMLInputElement).value, profile);
+        say(regForm, 'Ya estás registrado. Te hemos enviado un correo para confirmar tu dirección.', 'ok');
+        root.dispatchEvent(new CustomEvent('account:registered', { bubbles: true, detail: { ...profile, email } }));
+      } catch (err) {
+        say(regForm, errorText(err), 'error');
+      } finally {
+        busy(regForm, false);
+      }
+    });
+  });
+</script>
