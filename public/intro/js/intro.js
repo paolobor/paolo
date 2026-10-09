@@ -7,7 +7,7 @@
  *   Tramo 1  la fábrica desde el aire: quieta pero viva (parallax) y «Desliza o haz clic», con la rueda animada.
  *   Tramo 2  dentro de la nave, los 8 FAIRINO: HUD mínimo con contadores y el bloque «FAIRINO SPAIN» de siempre.
  *   Tramo 3  la cámara elige el cobot del final (el HUD lo fija con un marco), todo se oscurece y entra por el anillo
- *            naranja, que se convierte en portal: las bandas de cine se abren y aparece la web.
+ *            naranja: las bandas de cine se abren y aparece la web.
  * Sin tocar nada, la cámara sigue avanzando a cámara muy lenta; con un clic, avanza sola a velocidad normal.
  * Dentro de la web (html.fi-play) es una capa encima de la página; la página suelta (intro/index.html) salta a
  * data-target al terminar.
@@ -76,7 +76,6 @@
   var hud = $('[data-hud]');
   var hudIn = intro.querySelectorAll('[data-hud-in]');
   var lock = $('[data-lock]');
-  var portal = $('[data-portal]');
   var flare = $('[data-flare]');
   var skip = $('[data-skip]');
   var enterBtn = $('[data-enter]');
@@ -603,7 +602,7 @@
     if (pos >= LAST - 0.05 && ready >= LAST) finale();
   }
 
-  // ---------------------------------------------------------------- el anillo se convierte en portal
+  // ---------------------------------------------------------------- la cámara entra por el anillo
   function finale() {
     if (state === 'out' || state === 'done') return;
     state = 'out';
@@ -612,12 +611,11 @@
     showLock(false);
     logoOut();
     gsap.to([start, note], { opacity: 0, duration: 0.5 });
-    // El portal nace en el anillo del último fotograma y la cámara entra por él.
+    // La cámara entra por el anillo del último fotograma.
     var f = frameRect();
     var rx = f.x + RING.x * f.w;
     var ry = f.y + RING.y * f.h;
     var rr = RING.r * f.w;
-    gsap.set(portal, { left: rx, top: ry, width: rr * 2, height: rr * 2, margin: -rr + 'px 0 0 ' + -rr + 'px' });
     gsap.set(stage, { transformOrigin: rx + 'px ' + ry + 'px' });
     flare.style.setProperty('--fi-ry', ((ry / window.innerHeight) * 100).toFixed(1) + '%');
     whiteout.style.setProperty('--fi-rx', ((rx / window.innerWidth) * 100).toFixed(1) + '%');
@@ -625,14 +623,12 @@
     var far = Math.max(Math.hypot(rx, ry), Math.hypot(window.innerWidth - rx, window.innerHeight - ry), Math.hypot(rx, window.innerHeight - ry), Math.hypot(window.innerWidth - rx, ry));
     var S = (far / (rr * 0.55)) * 1.1;
     var tl = gsap.timeline();
-    tl.fromTo(portal, { opacity: 0, scale: 0.6 }, { opacity: 1, scale: 1.1, duration: 0.3, ease: 'power2.out' }, 0)
-      .call(function () {
+    tl.call(function () {
         hit('golpe');
         bed = '';
         mix();
       }, null, 0.25)
       .to(stage, { scale: S, duration: 0.85, ease: 'power3.in' }, 0.2)
-      .to(portal, { scale: S * 0.9, opacity: 0, duration: 0.85, ease: 'power3.in' }, 0.2)
       .fromTo(canvas, { filter: 'brightness(1)' }, { filter: 'brightness(1.6) saturate(1.3)', duration: 0.4, ease: 'power1.in' }, 0.25)
       .fromTo(flare, { opacity: 0, scaleX: 0.15 }, { opacity: 1, scaleX: 1, duration: 0.25, ease: 'power2.out' }, 0.35)
       .to(flare, { opacity: 0, duration: 0.6, ease: 'sine.in' }, 0.6)

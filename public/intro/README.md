@@ -28,7 +28,7 @@ móvil): así se puede ir adelante y atrás al instante y sin tirones.
    animación de siempre, arriba de la imagen.
 4. **El cobot del final (desde 13,75 s):** el HUD se va y un marco naranja lo «fija», como un sistema de visión, y
    le sigue mientras la cámara se acerca a su anillo.
-5. **El portal:** al llegar al último fotograma, el anillo se ilumina en el borde, la cámara lo atraviesa, un destello
+5. **Por el anillo:** al llegar al último fotograma, la cámara entra por el anillo, un destello
    anamórfico cruza la pantalla, las bandas se abren y la capa se funde dejando ver la home.
 
 Acabado de cine: de día fuera; al cruzar las puertas se hace de noche y la nave se va oscureciendo según se entra; aros
