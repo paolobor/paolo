@@ -67,6 +67,9 @@ export const site = {
   // Security → Allowlist. La posición (abajo a la izquierda) y los textos del widget van en AssistantWidget.astro.
   // Base de conocimiento: /asistente/base-conocimiento.txt (src/pages/asistente/), se genera con cada build, más los
   // textos del manual y el SDK de tools/asistente/extraer-manual.py (subidos a mano, con «Usar RAG»).
+  // Google Analytics 4 (cuenta «FAIRINO España», propiedad fairinocobot.com). Solo se carga si el visitante acepta las
+  // cookies de análisis en el aviso (BaseLayout + CookieBanner). null = sin analítica.
+  analytics: { gaId: 'G-97VG1MQNJB' as string | null },
   assistant: {
     agentId: 'agent_0701m4bjmv7rfg9abjm69q28bm9b' as string | null, // «Asistente FAIRINO España»
   },

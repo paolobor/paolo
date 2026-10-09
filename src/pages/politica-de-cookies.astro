@@ -3,7 +3,7 @@ import LegalPage from '../components/legal/LegalPage.astro';
 import { url } from '../lib/url';
 ---
 
-<LegalPage title="Política de cookies" description="Qué cookies y qué almacenamiento del navegador usa la web de FAIRINO España, para qué sirven y cómo cambiar tu elección." updated="7 de octubre de 2026">
+<LegalPage title="Política de cookies" description="Qué cookies y qué almacenamiento del navegador usa la web de FAIRINO España, para qué sirven y cómo cambiar tu elección." updated="9 de octubre de 2026">
   <p>
     Las cookies y tecnologías similares (como el almacenamiento local del navegador) son pequeños archivos o datos que una web guarda en tu
     dispositivo. Esta política explica cuáles usamos, conforme al artículo 22.2 de la LSSI-CE y a la guía de la Agencia Española de
@@ -11,7 +11,10 @@ import { url } from '../lib/url';
   </p>
 
   <h2>1. Qué usamos</h2>
-  <p>Hoy la web solo usa almacenamiento técnico, propio y necesario para que funcione. No usamos cookies de análisis ni de publicidad.</p>
+  <p>
+    La web usa almacenamiento técnico, propio y necesario para que funcione y, solo si lo aceptas en el aviso de cookies, cookies de análisis
+    de Google Analytics para saber cuántas personas la visitan y qué páginas ven, de forma estadística. No usamos cookies de publicidad.
+  </p>
   <table>
     <thead>
       <tr><th>Nombre</th><th>Tipo</th><th>Para qué</th><th>Duración</th></tr>
@@ -20,11 +23,14 @@ import { url } from '../lib/url';
       <tr><td><code>fairino-consent</code></td><td>Técnica, propia (almacenamiento local)</td><td>Recordar tu elección sobre cookies.</td><td>Hasta que la borres o cambies tu elección</td></tr>
       <tr><td><code>fairino-cart</code></td><td>Técnica, propia (almacenamiento local)</td><td>Guardar los productos del carrito de la tienda.</td><td>Hasta que vacíes el carrito o lo borres</td></tr>
       <tr><td><code>fairino-config</code></td><td>Técnica, propia (almacenamiento local)</td><td>Recordar la célula que has preparado en el configurador.</td><td>Hasta que la borres</td></tr>
+      <tr><td><code>_ga</code></td><td>Análisis, de terceros (Google Analytics); solo con tu consentimiento</td><td>Distinguir visitas para contar usuarios de forma estadística.</td><td>2 años</td></tr>
+      <tr><td><code>_ga_97VG1MQNJB</code></td><td>Análisis, de terceros (Google Analytics); solo con tu consentimiento</td><td>Mantener el estado de la visita.</td><td>2 años</td></tr>
     </tbody>
   </table>
   <p>
-    Si en el futuro añadimos una herramienta de análisis o de marketing, se indicará aquí y solo se activará si la aceptas en el aviso de
-    cookies. <span class="todo">[DATO: herramienta de análisis, si se instala]</span>
+    Google Analytics lo presta Google Ireland Ltd.; puede tratar datos fuera del Espacio Económico Europeo con las garantías del RGPD. Si
+    rechazas las cookies de análisis o retiras tu consentimiento, no se carga. Más información en
+    <a href="https://policies.google.com/technologies/cookies" target="_blank" rel="noopener">la política de cookies de Google</a>.
   </p>
 
   <h2>2. Servicios de terceros</h2>

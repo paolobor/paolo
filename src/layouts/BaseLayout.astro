@@ -107,6 +107,22 @@ const clientConfig = {
         </>
       )
     }
+    {
+      site.analytics.gaId && (
+        <>
+          {/* Google Analytics: plantillas inactivas que CookieBanner activa solo con el consentimiento de análisis. */}
+          <script is:inline type="text/plain" data-consent="analytics" async src={`https://www.googletagmanager.com/gtag/js?id=${site.analytics.gaId}`} />
+          <script is:inline type="text/plain" data-consent="analytics" define:vars={{ gaId: site.analytics.gaId }}>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() {
+              dataLayer.push(arguments);
+            }
+            gtag('js', new Date());
+            gtag('config', gaId);
+          </script>
+        </>
+      )
+    }
   </head>
   <body class="min-h-dvh">
     {intro && <IntroOverlay />}
