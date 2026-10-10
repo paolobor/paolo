@@ -27,11 +27,11 @@
   var KEY = 'fairino-intro-vista';
 
   // ---------------------------------------------------------------- el plano secuencia
-  // FRAMES: fotogramas en paquetes, assets/packs/<ancho>/p00.bin… (tools/videos/intro-fotogramas.sh). Tramos en segundos,
+  // FRAMES: fotogramas en paquetes, assets/packs/<ancho>/p00.webp… (tools/videos/intro-fotogramas.sh). Tramos en segundos,
   // medidos sobre los fotogramas del vídeo: aéreo, entrada (bajada y puertas), nave (luces y 8 cobots) y final
   // (cobot elegido, oscuridad, anillo). LOCK: dónde está el cobot del final al empezar el tramo 3 (proporciones del
   // fotograma 16:9). Si cambias el vídeo, cambia estos números (README).
-  var FRAMES = { count: 719, fps: 48, pack: 24, v: 8 };
+  var FRAMES = { count: 719, fps: 48, pack: 24, v: 9 };
   var SEG = { entrada: 3.5, nave: 5.5, final: 13.6 };
   // LOCK: marco sobre el cobot elegido, de un instante a otro (la cámara se le acerca). RING: el anillo en el último
   // fotograma (centro y radio exterior, respecto al ancho).
@@ -78,7 +78,6 @@
   var shineGrad = $('[data-shine]');
   var spain = $('[data-spain]');
   var lock = $('[data-lock]');
-  var flare = $('[data-flare]');
   var skip = $('[data-skip]');
   var enterBtn = $('[data-enter]');
   var bars = intro.querySelectorAll('[data-bar]');
@@ -108,10 +107,10 @@
   var ok = new Array(N);
   var ready = -1; // último fotograma cargado sin huecos desde el principio
   var loaded = 0;
-  // Los fotogramas van en paquetes de FRAMES.pack (assets/packs/<ancho>/p00.bin…, tools/videos/intro-fotogramas.sh):
+  // Los fotogramas van en paquetes de FRAMES.pack (assets/packs/<ancho>/p00.webp…, tools/videos/intro-fotogramas.sh):
   // unas 30 peticiones en vez de 719. Cabecera: nº de fotogramas y tamaño de cada uno (uint32); después, los WebP.
   var packUrl = function (k) {
-    return ASSETS + 'packs/' + WIDTH + '/p' + ('0' + k).slice(-2) + '.bin?v=' + FRAMES.v;
+    return ASSETS + 'packs/' + WIDTH + '/p' + ('0' + k).slice(-2) + '.webp?v=' + FRAMES.v;
   };
   // Descarga un paquete y da sus fotogramas como trozos WebP; si el servidor falla o frena (429), lo reintenta.
   function fetchPack(k, tries) {
@@ -606,7 +605,6 @@
     var ry = f.y + RING.y * f.h;
     var rr = RING.r * f.w;
     gsap.set(stage, { transformOrigin: rx + 'px ' + ry + 'px' });
-    flare.style.setProperty('--fi-ry', ((ry / window.innerHeight) * 100).toFixed(1) + '%');
     whiteout.style.setProperty('--fi-rx', ((rx / window.innerWidth) * 100).toFixed(1) + '%');
     whiteout.style.setProperty('--fi-ry', ((ry / window.innerHeight) * 100).toFixed(1) + '%');
     var far = Math.max(Math.hypot(rx, ry), Math.hypot(window.innerWidth - rx, window.innerHeight - ry), Math.hypot(rx, window.innerHeight - ry), Math.hypot(window.innerWidth - rx, ry));
@@ -618,9 +616,6 @@
         mix();
       }, null, 0.25)
       .to(stage, { scale: S, duration: 0.85, ease: 'power3.in' }, 0.2)
-      .fromTo(canvas, { filter: 'brightness(1)' }, { filter: 'brightness(1.6) saturate(1.3)', duration: 0.4, ease: 'power1.in' }, 0.25)
-      .fromTo(flare, { opacity: 0, scaleX: 0.15 }, { opacity: 1, scaleX: 1, duration: 0.25, ease: 'power2.out' }, 0.35)
-      .to(flare, { opacity: 0, duration: 0.6, ease: 'sine.in' }, 0.6)
       .to(bars, { scaleY: 0, duration: 0.8, ease: 'power2.inOut' }, 0.35)
       .to(whiteout, { opacity: 1, duration: 0.35, ease: 'power2.in' }, 0.75)
       .call(go, null, 1.1);

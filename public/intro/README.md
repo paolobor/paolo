@@ -52,8 +52,8 @@ index.html                 la página suelta (destino en <html data-target="http
 css/intro.css              estilos
 js/intro.js                guion de las escenas (GSAP)
 js/vendor/gsap.min.js      GSAP 3.15 (licencia gratuita de GSAP)
-assets/packs/1920/         fotogramas del recorrido para ordenador (719 WebP a 48 fps en 30 paquetes p00.bin…, unos 32 MB)
-assets/packs/960/          los mismos para el móvil, las pantallas pequeñas y las conexiones lentas (unos 14 MB)
+assets/packs/1920/         fotogramas del recorrido para ordenador (719 WebP a 48 fps en 30 paquetes p00.webp…, unos 36 MB)
+assets/packs/960/          los mismos para el móvil, las pantallas pequeñas y las conexiones lentas (unos 16 MB)
 assets/audio/              sonido opcional (ver «Sonido tipo tráiler»)
 assets/fonts/              Inter (Google Fonts, licencia OFL), servida desde la propia web
 assets/favicon.svg

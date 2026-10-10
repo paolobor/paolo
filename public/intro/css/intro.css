@@ -313,24 +313,6 @@
   opacity: 0;
 }
 
-/* Destello anamórfico: una raya horizontal de luz que cruza la pantalla al entrar por el anillo. */
-.fi-flare {
-  position: absolute;
-  left: -20%;
-  right: -20%;
-  top: var(--fi-ry, 50%);
-  z-index: 6;
-  height: 2px;
-  pointer-events: none;
-  opacity: 0;
-  background: linear-gradient(90deg, transparent, rgba(255, 140, 70, 0.25) 18%, rgba(255, 214, 180, 0.95) 50%, rgba(255, 140, 70, 0.25) 82%, transparent);
-  box-shadow:
-    0 0 18px 3px rgba(252, 82, 32, 0.55),
-    0 0 60px 10px rgba(252, 82, 32, 0.18);
-  transform: translateY(-50%) scaleX(0.2);
-  mix-blend-mode: screen;
-}
-
 /* ---------- Grano de película ---------- */
 .fi-grain {
   position: absolute;
