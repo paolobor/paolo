@@ -1,9 +1,8 @@
 ---
-// Pie obligatorio en las escenas generadas a partir del render oficial.
+// Antes ponía el pie «Imagen ilustrativa» en las escenas generadas a partir del render oficial; quitado a petición
+// del cliente (el aviso general sigue en el aviso legal). Se deja vacío para no tocar todas las páginas que lo usan.
 interface Props {
   class?: string;
 }
 const { class: className = 'bottom-3 right-3' } = Astro.props;
 ---
-
-<span class:list={['pointer-events-none absolute rounded-full bg-black/65 px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.12em] text-white/85', className]}>Imagen ilustrativa</span>

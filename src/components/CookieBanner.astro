@@ -3,7 +3,8 @@ import { url } from '../lib/url';
 // Aviso de consentimiento (RGPD / guía AEPD): rechazar tan visible como aceptar, sin casillas premarcadas,
 // y los scripts no esenciales solo se activan tras el consentimiento (<script type="text/plain" data-consent="analytics">).
 // Sale en el centro y tapa la web hasta que se elige (aceptar o rechazar: rechazando también se entra, como pide la
-// AEPD). En la política de cookies no tapa nada, para poder leerla antes de decidir.
+// AEPD). En la política de cookies no tapa nada, para poder leerla antes de decidir. Elegir por tipos (análisis,
+// marketing) se hace desde «Configurar cookies» en el pie de página.
 ---
 
 <section
@@ -43,7 +44,6 @@ import { url } from '../lib/url';
     <div class="grid grid-cols-2 gap-2">
       <button type="button" class="btn btn-secondary btn-sm" data-cookie="reject">Rechazar</button>
       <button type="button" class="btn btn-primary btn-sm" data-cookie="accept">Aceptar todas</button>
-      <button type="button" class="btn btn-sm col-span-2 text-brand hover:bg-brand-50" data-cookie="configure">Configurar</button>
       <button type="button" class="btn btn-primary btn-sm col-span-2" data-cookie="save" hidden>Guardar mi selección</button>
     </div>
   </div>
@@ -100,7 +100,6 @@ import { url } from '../lib/url';
   const showPrefs = (show: boolean) => {
     if (!banner || !prefs) return;
     prefs.hidden = !show;
-    banner.querySelector<HTMLElement>('[data-cookie="configure"]')!.hidden = show;
     banner.querySelector<HTMLElement>('[data-cookie="save"]')!.hidden = !show;
   };
 
@@ -132,7 +131,6 @@ import { url } from '../lib/url';
     const action = (e.target as HTMLElement).closest<HTMLElement>('[data-cookie]')?.dataset.cookie;
     if (action === 'accept') save(true, true);
     if (action === 'reject') save(false, false);
-    if (action === 'configure') showPrefs(true);
     if (action === 'save' && prefs) {
       save(
         (prefs.elements.namedItem('analytics') as HTMLInputElement).checked,
