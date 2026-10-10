@@ -1,6 +1,6 @@
 /*
  * Intro de FAIRINO Spain: llegar en persona a una gran fábrica, como el arranque de una película.
- * Un único plano secuencia (assets/recorrido.mp4, convertido en fotogramas WebP en assets/frames/) que se pinta en un
+ * Un único plano secuencia (assets/recorrido.mp4, convertido en fotogramas WebP empaquetados en assets/packs/) que se pinta en un
  * <canvas>; la cámara va siempre hacia delante, recta y sin pararse: la rueda o el dedo la aceleran, con inercia.
  *   Inicio   la pantalla de siempre: el bloque «FAIRINO SPAIN» con su destello y «Haz clic para entrar». Al hacer
  *            clic (o Intro, espacio, rueda o dedo), la cámara cruza el hueco de la «O» y empieza el recorrido.
@@ -27,11 +27,11 @@
   var KEY = 'fairino-intro-vista';
 
   // ---------------------------------------------------------------- el plano secuencia
-  // FRAMES: fotogramas de assets/frames/<ancho>/f0000.webp… (tools/videos/intro-fotogramas.sh). Tramos en segundos,
+  // FRAMES: fotogramas en paquetes, assets/packs/<ancho>/p00.bin… (tools/videos/intro-fotogramas.sh). Tramos en segundos,
   // medidos sobre los fotogramas del vídeo: aéreo, entrada (bajada y puertas), nave (luces y 8 cobots) y final
   // (cobot elegido, oscuridad, anillo). LOCK: dónde está el cobot del final al empezar el tramo 3 (proporciones del
   // fotograma 16:9). Si cambias el vídeo, cambia estos números (README).
-  var FRAMES = { count: 719, fps: 48, v: 7 };
+  var FRAMES = { count: 719, fps: 48, pack: 24, v: 8 };
   var SEG = { entrada: 3.5, nave: 5.5, final: 13.6 };
   // LOCK: marco sobre el cobot elegido, de un instante a otro (la cámara se le acerca). RING: el anillo en el último
   // fotograma (centro y radio exterior, respecto al ancho).
@@ -46,6 +46,8 @@
   // Rueda: segundos de vídeo por píxel de rueda; dedo: por píxel arrastrado.
   var WHEEL = 0.0032;
   var TOUCH = 0.014;
+  // Fotogramas cargados por delante de la cámara por debajo de los cuales empieza a frenar (1,5 s de vídeo).
+  var BUFFER = 72;
   // Sonido tipo tráiler (opcional): si existen en assets/audio/, suenan tras el primer gesto, a volumen bajo, con el
   // botón «Sonido» para silenciarlo. Si no hay ninguno, no suena nada y el botón no aparece.
   var AUDIO = {
@@ -59,7 +61,10 @@
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var coarse = window.matchMedia('(pointer: coarse)').matches;
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
-  var WIDTH = coarse || Math.max(window.innerWidth, window.innerHeight) * dpr <= 1400 ? 960 : 1920;
+  // Con la conexión lenta (si el navegador lo dice), los fotogramas ligeros: 15 MB en vez de 33.
+  var net = navigator.connection || {};
+  var slow = net.saveData || (net.downlink > 0 && net.downlink < 8) || /2g|3g/.test(net.effectiveType || '');
+  var WIDTH = coarse || slow || Math.max(window.innerWidth, window.innerHeight) * dpr <= 1400 ? 960 : 1920;
   if (coarse) intro.classList.add('fi-coarse');
 
   var $ = function (s) {
@@ -98,49 +103,107 @@
 
   // ---------------------------------------------------------------- carga de fotogramas
   // Primero el tramo aéreo (para empezar en 2-3 s) y después el resto, en orden, en segundo plano. La cámara no puede
-  // pasar del último fotograma seguido ya cargado.
+  // pasar del último fotograma seguido ya cargado y frena poco a poco al acercarse a él (ver tick), sin pararse en seco.
   var imgs = new Array(N);
   var ok = new Array(N);
   var ready = -1; // último fotograma cargado sin huecos desde el principio
   var loaded = 0;
-  var frameUrl = function (i) {
-    return ASSETS + 'frames/' + WIDTH + '/f' + ('000' + i).slice(-4) + '.webp?v=' + FRAMES.v;
+  // Los fotogramas van en paquetes de FRAMES.pack (assets/packs/<ancho>/p00.bin…, tools/videos/intro-fotogramas.sh):
+  // unas 30 peticiones en vez de 719. Cabecera: nº de fotogramas y tamaño de cada uno (uint32); después, los WebP.
+  var packUrl = function (k) {
+    return ASSETS + 'packs/' + WIDTH + '/p' + ('0' + k).slice(-2) + '.bin?v=' + FRAMES.v;
   };
+  // Descarga un paquete y da sus fotogramas como trozos WebP; si el servidor falla o frena (429), lo reintenta.
+  function fetchPack(k, tries) {
+    return fetch(packUrl(k))
+      .then(function (r) {
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        return r.arrayBuffer();
+      })
+      .then(function (buf) {
+        var head = new DataView(buf);
+        var n = head.getUint32(0, true);
+        var off = 4 * (n + 1);
+        var out = [];
+        for (var j = 0; j < n; j++) {
+          var len = head.getUint32(4 * (j + 1), true);
+          out.push(new Blob([new Uint8Array(buf, off, len)], { type: 'image/webp' }));
+          off += len;
+        }
+        return out;
+      })
+      .catch(function (e) {
+        if ((tries || 0) >= 5) throw e;
+        return new Promise(function (res) {
+          setTimeout(res, 800 * Math.pow(2, tries || 0));
+        }).then(function () {
+          return fetchPack(k, (tries || 0) + 1);
+        });
+      });
+  }
+  // Un fotograma suelto en una <img> (pantalla de inicio y movimiento reducido).
+  function frameInto(i, img) {
+    return fetchPack(Math.floor(i / FRAMES.pack)).then(function (blobs) {
+      img.src = URL.createObjectURL(blobs[i % FRAMES.pack]);
+    });
+  }
   function loadFrames(onFirst) {
+    var packs = Math.ceil(N / FRAMES.pack);
     var next = 0;
     var active = 0;
-    var MAX = 10;
+    var MAX = 3;
+    var frame = function (i, blob) {
+      var img = new Image();
+      img.decoding = 'async';
+      var url = URL.createObjectURL(blob);
+      var done = function (good) {
+        URL.revokeObjectURL(url);
+        ok[i] = good;
+        loaded++;
+        if (good) imgs[i] = img;
+        while (ready + 1 < N && ok[ready + 1] !== undefined) ready++;
+        loadBar.style.transform = 'scaleX(' + (loaded / N).toFixed(3) + ')';
+        if (loaded === N) load.classList.add('is-done');
+        if (i === 0 && onFirst) onFirst(good);
+      };
+      img.onload = function () {
+        (img.decode ? img.decode() : Promise.resolve()).then(
+          function () {
+            done(true);
+          },
+          function () {
+            done(true);
+          },
+        );
+      };
+      img.onerror = function () {
+        done(false);
+      };
+      img.src = url;
+    };
     var pump = function () {
-      while (active < MAX && next < N) {
-        (function (i) {
+      while (active < MAX && next < packs) {
+        (function (k) {
           active++;
-          var img = new Image();
-          img.decoding = 'async';
-          var done = function (good) {
-            active--;
-            ok[i] = good;
-            loaded++;
-            if (good) imgs[i] = img;
-            while (ready + 1 < N && ok[ready + 1] !== undefined) ready++;
-            loadBar.style.transform = 'scaleX(' + (loaded / N).toFixed(3) + ')';
-            if (loaded === N) load.classList.add('is-done');
-            if (i === 0 && onFirst) onFirst(good);
-            pump();
-          };
-          img.onload = function () {
-            (img.decode ? img.decode() : Promise.resolve()).then(
-              function () {
-                done(true);
+          var first = k * FRAMES.pack;
+          var count = Math.min(FRAMES.pack, N - first);
+          fetchPack(k)
+            .then(
+              function (blobs) {
+                for (var j = 0; j < count; j++) {
+                  if (blobs[j]) frame(first + j, blobs[j]);
+                  else frame(first + j, new Blob());
+                }
               },
+              // Sin remedio tras los reintentos: esos fotogramas se saltan (se ve el vecino) y la intro sigue.
               function () {
-                done(true);
+                for (var j = 0; j < count; j++) frame(first + j, new Blob());
               },
-            );
-          };
-          img.onerror = function () {
-            done(false);
-          };
-          img.src = frameUrl(i);
+            )
+            .then(function () {
+              active--;
+              pump();
+            });
         })(next++);
       }
     };
@@ -489,8 +552,11 @@
     last = now;
     if (state === 'done') return;
 
+    // Colchón de fotogramas cargados por delante: si se acaba, la cámara va frenando con suavidad hasta ir al ritmo
+    // de la descarga (nunca se para en seco ni da tirones).
+    var lead = ready >= LAST ? 1 : Math.min(1, Math.max(0, (ready - target) / BUFFER));
     if (state === 'run' || state === 'auto') {
-      target += (state === 'auto' ? AUTO : IDLE) * FRAMES.fps * dt;
+      target += (state === 'auto' ? AUTO : IDLE) * FRAMES.fps * dt * lead;
     }
     target = Math.max(pos, Math.min(target, LAST, ready < 0 ? 0 : ready));
     // Inercia: la cámara alcanza el objetivo con suavidad, nunca a saltos.
@@ -618,7 +684,7 @@
       var im = document.createElement('img');
       im.className = 'fi-still';
       im.alt = '';
-      im.src = frameUrl(i);
+      frameInto(i, im);
       stage.appendChild(im);
       return im;
     });

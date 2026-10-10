@@ -52,8 +52,8 @@ index.html                 la página suelta (destino en <html data-target="http
 css/intro.css              estilos
 js/intro.js                guion de las escenas (GSAP)
 js/vendor/gsap.min.js      GSAP 3.15 (licencia gratuita de GSAP)
-assets/frames/1920/        fotogramas del recorrido para ordenador (719 WebP a 48 fps, unos 33 MB en total)
-assets/frames/960/         los mismos para el móvil y las pantallas pequeñas (unos 15 MB)
+assets/packs/1920/         fotogramas del recorrido para ordenador (719 WebP a 48 fps en 30 paquetes p00.bin…, unos 32 MB)
+assets/packs/960/          los mismos para el móvil, las pantallas pequeñas y las conexiones lentas (unos 14 MB)
 assets/audio/              sonido opcional (ver «Sonido tipo tráiler»)
 assets/fonts/              Inter (Google Fonts, licencia OFL), servida desde la propia web
 assets/favicon.svg
@@ -97,10 +97,11 @@ Para verla otra vez sin el parámetro, cierra la pestaña: sessionStorage se bor
    acabado de cine:
    ```bash
    ffmpeg -i assets-src/intro/recorrido-1080.mp4 -vf "minterpolate=fps=48:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1" -c:v libx264 -crf 14 /tmp/recorrido-48.mp4
-   tools/videos/intro-fotogramas.sh /tmp/recorrido-48.mp4 public/intro/assets/frames
+   tools/videos/intro-fotogramas.sh /tmp/recorrido-48.mp4 public/intro/assets/packs
    ```
 3. En `js/intro.js`, actualiza:
    - `FRAMES.count` (lo dice el script) y súbele `v` para que el navegador no use los fotogramas guardados;
+     los fotogramas van en paquetes de 24 (`FRAMES.pack`): el servidor frena si se le piden cientos de archivos seguidos;
    - `SEG`: segundo en que empieza cada tramo (entrada, nave, final); mira fotogramas sueltos con
      `ffmpeg -i video.mp4 -vf "fps=2,scale=400:-2,tile=6x5" hoja.jpg`;
    - `LOCK`: dónde está el cobot elegido al principio y al final del marco (proporciones del fotograma);
