@@ -1,21 +1,24 @@
 ---
 import { url } from '../lib/url';
-// Banner de consentimiento (RGPD / guía AEPD): rechazar tan visible como aceptar, sin casillas premarcadas,
+// Aviso de consentimiento (RGPD / guía AEPD): rechazar tan visible como aceptar, sin casillas premarcadas,
 // y los scripts no esenciales solo se activan tras el consentimiento (<script type="text/plain" data-consent="analytics">).
+// Sale en el centro y tapa la web hasta que se elige (aceptar o rechazar: rechazando también se entra, como pide la
+// AEPD). En la política de cookies no tapa nada, para poder leerla antes de decidir.
 ---
 
 <section
   id="cookie-banner"
-  class="cookie fixed inset-x-0 bottom-0 z-[60] p-3 sm:inset-x-auto sm:left-4 sm:bottom-4 sm:max-w-[440px] sm:p-0"
+  class="cookie fixed inset-0 z-[60] grid place-items-center bg-[rgba(7,5,4,0.72)] p-4 backdrop-blur-sm data-[soft]:pointer-events-none data-[soft]:inset-auto data-[soft]:bottom-0 data-[soft]:left-0 data-[soft]:right-0 data-[soft]:bg-transparent data-[soft]:backdrop-blur-none"
   role="dialog"
+  aria-modal="true"
   aria-labelledby="cookie-title"
   aria-describedby="cookie-text"
   hidden
 >
-  <div class="card grid gap-4 p-5 shadow-[0_24px_60px_-20px_rgba(7,5,4,0.45)]">
+  <div class="card pointer-events-auto grid w-full max-w-[520px] gap-4 p-6 shadow-[0_24px_60px_-20px_rgba(7,5,4,0.45)] sm:p-7">
     <div class="grid gap-2">
-      <h2 id="cookie-title" class="font-display text-lg font-bold" style="font-stretch:112%">Usamos cookies</h2>
-      <p id="cookie-text" class="text-sm text-muted">
+      <h2 id="cookie-title" class="font-display text-2xl font-bold" style="font-stretch:112%">Antes de entrar: cookies</h2>
+      <p id="cookie-text" class="text-[15px] text-muted">
         Las técnicas son necesarias para que la web funcione. Con tu permiso usaremos también cookies de análisis para
         mejorarla. Puedes cambiar tu elección cuando quieras desde el pie de página.{' '}
         <a href={url('politica-de-cookies/')} class="font-medium text-brand underline">Más información sobre cookies</a>
@@ -49,9 +52,10 @@ import { url } from '../lib/url';
 <script>
   const KEY = 'fairino-consent';
   const VERSION = 1;
-  // La elección vale 6 meses: después el aviso vuelve a salir y no se carga nada hasta que se elija de nuevo
-  // (la guía de la AEPD pide renovarlo como mucho cada 24 meses).
-  const MAX_AGE = 1000 * 60 * 60 * 24 * 183;
+  // Si se aceptan (todas o alguna), la elección vale 7 días: después el aviso vuelve a salir y no se carga nada hasta
+  // que se elija de nuevo (la guía de la AEPD pide renovarlo como mucho cada 24 meses). Si se rechazan todas, vale
+  // solo para esta visita (sessionStorage): en la siguiente se vuelve a preguntar.
+  const MAX_AGE = 1000 * 60 * 60 * 24 * 7;
   type Consent = { v: number; date: string; analytics: boolean; marketing: boolean };
 
   const banner = document.getElementById('cookie-banner');
@@ -59,7 +63,7 @@ import { url } from '../lib/url';
 
   const read = (): Consent | null => {
     try {
-      const c = JSON.parse(localStorage.getItem(KEY) || 'null');
+      const c = JSON.parse(localStorage.getItem(KEY) || sessionStorage.getItem(KEY) || 'null');
       return c && c.v === VERSION && Date.now() - Date.parse(c.date) < MAX_AGE ? c : null;
     } catch {
       return null;
@@ -82,11 +86,14 @@ import { url } from '../lib/url';
   const save = (analytics: boolean, marketing: boolean) => {
     const c: Consent = { v: VERSION, date: new Date().toISOString(), analytics, marketing };
     try {
-      localStorage.setItem(KEY, JSON.stringify(c));
+      localStorage.removeItem(KEY);
+      sessionStorage.removeItem(KEY);
+      (analytics || marketing ? localStorage : sessionStorage).setItem(KEY, JSON.stringify(c));
     } catch {
       /* almacenamiento bloqueado: la elección vale solo para esta visita */
     }
     if (banner) banner.hidden = true;
+    lock(false);
     activate(c);
   };
 
@@ -95,6 +102,17 @@ import { url } from '../lib/url';
     prefs.hidden = !show;
     banner.querySelector<HTMLElement>('[data-cookie="configure"]')!.hidden = show;
     banner.querySelector<HTMLElement>('[data-cookie="save"]')!.hidden = !show;
+  };
+
+  // Mientras el aviso tapa la web, la página de detrás no se mueve ni se puede usar con el teclado.
+  const soft = location.pathname.includes('politica-de-cookies');
+  if (banner && soft) banner.dataset.soft = '';
+  const lock = (on: boolean) => {
+    if (soft) return;
+    document.documentElement.style.overflow = on ? 'hidden' : '';
+    document.querySelectorAll<HTMLElement>('body > :not(#cookie-banner):not(.fi-overlay):not(script)').forEach((el) => {
+      el.inert = on;
+    });
   };
 
   const open = (withPrefs = false) => {
@@ -106,6 +124,8 @@ import { url } from '../lib/url';
     }
     showPrefs(withPrefs);
     banner.hidden = false;
+    lock(true);
+    banner.querySelector<HTMLElement>('[data-cookie="accept"]')?.focus({ preventScroll: true });
   };
 
   banner?.addEventListener('click', (e) => {
