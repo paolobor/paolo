@@ -92,7 +92,7 @@ export const site = {
 
   // Tienda. vatIncluded: true = precios con IVA, false = sin IVA, null = sin indicarlo (pendiente de confirmar).
   store: {
-    vatIncluded: null as boolean | null,
+    vatIncluded: false as boolean | null,
     // Dominio de la tienda Shopify para el pago (enlace de carrito). null = el pedido se envía por formulario.
     shopifyDomain: null as string | null,
   },

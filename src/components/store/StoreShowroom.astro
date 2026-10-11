@@ -23,7 +23,7 @@ const maxPayload = Math.max(...cobots.map((c) => c.data.payloadKg ?? 0));
 const maxReach = Math.max(...cobots.map((c) => c.data.reachMm ?? 0));
 const minReach = Math.min(...cobots.map((c) => c.data.reachMm ?? Infinity));
 const spec = (c: (typeof cobots)[number], label: string) => c.data.specs.find((s) => s.label === label);
-const vatNote = site.store.vatIncluded === true ? 'IVA incluido' : site.store.vatIncluded === false ? '+ IVA' : '';
+const vatNote = site.store.vatIncluded === true ? 'IVA incluido' : site.store.vatIncluded === false ? 'IVA no incluido' : '';
 
 const slides = await Promise.all(
   cobots.map(async (c, i) => {

@@ -107,7 +107,7 @@ const tp = (await getProducts()).find((p) => p.id === 'teach-pendant' && p.data.
               Consola {tp.data.name}
             </a>
             : no va en la caja, se compra aparte
-            {tp.data.store.price != null && <span class="font-mono"> · {formatEUR(tp.data.store.price)}</span>}
+            {tp.data.store.price != null && <span class="font-mono"> · {formatEUR(tp.data.store.price)} <span class="font-sans text-xs">(IVA no incluido)</span></span>}
           </span>
         </span>
         {selectable && (

@@ -12,7 +12,7 @@ import { SCENE_WIDTHS, CUTOUT_WIDTHS } from '../lib/images';
 import { url } from '../lib/url';
 
 export const GET: APIRoute = async () => {
-  const vat = site.store.vatIncluded === true ? 'IVA incluido' : site.store.vatIncluded === false ? '+ IVA' : '';
+  const vat = site.store.vatIncluded === true ? 'IVA incluido' : site.store.vatIncluded === false ? 'IVA no incluido' : '';
   const out: Record<string, unknown> = {};
   for (const p of await getProducts()) {
     const d = p.data;
