@@ -215,8 +215,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
             </fieldset>
           )}
 
-          {s.box && <BoxContents product={s.product} selectable class="max-w-3xl" />}
-
+          {/* Precio justo debajo del modelo y sus versiones; debajo, lo que va en la caja (AC/DC, incluido, consola). */}
           <div class:list={['grid justify-items-center gap-1.5', s.box && 'price-card']}>
             <p class="font-mono">
               <span class="text-[0.62rem] uppercase tracking-[0.14em] text-mist">PVP</span>{' '}
@@ -225,6 +224,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
             </p>
             {s.box && <IncludedNote id={s.id} />}
           </div>
+
+          {s.box && <BoxContents product={s.product} selectable class="max-w-3xl" />}
 
           <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-4">
             <button type="button" class="btn btn-primary" data-add-cart={s.id} data-name={s.name} data-version={s.versions[0]?.id} data-power={s.box ? 'ac' : undefined} data-open-cart>
