@@ -125,9 +125,9 @@ const defaultCobot = hero.featuredSlug ?? cobots[0]?.id;
                   )}
                   <span class="font-display text-2xl font-extrabold" style="font-stretch:125%">{p.data.name}</span>
                   <span class="opt-meta">
-                    {p.data.payloadKg != null ? `${formatNumber(p.data.payloadKg)} kg` : '[DATO: carga]'}
+                    {p.data.payloadKg != null ? `${formatNumber(p.data.payloadKg)} kg` : '—'}
                     {' · '}
-                    {p.data.reachMm != null ? `${formatNumber(p.data.reachMm)} mm` : '[DATO: alcance]'}
+                    {p.data.reachMm != null ? `${formatNumber(p.data.reachMm)} mm` : '—'}
                   </span>
                   {priceText(p) && <span class="opt-price">{priceText(p)}</span>}
                   {hasBox(p) && (

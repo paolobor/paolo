@@ -92,9 +92,9 @@ const poster = posterImg ? (await getImage({ src: posterImg, format: 'webp', wid
                   </div>
                   <span class="font-display text-3xl font-extrabold" style="font-stretch:125%">{featured.data.name}</span>
                   <dl class="grid grid-cols-3 gap-2 font-mono text-xs">
-                    <div><dt class="text-mist/80">Carga</dt><dd class="text-white">{spec(featured.data.payloadKg, 'kg') ?? '[DATO]'}</dd></div>
-                    <div><dt class="text-mist/80">Alcance</dt><dd class="text-white">{spec(featured.data.reachMm, 'mm') ?? '[DATO]'}</dd></div>
-                    <div><dt class="text-mist/80">Repet.</dt><dd class="text-white">{featured.data.repeatabilityMm != null ? `±${formatNumber(featured.data.repeatabilityMm)} mm` : '[DATO]'}</dd></div>
+                    <div><dt class="text-mist/80">Carga</dt><dd class="text-white">{spec(featured.data.payloadKg, 'kg') ?? '—'}</dd></div>
+                    <div><dt class="text-mist/80">Alcance</dt><dd class="text-white">{spec(featured.data.reachMm, 'mm') ?? '—'}</dd></div>
+                    <div><dt class="text-mist/80">Repet.</dt><dd class="text-white">{featured.data.repeatabilityMm != null ? `±${formatNumber(featured.data.repeatabilityMm)} mm` : '—'}</dd></div>
                   </dl>
                 </div>
               </a>

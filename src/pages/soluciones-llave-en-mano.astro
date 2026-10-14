@@ -102,15 +102,9 @@ const steps = [
                     <li class="flex gap-2"><Icon name="check" size={16} class="mt-1 text-brand" />{x}</li>
                   ))}
                 </ul>
-              ) : (
-                <span class="todo w-fit">[DATO: componentes incluidos en la {s.name.toLowerCase()}]</span>
-              )}
+              ) : null}
             </div>
             <dl class="grid gap-3 sm:grid-cols-2">
-              <div class="card grid gap-1 p-4">
-                <dt class="font-mono text-[0.65rem] uppercase tracking-[0.12em] text-muted">Plazo de entrega</dt>
-                <dd><span class="todo">[DATO: plazo]</span></dd>
-              </div>
               <div class="card grid gap-1 p-4">
                 <dt class="font-mono text-[0.65rem] uppercase tracking-[0.12em] text-muted">Cobots habituales</dt>
                 <dd class="flex flex-wrap gap-1.5 pt-0.5">{s.cobots.map((c) => <a href={url(`productos/${c.id}/`)} class="chip hover:border-signal">{c.data.name}</a>)}</dd>

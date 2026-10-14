@@ -54,7 +54,7 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
           <div class="form-field"><label for="o-prov">Provincia *</label><input id="o-prov" name="provincia" required autocomplete="address-level1" /></div>
           <div class="form-field sm:col-span-2"><label for="o-notas">Observaciones</label><textarea id="o-notas" name="observaciones" rows="3" placeholder="Horario de entrega, muelle de carga, versión IP65…"></textarea></div>
         </div>
-        <label class="form-check"><input type="checkbox" name="condiciones" required /><span>Acepto las <a href={url('aviso-legal/')} class="text-brand underline">condiciones de venta</a> [DATO: condiciones de venta]. *</span></label>
+        <label class="form-check"><input type="checkbox" name="condiciones" required /><span>Acepto las <a href={url('aviso-legal/')} class="text-brand underline">condiciones de venta</a>. *</span></label>
         <label class="form-check"><input type="checkbox" name="privacidad" required /><span>He leído la <a href={url('politica-de-privacidad/')} class="text-brand underline">política de privacidad</a>. *</span></label>
         <input type="hidden" name="subject" value="Nuevo pedido desde la tienda web" />
         <input type="hidden" name="pedido" />

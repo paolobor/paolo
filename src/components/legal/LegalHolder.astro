@@ -8,13 +8,19 @@ const a = site.address;
 
 <dl>
   <dt>Titular</dt>
-  <dd>{l.holder}{!l.confirmed && <> <span class="todo">[DATO: confirmar titular; la web usa «{site.legalName}»]</span></>}</dd>
+  <dd>{l.holder}</dd>
   <dt>NIF</dt>
   <dd>{l.taxId}</dd>
   <dt>Domicilio social</dt>
   <dd>{l.address}</dd>
-  <dt>Datos registrales</dt>
-  <dd>{l.registry ?? <span class="todo">[DATO: Registro Mercantil, tomo, folio, hoja]</span>}</dd>
+  {
+    l.registry && (
+      <>
+        <dt>Datos registrales</dt>
+        <dd>{l.registry}</dd>
+      </>
+    )
+  }
   <dt>Correo electrónico</dt>
   <dd><a href={`mailto:${l.email}`}>{l.email}</a></dd>
   {
@@ -26,5 +32,5 @@ const a = site.address;
     )
   }
   <dt>Instalaciones</dt>
-  <dd>{site.legalName}, {a.street ?? <span class="todo">[DATO: calle y número]</span>}, {a.postalCode} {a.city} ({a.region})</dd>
+  <dd>{site.legalName}, {a.street && `${a.street}, `}{a.postalCode} {a.city} ({a.region})</dd>
 </dl>

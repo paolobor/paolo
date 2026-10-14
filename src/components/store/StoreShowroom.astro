@@ -159,7 +159,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
                   <span class="scan" style={`--mask:url(${s.img})`} aria-hidden="true" />
                 </>
               ) : (
-                <span class="robot-missing">[FOTO: {s.name}]</span>
+                <span class="robot-missing" aria-hidden="true"></span>
               )}
             </span>
           </li>
@@ -186,7 +186,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
           <p class="font-mono text-[0.7rem] uppercase tracking-[0.2em] text-mist">{s.tags}</p>
           <h2 class="model-name text-[clamp(2.4rem,5.5vw,4rem)] font-extrabold leading-none" style="font-stretch:125%">{s.name}</h2>
           <dl class="grid grid-cols-2 gap-x-10 gap-y-4 sm:grid-cols-4">
-            {s.readout.map((r) => (
+            {s.readout.filter((r) => r.v != null).map((r) => (
               <div class="grid justify-items-center gap-0.5">
                 <dt class="font-mono text-[0.62rem] uppercase tracking-[0.14em] text-mist">{r.k}</dt>
                 <dd class="font-mono text-2xl font-medium tabular-nums">
@@ -280,7 +280,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
         <article class="grid gap-8 px-6 py-6" data-specs-panel={s.i} hidden={s.i !== 0}>
           <div class="grid items-center gap-6 sm:grid-cols-[200px_1fr]">
             <div class="spec-card relative grid aspect-[4/5] place-items-center overflow-hidden rounded-2xl border border-line">
-              {s.imgSide ? <img src={s.imgSide} alt="" class="relative z-10 h-[88%] w-auto object-contain" loading="lazy" /> : <span class="font-mono text-xs text-mist">[FOTO: {s.name}]</span>}
+              {s.imgSide ? <img src={s.imgSide} alt="" class="relative z-10 h-[88%] w-auto object-contain" loading="lazy" /> : <span aria-hidden="true"></span>}
             </div>
             <div class="grid gap-3">
               <p class="inline-flex items-center gap-2 font-mono text-[0.64rem] uppercase tracking-[0.14em] text-mist">
@@ -292,8 +292,8 @@ const pad = (n: number) => String(n).padStart(2, '0');
             </div>
           </div>
 
-          <dl class="readout" style="--cols:4">
-            {s.readout.map((r) => (
+          <dl class="readout" style={`--cols:${s.readout.filter((r) => r.v != null).length}`}>
+            {s.readout.filter((r) => r.v != null).map((r) => (
               <div class="!py-3">
                 <dt>{r.k}</dt>
                 <dd class="!text-lg">
@@ -335,7 +335,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
             <h4 class="text-lg font-bold" style="font-stretch:112%">Especificaciones técnicas</h4>
             <table class="w-full text-left text-sm">
               <tbody>
-                {s.specs.map((sp) => (
+                {s.specs.filter((sp) => sp.value != null).map((sp) => (
                   <tr class="border-b border-line">
                     <th scope="row" class="w-1/2 py-2.5 pr-3 font-medium text-mist">{sp.label}</th>
                     <td class="py-2.5 font-mono">{sp.value != null ? `${sp.value}${sp.unit ? ` ${sp.unit}` : ''}` : <span class="todo">[DATO]</span>}</td>

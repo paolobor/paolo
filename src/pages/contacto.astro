@@ -62,7 +62,7 @@ const a = site.address;
           <h2 class="flex items-center gap-2 font-display text-lg font-bold" style="font-stretch:112%"><Icon name="map-pin" size={20} class="text-signal" />Dónde estamos</h2>
           <address class="not-italic leading-relaxed text-mist">
             {site.legalName}<br />
-            {a.street ?? <span class="todo">[DATO: calle y número]</span>}<br />
+            {a.street && <>{a.street}<br /></>}
             {a.postalCode} {a.city}<br />
             {a.region} ({a.country})
           </address>
@@ -80,7 +80,6 @@ const a = site.address;
               ))
             }
           </ul>
-          <p class="text-sm text-muted"><Icon name="clock" size={15} class="mr-1 inline align-[-2px]" />Horario: <span class="todo">[DATO: horario de atención]</span></p>
           <a href={whatsappLink(site.whatsapp.number, site.whatsapp.defaultMessage)} target="_blank" rel="noopener" class="btn btn-wa btn-sm justify-self-start"><Icon name="si:whatsapp" size={17} />WhatsApp</a>
         </div>
         <a href={url('reservar-cita/')} class="card card-hover grid gap-2 p-6">

@@ -158,8 +158,9 @@
     background: linear-gradient(90deg, transparent, var(--color-signal), transparent);
     height: 1px;
   }
+  /* Huecos de datos pendientes ([DATO: …]): no se muestran en la web; siguen en el código para saber qué falta. */
   .todo {
-    @apply inline-flex items-center rounded-md border border-dashed border-todo-line bg-todo px-1.5 py-0.5 font-mono text-[0.72em] font-medium leading-snug text-todo-text;
+    display: none !important;
   }
 
   /* Formularios sobre fondo claro */

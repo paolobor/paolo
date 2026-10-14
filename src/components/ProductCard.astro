@@ -78,9 +78,9 @@ const readout =
     </div>
     <p class="text-sm text-muted">{d.tagline}</p>
     {
-      readout.length > 0 && (
-        <dl class="readout" style={`--cols:${readout.length}`}>
-          {readout.map((r) => (
+      readout.some((r) => r.v != null) && (
+        <dl class="readout" style={`--cols:${readout.filter((r) => r.v != null).length}`}>
+          {readout.filter((r) => r.v != null).map((r) => (
             <div>
               <dt>{r.k}</dt>
               <dd>{r.v ?? <span class="todo">[DATO]</span>}</dd>

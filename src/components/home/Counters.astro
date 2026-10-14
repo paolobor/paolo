@@ -7,7 +7,7 @@ import { formatNumber } from '../../lib/url';
   <div class="glow-line fx-sweep absolute inset-x-0 top-0"></div>
   <div class="container-x grid gap-x-10 gap-y-10 py-14 sm:grid-cols-2 md:py-16 lg:max-w-5xl">
     {
-      counters.map((c, i) => (
+      counters.filter((c) => c.value != null).map((c, i) => (
         <div class="grid content-start gap-2 border-l border-signal/40 pl-5" data-reveal style={`--reveal-delay:${i * 80}ms`}>
           {c.value != null ? (
             <p class="count-num text-glow font-mono text-[clamp(2.8rem,6vw,4.25rem)] font-medium leading-none tracking-tight tabular-nums">
