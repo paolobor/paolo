@@ -465,7 +465,43 @@ html.fi-play body {
   }
 }
 
-/* Esperando fotogramas: la barra de carga late hasta que llegan. */
+/* Pantalla de inicio: línea fina bajo el logotipo mientras se descarga el vídeo; se apaga al tenerlo entero. Si se
+   pulsa antes, late hasta que llega y la intro arranca sola. */
+.fi-prep {
+  position: absolute;
+  left: 50%;
+  bottom: 16vh;
+  z-index: 3;
+  width: min(200px, 40vw);
+  height: 1px;
+  background: rgba(236, 238, 241, 0.1);
+  transform: translateX(-50%);
+  pointer-events: none;
+  opacity: 0;
+  animation: fi-prep-in 1s ease 0.8s forwards;
+  transition: opacity 0.8s ease;
+}
+.fi-prep i {
+  display: block;
+  height: 100%;
+  background: var(--fi-orange);
+  box-shadow: 0 0 8px rgba(252, 82, 32, 0.7);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+.fi-prep.is-done {
+  animation: none;
+  opacity: 0;
+}
+.fi-prep.is-waiting:not(.is-done) i {
+  animation: fi-wait 1.2s ease-in-out infinite;
+}
+@keyframes fi-prep-in {
+  to { opacity: 1; }
+}
+
+/* Esperando vídeo: la barra de carga late hasta que llega. */
 .fi-load.is-waiting i {
   animation: fi-wait 1.2s ease-in-out infinite;
 }

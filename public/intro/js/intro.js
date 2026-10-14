@@ -1,8 +1,9 @@
 /*
  * Intro de FAIRINO Spain: llegar en persona a una gran fábrica, como el arranque de una película.
- * Un único plano secuencia en vídeo (assets/intro-1080.mp4 o, con la conexión lenta, assets/intro-720.mp4): lo
- * reproduce el chip de vídeo del aparato, así que va fluido también en móviles y ordenadores modestos (antes eran 768
- * fotogramas sueltos en un <canvas>, que no cabían en la memoria de muchos aparatos). La cámara va siempre hacia delante,
+ * Un único plano secuencia en vídeo (assets/intro-1080.mp4, a la máxima calidad): lo reproduce el chip de vídeo del
+ * aparato, así que va fluido también en móviles y ordenadores modestos (antes eran 768 fotogramas sueltos en un <canvas>,
+ * que no cabían en la memoria de muchos aparatos). Se descarga entero mientras se ve la pantalla de inicio y se reproduce
+ * desde la memoria: siempre en 1080p y a su velocidad, sin depender de la conexión. La cámara va siempre hacia delante,
  * recta y sin pararse: la rueda o el dedo la aceleran un rato (más velocidad de reproducción, que se va apagando sola).
  *   Inicio   la pantalla de siempre: el bloque «FAIRINO SPAIN» con su destello y «Haz clic para entrar». Al hacer
  *            clic (o Intro, espacio, rueda o dedo), la cámara cruza el hueco de la «O» y empieza el recorrido.
@@ -59,11 +60,10 @@
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var coarse = window.matchMedia('(pointer: coarse)').matches;
-  // El vídeo de 1080p en todos los aparatos, también en el móvil (allí se ve recortado y ampliado, y el de 720p quedaría
-  // blando); el de 720p, solo con ahorro de datos o con la conexión lenta (si el navegador lo dice).
+  // Siempre el vídeo de 1080p, también en el móvil (allí se ve recortado y ampliado, y el de 720p quedaría blando); el de
+  // 720p, solo si el visitante tiene activado el ahorro de datos.
   var net = navigator.connection || {};
-  var slow = net.saveData || (net.downlink > 0 && net.downlink < 8) || /2g|3g/.test(net.effectiveType || '');
-  var HEIGHT = slow ? 720 : 1080;
+  var HEIGHT = net.saveData ? 720 : 1080;
   if (coarse) intro.classList.add('fi-coarse');
 
   var $ = function (s) {
@@ -96,7 +96,10 @@
   var revealTl = null;
 
   // ---------------------------------------------------------------- el vídeo
-  // Se empieza a descargar mientras se ve la pantalla de inicio; el póster (primer fotograma) se ve al instante.
+  // Se descarga entero mientras se ve la pantalla de inicio (una línea naranja fina bajo el logotipo dice cuánto
+  // falta) y se reproduce desde la memoria del aparato: así siempre va en 1080p y a su velocidad, sin frenar ni bajar de
+  // calidad aunque la conexión sea floja. El pulso de la «O» sale cuando ya está; si se entra antes, se espera a que
+  // acabe y arranca solo. El póster (primer fotograma) se ve al instante.
   var src = function (name) {
     return ASSETS + name + '?v=' + VIDEO.v;
   };
@@ -106,7 +109,6 @@
   video.setAttribute('webkit-playsinline', '');
   video.poster = src('intro-poster.webp');
   video.preload = 'auto';
-  video.src = src('intro-' + HEIGHT + '.mp4');
   // Si el aparato no puede con el vídeo, se pasa a la web en vez de dejar la intro colgada.
   video.addEventListener('error', function () {
     if (state !== 'idle') skipNow();
@@ -114,24 +116,64 @@
   var now = function () {
     return video.currentTime || 0;
   };
-  // Mientras se ve la pantalla de inicio se mide a qué ritmo llega el vídeo. Si al entrar va a menos de 1,3 s de vídeo
-  // por segundo (conexión floja: el de 1080p iría a cámara lenta), se cambia al de 720p, que pesa un tercio.
-  var loadStart = 0;
-  function pickLight() {
-    if (HEIGHT !== 1080 || !loadStart || !video.duration || !video.buffered.length) return;
-    var got = video.buffered.end(0);
-    if (got >= video.duration - 0.1) return;
-    var secs = (performance.now() - loadStart) / 1000;
-    if (secs > 1.5 && got / secs < 1.3) {
-      HEIGHT = 720;
-      video.src = src('intro-720.mp4');
-      video.load();
-    }
+  var prep = document.createElement('div');
+  prep.className = 'fi-prep';
+  prep.setAttribute('aria-hidden', 'true');
+  prep.innerHTML = '<i></i>';
+  intro.appendChild(prep);
+  var prepBar = prep.firstChild;
+  var full = false; // vídeo descargado entero
+  var wantIn = false; // han pedido entrar antes de tenerlo
+  var blobUrl = '';
+  function loaded() {
+    if (full) return;
+    full = true;
+    prepBar.style.transform = 'scaleX(1)';
+    prep.classList.add('is-done');
+    load.classList.add('is-done');
+    if (wantIn) enter();
+    else startPulse();
+  }
+  // Sin descarga a la memoria (navegadores muy antiguos, o si falla): el vídeo se reproduce mientras llega.
+  function stream(url) {
+    video.src = url;
+    video.load();
+    loaded();
+  }
+  function download() {
+    var url = src('intro-' + HEIGHT + '.mp4');
+    if (!window.fetch || !window.ReadableStream || !window.URL || !URL.createObjectURL) return stream(url);
+    fetch(url)
+      .then(function (r) {
+        if (!r.ok || !r.body) throw new Error('HTTP ' + r.status);
+        var total = +r.headers.get('Content-Length') || 0;
+        var reader = r.body.getReader();
+        var parts = [];
+        var got = 0;
+        var pump = function () {
+          return reader.read().then(function (d) {
+            if (d.done) return new Blob(parts, { type: 'video/mp4' });
+            parts.push(d.value);
+            got += d.value.length;
+            if (total) prepBar.style.transform = 'scaleX(' + Math.min(1, got / total).toFixed(3) + ')';
+            return pump();
+          });
+        };
+        return pump();
+      })
+      .then(function (blob) {
+        blobUrl = URL.createObjectURL(blob);
+        video.src = blobUrl;
+        video.load();
+        loaded();
+      })
+      .catch(function () {
+        stream(url);
+      });
   }
   // Arranca el vídeo (dentro del clic, para que los navegadores lo dejen). Si aun así lo frenan, vuelve a intentarlo
   // con el siguiente toque.
   function play() {
-    pickLight();
     video.playbackRate = IDLE;
     var p = video.play();
     if (p && p.catch) {
@@ -262,8 +304,9 @@
     pulse.style.height = (o.hy * 2).toFixed(1) + 'px';
     pulse.style.borderRadius = o.rad.toFixed(1) + 'px';
   }
+  var revealed = false;
   function startPulse() {
-    if (state !== 'idle') return;
+    if (state !== 'idle' || !revealed || !full) return;
     placePulse();
     intro.classList.add('is-pulsing');
   }
@@ -274,7 +317,10 @@
       gsap.to(word, { opacity: 1, duration: 1, ease: 'power1.out' });
       gsap.to(spain, { opacity: 1, duration: 1, delay: 0.3 });
       gsap.to([hint, skip], { opacity: 1, duration: 1, delay: 0.6 });
-      gsap.delayedCall(1.4, startPulse);
+      gsap.delayedCall(1.4, function () {
+        revealed = true;
+        startPulse();
+      });
       return;
     }
     var sh = { p: -0.4 };
@@ -285,13 +331,22 @@
       .fromTo(spain, { opacity: 0, letterSpacing: '1.1em' }, { opacity: 1, letterSpacing: '0.62em', duration: 1.6, ease: 'expo.out' }, 1.5)
       .to(skip, { opacity: 1, duration: 1.2, ease: 'power2.out' }, 1.3)
       .to(hint, { opacity: 1, duration: 1.4, ease: 'power2.out' }, 2.2)
-      .call(startPulse, null, 2.4);
+      .call(function () {
+        revealed = true;
+        startPulse();
+      }, null, 2.4);
   }
 
   // Clic en la pantalla de inicio: un destello recorre el logotipo, la cámara atraviesa la «O» y al otro lado está
   // la fábrica desde el aire; entran las bandas de cine.
   function enter() {
     if (state !== 'idle') return;
+    // Aún descargando: se apunta y entra solo en cuanto esté (la línea de carga late para decir que va).
+    if (!full) {
+      wantIn = true;
+      prep.classList.add('is-waiting');
+      return;
+    }
     state = 'enter';
     intro.classList.remove('is-pulsing');
     remember();
@@ -591,6 +646,7 @@
         video.pause();
         video.removeAttribute('src');
         video.load();
+        if (blobUrl) URL.revokeObjectURL(blobUrl);
       },
     });
   }
@@ -617,6 +673,9 @@
 
   // ---------------------------------------------------------------- movimiento reducido: tres imágenes fijas
   function reducedMotion() {
+    // Sin vídeo: solo tres imágenes, así que no hay nada que esperar.
+    full = true;
+    prep.classList.add('is-done');
     video.removeAttribute('src');
     video.preload = 'none';
     var els = [1, 2, 3].map(function (i) {
@@ -743,9 +802,8 @@
   // ---------------------------------------------------------------- arranque
   gsap.set(stage, { opacity: 0 });
   gsap.set(bars, { scaleY: 0 });
-  // El vídeo se descarga mientras se ve la pantalla de inicio.
-  video.load();
-  loadStart = performance.now();
+  // El vídeo se descarga entero mientras se ve la pantalla de inicio.
+  download();
   gsap.ticker.add(tick);
   // La pantalla de inicio sale cuando el logotipo tiene su tamaño y la fuente de «SPAIN» está lista (máx. 0,8 s).
   var fontsReady = document.fonts && document.fonts.load ? document.fonts.load('500 16px Inter') : Promise.resolve();
