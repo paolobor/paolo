@@ -6,11 +6,19 @@ DirectoryIndex index.html
 ErrorDocument 404 /404.html
 Options -Indexes
 
-# Sin www: www.fairinocobot.com → fairinocobot.com
+# Sin www: www.fairino.es → fairino.es (y igual en la copia de fairinocobot.com)
 <IfModule mod_rewrite.c>
   RewriteEngine On
   RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
   RewriteRule ^ https://%1%{REQUEST_URI} [R=301,L]
+</IfModule>
+
+# Entradas del blog de la web anterior de fairino.es (WordPress) que no tienen página igual en esta: a la más parecida.
+# El resto de direcciones de aquella web (/productos/fr5/, /contacto/, /descargas/…) existen igual aquí.
+<IfModule mod_alias.c>
+  RedirectMatch 301 ^/robotica-humanoide-en-la-industria-el-siguiente-salto-en-automatizacion-inteligente/?$ /aplicaciones/soluciones/robot-humanoide/
+  RedirectMatch 301 ^/catalogo-fairino-2026-robotica-colaborativa-para-la-industria/?$ /descargas/
+  RedirectMatch 301 ^/camaras-3d-en-la-automatizacion-industrial-la-vision-inteligente-que-impulsa-la-robotica-colaborativa/?$ /productos/orbbec-gemini-2/
 </IfModule>
 
 # Tipos de archivo que algunos servidores no conocen

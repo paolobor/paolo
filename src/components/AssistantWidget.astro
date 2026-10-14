@@ -6,7 +6,8 @@ import { site } from '../data/site';
 import { url } from '../lib/url';
 
 const agentId = site.assistant.agentId;
-const host = new URL(site.url).hostname;
+// Enlaces que el asistente puede poner como clicables: el dominio de la web y sus copias (site.mirrors).
+const hosts = [new URL(site.url).hostname, ...site.mirrors].join(',');
 const limit = site.assistant.dailyLimit;
 const contacto = url('contacto/');
 // Textos del widget en español (atributo text-contents; manda sobre los del panel). Va abajo a la izquierda porque
@@ -55,7 +56,7 @@ const textos = JSON.stringify({
         avatar-orb-color-1="#ff7a1a"
         avatar-orb-color-2="#ffe2c8"
         text-contents={textos}
-        markdown-link-allowed-hosts={host}
+        markdown-link-allowed-hosts={hosts}
         data-limite={limit}
         data-contacto={contacto}
       />

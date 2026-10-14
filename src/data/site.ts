@@ -6,7 +6,10 @@ export const site = {
   tagline: 'Distribuidor oficial de cobots FAIRINO en España',
   description:
     'Distribuidor oficial de robots colaborativos FAIRINO en España. Cobots, controladores y accesorios, integración llave en mano y soporte desde Toledo.',
-  url: 'https://fairinocobot.com', // dominio de esta web (fairino.es sigue con la web anterior); igual que SITE en astro.config.mjs
+  url: 'https://fairino.es', // dominio de esta web; igual que SITE en astro.config.mjs
+  // Otros dominios con una copia exacta de la web (mismo build). El canonical y el sitemap apuntan a url, así que Google
+  // solo indexa fairino.es; aquí se listan para lo que tiene que aceptar los dos (enlaces del asistente).
+  mirrors: ['fairinocobot.com'],
   locale: 'es_ES',
 
   // Logotipo oficial: src/assets/brand/fairino-wordmark.svg (letras de FAIRINO), lo pinta components/ui/Logo.astro.
@@ -82,7 +85,7 @@ export const site = {
   // Security → Allowlist. La posición (abajo a la izquierda) y los textos del widget van en AssistantWidget.astro.
   // Base de conocimiento: /asistente/base-conocimiento.txt (src/pages/asistente/), se genera con cada build, más los
   // textos del manual y el SDK de tools/asistente/extraer-manual.py (subidos a mano, con «Usar RAG»).
-  // Google Analytics 4 (cuenta «FAIRINO España», propiedad fairinocobot.com). Solo se carga si el visitante acepta las
+  // Google Analytics 4 (cuenta «FAIRINO España», propiedad de la web; mide fairino.es y la copia de fairinocobot.com). Solo se carga si el visitante acepta las
   // cookies de análisis en el aviso (BaseLayout + CookieBanner). null = sin analítica.
   analytics: { gaId: 'G-97VG1MQNJB' as string | null },
   assistant: {
