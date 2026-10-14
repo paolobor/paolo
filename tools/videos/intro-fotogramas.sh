@@ -48,12 +48,12 @@ for W in $ANCHOS; do
   ffmpeg -v error -y -i "$SRC" -filter_complex "[0:v]$GRADE,scale=$W:-2:flags=lanczos,unsharp=5:5:0.7:5:5:0,setsar=1[v]" -map "[v]" -an \
     "${CODEC[@]}" -start_number 0 "$OUT/$W/f%04d.$FORMATO"
   if [ -n "$FINAL" ]; then
-    find "$OUT/$W" -name "f*.$FORMATO" | while read -r f; do n=$(basename "$f" ".$FORMATO"); [ $((10#${n#f})) -ge "$CUT" ] && rm "$f"; done
+    find "$OUT/$W" -name "f*.$FORMATO" | while read -r f; do n=$(basename "$f" ".$FORMATO"); if [ $((10#${n#f})) -ge "$CUT" ]; then rm "$f"; fi; done
     ffmpeg -v error -y -i "$FINAL" -vf "scale=1920:-2:flags=lanczos,minterpolate=fps=$FPS:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1,scale=$W:-2:flags=lanczos,unsharp=5:5:0.3:5:5:0,setsar=1" -an \
       "${CODEC[@]}" -start_number "$CUT" "$OUT/$W/f%04d.$FORMATO"
   fi
   if [ -n "$MID" ]; then
-    find "$OUT/$W" -name "f*.$FORMATO" | while read -r f; do n=$(basename "$f" ".$FORMATO"); n=$((10#${n#f})); [ $n -ge "$MIDCUT" ] && [ $n -lt "$CUT" ] && rm "$f"; done
+    find "$OUT/$W" -name "f*.$FORMATO" | while read -r f; do n=$(basename "$f" ".$FORMATO"); n=$((10#${n#f})); if [ $n -ge "$MIDCUT" ] && [ $n -lt "$CUT" ]; then rm "$f"; fi; done
     D=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$MID")
     K=$(python3 -c "print(($CUT-$MIDCUT)/$FPS/$D)")
     ffmpeg -v error -y -i "$MID" -vf "scale=1920:-2:flags=lanczos,fps=24,minterpolate=fps=$FPS:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1,setpts=PTS*$K,fps=$FPS,tpad=stop_mode=clone:stop=4,scale=$W:-2:flags=lanczos,unsharp=5:5:0.3:5:5:0,setsar=1" -an \
