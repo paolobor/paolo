@@ -114,9 +114,24 @@
   var now = function () {
     return video.currentTime || 0;
   };
+  // Mientras se ve la pantalla de inicio se mide a qué ritmo llega el vídeo. Si al entrar va a menos de 1,3 s de vídeo
+  // por segundo (conexión floja: el de 1080p iría a cámara lenta), se cambia al de 720p, que pesa un tercio.
+  var loadStart = 0;
+  function pickLight() {
+    if (HEIGHT !== 1080 || !loadStart || !video.duration || !video.buffered.length) return;
+    var got = video.buffered.end(0);
+    if (got >= video.duration - 0.1) return;
+    var secs = (performance.now() - loadStart) / 1000;
+    if (secs > 1.5 && got / secs < 1.3) {
+      HEIGHT = 720;
+      video.src = src('intro-720.mp4');
+      video.load();
+    }
+  }
   // Arranca el vídeo (dentro del clic, para que los navegadores lo dejen). Si aun así lo frenan, vuelve a intentarlo
   // con el siguiente toque.
   function play() {
+    pickLight();
     video.playbackRate = IDLE;
     var p = video.play();
     if (p && p.catch) {
@@ -730,6 +745,7 @@
   gsap.set(bars, { scaleY: 0 });
   // El vídeo se descarga mientras se ve la pantalla de inicio.
   video.load();
+  loadStart = performance.now();
   gsap.ticker.add(tick);
   // La pantalla de inicio sale cuando el logotipo tiene su tamaño y la fuente de «SPAIN» está lista (máx. 0,8 s).
   var fontsReady = document.fonts && document.fonts.load ? document.fonts.load('500 16px Inter') : Promise.resolve();
