@@ -26,7 +26,7 @@
     <!-- Inter (Google Fonts, licencia OFL) servida desde la propia web: más rápida y sin enviar datos a terceros. -->
     <link rel="preload" href="assets/fonts/inter-latin-var.woff2" as="font" type="font/woff2" crossorigin />
     <!-- ?v=: súbelo al cambiar intro.css o intro.js, para que el navegador no use la versión guardada. -->
-    <link rel="stylesheet" href="css/intro.css?v=11" />
+    <link rel="stylesheet" href="css/intro.css?v=12" />
     <style>
       html,
       body {
@@ -45,9 +45,9 @@
   <body>
     <!-- La intro (de aquí la toma también la web, que la muestra encima del inicio y de la tienda). -->
     <main class="fi-intro" data-intro>
-      <!-- El recorrido: fotogramas del plano secuencia (en paquetes, assets/packs/) pintados en un lienzo; la rueda mueve la cámara. -->
+      <!-- El recorrido: el plano secuencia en vídeo (assets/intro-1080.mp4 o intro-720.mp4, lo elige intro.js); la rueda acelera la cámara. -->
       <div class="fi-stage" data-stage aria-hidden="true">
-        <canvas class="fi-canvas" data-canvas></canvas>
+        <video class="fi-video" data-video muted playsinline webkit-playsinline preload="auto" disablepictureinpicture disableremoteplayback tabindex="-1"></video>
       </div>
 
       <!-- Tramo 3: el sistema de visión fija el cobot del final. -->
@@ -117,6 +117,6 @@
     </noscript>
 
     <script src="js/vendor/gsap.min.js" defer></script>
-    <script src="js/intro.js?v=16" defer></script>
+    <script src="js/intro.js?v=17" defer></script>
   </body>
 </html>

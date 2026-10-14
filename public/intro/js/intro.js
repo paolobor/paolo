@@ -1,7 +1,9 @@
 /*
  * Intro de FAIRINO Spain: llegar en persona a una gran fábrica, como el arranque de una película.
- * Un único plano secuencia (assets/recorrido.mp4, convertido en fotogramas WebP empaquetados en assets/packs/) que se pinta en un
- * <canvas>; la cámara va siempre hacia delante, recta y sin pararse: la rueda o el dedo la aceleran, con inercia.
+ * Un único plano secuencia en vídeo (assets/intro-1080.mp4 o, en móvil y con conexión lenta, assets/intro-720.mp4): lo
+ * reproduce el chip de vídeo del aparato, así que va fluido también en móviles y ordenadores modestos (antes eran 768
+ * fotogramas sueltos en un <canvas>, que no cabían en la memoria de muchos aparatos). La cámara va siempre hacia delante,
+ * recta y sin pararse: la rueda o el dedo la aceleran un rato (más velocidad de reproducción, que se va apagando sola).
  *   Inicio   la pantalla de siempre: el bloque «FAIRINO SPAIN» con su destello y «Haz clic para entrar». Al hacer
  *            clic (o Intro, espacio, rueda o dedo), la cámara cruza el hueco de la «O» y empieza el recorrido.
  *   Tramo 1  la fábrica desde el aire, quieta pero viva (parallax).
@@ -27,11 +29,10 @@
   var KEY = 'fairino-intro-vista';
 
   // ---------------------------------------------------------------- el plano secuencia
-  // FRAMES: fotogramas en paquetes, assets/packs/<ancho>/p00.webp… (tools/videos/intro-fotogramas.sh). Tramos en segundos,
-  // medidos sobre los fotogramas del vídeo: aéreo, entrada (bajada y puertas), nave (luces y cobots) y final (la
-  // dron vuela entre los cobots y sale por el techo: assets-src/intro/final-dron-rapido.mp4 desde el fotograma 576). Si cambias el
-  // vídeo, cambia estos números (README).
-  var FRAMES = { count: 768, fps: 48, pack: 24, v: 13 };
+  // VIDEO: assets/intro-<alto>.mp4 (tools/videos/intro-video.sh; v: súbelo al cambiar el vídeo, para que el navegador no
+  // use el guardado). Tramos en segundos del vídeo: aéreo, entrada (bajada y puertas), nave (luces y cobots) y final (el
+  // dron vuela entre los cobots y sale por el techo). Si cambias el vídeo, cambia estos números (README).
+  var VIDEO = { fps: 48, v: 14 };
   var SEG = { entrada: 3.5, nave: 5.5, final: 12 };
   // LOCK: marco «objetivo fijado» sobre un cobot, de un instante a otro. Vacío: con el final nuevo (la cámara sube)
   // no hay cobot elegido.
@@ -39,12 +40,11 @@
   // Velocidades, en segundos de vídeo por segundo real: sola sin tocar nada, y tras un clic.
   var IDLE = 0.6;
   var AUTO = 1.7;
-  // Rueda: segundos de vídeo por píxel de rueda; dedo: por píxel arrastrado.
-  var WHEEL = 0.0032;
-  var TOUCH = 0.014;
-  // Fotogramas cargados por delante de la cámara por debajo de los cuales empieza a frenar (1,5 s de vídeo).
-  var BUFFER = 72;
-  // Segundos que se espera parado a que lleguen fotogramas antes de saltar a la web.
+  // Rueda y dedo: velocidad extra por píxel de rueda o de arrastre; se apaga sola en unos 0,6 s. Tope de velocidad.
+  var WHEEL = 0.006;
+  var TOUCH = 0.02;
+  var MAX_RATE = 3;
+  // Segundos que se espera parado a que llegue vídeo antes de saltar a la web.
   var STALL = 6;
   var stallSince = 0;
   // Sonido tipo tráiler (opcional): si existen en assets/audio/, suenan tras el primer gesto, a volumen bajo, con el
@@ -60,17 +60,16 @@
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var coarse = window.matchMedia('(pointer: coarse)').matches;
   var dpr = Math.min(window.devicePixelRatio || 1, 2);
-  // Con la conexión lenta (si el navegador lo dice), los fotogramas ligeros: 15 MB en vez de 33.
+  // En móvil, pantallas pequeñas o con la conexión lenta (si el navegador lo dice), el vídeo ligero: 5 MB en vez de 16.
   var net = navigator.connection || {};
   var slow = net.saveData || (net.downlink > 0 && net.downlink < 8) || /2g|3g/.test(net.effectiveType || '');
-  var WIDTH = coarse || slow || Math.max(window.innerWidth, window.innerHeight) * dpr <= 1400 ? 960 : 1920;
+  var HEIGHT = coarse || slow || Math.max(window.innerWidth, window.innerHeight) * dpr <= 1400 ? 720 : 1080;
   if (coarse) intro.classList.add('fi-coarse');
 
   var $ = function (s) {
     return intro.querySelector(s);
   };
-  var canvas = $('[data-canvas]');
-  var ctx = canvas.getContext('2d', { alpha: false });
+  var video = $('[data-video]');
   var stage = $('[data-stage]');
   var word = $('[data-word]');
   var mark = $('[data-wordmark]');
@@ -91,161 +90,51 @@
     hint.querySelector('span').textContent = 'Toca para entrar';
   }
 
-  var N = FRAMES.count;
-  var LAST = N - 1;
-  var state = 'idle'; // idle → run (rueda/dedo) | auto (clic) → out → done
-  var pos = 0; // fotograma que se ve (con decimales: se funden los dos vecinos)
-  var target = 0; // a dónde va la cámara
+  var state = 'idle'; // idle → enter → run (rueda/dedo) | auto (clic) → out → done
+  var boost = 0; // velocidad extra de la rueda o el dedo, que se va apagando
   var started = false;
   var revealTl = null;
 
-  // ---------------------------------------------------------------- carga de fotogramas
-  // Primero el tramo aéreo (para empezar en 2-3 s) y después el resto, en orden, en segundo plano. La cámara no puede
-  // pasar del último fotograma seguido ya cargado y frena poco a poco al acercarse a él (ver tick), sin pararse en seco.
-  var imgs = new Array(N);
-  var ok = new Array(N);
-  var ready = -1; // último fotograma cargado sin huecos desde el principio
-  var loaded = 0;
-  // Los fotogramas van en paquetes de FRAMES.pack (assets/packs/<ancho>/p00.webp…, tools/videos/intro-fotogramas.sh):
-  // unas 30 peticiones en vez de 719. Cabecera: nº de fotogramas y tamaño de cada uno (uint32); después, los WebP.
-  var packUrl = function (k) {
-    return ASSETS + 'packs/' + WIDTH + '/p' + ('0' + k).slice(-2) + '.webp?v=' + FRAMES.v;
+  // ---------------------------------------------------------------- el vídeo
+  // Se empieza a descargar mientras se ve la pantalla de inicio; el póster (primer fotograma) se ve al instante.
+  var src = function (name) {
+    return ASSETS + name + '?v=' + VIDEO.v;
   };
-  // Descarga un paquete y da sus fotogramas como trozos WebP; si el servidor falla o frena (429), lo reintenta.
-  function fetchPack(k, tries) {
-    return fetch(packUrl(k))
-      .then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.arrayBuffer();
-      })
-      .then(function (buf) {
-        var head = new DataView(buf);
-        var n = head.getUint32(0, true);
-        var off = 4 * (n + 1);
-        var out = [];
-        for (var j = 0; j < n; j++) {
-          var len = head.getUint32(4 * (j + 1), true);
-          out.push(new Blob([new Uint8Array(buf, off, len)], { type: 'image/webp' }));
-          off += len;
-        }
-        return out;
-      })
-      .catch(function (e) {
-        if ((tries || 0) >= 6) throw e;
-        return new Promise(function (res) {
-          setTimeout(res, Math.min(5000, 800 * Math.pow(2, tries || 0)));
-        }).then(function () {
-          return fetchPack(k, (tries || 0) + 1);
-        });
+  video.muted = true;
+  video.defaultMuted = true;
+  video.playsInline = true;
+  video.setAttribute('webkit-playsinline', '');
+  video.poster = src('intro-poster.webp');
+  video.preload = 'auto';
+  video.src = src('intro-' + HEIGHT + '.mp4');
+  // Si el aparato no puede con el vídeo, se pasa a la web en vez de dejar la intro colgada.
+  video.addEventListener('error', function () {
+    if (state !== 'idle') skipNow();
+  });
+  var now = function () {
+    return video.currentTime || 0;
+  };
+  // Arranca el vídeo (dentro del clic, para que los navegadores lo dejen). Si aun así lo frenan, vuelve a intentarlo
+  // con el siguiente toque.
+  function play() {
+    video.playbackRate = IDLE;
+    var p = video.play();
+    if (p && p.catch) {
+      p.catch(function () {
+        var retry = function () {
+          intro.removeEventListener('pointerdown', retry);
+          if (state !== 'out' && state !== 'done') video.play().catch(function () {});
+        };
+        intro.addEventListener('pointerdown', retry);
       });
-  }
-  // Un fotograma suelto en una <img> (pantalla de inicio y movimiento reducido).
-  function frameInto(i, img) {
-    return fetchPack(Math.floor(i / FRAMES.pack)).then(function (blobs) {
-      img.src = URL.createObjectURL(blobs[i % FRAMES.pack]);
-    });
-  }
-  function loadFrames(onFirst) {
-    var packs = Math.ceil(N / FRAMES.pack);
-    var next = 0;
-    var active = 0;
-    var MAX = 3;
-    var frame = function (i, blob) {
-      var img = new Image();
-      img.decoding = 'async';
-      var url = URL.createObjectURL(blob);
-      var done = function (good) {
-        URL.revokeObjectURL(url);
-        ok[i] = good;
-        loaded++;
-        if (good) imgs[i] = img;
-        while (ready + 1 < N && ok[ready + 1] !== undefined) ready++;
-        loadBar.style.transform = 'scaleX(' + (loaded / N).toFixed(3) + ')';
-        if (loaded === N) load.classList.add('is-done');
-        if (i === 0 && onFirst) onFirst(good);
-      };
-      img.onload = function () {
-        (img.decode ? img.decode() : Promise.resolve()).then(
-          function () {
-            done(true);
-          },
-          function () {
-            done(true);
-          },
-        );
-      };
-      img.onerror = function () {
-        done(false);
-      };
-      img.src = url;
-    };
-    var pump = function () {
-      while (active < MAX && next < packs) {
-        (function (k) {
-          active++;
-          var first = k * FRAMES.pack;
-          var count = Math.min(FRAMES.pack, N - first);
-          fetchPack(k)
-            .then(
-              function (blobs) {
-                for (var j = 0; j < count; j++) {
-                  if (blobs[j]) frame(first + j, blobs[j]);
-                  else frame(first + j, new Blob());
-                }
-              },
-              // Sin remedio tras los reintentos: esos fotogramas se saltan (se ve el vecino) y la intro sigue.
-              function () {
-                for (var j = 0; j < count; j++) frame(first + j, new Blob());
-              },
-            )
-            .then(function () {
-              active--;
-              pump();
-            });
-        })(next++);
-      }
-    };
-    pump();
-  }
-
-  // ---------------------------------------------------------------- lienzo
-  var cw = 0;
-  var ch = 0;
-  function resize() {
-    var r = canvas.getBoundingClientRect();
-    cw = Math.max(1, Math.round(r.width * dpr));
-    ch = Math.max(1, Math.round(r.height * dpr));
-    canvas.width = cw;
-    canvas.height = ch;
-    drawn = -1;
-  }
-  // Encaje «cover» del fotograma 16:9 en el lienzo.
-  function cover(img) {
-    var iw = img.naturalWidth;
-    var ih = img.naturalHeight;
-    var s = Math.max(cw / iw, ch / ih);
-    return [(cw - iw * s) / 2, (ch - ih * s) / 2, iw * s, ih * s];
-  }
-  var nearest = function (i) {
-    // El fotograma cargado más cercano (por si alguno ha fallado).
-    for (var d = 0; d < 6; d++) {
-      if (imgs[i - d]) return imgs[i - d];
-      if (imgs[i + d]) return imgs[i + d];
     }
-    return null;
-  };
-  var drawn = -1;
-  function draw(p) {
-    var key = Math.round(p);
-    if (key === drawn) return;
-    drawn = key;
-    // A 48 fps basta con el fotograma más cercano: mezclar dos vecinos emborrona la imagen.
-    var a = nearest(Math.min(Math.round(p), LAST));
-    if (!a) return;
-    var r = cover(a);
-    ctx.imageSmoothingQuality = 'high';
-    ctx.drawImage(a, r[0], r[1], r[2], r[3]);
   }
+  // Pestaña oculta: el vídeo espera (si no, seguiría solo y la intro acabaría sin verla).
+  document.addEventListener('visibilitychange', function () {
+    if (!started || state === 'out' || state === 'done') return;
+    if (document.hidden) video.pause();
+    else video.play().catch(function () {});
+  });
 
   // ---------------------------------------------------------------- tramo 1: quieto pero vivo
   var par = { x: 0, y: 0 };
@@ -391,6 +280,8 @@
     state = 'enter';
     intro.classList.remove('is-pulsing');
     remember();
+    play();
+    started = true;
     startAudio();
     intro.classList.add('is-entering');
     if (revealTl) revealTl.kill();
@@ -439,8 +330,7 @@
           stage.style.clipPath = '';
           gsap.set(word, { scale: 1, transformOrigin: '50% 50%' });
           intro.classList.add('is-flying');
-          state = 'run';
-          started = true;
+          if (state === 'enter') state = 'run';
           gsap.to(note, { opacity: 1, duration: 1.2, ease: 'sine.inOut', delay: 0.5 });
         }, null, 1.0);
     });
@@ -454,7 +344,7 @@
   var lockOn = false;
   // Rectángulo del fotograma 16:9 en pantalla (encaje «cover» del lienzo).
   function frameRect() {
-    var r = canvas.getBoundingClientRect();
+    var r = video.getBoundingClientRect();
     var s = Math.max(r.width / 16, r.height / 9);
     return { x: r.left + (r.width - 16 * s) / 2, y: r.top + (r.height - 9 * s) / 2, w: 16 * s, h: 9 * s };
   }
@@ -516,7 +406,7 @@
   // Qué suena en cada tramo: viento arriba, fábrica dentro, latido en el final.
   var bed = '';
   function mix() {
-    var t = pos / FRAMES.fps;
+    var t = now();
     var want = state === 'out' || state === 'done' ? '' : t < SEG.entrada + 1.5 ? 'viento' : t < SEG.final + 0.5 ? 'fabrica' : 'latido';
     ['viento', 'fabrica', 'latido'].forEach(function (k) {
       var a = sounds[k];
@@ -568,43 +458,45 @@
   }
 
   function tick() {
-    var now = performance.now();
-    var dt = Math.min(0.05, last ? (now - last) / 1000 : 0);
-    last = now;
+    var nowMs = performance.now();
+    var dt = Math.min(0.05, last ? (nowMs - last) / 1000 : 0);
+    last = nowMs;
     if (state === 'done') return;
+    var moving = state === 'run' || state === 'auto';
 
-    // Colchón de fotogramas cargados por delante: si se acaba, la cámara va frenando con suavidad hasta ir al ritmo
-    // de la descarga (nunca se para en seco ni da tirones).
-    var lead = ready >= LAST ? 1 : Math.min(1, Math.max(0, (ready - target) / BUFFER));
-    if (state === 'run' || state === 'auto') {
-      target += (state === 'auto' ? AUTO : IDLE) * FRAMES.fps * dt * lead;
+    // Velocidad: la base (sola o tras un clic) más el empujón de la rueda o el dedo, que se apaga con suavidad.
+    if (moving) {
+      boost *= Math.exp(-dt / 0.6);
+      var rate = Math.min(MAX_RATE, (state === 'auto' ? AUTO : IDLE) + boost);
+      if (Math.abs(video.playbackRate - rate) > 0.04) video.playbackRate = rate;
     }
-    target = Math.max(pos, Math.min(target, LAST, ready < 0 ? 0 : ready));
-    // Inercia: la cámara alcanza el objetivo con suavidad, nunca a saltos.
-    pos += (target - pos) * (1 - Math.exp(-dt * (state === 'auto' ? 12 : 9)));
-    if (Math.abs(target - pos) < 0.002) pos = target;
-    // Esperando fotogramas que aún no han llegado: la barra de carga lo indica.
-    var waiting = target >= ready - 1 && ready < LAST;
+    var t = now();
+    var dur = video.duration || 0;
+
+    // Barra de carga: lo que lleva descargado el vídeo.
+    if (dur && video.buffered.length) {
+      var got = video.buffered.end(video.buffered.length - 1) / dur;
+      loadBar.style.transform = 'scaleX(' + Math.min(1, got).toFixed(3) + ')';
+      if (got >= 0.999) load.classList.add('is-done');
+    }
+    // Esperando vídeo que aún no ha llegado: la barra lo indica. Seguro: si deja de llegar (red lenta, el servidor
+    // frena…), tras STALL s esperando se pasa a la web en vez de dejar la intro colgada.
+    var waiting = moving && !video.ended && video.readyState < 3;
     load.classList.toggle('is-waiting', waiting);
-    // Seguro: si los fotogramas dejan de llegar (red lenta, el servidor frena…), tras STALL s esperando se pasa a la
-    // web en vez de dejar la intro colgada.
-    if (waiting && (state === 'run' || state === 'auto')) {
-      if (!stallSince) stallSince = now;
-      else if (now - stallSince > STALL * 1000) skipNow();
+    if (waiting && !document.hidden) {
+      if (!stallSince) stallSince = nowMs;
+      else if (nowMs - stallSince > STALL * 1000) skipNow();
     } else {
       stallSince = 0;
     }
 
     // Parallax leve en el tramo aéreo (se apaga al avanzar).
     if (state !== 'out') {
-      var amt = Math.max(0, 1 - pos / (FRAMES.fps * 1.5));
+      var amt = Math.max(0, 1 - t / 1.5);
       px += (par.x * amt - px) * 0.06;
       py += (par.y * amt - py) * 0.06;
       stage.style.transform = 'translate3d(' + (-px * 1.4).toFixed(2) + '%,' + (-py * 1.1).toFixed(2) + '%,0)';
     }
-
-    draw(pos);
-    var t = pos / FRAMES.fps;
 
     // Tramo 3: el sistema de visión fija el cobot del final.
     var locked = LOCK.length > 1 && t >= LOCK[0].t && t < LOCK[1].t + 0.25;
@@ -619,7 +511,7 @@
       if (want !== bed) mix();
     }
 
-    if (pos >= LAST - 0.05 && ready >= LAST) finale();
+    if (started && (video.ended || (dur && t >= dur - 0.06))) finale();
   }
 
   // ---------------------------------------------------------------- final: la cámara sigue subiendo y aparece la web
@@ -671,7 +563,10 @@
       onComplete: function () {
         root.classList.remove('fi-play');
         host.remove();
-        imgs = [];
+        // Fuera el vídeo de la memoria.
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
       },
     });
   }
@@ -698,16 +593,17 @@
 
   // ---------------------------------------------------------------- movimiento reducido: tres imágenes fijas
   function reducedMotion() {
-    var picks = [Math.round(1.5 * FRAMES.fps), Math.round((SEG.nave + 3) * FRAMES.fps), LAST];
-    var els = picks.map(function (i) {
+    video.removeAttribute('src');
+    video.preload = 'none';
+    var els = [1, 2, 3].map(function (i) {
       var im = document.createElement('img');
       im.className = 'fi-still';
       im.alt = '';
-      frameInto(i, im);
+      im.src = src('intro-still-' + i + '.webp');
       stage.appendChild(im);
       return im;
     });
-    canvas.style.display = 'none';
+    video.style.display = 'none';
     load.classList.add('is-done');
     var tl = gsap.timeline({ paused: true });
     tl.to([hint, word], { opacity: 0, duration: 0.6 })
@@ -771,7 +667,7 @@
       else begin('auto');
     } else if (e.key === 'ArrowDown' || e.key === 'PageDown') {
       begin('run');
-      target += FRAMES.fps * 0.8;
+      boost = Math.min(MAX_RATE, boost + 1.2);
     }
   });
   // Rueda: la cámara avanza o retrocede; la página de debajo no se mueve.
@@ -783,7 +679,7 @@
       var d = e.deltaY * (e.deltaMode === 1 ? 32 : e.deltaMode === 2 ? window.innerHeight : 1);
       begin('run');
       // Siempre hacia delante: la rueda (en cualquier sentido) acelera la cámara, nunca la hace volver.
-      target += Math.min(240, Math.abs(d)) * WHEEL * FRAMES.fps;
+      boost = Math.min(MAX_RATE, boost + Math.min(240, Math.abs(d)) * WHEEL);
     },
     { passive: false },
   );
@@ -803,7 +699,7 @@
       e.preventDefault();
       var y = e.touches[0].clientY;
       begin('run');
-      target += Math.abs(ty - y) * TOUCH * FRAMES.fps;
+      boost = Math.min(MAX_RATE, boost + Math.abs(ty - y) * TOUCH);
       ty = y;
     },
     { passive: false },
@@ -816,19 +712,15 @@
   window.addEventListener('resize', function () {
     clearTimeout(resizeT);
     resizeT = setTimeout(function () {
-      resize();
       if (state === 'idle' && intro.classList.contains('is-pulsing')) measure().then(placePulse);
     }, 120);
   });
 
   // ---------------------------------------------------------------- arranque
-  resize();
   gsap.set(stage, { opacity: 0 });
   gsap.set(bars, { scaleY: 0 });
-  // Los fotogramas se descargan mientras se ve la pantalla de inicio (primero el tramo aéreo).
-  loadFrames(function () {
-    draw(0);
-  });
+  // El vídeo se descarga mientras se ve la pantalla de inicio.
+  video.load();
   gsap.ticker.add(tick);
   // La pantalla de inicio sale cuando el logotipo tiene su tamaño y la fuente de «SPAIN» está lista (máx. 0,8 s).
   var fontsReady = document.fonts && document.fonts.load ? document.fonts.load('500 16px Inter') : Promise.resolve();

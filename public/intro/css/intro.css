@@ -51,7 +51,7 @@
   background: radial-gradient(ellipse 80% 75% at 50% 50%, transparent 50%, rgba(0, 0, 0, 0.6));
 }
 
-/* ---------- El recorrido: lienzo a pantalla completa ---------- */
+/* ---------- El recorrido: vídeo a pantalla completa ---------- */
 .fi-stage {
   position: absolute;
   inset: 0;
@@ -59,13 +59,15 @@
   overflow: hidden;
   background: #000;
 }
-.fi-canvas {
+.fi-video {
   position: absolute;
   inset: -2%;
   width: 104%;
   height: 104%;
   display: block;
-  will-change: transform;
+  object-fit: cover;
+  background: #000;
+  pointer-events: none;
 }
 
 /* ---------- Logotipo ---------- */

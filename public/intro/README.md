@@ -12,11 +12,13 @@ Entrada animada con el logotipo oficial de FAIRINO. Funciona de dos formas:
 Un único plano secuencia sin cortes, hecho con IA (Higgsfield · Kling 3.0, 15 s, con los robots cambiados por el
 FAIRINO real con Genjutsu a partir de sus fotos; es imagen ilustrativa), que el
 visitante recorre con la rueda del ratón o el dedo, como en las páginas de producto de Apple. La cámara va siempre
-hacia delante, recta y sin pararse: la rueda o el dedo (en cualquier sentido) la aceleran, nunca la hacen volver. El vídeo está convertido en fotogramas WebP que se pintan en un `<canvas>` (1920 px en ordenador, 960 px en
-móvil): así se puede ir adelante y atrás al instante y sin tirones.
+hacia delante, recta y sin pararse: la rueda o el dedo (en cualquier sentido) la aceleran, nunca la hacen volver.
+Es un vídeo normal (H.264: 1080p en ordenador, 720p en móvil), que reproduce el chip de vídeo del aparato y va fluido
+en cualquiera; la rueda y el dedo cambian su velocidad. Antes eran 768 fotogramas pintados en un `<canvas>`, que no
+cabían en la memoria de muchos móviles y ordenadores (iban a tirones o se quedaban colgados).
 
 0. **Pantalla de inicio, la de siempre:** el bloque «FAIRINO SPAIN» con su destello, «Haz clic para entrar» y
-   «Saltar intro». Mientras se ve, se descargan los fotogramas (primero el tramo aéreo).
+   «Saltar intro». Mientras se ve, se descarga el vídeo.
 1. **Clic (o Intro, espacio, rueda o dedo):** la cámara cruza el hueco de la «O» y al otro lado está la fábrica desde
    el aire; entran las bandas de cine (2,39:1). Leve parallax con el ratón.
 2. **Rueda o dedo:** aceleran la cámara con inercia, nunca a saltos ni hacia atrás. Si se deja de mover, la cámara
@@ -33,7 +35,7 @@ de los ejes mate (sin brillo); 48 fotogramas por segundo (interpolados por movim
 corrección de color (sombras frías, luces cálidas que hacen saltar el naranja #fc5220) y destellos
 anamórficos discretos en las luces fuertes, ya metidos en los fotogramas; grano y viñeta suaves en la página.
 Textos como títulos de película: fundidos lentos y letras muy espaciadas. Una barra naranja fina (en el borde de la
-banda de abajo) muestra la carga; la cámara no pasa a un tramo cuyos fotogramas aún no han llegado.
+banda de abajo) muestra la carga; si el vídeo se queda esperando más de 6 s (`STALL`), se pasa a la web.
 
 **Sonido tipo tráiler (opcional):** viento en el tramo aéreo, golpe grave al abrirse las puertas, zumbido de fábrica
 dentro, un latido grave en el anillo y un golpe final al cruzarlo. Arranca tras el primer gesto, a volumen bajo, con
@@ -52,8 +54,10 @@ index.html                 la página suelta (destino en <html data-target="http
 css/intro.css              estilos
 js/intro.js                guion de las escenas (GSAP)
 js/vendor/gsap.min.js      GSAP 3.15 (licencia gratuita de GSAP)
-assets/packs/1920/         fotogramas del recorrido para ordenador (768 WebP a 48 fps en 32 paquetes p00.webp…, unos 43 MB)
-assets/packs/960/          los mismos para el móvil, las pantallas pequeñas y las conexiones lentas (unos 17 MB)
+assets/intro-1080.mp4      el recorrido para ordenador (16 s a 48 fps, unos 16 MB)
+assets/intro-720.mp4       el mismo para el móvil, las pantallas pequeñas y las conexiones lentas (unos 5 MB)
+assets/intro-poster.webp   primer fotograma (se ve al instante mientras arranca el vídeo)
+assets/intro-still-1..3    tres imágenes fijas para el movimiento reducido
 assets/audio/              sonido opcional (ver «Sonido tipo tráiler»)
 assets/fonts/              Inter (Google Fonts, licencia OFL), servida desde la propia web
 assets/favicon.svg
@@ -86,7 +90,7 @@ Para verla otra vez sin el parámetro, cierra la pestaña: sessionStorage se bor
 - **Teclado:** Intro o espacio = clic; flecha abajo y Av Pág adelantan la cámara.
 - **Movimiento reducido** (`prefers-reduced-motion`): sin recorrido; al hacer clic, fundidos entre tres imágenes fijas
   del vídeo (fábrica, nave y anillo) y paso a la web.
-- **Móvil:** fotogramas de 960 px y «Toca para entrar».
+- **Móvil:** vídeo de 720p y «Toca para entrar».
 - **Sin JavaScript:** la página suelta muestra el logotipo y un enlace a la web; dentro de la web, la intro no aparece.
 
 ## Cambiar el vídeo
@@ -99,11 +103,11 @@ Para verla otra vez sin el parámetro, cierra la pestaña: sessionStorage se bor
    # recorrido-noche-1080.mp4 = exterior de noche + recorrido-1080.mp4, escalado a 4K con Topaz (Higgsfield) y bajado a 1920
    ffmpeg -i recorrido-noche-4k.mp4 -vf "scale=1920:1080:flags=lanczos,fps=24,minterpolate=fps=48:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1" -c:v libx264 -crf 12 /tmp/recorrido-noche-48.mp4
    MID=assets-src/intro/nave-4k.mp4 MIDCUT=264 FINAL=assets-src/intro/final-dron-rapido.mp4 CUT=576 \
-     tools/videos/intro-fotogramas.sh /tmp/recorrido-noche-48.mp4 public/intro/assets/packs
+     tools/videos/intro-fotogramas.sh /tmp/recorrido-noche-48.mp4 /tmp/packs
+   tools/videos/intro-video.sh /tmp/packs/1920 public/intro/assets
    ```
 3. En `js/intro.js`, actualiza:
-   - `FRAMES.count` (lo dice el script) y súbele `v` para que el navegador no use los fotogramas guardados;
-     los fotogramas van en paquetes de 24 (`FRAMES.pack`): el servidor frena si se le piden cientos de archivos seguidos;
+   - súbele `v` a `VIDEO` para que el navegador no use el vídeo guardado;
    - `SEG`: segundo en que empieza cada tramo (entrada, nave, final); mira fotogramas sueltos con
      `ffmpeg -i video.mp4 -vf "fps=2,scale=400:-2,tile=6x5" hoja.jpg`;
    - `LOCK`: dónde está el cobot elegido al principio y al final del marco (proporciones del fotograma);
