@@ -344,12 +344,33 @@
   }
 
   // ---------------------------------------------------------------- pantalla de inicio (la de siempre)
+  // Pulso de luz naranja en el hueco de la «O»: invita a tocar sin poner texto. Se quita al entrar.
+  var pulse = document.createElement('div');
+  pulse.className = 'fi-pulse';
+  pulse.setAttribute('aria-hidden', 'true');
+  intro.appendChild(pulse);
+  function placePulse() {
+    if (!geo) return;
+    var o = geo.o;
+    pulse.style.left = (o.x - o.hx).toFixed(1) + 'px';
+    pulse.style.top = (o.y - o.hy).toFixed(1) + 'px';
+    pulse.style.width = (o.hx * 2).toFixed(1) + 'px';
+    pulse.style.height = (o.hy * 2).toFixed(1) + 'px';
+    pulse.style.borderRadius = o.rad.toFixed(1) + 'px';
+  }
+  function startPulse() {
+    if (state !== 'idle') return;
+    placePulse();
+    intro.classList.add('is-pulsing');
+  }
+
   function reveal() {
     gsap.set(word, { autoAlpha: 1, opacity: 0 });
     if (reduce) {
       gsap.to(word, { opacity: 1, duration: 1, ease: 'power1.out' });
       gsap.to(spain, { opacity: 1, duration: 1, delay: 0.3 });
       gsap.to([hint, skip], { opacity: 1, duration: 1, delay: 0.6 });
+      gsap.delayedCall(1.4, startPulse);
       return;
     }
     var sh = { p: -0.4 };
@@ -359,7 +380,8 @@
       .to(sh, { p: 1.4, duration: 2.1, ease: 'power2.inOut', onUpdate: function () { setShine(sh.p); } }, 0.4)
       .fromTo(spain, { opacity: 0, letterSpacing: '1.1em' }, { opacity: 1, letterSpacing: '0.62em', duration: 1.6, ease: 'expo.out' }, 1.5)
       .to(skip, { opacity: 1, duration: 1.2, ease: 'power2.out' }, 1.3)
-      .to(hint, { opacity: 1, duration: 1.4, ease: 'power2.out' }, 2.2);
+      .to(hint, { opacity: 1, duration: 1.4, ease: 'power2.out' }, 2.2)
+      .call(startPulse, null, 2.4);
   }
 
   // Clic en la pantalla de inicio: un destello recorre el logotipo, la cámara atraviesa la «O» y al otro lado está
@@ -367,6 +389,7 @@
   function enter() {
     if (state !== 'idle') return;
     state = 'enter';
+    intro.classList.remove('is-pulsing');
     remember();
     startAudio();
     intro.classList.add('is-entering');
@@ -792,7 +815,10 @@
   var resizeT;
   window.addEventListener('resize', function () {
     clearTimeout(resizeT);
-    resizeT = setTimeout(resize, 120);
+    resizeT = setTimeout(function () {
+      resize();
+      if (state === 'idle' && intro.classList.contains('is-pulsing')) measure().then(placePulse);
+    }, 120);
   });
 
   // ---------------------------------------------------------------- arranque

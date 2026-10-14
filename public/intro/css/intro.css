@@ -181,6 +181,31 @@
   color: var(--fi-orange);
 }
 
+/* Pulso en el hueco de la «O» de la pantalla de inicio: un aro naranja que se expande y se desvanece, en bucle. */
+.fi-pulse {
+  position: fixed;
+  z-index: 4;
+  pointer-events: none;
+  opacity: 0;
+  border: 3px solid rgba(255, 110, 50, 1);
+  box-shadow:
+    0 0 26px 8px rgba(252, 82, 32, 0.7),
+    0 0 60px 16px rgba(252, 82, 32, 0.3),
+    inset 0 0 18px 4px rgba(252, 82, 32, 0.55);
+}
+.fi-intro.is-pulsing .fi-pulse {
+  animation: fi-pulse 2.2s ease-out infinite;
+}
+@keyframes fi-pulse {
+  0% { opacity: 0; transform: scale(0.9); }
+  20% { opacity: 1; }
+  100% { opacity: 0; transform: scale(2.2); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fi-intro.is-pulsing .fi-pulse { animation: fi-pulse-soft 2.4s ease-in-out infinite; }
+  @keyframes fi-pulse-soft { 0%, 100% { opacity: 0.15; } 50% { opacity: 0.9; } }
+}
+
 .fi-enter {
   position: absolute;
   inset: 0;
