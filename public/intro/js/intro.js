@@ -31,7 +31,7 @@
   // medidos sobre los fotogramas del vídeo: aéreo, entrada (bajada y puertas), nave (luces y cobots) y final (la
   // dron vuela entre los cobots y sale por el techo: assets-src/intro/final-dron-rapido.mp4 desde el fotograma 576). Si cambias el
   // vídeo, cambia estos números (README).
-  var FRAMES = { count: 768, fps: 48, pack: 24, v: 12 };
+  var FRAMES = { count: 768, fps: 48, pack: 24, v: 13 };
   var SEG = { entrada: 3.5, nave: 5.5, final: 12 };
   // LOCK: marco «objetivo fijado» sobre un cobot, de un instante a otro. Vacío: con el final nuevo (la cámara sube)
   // no hay cobot elegido.

@@ -52,7 +52,7 @@ index.html                 la página suelta (destino en <html data-target="http
 css/intro.css              estilos
 js/intro.js                guion de las escenas (GSAP)
 js/vendor/gsap.min.js      GSAP 3.15 (licencia gratuita de GSAP)
-assets/packs/1920/         fotogramas del recorrido para ordenador (768 WebP a 48 fps en 32 paquetes p00.webp…, unos 45 MB)
+assets/packs/1920/         fotogramas del recorrido para ordenador (768 WebP a 48 fps en 32 paquetes p00.webp…, unos 43 MB)
 assets/packs/960/          los mismos para el móvil, las pantallas pequeñas y las conexiones lentas (unos 17 MB)
 assets/audio/              sonido opcional (ver «Sonido tipo tráiler»)
 assets/fonts/              Inter (Google Fonts, licencia OFL), servida desde la propia web
@@ -98,7 +98,8 @@ Para verla otra vez sin el parámetro, cierra la pestaña: sessionStorage se bor
    ```bash
    # recorrido-noche-1080.mp4 = exterior de noche + recorrido-1080.mp4, escalado a 4K con Topaz (Higgsfield) y bajado a 1920
    ffmpeg -i recorrido-noche-4k.mp4 -vf "scale=1920:1080:flags=lanczos,fps=24,minterpolate=fps=48:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1" -c:v libx264 -crf 12 /tmp/recorrido-noche-48.mp4
-   FINAL=assets-src/intro/final-dron-rapido.mp4 CUT=576 tools/videos/intro-fotogramas.sh /tmp/recorrido-noche-48.mp4 public/intro/assets/packs
+   MID=assets-src/intro/nave-4k.mp4 MIDCUT=264 FINAL=assets-src/intro/final-dron-rapido.mp4 CUT=576 \
+     tools/videos/intro-fotogramas.sh /tmp/recorrido-noche-48.mp4 public/intro/assets/packs
    ```
 3. En `js/intro.js`, actualiza:
    - `FRAMES.count` (lo dice el script) y súbele `v` para que el navegador no use los fotogramas guardados;

@@ -50,7 +50,7 @@ for W in 1920 960; do
     find "$OUT/$W" -name 'f*.webp' | while read -r f; do n=$(basename "$f" .webp); n=$((10#${n#f})); [ $n -ge "$MIDCUT" ] && [ $n -lt "$CUT" ] && rm "$f"; done
     D=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$MID")
     K=$(python3 -c "print(($CUT-$MIDCUT)/$FPS/$D)")
-    ffmpeg -v error -y -i "$MID" -vf "scale=1920:-2:flags=lanczos,fps=24,minterpolate=fps=$FPS:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1,setpts=PTS*$K,fps=$FPS,scale=$W:-2:flags=lanczos,unsharp=5:5:0.3:5:5:0,setsar=1" -an \
+    ffmpeg -v error -y -i "$MID" -vf "scale=1920:-2:flags=lanczos,fps=24,minterpolate=fps=$FPS:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1,setpts=PTS*$K,fps=$FPS,tpad=stop_mode=clone:stop=4,scale=$W:-2:flags=lanczos,unsharp=5:5:0.3:5:5:0,setsar=1" -an \
       -frames:v $((CUT-MIDCUT)) -c:v libwebp -quality "$Q" -compression_level 5 -preset photo -start_number "$MIDCUT" "$OUT/$W/f%04d.webp"
   fi
 done
