@@ -1,4 +1,6 @@
 # Saca el manual oficial de FAIRINO (PDF en inglés) a textos para la base de conocimiento del asistente de ElevenLabs.
+# Sustituido por manual-web.py, que sale del manual publicado como web y lleva las imágenes y el enlace de cada apartado;
+# este se queda por si la web dejara de estar disponible.
 #   curl -L -o fairino-manual.pdf https://fairino-doc-en.readthedocs.io/_/downloads/en/latest/pdf/
 #   python3 tools/asistente/extraer-manual.py fairino-manual.pdf <carpeta de salida>
 # Necesita pdftotext (poppler-utils). Los rangos de páginas son los de la Release 4.0.0 (28/09/2026, 3107 páginas):
