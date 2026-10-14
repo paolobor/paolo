@@ -20,9 +20,12 @@
 #
 # Uso: tools/videos/intro-fotogramas.sh assets-src/intro/recorrido-1080.mp4 public/intro/assets/packs
 #      FINAL=assets-src/intro/final-dron-rapido.mp4 CUT=576 tools/videos/intro-fotogramas.sh /tmp/recorrido-48.mp4 public/intro/assets/packs
+# Tramo intermedio: si se da MID (un vídeo que va del fotograma MIDCUT al CUT, p. ej. la nave regenerada en 4K con
+# esos dos fotogramas como inicio y fin: assets-src/intro/nave-4k.mp4), sustituye los fotogramas MIDCUT…CUT-1,
+# ajustado para que dure justo eso, también sin volver a colorearlo.
 set -euo pipefail
 SRC=$1 PACKS=$2
-FINAL=${FINAL:-} CUT=${CUT:-0}
+FINAL=${FINAL:-} CUT=${CUT:-0} MID=${MID:-} MIDCUT=${MIDCUT:-0}
 FPS=${FPS:-48}
 PACK=${PACK:-24}
 OUT=$(mktemp -d)
@@ -42,6 +45,13 @@ for W in 1920 960; do
     find "$OUT/$W" -name 'f*.webp' | while read -r f; do n=$(basename "$f" .webp); [ $((10#${n#f})) -ge "$CUT" ] && rm "$f"; done
     ffmpeg -v error -y -i "$FINAL" -vf "scale=1920:-2:flags=lanczos,minterpolate=fps=$FPS:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1,scale=$W:-2:flags=lanczos,unsharp=5:5:0.3:5:5:0,setsar=1" -an \
       -c:v libwebp -quality "$Q" -compression_level 5 -preset photo -start_number "$CUT" "$OUT/$W/f%04d.webp"
+  fi
+  if [ -n "$MID" ]; then
+    find "$OUT/$W" -name 'f*.webp' | while read -r f; do n=$(basename "$f" .webp); n=$((10#${n#f})); [ $n -ge "$MIDCUT" ] && [ $n -lt "$CUT" ] && rm "$f"; done
+    D=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$MID")
+    K=$(python3 -c "print(($CUT-$MIDCUT)/$FPS/$D)")
+    ffmpeg -v error -y -i "$MID" -vf "scale=1920:-2:flags=lanczos,fps=24,minterpolate=fps=$FPS:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1,setpts=PTS*$K,fps=$FPS,scale=$W:-2:flags=lanczos,unsharp=5:5:0.3:5:5:0,setsar=1" -an \
+      -frames:v $((CUT-MIDCUT)) -c:v libwebp -quality "$Q" -compression_level 5 -preset photo -start_number "$MIDCUT" "$OUT/$W/f%04d.webp"
   fi
 done
 for W in 1920 960; do
