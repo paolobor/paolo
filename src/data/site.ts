@@ -87,6 +87,9 @@ export const site = {
   analytics: { gaId: 'G-97VG1MQNJB' as string | null },
   assistant: {
     agentId: 'agent_0701m4bjmv7rfg9abjm69q28bm9b' as string | null, // «Asistente FAIRINO España»
+    // Conversaciones por visitante y día (se cuentan en su navegador; 0 = sin tope). El tope de toda la web (llamadas al
+    // día, simultáneas, ráfagas) está en el panel del agente: Configuración → Límites.
+    dailyLimit: 2,
   },
 
   // Newsletter: proveedor pendiente (Brevo, Mailchimp…). Mientras sea null, el formulario usa el mismo envío que los demás.

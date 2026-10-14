@@ -3,9 +3,12 @@
 // src/data/site.ts. El script del widget se carga cuando la página ya está lista y el aviso de cookies contestado.
 // El modo «voz + texto», la posición y el dominio permitido se configuran en el panel del agente (ver site.ts).
 import { site } from '../data/site';
+import { url } from '../lib/url';
 
 const agentId = site.assistant.agentId;
 const host = new URL(site.url).hostname;
+const limit = site.assistant.dailyLimit;
+const contacto = url('contacto/');
 // Textos del widget en español (atributo text-contents; manda sobre los del panel). Va abajo a la izquierda porque
 // abajo a la derecha está el botón de WhatsApp. El idioma no se fuerza desde aquí: lo pone el agente (español), y
 // forzarlo sin permitirlo en Security → Overrides corta la conversación.
@@ -53,12 +56,63 @@ const textos = JSON.stringify({
         avatar-orb-color-2="#ffe2c8"
         text-contents={textos}
         markdown-link-allowed-hosts={host}
+        data-limite={limit}
+        data-contacto={contacto}
       />
       <script is:inline>
         // El widget va en la misma esquina que el aviso de cookies: no se carga hasta que el visitante contesta al aviso,
         // y se esconde si lo vuelve a abrir desde el pie de página. Se carga 1,5 s después de la página.
         (function () {
           var el = document.querySelector('elevenlabs-convai');
+          // Tope de conversaciones por visitante y día (site.assistant.dailyLimit), contado en este navegador. Cada
+          // conversación nueva, de voz o de texto, lanza «elevenlabs-convai:call» antes de conectar; las que solo
+          // retoman una de texto al cambiar de página llevan persistentSession.token y no cuentan. Al pasarse, se le da
+          // al widget un agente que no existe para que no llegue a conectar (no gasta créditos) y se cambia por un aviso.
+          var LIMIT = Number(el.dataset.limite) || 0;
+          var KEY = 'fairino-asistente';
+          var hoy = function () {
+            var d = new Date();
+            return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+          };
+          var usadas = function () {
+            try {
+              var v = JSON.parse(localStorage.getItem(KEY) || 'null');
+              return v && v.d === hoy() ? v.n : 0;
+            } catch (e) {
+              return 0;
+            }
+          };
+          var aviso = function () {
+            var a = document.createElement('div');
+            a.className = 'fi-asistente-aviso';
+            a.setAttribute('role', 'status');
+            a.innerHTML =
+              '<p>Has usado las ' + LIMIT + ' conversaciones de hoy con el asistente. Mañana puedes volver a hablar con él o, si lo necesitas ya, ' +
+              '<a href="' + el.dataset.contacto + '">escríbenos</a>.</p><button type="button" aria-label="Cerrar">×</button>';
+            a.querySelector('button').addEventListener('click', function () { a.remove(); });
+            document.body.appendChild(a);
+          };
+          if (LIMIT && usadas() >= LIMIT) {
+            el.remove();
+            return;
+          }
+          if (LIMIT) {
+            el.addEventListener('elevenlabs-convai:call', function (e) {
+              var c = e.detail && e.detail.config;
+              if (!c || (c.persistentSession && c.persistentSession.token)) return;
+              var n = usadas() + 1;
+              try {
+                localStorage.setItem(KEY, JSON.stringify({ d: hoy(), n: n }));
+              } catch (err) {}
+              if (n <= LIMIT) return;
+              c.agentId = 'limite-diario';
+              delete c.signedUrl;
+              setTimeout(function () {
+                el.remove();
+                aviso();
+              }, 0);
+            });
+          }
           // En el móvil, solo el botón redondo: la tarjeta completa tapa el contenido.
           if (window.matchMedia('(max-width: 639px)').matches) el.setAttribute('variant', 'tiny');
           var load = function () {
@@ -89,6 +143,40 @@ const textos = JSON.stringify({
 }
 
 <style is:global>
+  /* Aviso que sustituye al widget cuando el visitante ya ha usado sus conversaciones del día. */
+  .fi-asistente-aviso {
+    position: fixed;
+    left: 1rem;
+    bottom: 1rem;
+    z-index: 60;
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    max-width: min(22rem, calc(100vw - 2rem));
+    padding: 0.875rem 1rem;
+    border: 1px solid #3b2a1e;
+    border-radius: 0.75rem;
+    background: #17100c;
+    color: #f5eee8;
+    font: 0.875rem/1.45 'IBM Plex Sans', 'Segoe UI', Roboto, Arial, sans-serif;
+    box-shadow: 0 10px 30px rgb(0 0 0 / 0.35);
+  }
+  .fi-asistente-aviso p {
+    margin: 0;
+  }
+  .fi-asistente-aviso a {
+    color: #ff7a1a;
+    text-decoration: underline;
+  }
+  .fi-asistente-aviso button {
+    flex: none;
+    border: 0;
+    background: none;
+    color: #b9aca2;
+    font-size: 1.25rem;
+    line-height: 1;
+    cursor: pointer;
+  }
   /* Colores de la web en el widget: tarjeta oscura y botones en el naranja de FAIRINO España. Las variables puestas
      desde fuera mandan sobre las que el widget define en su :host. */
   elevenlabs-convai {
