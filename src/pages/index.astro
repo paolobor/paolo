@@ -10,6 +10,7 @@ import TresPiezas from '../components/home/TresPiezas.astro';
 import Counters from '../components/home/Counters.astro';
 import Advice from '../components/home/Advice.astro';
 import Testimonial from '../components/home/Testimonial.astro';
+import { testimonial } from '../data/home';
 import Applications from '../components/home/Applications.astro';
 import Turnkey from '../components/home/Turnkey.astro';
 import Features from '../components/home/Features.astro';
@@ -36,7 +37,8 @@ const siteUrl = new URL(import.meta.env.BASE_URL, Astro.site);
   <TresPiezas />
   <Counters />
   <Advice />
-  <Testimonial />
+  {/* El testimonio solo sale cuando hay uno real (testimonial.quote en src/data/home.ts). */}
+  {testimonial.quote && <Testimonial />}
   <Applications />
   <Turnkey />
   <Features />
