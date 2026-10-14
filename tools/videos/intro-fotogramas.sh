@@ -35,7 +35,7 @@ NIGHT="eq=eval=frame:brightness='if(lt(t,3.8),0,if(lt(t,5.2),-0.12*(t-3.8)/1.4,-
 GRADE="fps=$FPS,$NIGHT,eq=contrast=1.06:saturation=1.06:gamma=0.98,colorbalance=rs=-0.02:bs=0.03:rm=0.06:gm=0.025:bm=-0.05:rh=0.05:gh=0.02:bh=-0.04,vibrance=0.3,huesaturation=colors=r:intensity=-0.3:saturation=-0.25:strength=12,colorbalance=rs=0.04:gs=0.01:bs=-0.06:rm=0.05:bm=-0.04,split[g0][g1];[g1]colorlevels=rimin=0.93:gimin=0.93:bimin=0.93,gblur=sigma=70:sigmaV=0.8,colorchannelmixer=rr=0.6:gg=0.8:bb=1.2[fl];[g0][fl]blend=all_mode=screen:all_opacity=0.25"
 for W in 1920 960; do
   rm -rf "$OUT/$W" && mkdir -p "$OUT/$W"
-  Q=$([ $W = 1920 ] && echo 72 || echo 68)
+  Q=$([ $W = 1920 ] && echo 80 || echo 74)
   ffmpeg -v error -y -i "$SRC" -filter_complex "[0:v]$GRADE,scale=$W:-2:flags=lanczos,unsharp=5:5:0.7:5:5:0,setsar=1[v]" -map "[v]" -an \
     -c:v libwebp -quality "$Q" -compression_level 5 -preset photo -start_number 0 "$OUT/$W/f%04d.webp"
   if [ -n "$FINAL" ]; then
