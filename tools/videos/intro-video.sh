@@ -10,7 +10,9 @@
 # móviles y ordenadores tendrían que hacerlo a mano y volverían los tirones). Para exprimirlo: preset veryslow, CRF bajo,
 # tune film (conserva el detalle y el grano) y aq-mode 3 (más bits en las zonas oscuras, que es casi todo el vídeo: evita
 # las manchas y los escalones en los degradados de la noche). El techo de bitrate deja que se pueda ver mientras se
-# descarga. Un fotograma clave por segundo y «faststart» para que empiece antes.
+# descarga. Nivel 4.2 (1080p a 48 fps) y 4.0 (720p): con veryslow, x264 subiría a 5.1 por usar más fotogramas de
+# referencia, y hay móviles que con 5.1 ya no lo hacen con el chip. Un fotograma clave por segundo y «faststart» para que
+# empiece antes.
 set -euo pipefail
 SRC="$1"
 OUT="$2"
@@ -43,8 +45,8 @@ N=$(ls "$SRC"/f*."$EXT" | wc -l)
 LAST=$((N - 1))
 mkdir -p "$OUT"
 COMUN=(-c:v libx264 -preset veryslow -tune film -pix_fmt yuv420p -profile:v high -x264-params aq-mode=3:aq-strength=0.9 -g "$FPS" -movflags +faststart -an)
-ffmpeg -v error -y -framerate "$FPS" -i "$IN" -vf "format=yuv420p" "${COMUN[@]}" -crf "${CRF_1080:-16}" -maxrate 24M -bufsize 48M "$OUT/intro-1080.mp4"
-ffmpeg -v error -y -framerate "$FPS" -i "$IN" -vf "scale=1280:720:flags=lanczos,format=yuv420p" "${COMUN[@]}" -crf "${CRF_720:-19}" -maxrate 8M -bufsize 16M "$OUT/intro-720.mp4"
+ffmpeg -v error -y -framerate "$FPS" -i "$IN" -vf "format=yuv420p" "${COMUN[@]}" -crf "${CRF_1080:-16}" -level:v 4.2 -maxrate 24M -bufsize 48M "$OUT/intro-1080.mp4"
+ffmpeg -v error -y -framerate "$FPS" -i "$IN" -vf "scale=1280:720:flags=lanczos,format=yuv420p" "${COMUN[@]}" -crf "${CRF_720:-19}" -level:v 4.0 -maxrate 8M -bufsize 16M "$OUT/intro-720.mp4"
 still() { ffmpeg -v error -y -i "$SRC/f$(printf %04d "$1").$EXT" -c:v libwebp -quality 88 "$OUT/$2"; }
 still 0 intro-poster.webp
 still $((FPS * 3 / 2)) intro-still-1.webp

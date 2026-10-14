@@ -464,14 +464,23 @@
     if (state === 'done') return;
     var moving = state === 'run' || state === 'auto';
 
-    // Velocidad: la base (sola o tras un clic) más el empujón de la rueda o el dedo, que se apaga con suavidad.
-    if (moving) {
-      boost *= Math.exp(-dt / 0.6);
-      var rate = Math.min(MAX_RATE, (state === 'auto' ? AUTO : IDLE) + boost);
-      if (Math.abs(video.playbackRate - rate) > 0.04) video.playbackRate = rate;
-    }
     var t = now();
     var dur = video.duration || 0;
+    // Segundos de vídeo ya descargados por delante de la cámara (99: descargado hasta el final).
+    var ahead = 0;
+    for (var b = 0; b < video.buffered.length; b++) {
+      if (video.buffered.start(b) <= t + 0.1 && video.buffered.end(b) >= t) {
+        ahead = video.buffered.end(b) >= dur - 0.1 ? 99 : video.buffered.end(b) - t;
+      }
+    }
+    // Velocidad: la base (sola o tras un clic) más el empujón de la rueda o el dedo, que se apaga con suavidad. Si la
+    // descarga va justa (menos de 2,5 s por delante), frena poco a poco en vez de pararse a esperar a tirones.
+    if (moving) {
+      boost *= Math.exp(-dt / 0.6);
+      var lead = Math.max(0.3, Math.min(1, ahead / 2.5));
+      var rate = Math.min(MAX_RATE, ((state === 'auto' ? AUTO : IDLE) + boost) * lead);
+      if (Math.abs(video.playbackRate - rate) > 0.04) video.playbackRate = rate;
+    }
 
     // Barra de carga: lo que lleva descargado el vídeo.
     if (dur && video.buffered.length) {
