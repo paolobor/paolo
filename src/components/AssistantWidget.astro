@@ -2,6 +2,8 @@
 // Asistente virtual de FAIRINO España (ElevenLabs Agents): voz y chat de texto. Solo se pinta cuando hay agentId en
 // src/data/site.ts. El script del widget se carga cuando la página ya está lista y el aviso de cookies contestado.
 // El modo «voz + texto», la posición y el dominio permitido se configuran en el panel del agente (ver site.ts).
+// persistent-session: las conversaciones escritas siguen al cerrar el chat, cambiar de página o recargar (el widget guarda
+// un token en el almacenamiento local y ElevenLabs le devuelve el historial). Las de voz terminan al cerrar, como siempre.
 import { site } from '../data/site';
 import { url } from '../lib/url';
 
@@ -57,6 +59,7 @@ const textos = JSON.stringify({
         avatar-orb-color-2="#ffe2c8"
         text-contents={textos}
         markdown-link-allowed-hosts={hosts}
+        persistent-session="true"
         data-limite={limit}
         data-contacto={contacto}
       />
