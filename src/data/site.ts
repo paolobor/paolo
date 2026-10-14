@@ -58,7 +58,9 @@ export const site = {
   forms: {
     provider: 'web3forms' as const,
     endpoint: 'https://api.web3forms.com/submit',
-    accessKey: '99444275-6259-4302-914b-574ae21c268e' as string | null, // clave pública de Web3Forms (formulario «Web FAIRINO España», a po@fairino.es)
+    // Clave pública del formulario «Web FAIRINO España» del panel app.web3forms.com; el destinatario (po@fairino.es,
+    // correo vinculado y verificado) se elige en Settings → Email Configuration de ese formulario.
+    accessKey: 'be38439e-f1cb-4fae-b276-c312edcc0921' as string | null,
     fallbackEmail: 'po@fairino.es',
   },
 
