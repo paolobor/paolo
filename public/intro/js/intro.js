@@ -44,6 +44,9 @@
   var TOUCH = 0.014;
   // Fotogramas cargados por delante de la cámara por debajo de los cuales empieza a frenar (1,5 s de vídeo).
   var BUFFER = 72;
+  // Segundos que se espera parado a que lleguen fotogramas antes de saltar a la web.
+  var STALL = 6;
+  var stallSince = 0;
   // Sonido tipo tráiler (opcional): si existen en assets/audio/, suenan tras el primer gesto, a volumen bajo, con el
   // botón «Sonido» para silenciarlo. Si no hay ninguno, no suena nada y el botón no aparece.
   var AUDIO = {
@@ -128,9 +131,9 @@
         return out;
       })
       .catch(function (e) {
-        if ((tries || 0) >= 5) throw e;
+        if ((tries || 0) >= 6) throw e;
         return new Promise(function (res) {
-          setTimeout(res, 800 * Math.pow(2, tries || 0));
+          setTimeout(res, Math.min(5000, 800 * Math.pow(2, tries || 0)));
         }).then(function () {
           return fetchPack(k, (tries || 0) + 1);
         });
@@ -558,7 +561,16 @@
     pos += (target - pos) * (1 - Math.exp(-dt * (state === 'auto' ? 12 : 9)));
     if (Math.abs(target - pos) < 0.002) pos = target;
     // Esperando fotogramas que aún no han llegado: la barra de carga lo indica.
-    load.classList.toggle('is-waiting', target >= ready - 1 && ready < LAST);
+    var waiting = target >= ready - 1 && ready < LAST;
+    load.classList.toggle('is-waiting', waiting);
+    // Seguro: si los fotogramas dejan de llegar (red lenta, el servidor frena…), tras STALL s esperando se pasa a la
+    // web en vez de dejar la intro colgada.
+    if (waiting && (state === 'run' || state === 'auto')) {
+      if (!stallSince) stallSince = now;
+      else if (now - stallSince > STALL * 1000) skipNow();
+    } else {
+      stallSince = 0;
+    }
 
     // Parallax leve en el tramo aéreo (se apaga al avanzar).
     if (state !== 'out') {
