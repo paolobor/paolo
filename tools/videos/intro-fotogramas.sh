@@ -14,9 +14,15 @@
 # Al terminar dice cuántos fotogramas hay: ese número va en FRAMES.count de public/intro/js/intro.js (y PACK en
 # FRAMES.pack).
 #
+# Final: si se da FINAL (un vídeo que empieza en el fotograma CUT del recorrido ya con el acabado puesto, p. ej.
+# assets-src/intro/final-subida-4k.mp4, generado en Higgsfield a partir de ese fotograma), el recorrido se corta en CUT
+# y sigue con ese vídeo, pasado a 48 fps por interpolación, sin volver a colorearlo (ya viene con el color de la intro).
+#
 # Uso: tools/videos/intro-fotogramas.sh assets-src/intro/recorrido-1080.mp4 public/intro/assets/packs
+#      FINAL=assets-src/intro/final-subida-4k.mp4 CUT=576 tools/videos/intro-fotogramas.sh /tmp/recorrido-48.mp4 public/intro/assets/packs
 set -euo pipefail
 SRC=$1 PACKS=$2
+FINAL=${FINAL:-} CUT=${CUT:-0}
 FPS=${FPS:-48}
 PACK=${PACK:-24}
 OUT=$(mktemp -d)
@@ -32,6 +38,11 @@ for W in 1920 960; do
   Q=$([ $W = 1920 ] && echo 72 || echo 68)
   ffmpeg -v error -y -i "$SRC" -filter_complex "[0:v]$GRADE,scale=$W:-2:flags=lanczos,unsharp=5:5:0.7:5:5:0,setsar=1[v]" -map "[v]" -an \
     -c:v libwebp -quality "$Q" -compression_level 5 -preset photo -start_number 0 "$OUT/$W/f%04d.webp"
+  if [ -n "$FINAL" ]; then
+    find "$OUT/$W" -name 'f*.webp' | while read -r f; do n=$(basename "$f" .webp); [ $((10#${n#f})) -ge "$CUT" ] && rm "$f"; done
+    ffmpeg -v error -y -i "$FINAL" -vf "scale=1920:-2:flags=lanczos,minterpolate=fps=$FPS:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1,scale=$W:-2:flags=lanczos,unsharp=5:5:0.3:5:5:0,setsar=1" -an \
+      -c:v libwebp -quality "$Q" -compression_level 5 -preset photo -start_number "$CUT" "$OUT/$W/f%04d.webp"
+  fi
 done
 for W in 1920 960; do
   rm -rf "${PACKS:?}/$W" && mkdir -p "$PACKS/$W"
