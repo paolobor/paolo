@@ -15,11 +15,11 @@
 # FRAMES.pack).
 #
 # Final: si se da FINAL (un vídeo que empieza en el fotograma CUT del recorrido ya con el acabado puesto, p. ej.
-# assets-src/intro/final-subida-4k.mp4, generado en Higgsfield a partir de ese fotograma), el recorrido se corta en CUT
+# assets-src/intro/final-dron-rapido.mp4, generado en Higgsfield a partir de ese fotograma), el recorrido se corta en CUT
 # y sigue con ese vídeo, pasado a 48 fps por interpolación, sin volver a colorearlo (ya viene con el color de la intro).
 #
 # Uso: tools/videos/intro-fotogramas.sh assets-src/intro/recorrido-1080.mp4 public/intro/assets/packs
-#      FINAL=assets-src/intro/final-subida-4k.mp4 CUT=576 tools/videos/intro-fotogramas.sh /tmp/recorrido-48.mp4 public/intro/assets/packs
+#      FINAL=assets-src/intro/final-dron-rapido.mp4 CUT=576 tools/videos/intro-fotogramas.sh /tmp/recorrido-48.mp4 public/intro/assets/packs
 set -euo pipefail
 SRC=$1 PACKS=$2
 FINAL=${FINAL:-} CUT=${CUT:-0}

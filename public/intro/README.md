@@ -28,7 +28,7 @@ móvil): así se puede ir adelante y atrás al instante y sin tirones.
 5. **Por el anillo:** al llegar al último fotograma, la cámara entra por el anillo, un destello
    anamórfico cruza la pantalla, las bandas se abren y la capa se funde dejando ver la home.
 
-Acabado de cine: de día fuera; al cruzar las puertas se hace de noche y la nave se va oscureciendo según se entra; aros
+Acabado de cine: todo de noche (el exterior, assets-src/intro/exterior-noche.mp4, se funde con la nave al cruzar las puertas) y la nave se va oscureciendo según se entra; al final un dron vuela entre los cobots y sale por el techo; aros
 de los ejes mate (sin brillo); 48 fotogramas por segundo (interpolados por movimiento) para que vaya fluido;
 corrección de color (sombras frías, luces cálidas que hacen saltar el naranja #fc5220) y destellos
 anamórficos discretos en las luces fuertes, ya metidos en los fotogramas; grano y viñeta suaves en la página.
@@ -52,8 +52,8 @@ index.html                 la página suelta (destino en <html data-target="http
 css/intro.css              estilos
 js/intro.js                guion de las escenas (GSAP)
 js/vendor/gsap.min.js      GSAP 3.15 (licencia gratuita de GSAP)
-assets/packs/1920/         fotogramas del recorrido para ordenador (815 WebP a 48 fps en 34 paquetes p00.webp…, unos 43 MB)
-assets/packs/960/          los mismos para el móvil, las pantallas pequeñas y las conexiones lentas (unos 19 MB)
+assets/packs/1920/         fotogramas del recorrido para ordenador (768 WebP a 48 fps en 32 paquetes p00.webp…, unos 45 MB)
+assets/packs/960/          los mismos para el móvil, las pantallas pequeñas y las conexiones lentas (unos 17 MB)
 assets/audio/              sonido opcional (ver «Sonido tipo tráiler»)
 assets/fonts/              Inter (Google Fonts, licencia OFL), servida desde la propia web
 assets/favicon.svg
@@ -96,8 +96,9 @@ Para verla otra vez sin el parámetro, cierra la pestaña: sessionStorage se bor
 2. Pásalo a 48 fotogramas por segundo (interpolación por movimiento, unos minutos) y saca los fotogramas con el
    acabado de cine:
    ```bash
-   ffmpeg -i assets-src/intro/recorrido-1080.mp4 -vf "minterpolate=fps=48:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1" -c:v libx264 -crf 14 /tmp/recorrido-48.mp4
-   FINAL=assets-src/intro/final-subida-4k.mp4 CUT=576 tools/videos/intro-fotogramas.sh /tmp/recorrido-48.mp4 public/intro/assets/packs
+   # recorrido-noche-1080.mp4 = exterior de noche + recorrido-1080.mp4, escalado a 4K con Topaz (Higgsfield) y bajado a 1920
+   ffmpeg -i recorrido-noche-4k.mp4 -vf "scale=1920:1080:flags=lanczos,fps=24,minterpolate=fps=48:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1" -c:v libx264 -crf 12 /tmp/recorrido-noche-48.mp4
+   FINAL=assets-src/intro/final-dron-rapido.mp4 CUT=576 tools/videos/intro-fotogramas.sh /tmp/recorrido-noche-48.mp4 public/intro/assets/packs
    ```
 3. En `js/intro.js`, actualiza:
    - `FRAMES.count` (lo dice el script) y súbele `v` para que el navegador no use los fotogramas guardados;

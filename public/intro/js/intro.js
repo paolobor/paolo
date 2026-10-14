@@ -29,9 +29,9 @@
   // ---------------------------------------------------------------- el plano secuencia
   // FRAMES: fotogramas en paquetes, assets/packs/<ancho>/p00.webp… (tools/videos/intro-fotogramas.sh). Tramos en segundos,
   // medidos sobre los fotogramas del vídeo: aéreo, entrada (bajada y puertas), nave (luces y cobots) y final (la
-  // cámara sube por encima de la nave: assets-src/intro/final-subida-4k.mp4 desde el fotograma 576). Si cambias el
+  // dron vuela entre los cobots y sale por el techo: assets-src/intro/final-dron-rapido.mp4 desde el fotograma 576). Si cambias el
   // vídeo, cambia estos números (README).
-  var FRAMES = { count: 815, fps: 48, pack: 24, v: 11 };
+  var FRAMES = { count: 768, fps: 48, pack: 24, v: 12 };
   var SEG = { entrada: 3.5, nave: 5.5, final: 12 };
   // LOCK: marco «objetivo fijado» sobre un cobot, de un instante a otro. Vacío: con el final nuevo (la cámara sube)
   // no hay cobot elegido.
