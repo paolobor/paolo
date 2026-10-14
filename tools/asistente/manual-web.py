@@ -132,10 +132,24 @@ def apartados(seccion, ruta_titulos, url_pagina):
     lineas = []
     for h in seccion.children:
         lineas += render(h, url_pagina, titulo or (ruta[-1] if ruta else ''))
+    lineas = con_pie(lineas)
     res = [(ruta, enlace, lineas)] if lineas else []
     for sub in seccion.find_all('section', recursive=False):
         res += apartados(sub, ruta, url_pagina)
     return res
+
+
+def con_pie(lineas):
+    """El pie de figura del manual («Figure 3.5-23 …», en la línea de después) pasa a ser la descripción de la imagen.
+    Así el agente, que tiende a usar ese pie como texto de la imagen, lo tiene pegado a la dirección correcta."""
+    out = []
+    for l in lineas:
+        m = re.match(r'^(Fig(?:ure|\.)\s*[\d.\-]+.*)$', l)
+        if m and out and re.match(r'^!\[Imagen de «.*»\]\(.*\)$', out[-1]):
+            out[-1] = re.sub(r'^!\[.*\]', '![' + m.group(1).replace('[', '(').replace(']', ')') + ']', out[-1])
+            continue
+        out.append(l)
+    return out
 
 
 def bloques(ruta, enlace, lineas):

@@ -6,10 +6,11 @@
 // un token en el almacenamiento local y ElevenLabs le devuelve el historial). Las de voz terminan al cerrar, como siempre.
 import { site } from '../data/site';
 import { url } from '../lib/url';
+import { assistantLinkHosts } from '../lib/assistant-hosts';
 
 const agentId = site.assistant.agentId;
-// Enlaces que el asistente puede poner como clicables: el dominio de la web y sus copias (site.mirrors).
-const hosts = [new URL(site.url).hostname, ...site.mirrors].join(',');
+// Enlaces que el asistente puede poner como clicables (ver lib/assistant-hosts.ts). Las imágenes se ven de cualquier sitio.
+const hosts = (await assistantLinkHosts()).join(',');
 const limit = site.assistant.dailyLimit;
 const contacto = url('contacto/');
 // Textos del widget en español (atributo text-contents; manda sobre los del panel). Va abajo a la izquierda porque
