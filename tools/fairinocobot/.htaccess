@@ -1,0 +1,10 @@
+# fairinocobot.com: la web está en fairino.es. Cualquier dirección de este dominio (con o sin www, http o https)
+# lleva con un 301 a la misma página de fairino.es, conservando la ruta y los parámetros.
+# Se deja fuera /.well-known/ para que el hosting pueda seguir renovando el certificado https de fairinocobot.com.
+# Este archivo se sube una sola vez a /www del hosting de fairinocobot.com; las actualizaciones van solo a fairino.es.
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{REQUEST_URI} !^/\.well-known/
+  RewriteRule ^(.*)$ https://fairino.es/$1 [R=301,L]
+</IfModule>

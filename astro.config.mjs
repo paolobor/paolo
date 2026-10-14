@@ -3,8 +3,8 @@ import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
-// SITE y BASE permiten publicar en el dominio final (https://fairino.es, base "/"; fairinocobot.com lleva una copia
-// exacta con el canonical apuntando aquí) o en una URL de pruebas de GitHub Pages (SITE=https://usuario.github.io BASE=/repo).
+// SITE y BASE permiten publicar en el dominio final (https://fairino.es, base "/"; fairinocobot.com redirige aquí con
+// tools/fairinocobot/.htaccess) o en una URL de pruebas de GitHub Pages (SITE=https://usuario.github.io BASE=/repo).
 const site = process.env.SITE ?? 'https://fairino.es';
 const base = process.env.BASE ?? '/';
 
