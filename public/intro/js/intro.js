@@ -1,6 +1,6 @@
 /*
  * Intro de FAIRINO Spain: llegar en persona a una gran fábrica, como el arranque de una película.
- * Un único plano secuencia en vídeo (assets/intro-1080.mp4 o, en móvil y con conexión lenta, assets/intro-720.mp4): lo
+ * Un único plano secuencia en vídeo (assets/intro-1080.mp4 o, con la conexión lenta, assets/intro-720.mp4): lo
  * reproduce el chip de vídeo del aparato, así que va fluido también en móviles y ordenadores modestos (antes eran 768
  * fotogramas sueltos en un <canvas>, que no cabían en la memoria de muchos aparatos). La cámara va siempre hacia delante,
  * recta y sin pararse: la rueda o el dedo la aceleran un rato (más velocidad de reproducción, que se va apagando sola).
@@ -32,7 +32,7 @@
   // VIDEO: assets/intro-<alto>.mp4 (tools/videos/intro-video.sh; v: súbelo al cambiar el vídeo, para que el navegador no
   // use el guardado). Tramos en segundos del vídeo: aéreo, entrada (bajada y puertas), nave (luces y cobots) y final (el
   // dron vuela entre los cobots y sale por el techo). Si cambias el vídeo, cambia estos números (README).
-  var VIDEO = { fps: 48, v: 14 };
+  var VIDEO = { fps: 48, v: 15 };
   var SEG = { entrada: 3.5, nave: 5.5, final: 12 };
   // LOCK: marco «objetivo fijado» sobre un cobot, de un instante a otro. Vacío: con el final nuevo (la cámara sube)
   // no hay cobot elegido.
@@ -59,11 +59,11 @@
 
   var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var coarse = window.matchMedia('(pointer: coarse)').matches;
-  var dpr = Math.min(window.devicePixelRatio || 1, 2);
-  // En móvil, pantallas pequeñas o con la conexión lenta (si el navegador lo dice), el vídeo ligero: 5 MB en vez de 16.
+  // El vídeo de 1080p en todos los aparatos, también en el móvil (allí se ve recortado y ampliado, y el de 720p quedaría
+  // blando); el de 720p, solo con ahorro de datos o con la conexión lenta (si el navegador lo dice).
   var net = navigator.connection || {};
   var slow = net.saveData || (net.downlink > 0 && net.downlink < 8) || /2g|3g/.test(net.effectiveType || '');
-  var HEIGHT = coarse || slow || Math.max(window.innerWidth, window.innerHeight) * dpr <= 1400 ? 720 : 1080;
+  var HEIGHT = slow ? 720 : 1080;
   if (coarse) intro.classList.add('fi-coarse');
 
   var $ = function (s) {

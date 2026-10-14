@@ -1,18 +1,28 @@
 #!/usr/bin/env bash
-# Vídeos de la intro a partir de los fotogramas de 1920 que saca intro-fotogramas.sh (en paquetes pNN.webp):
-#   tools/videos/intro-video.sh <carpeta con los paquetes de 1920> public/intro/assets
-# Deja intro-1080.mp4 (ordenador), intro-720.mp4 (móvil y conexión lenta), intro-poster.webp (primer fotograma) e
-# intro-still-1..3.webp (las tres imágenes fijas del movimiento reducido). Después, sube VIDEO.v en intro.js.
-# H.264 porque lo reproduce el chip de vídeo de cualquier aparato; un fotograma clave por segundo y «faststart» para que
-# empiece a verse antes de terminar de descargar.
+# Vídeos de la intro, a la máxima calidad que se puede servir en una web:
+#   tools/videos/intro-video.sh <fotogramas> public/intro/assets
+# <fotogramas>: la carpeta de PNG sin pérdidas que deja intro-fotogramas.sh con FORMATO=png SIN_PAQUETES=1 (lo mejor;
+# ver README) o, si no, una de paquetes pNN.webp de 1920 (sale peor: esos fotogramas ya vienen comprimidos).
+# Deja intro-1080.mp4 (ordenador y móvil), intro-720.mp4 (conexiones lentas o con ahorro de datos), intro-poster.webp
+# (primer fotograma) e intro-still-1..3.webp (las tres imágenes fijas del movimiento reducido). Después, sube VIDEO.v en
+# intro.js.
+# H.264 de 8 bits porque lo reproduce el chip de vídeo de cualquier aparato (10 bits o AV1 irían más finos, pero muchos
+# móviles y ordenadores tendrían que hacerlo a mano y volverían los tirones). Para exprimirlo: preset veryslow, CRF bajo,
+# tune film (conserva el detalle y el grano) y aq-mode 3 (más bits en las zonas oscuras, que es casi todo el vídeo: evita
+# las manchas y los escalones en los degradados de la noche). El techo de bitrate deja que se pueda ver mientras se
+# descarga. Un fotograma clave por segundo y «faststart» para que empiece antes.
 set -euo pipefail
-PACKS="$1"
+SRC="$1"
 OUT="$2"
 FPS=48
 TMP="$(mktemp -d)"
 trap 'rm -rf "$TMP"' EXIT
 
-python3 - "$PACKS" "$TMP" <<'PY'
+if ls "$SRC"/f0000.png >/dev/null 2>&1; then
+  IN="$SRC/f%04d.png"
+  EXT=png
+else
+  python3 - "$SRC" "$TMP" <<'PY'
 import glob, os, struct, sys
 src, out = sys.argv[1], sys.argv[2]
 i = 0
@@ -24,16 +34,20 @@ for p in sorted(glob.glob(os.path.join(src, 'p*.webp'))):
         open(os.path.join(out, 'f%04d.webp' % i), 'wb').write(b[off:off + s])
         off += s
         i += 1
-print(i, 'fotogramas')
 PY
-
-LAST=$(($(ls "$TMP"/f*.webp | wc -l) - 1))
+  IN="$TMP/f%04d.webp"
+  EXT=webp
+  SRC="$TMP"
+fi
+N=$(ls "$SRC"/f*."$EXT" | wc -l)
+LAST=$((N - 1))
 mkdir -p "$OUT"
-COMUN=(-c:v libx264 -preset slow -pix_fmt yuv420p -profile:v high -g "$FPS" -movflags +faststart -an)
-ffmpeg -v error -y -framerate "$FPS" -i "$TMP/f%04d.webp" "${COMUN[@]}" -crf 20 "$OUT/intro-1080.mp4"
-ffmpeg -v error -y -framerate "$FPS" -i "$TMP/f%04d.webp" -vf scale=1280:720:flags=lanczos "${COMUN[@]}" -crf 23 "$OUT/intro-720.mp4"
-cp "$TMP/f0000.webp" "$OUT/intro-poster.webp"
-cp "$TMP/f$(printf %04d $((FPS * 3 / 2)))".webp "$OUT/intro-still-1.webp"
-cp "$TMP/f$(printf %04d $((FPS * 17 / 2)))".webp "$OUT/intro-still-2.webp"
-cp "$TMP/f$(printf %04d "$LAST")".webp "$OUT/intro-still-3.webp"
+COMUN=(-c:v libx264 -preset veryslow -tune film -pix_fmt yuv420p -profile:v high -x264-params aq-mode=3:aq-strength=0.9 -g "$FPS" -movflags +faststart -an)
+ffmpeg -v error -y -framerate "$FPS" -i "$IN" -vf "format=yuv420p" "${COMUN[@]}" -crf "${CRF_1080:-16}" -maxrate 24M -bufsize 48M "$OUT/intro-1080.mp4"
+ffmpeg -v error -y -framerate "$FPS" -i "$IN" -vf "scale=1280:720:flags=lanczos,format=yuv420p" "${COMUN[@]}" -crf "${CRF_720:-19}" -maxrate 8M -bufsize 16M "$OUT/intro-720.mp4"
+still() { ffmpeg -v error -y -i "$SRC/f$(printf %04d "$1").$EXT" -c:v libwebp -quality 88 "$OUT/$2"; }
+still 0 intro-poster.webp
+still $((FPS * 3 / 2)) intro-still-1.webp
+still $((FPS * 17 / 2)) intro-still-2.webp
+still "$LAST" intro-still-3.webp
 ls -la "$OUT"/intro-*

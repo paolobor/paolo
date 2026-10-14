@@ -23,8 +23,13 @@
 # Tramo intermedio: si se da MID (un vídeo que va del fotograma MIDCUT al CUT, p. ej. la nave regenerada en 4K con
 # esos dos fotogramas como inicio y fin: assets-src/intro/nave-4k.mp4), sustituye los fotogramas MIDCUT…CUT-1,
 # ajustado para que dure justo eso, también sin volver a colorearlo.
+#
+# Para el vídeo de la intro (tools/videos/intro-video.sh), sin pérdidas por el camino:
+#   FORMATO=png ANCHOS=1920 SIN_PAQUETES=1 MID=… MIDCUT=264 FINAL=… CUT=576 tools/videos/intro-fotogramas.sh maestro-48.mp4 /tmp/fotogramas
+# deja los fotogramas en PNG (sin compresión con pérdidas) en /tmp/fotogramas/1920/f0000.png…, sin empaquetar.
 set -euo pipefail
 SRC=$1 PACKS=$2
+FORMATO=${FORMATO:-webp} ANCHOS=${ANCHOS:-1920 960} SIN_PAQUETES=${SIN_PAQUETES:-}
 FINAL=${FINAL:-} CUT=${CUT:-0} MID=${MID:-} MIDCUT=${MIDCUT:-0}
 FPS=${FPS:-48}
 PACK=${PACK:-24}
@@ -36,25 +41,31 @@ trap 'rm -rf "$OUT"' EXIT
 # de cartón y los robots blancos; los rojos más intensos se apagan un poco para que los aros no brillen.
 NIGHT="eq=eval=frame:brightness='if(lt(t,3.8),0,if(lt(t,5.2),-0.12*(t-3.8)/1.4,-0.09-0.005*t))':contrast='if(lt(t,3.8),1,1.1)':saturation='if(lt(t,3.8),1,1.45)'"
 GRADE="fps=$FPS,$NIGHT,eq=contrast=1.06:saturation=1.06:gamma=0.98,colorbalance=rs=-0.02:bs=0.03:rm=0.06:gm=0.025:bm=-0.05:rh=0.05:gh=0.02:bh=-0.04,vibrance=0.3,huesaturation=colors=r:intensity=-0.3:saturation=-0.25:strength=12,colorbalance=rs=0.04:gs=0.01:bs=-0.06:rm=0.05:bm=-0.04,split[g0][g1];[g1]colorlevels=rimin=0.93:gimin=0.93:bimin=0.93,gblur=sigma=70:sigmaV=0.8,colorchannelmixer=rr=0.6:gg=0.8:bb=1.2[fl];[g0][fl]blend=all_mode=screen:all_opacity=0.25"
-for W in 1920 960; do
+for W in $ANCHOS; do
   rm -rf "$OUT/$W" && mkdir -p "$OUT/$W"
   Q=$([ $W = 1920 ] && echo 80 || echo 74)
+  if [ "$FORMATO" = png ]; then CODEC=(-c:v png -pred mixed); else CODEC=(-c:v libwebp -quality "$Q" -compression_level 5 -preset photo); fi
   ffmpeg -v error -y -i "$SRC" -filter_complex "[0:v]$GRADE,scale=$W:-2:flags=lanczos,unsharp=5:5:0.7:5:5:0,setsar=1[v]" -map "[v]" -an \
-    -c:v libwebp -quality "$Q" -compression_level 5 -preset photo -start_number 0 "$OUT/$W/f%04d.webp"
+    "${CODEC[@]}" -start_number 0 "$OUT/$W/f%04d.$FORMATO"
   if [ -n "$FINAL" ]; then
-    find "$OUT/$W" -name 'f*.webp' | while read -r f; do n=$(basename "$f" .webp); [ $((10#${n#f})) -ge "$CUT" ] && rm "$f"; done
+    find "$OUT/$W" -name "f*.$FORMATO" | while read -r f; do n=$(basename "$f" ".$FORMATO"); [ $((10#${n#f})) -ge "$CUT" ] && rm "$f"; done
     ffmpeg -v error -y -i "$FINAL" -vf "scale=1920:-2:flags=lanczos,minterpolate=fps=$FPS:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1,scale=$W:-2:flags=lanczos,unsharp=5:5:0.3:5:5:0,setsar=1" -an \
-      -c:v libwebp -quality "$Q" -compression_level 5 -preset photo -start_number "$CUT" "$OUT/$W/f%04d.webp"
+      "${CODEC[@]}" -start_number "$CUT" "$OUT/$W/f%04d.$FORMATO"
   fi
   if [ -n "$MID" ]; then
-    find "$OUT/$W" -name 'f*.webp' | while read -r f; do n=$(basename "$f" .webp); n=$((10#${n#f})); [ $n -ge "$MIDCUT" ] && [ $n -lt "$CUT" ] && rm "$f"; done
+    find "$OUT/$W" -name "f*.$FORMATO" | while read -r f; do n=$(basename "$f" ".$FORMATO"); n=$((10#${n#f})); [ $n -ge "$MIDCUT" ] && [ $n -lt "$CUT" ] && rm "$f"; done
     D=$(ffprobe -v error -show_entries format=duration -of csv=p=0 "$MID")
     K=$(python3 -c "print(($CUT-$MIDCUT)/$FPS/$D)")
     ffmpeg -v error -y -i "$MID" -vf "scale=1920:-2:flags=lanczos,fps=24,minterpolate=fps=$FPS:mi_mode=mci:mc_mode=aobmc:me_mode=bidir:vsbmc=1,setpts=PTS*$K,fps=$FPS,tpad=stop_mode=clone:stop=4,scale=$W:-2:flags=lanczos,unsharp=5:5:0.3:5:5:0,setsar=1" -an \
-      -frames:v $((CUT-MIDCUT)) -c:v libwebp -quality "$Q" -compression_level 5 -preset photo -start_number "$MIDCUT" "$OUT/$W/f%04d.webp"
+      -frames:v $((CUT-MIDCUT)) "${CODEC[@]}" -start_number "$MIDCUT" "$OUT/$W/f%04d.$FORMATO"
   fi
 done
-for W in 1920 960; do
+if [ -n "$SIN_PAQUETES" ]; then
+  for W in $ANCHOS; do rm -rf "${PACKS:?}/$W" && mkdir -p "$PACKS/$W" && mv "$OUT/$W"/f* "$PACKS/$W/"; done
+  echo "fotogramas: $(ls "$PACKS/${ANCHOS%% *}" | wc -l) en $PACKS"
+  exit 0
+fi
+for W in $ANCHOS; do
   rm -rf "${PACKS:?}/$W" && mkdir -p "$PACKS/$W"
   python3 - "$OUT/$W" "$PACKS/$W" "$PACK" <<'PY'
 import os, struct, sys
