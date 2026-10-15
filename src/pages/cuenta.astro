@@ -112,6 +112,7 @@ const on = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIREBASE_EM
 
 <script>
   import { deleteAccount, enabled, errorText, getProfile, logout, myOrders, onUser, resendVerification, saveProfile, type User } from '../scripts/account';
+  import { backTo } from '../scripts/signin';
 
   if (enabled) {
     const $ = <T extends HTMLElement = HTMLElement>(k: string) => document.querySelector<T>(`[data-acc-${k}]`)!;
@@ -177,6 +178,15 @@ const on = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIREBASE_EM
 
     // Recién registrado: la ficha se acaba de guardar, se vuelve a leer.
     document.addEventListener('account:registered', () => user && fill(user));
+
+    // Desde la invitación a entrar (SignInNudge, carrito, cabecera): ?registro=1 abre «Registrarse» y ?volver=/ruta/
+    // lleva de vuelta a la página de la que se venía al entrar o registrarse.
+    if (new URLSearchParams(location.search).has('registro')) document.querySelector<HTMLElement>('[data-acc-tab="register"]')?.click();
+    const back = backTo();
+    if (back) {
+      document.addEventListener('account:signed-in', () => window.setTimeout(() => location.assign(back), 900));
+      document.addEventListener('account:registered', () => window.setTimeout(() => location.assign(back), 2500));
+    }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();

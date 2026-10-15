@@ -46,6 +46,8 @@ export function addToCart(id: string, v = '', q = 1) {
   if (found) found.q += q;
   else lines.push({ id, v, q });
   writeCart(lines);
+  // Para SignInNudge: sin sesión iniciada, invita a entrar o registrarse.
+  window.dispatchEvent(new CustomEvent('cart:add', { detail: { id, v, q } }));
 }
 
 // Versión elegida en la página para un producto: la de su selector de versión y, en los cobots, la controladora AC o DC

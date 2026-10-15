@@ -90,7 +90,10 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
       {
         accountsOn && (
           <a href={url('cuenta/')} class="acct-btn hdr-fg ml-auto inline-flex h-11 items-center gap-2 rounded-full px-2 xl:ml-0" aria-label="Iniciar sesión o registrarse" data-account-link>
-            <Icon name="user" size={22} />
+            <span class="acct-ico">
+              <Icon name="user" size={22} />
+              <span class="acct-dot" aria-hidden="true" />
+            </span>
             <span class="acct-txt hidden min-[375px]:grid">
               <span class="acct-l1" data-account-l1>Iniciar sesión</span>
               <span class="acct-l2" data-account-l2>o registrarse</span>
@@ -285,6 +288,59 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
   .acct-btn.is-in :global(svg) {
     color: var(--color-signal);
   }
+  /* Sin sesión, que se vea: aro naranja y un punto que late sobre el icono. */
+  .acct-ico {
+    position: relative;
+    display: grid;
+  }
+  .acct-dot {
+    display: none;
+  }
+  .acct-btn.is-out {
+    box-shadow: inset 0 0 0 1.5px rgb(255 122 26 / 0.75);
+    background: rgb(255 122 26 / 0.1);
+    padding-inline: 0.55rem 0.85rem;
+  }
+  .acct-btn.is-out .acct-dot {
+    position: absolute;
+    top: -1px;
+    right: -2px;
+    display: block;
+    width: 9px;
+    height: 9px;
+    border-radius: 999px;
+    background: var(--color-signal);
+    box-shadow: 0 0 0 2px var(--color-ink);
+    animation: acct-dot 2s ease-out infinite;
+  }
+  @keyframes acct-dot {
+    0% {
+      box-shadow:
+        0 0 0 2px var(--color-ink),
+        0 0 0 2px rgb(255 122 26 / 0.7);
+    }
+    70%,
+    100% {
+      box-shadow:
+        0 0 0 2px var(--color-ink),
+        0 0 0 9px rgb(255 122 26 / 0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .acct-btn.is-out .acct-dot {
+      animation: none;
+    }
+  }
+  @media (max-width: 639px) {
+    .acct-btn.is-out {
+      padding-inline: 0.4rem 0.6rem;
+    }
+  }
+  @media (max-width: 374px) {
+    .acct-btn.is-out {
+      padding-inline: 0.5rem;
+    }
+  }
   .acct-btn:hover {
     color: var(--color-signal);
   }
@@ -430,7 +486,10 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
 </style>
 
 <script>
-  // Botón de cuenta: con la sesión iniciada saluda con el nombre (lo guarda src/scripts/account.ts al entrar).
+  import { accountHref } from '../scripts/signin';
+
+  // Botón de cuenta: con la sesión iniciada saluda con el nombre (lo guarda src/scripts/account.ts al entrar); sin
+  // ella resalta y, al entrar desde él, se vuelve a esta misma página.
   const syncAccount = () => {
     const link = document.querySelector<HTMLElement>('[data-account-link]');
     if (!link) return;
@@ -446,8 +505,12 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
     link.querySelector('[data-account-l2]')!.textContent = first ? 'Mi cuenta' : 'o registrarse';
     link.setAttribute('aria-label', first ? `Mi cuenta (${nombre})` : 'Iniciar sesión o registrarse');
     link.classList.toggle('is-in', Boolean(first));
+    link.classList.toggle('is-out', !first);
     const drawer = document.querySelector('[data-account-drawer-txt]');
     if (drawer) drawer.textContent = first ? `Mi cuenta (${first})` : 'Iniciar sesión o registrarse';
+    const href = first ? accountHref().split('?')[0] : accountHref();
+    link.setAttribute('href', href);
+    document.querySelector('[data-account-drawer]')?.setAttribute('href', href);
   };
   syncAccount();
   window.addEventListener('account:change', syncAccount);

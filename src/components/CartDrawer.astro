@@ -6,7 +6,7 @@ import { url } from '../lib/url';
 
 const storeData = await getStoreData();
 const vatNote = site.store.vatIncluded === true ? 'IVA incluido' : site.store.vatIncluded === false ? 'IVA no incluido' : '';
-// Cuentas de cliente: aviso de que al tramitar se pedirá iniciar sesión o crear cuenta.
+// Cuentas de cliente: sin sesión iniciada, recuadro con «Iniciar sesión» y «Crear cuenta» (al tramitar se pide igual).
 const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIREBASE_EMULATOR === '1';
 ---
 
@@ -45,11 +45,31 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
       <div class="flex justify-between border-t border-line pt-2 text-base text-white"><dt>Total</dt><dd data-cart-total>—</dd></div>
     </dl>
     {vatNote && <p class="text-right text-xs text-muted">{vatNote}</p>}
+    {
+      accountsOn && (
+        <div class="cart-acct grid gap-3" data-cart-account-note>
+          <p class="flex gap-2.5 text-sm leading-snug">
+            <Icon name="user" size={18} class="mt-0.5 shrink-0 text-signal" />
+            <span>
+              <b class="text-white">Para comprar necesitas una cuenta.</b> <span class="text-muted">Entra o regístrate gratis: guardamos tus datos y ves tus pedidos.</span>
+            </span>
+          </p>
+          <div class="grid grid-cols-2 gap-2">
+            <a href={url('cuenta/?registro=1')} class="btn btn-secondary btn-sm" data-cart-account-go="register">
+              Crear cuenta
+            </a>
+            <a href={url('cuenta/')} class="btn btn-secondary btn-sm" data-cart-account-go="login">
+              <Icon name="lock" size={15} />
+              Iniciar sesión
+            </a>
+          </div>
+        </div>
+      )
+    }
     <a href={url('tienda/pedido/')} class="btn btn-primary w-full">
       Tramitar pedido
       <Icon name="arrow-right" size={18} />
     </a>
-    {accountsOn && <p class="text-center text-xs text-muted" data-cart-account-note>Para comprar te pediremos iniciar sesión o registrarte.</p>}
     <button type="button" class="btn btn-ghost w-full" data-cart-close>
       <Icon name="arrow-left" size={18} />
       Seguir comprando
@@ -60,6 +80,12 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
 <div class="toast fixed bottom-24 left-1/2 z-[72] -translate-x-1/2 rounded-full border border-signal/40 bg-surface px-5 py-3 text-sm font-semibold shadow-[0_10px_40px_-10px_rgba(255,106,19,0.6)]" role="status" aria-live="polite" hidden data-cart-toast></div>
 
 <style>
+  .cart-acct {
+    border-radius: 14px;
+    border: 1px solid rgb(255 122 26 / 0.4);
+    background: rgb(255 122 26 / 0.08);
+    padding: 0.85rem;
+  }
   .cart {
     animation: cart-in 0.32s var(--ease-out-soft);
   }
@@ -72,6 +98,7 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
 
 <script>
   import { addToCart, cartSummary, chosenVersion, readCart, setQty } from '../scripts/cart';
+  import { accountHref, signedIn } from '../scripts/signin';
 
   const drawer = document.querySelector<HTMLElement>('[data-cart]');
   const overlay = document.querySelector<HTMLElement>('[data-cart-overlay]');
@@ -183,15 +210,12 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
     if (r.matches?.('[data-power-for]')) syncPower(r);
   });
   document.querySelectorAll<HTMLInputElement>('[data-power-for]:checked').forEach(syncPower);
-  // Con la sesión iniciada ya no hace falta avisar de que se pedirá cuenta.
+  // Con la sesión iniciada ya no hace falta pedir que se entre. Al entrar se vuelve a esta misma página.
   const syncNote = () => {
     const note = document.querySelector<HTMLElement>('[data-cart-account-note]');
     if (!note) return;
-    try {
-      note.hidden = Boolean(localStorage.getItem('fairino-cuenta'));
-    } catch {
-      /* sin almacenamiento */
-    }
+    note.hidden = signedIn();
+    note.querySelectorAll<HTMLAnchorElement>('[data-cart-account-go]').forEach((a) => (a.href = accountHref(a.dataset.cartAccountGo === 'register')));
   };
   syncNote();
   window.addEventListener('account:change', syncNote);
