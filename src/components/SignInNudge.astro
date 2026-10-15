@@ -1,12 +1,15 @@
 ---
-// Insistir en que el cliente inicie sesión o se registre (con site.accounts). Sin sesión iniciada sale una ventana con lo
-// que se gana con la cuenta y los botones «Crear cuenta» e «Iniciar sesión» (llevan a /cuenta/ y, al entrar, se vuelve
-// a la misma página):
+// Insistir en que el cliente inicie sesión o se registre (con site.accounts). Sin sesión iniciada sale una tarjeta
+// flotante abajo con lo que se gana con la cuenta y los botones «Crear cuenta» e «Iniciar sesión» (llevan a /cuenta/
+// y, al entrar, se vuelve a la misma página):
 //  - al añadir algo al carrito (si se pulsa «Ahora no», no vuelve a salir por eso en 10 minutos; si el carrito se abre
 //    solo, ya lo pide él con su recuadro);
 //  - y una vez por visita, tras 20 segundos en la web (sumando las páginas que se vean).
-// Espera a que acaben la intro y el aviso de cookies, y no sale encima del carrito, del menú, del visor de fotos ni de
-// una conversación con el asistente. No sale en Mi cuenta ni en el pedido (ya piden la cuenta), ni en las páginas legales.
+// No bloquea la página (antes era una ventana que tapaba la web hasta cerrarla y desde un portátil parecía que no se
+// podía pulsar nada): debajo todo sigue funcionando, y se cierra con la X, «Ahora no» o Esc. Espera a que acaben la
+// intro y el aviso de cookies, y no sale encima del carrito, del menú, del visor de fotos, mientras se escribe en un
+// formulario ni durante una conversación con el asistente. No sale en Mi cuenta ni en el pedido (ya piden la cuenta),
+// ni en las páginas legales.
 import Icon from './ui/Icon.astro';
 ---
 
@@ -15,24 +18,23 @@ import Icon from './ui/Icon.astro';
     <button type="button" class="nudge-x" aria-label="Cerrar" data-nudge-close>
       <Icon name="x" size={18} />
     </button>
-    <span class="nudge-ico" aria-hidden="true"><Icon name="user" size={26} /></span>
-    <div class="grid gap-2">
-      <p class="eyebrow">Clientes FAIRINO España</p>
-      <h2 id="nudge-title" class="font-display text-2xl font-bold sm:text-[1.7rem]" style="font-stretch:112%" data-nudge-title>Inicia sesión o regístrate</h2>
-      <p id="nudge-lead" class="text-[15px] text-muted" data-nudge-lead></p>
+    <div class="grid gap-1.5 pr-10">
+      <p class="eyebrow flex items-center gap-2"><Icon name="user" size={15} />Clientes FAIRINO España</p>
+      <h2 id="nudge-title" class="font-display text-xl font-bold" style="font-stretch:112%" data-nudge-title>Inicia sesión o regístrate</h2>
+      <p id="nudge-lead" class="text-sm text-muted" data-nudge-lead></p>
     </div>
     <ul class="nudge-list">
-      <li><Icon name="check" size={17} /> Compras en la tienda online cuando quieras.</li>
-      <li><Icon name="check" size={17} /> Tus datos de empresa y de entrega, guardados para el próximo pedido.</li>
-      <li><Icon name="check" size={17} /> Tus pedidos y en qué estado están, en «Mi cuenta».</li>
+      <li><Icon name="check" size={16} /> Compras en la tienda online cuando quieras.</li>
+      <li><Icon name="check" size={16} /> Tus datos de empresa y de entrega, guardados para el próximo pedido.</li>
+      <li><Icon name="check" size={16} /> Tus pedidos y en qué estado están, en «Mi cuenta».</li>
     </ul>
-    <div class="grid gap-2 sm:grid-cols-2">
-      <a href="#" class="btn btn-primary" autofocus data-nudge-go="register">
-        <Icon name="plus" size={17} />
-        Crear cuenta gratis
+    <div class="grid grid-cols-2 gap-2">
+      <a href="#" class="btn btn-primary btn-sm" data-nudge-go="register">
+        <Icon name="plus" size={16} />
+        Crear cuenta
       </a>
-      <a href="#" class="btn btn-secondary" data-nudge-go="login">
-        <Icon name="lock" size={17} />
+      <a href="#" class="btn btn-secondary btn-sm" data-nudge-go="login">
+        <Icon name="lock" size={16} />
         Iniciar sesión
       </a>
     </div>
@@ -41,28 +43,38 @@ import Icon from './ui/Icon.astro';
 </dialog>
 
 <style>
+  /* Tarjeta flotante (diálogo no modal): abajo en el centro, por encima de WhatsApp y del asistente pero por debajo
+     del carrito (z 70) y del aviso de cookies. */
   .nudge {
-    width: min(30rem, calc(100vw - 2rem));
+    position: fixed;
+    inset: auto 0.75rem calc(0.75rem + env(safe-area-inset-bottom, 0px));
+    z-index: 65;
+    width: auto;
     max-width: none;
-    max-height: calc(100dvh - 2rem);
-    margin: auto;
+    max-height: calc(100dvh - 1.5rem);
+    margin: 0;
     padding: 0;
     border: 0;
     background: transparent;
     color: var(--color-text);
     overflow: visible;
   }
-  .nudge::backdrop {
-    background: rgb(7 5 4 / 0.72);
-    backdrop-filter: blur(4px);
+  @media (min-width: 640px) {
+    .nudge {
+      left: 50%;
+      right: auto;
+      bottom: 1.5rem;
+      width: min(26rem, calc(100vw - 3rem));
+      translate: -50% 0;
+    }
   }
   .nudge[open] {
-    animation: nudge-in 0.32s var(--ease-out-soft);
+    animation: nudge-in 0.35s var(--ease-out-soft);
   }
   @keyframes nudge-in {
     from {
       opacity: 0;
-      transform: translateY(14px) scale(0.98);
+      transform: translateY(18px);
     }
   }
   @media (prefers-reduced-motion: reduce) {
@@ -73,26 +85,24 @@ import Icon from './ui/Icon.astro';
   .nudge-box {
     position: relative;
     display: grid;
-    gap: 1.1rem;
-    max-height: calc(100dvh - 2rem);
+    gap: 0.85rem;
+    max-height: calc(100dvh - 1.5rem);
     overflow-y: auto;
-    padding: 1.5rem;
-    border-color: rgb(255 122 26 / 0.35);
-    box-shadow: 0 30px 80px -24px rgb(255 106 19 / 0.45);
-  }
-  @media (min-width: 640px) {
-    .nudge-box {
-      padding: 2rem;
-    }
+    padding: 1.1rem 1.15rem 0.9rem;
+    border-color: rgb(255 122 26 / 0.45);
+    box-shadow:
+      0 24px 60px -20px rgb(0 0 0 / 0.8),
+      0 0 0 1px rgb(255 122 26 / 0.15),
+      0 18px 50px -24px rgb(255 106 19 / 0.55);
   }
   .nudge-x {
     position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
+    top: 0.6rem;
+    right: 0.6rem;
     display: grid;
     place-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.25rem;
+    height: 2.25rem;
     border-radius: 999px;
     border: 1px solid var(--color-line);
     color: var(--color-mist);
@@ -101,35 +111,31 @@ import Icon from './ui/Icon.astro';
     border-color: var(--color-signal);
     color: var(--color-signal);
   }
-  .nudge-ico {
-    display: grid;
-    place-items: center;
-    width: 3.25rem;
-    height: 3.25rem;
-    border-radius: 999px;
-    background: rgb(255 122 26 / 0.14);
-    color: var(--color-signal);
-    box-shadow: inset 0 0 0 1px rgb(255 122 26 / 0.4);
-  }
   .nudge-list {
     display: grid;
-    gap: 0.55rem;
-    font-size: 0.93rem;
-    line-height: 1.4;
+    gap: 0.35rem;
+    font-size: 0.86rem;
+    line-height: 1.35;
   }
   .nudge-list li {
     display: flex;
-    gap: 0.55rem;
+    gap: 0.5rem;
   }
   .nudge-list :global(svg) {
     flex-shrink: 0;
-    margin-top: 0.12rem;
+    margin-top: 0.1rem;
     color: var(--color-ok);
+  }
+  /* En pantallas bajas (portátil con zoom, móvil en horizontal), sin la lista para que no tape media página. */
+  @media (max-height: 560px) {
+    .nudge-list {
+      display: none;
+    }
   }
   .nudge-later {
     justify-self: center;
-    padding: 0.25rem 0.75rem;
-    font-size: 0.88rem;
+    padding: 0.2rem 0.75rem;
+    font-size: 0.84rem;
     color: var(--color-muted);
     text-decoration: underline;
     text-underline-offset: 3px;
@@ -145,7 +151,7 @@ import Icon from './ui/Icon.astro';
   const dlg = document.querySelector<HTMLDialogElement>('[data-nudge]');
   const skip = /\/(cuenta|tienda\/pedido|gracias|aviso-legal|politica-de-[a-z-]+)\/?$/.test(location.pathname);
 
-  if (dlg && !skip && typeof dlg.showModal === 'function') {
+  if (dlg && !skip && typeof dlg.show === 'function') {
     const VISIT = 'fairino-invita'; // segundos que lleva la visita, o «vista» si ya salió
     const LATER = 'fairino-invita-carrito'; // hora del último «Ahora no» tras añadir al carrito
     const AFTER = 20; // segundos en la web antes de la de la visita
@@ -181,11 +187,17 @@ import Icon from './ui/Icon.astro';
     let chatting = false;
     let kind: keyof typeof TEXTS = 'visit';
 
-    // Algo encima o a medias: intro, aviso de cookies, carrito, menú del móvil, visor de fotos u otra ventana.
-    const busy = () =>
-      document.hidden ||
-      document.documentElement.classList.contains('fi-play') ||
-      Boolean(document.querySelector('#cookie-banner:not([hidden]), [data-cart]:not([hidden]), [data-drawer]:not([hidden]), dialog[open]'));
+    // Algo encima o a medias: intro, aviso de cookies, carrito, menú del móvil, visor de fotos u otra ventana, o se
+    // está escribiendo en un formulario.
+    const busy = () => {
+      const a = document.activeElement;
+      return (
+        document.hidden ||
+        document.documentElement.classList.contains('fi-play') ||
+        Boolean(a && a.matches('input, textarea, select, [contenteditable="true"]')) ||
+        Boolean(document.querySelector('#cookie-banner:not([hidden]), [data-cart]:not([hidden]), [data-drawer]:not([hidden]), dialog[open]'))
+      );
+    };
 
     const show = (k: keyof typeof TEXTS) => {
       kind = k;
@@ -193,14 +205,21 @@ import Icon from './ui/Icon.astro';
       dlg.querySelector('[data-nudge-lead]')!.textContent = TEXTS[k].lead;
       dlg.querySelectorAll<HTMLAnchorElement>('[data-nudge-go]').forEach((a) => (a.href = accountHref(a.dataset.nudgeGo === 'register')));
       store.set(VISIT, 'vista');
-      dlg.showModal();
+      // No modal: no bloquea la página, y el foco se queda donde estaba.
+      const prev = document.activeElement as HTMLElement | null;
+      dlg.show();
+      if (prev && prev !== document.body) prev.focus({ preventScroll: true });
+      else (document.activeElement as HTMLElement | null)?.blur();
     };
 
-    // Cerrar con la X, «Ahora no», Esc o pinchando fuera.
+    // Cerrar con la X, «Ahora no» o Esc.
     dlg.addEventListener('close', () => kind === 'cart' && store.set(LATER, String(Date.now())));
     dlg.addEventListener('click', (e) => {
-      if (e.target === dlg || (e.target as HTMLElement).closest('[data-nudge-close]')) dlg.close();
+      if ((e.target as HTMLElement).closest('[data-nudge-close]')) dlg.close();
     });
+    document.addEventListener('keydown', (e) => e.key === 'Escape' && dlg.open && dlg.close());
+    // Si se abre el carrito o el visor con la tarjeta a la vista, se quita (el carrito ya lo pide con su recuadro).
+    window.addEventListener('cart:change', () => dlg.open && kind === 'visit' && document.querySelector('[data-cart]:not([hidden])') && dlg.close());
 
     window.addEventListener('cart:add', () => {
       if (!signedIn() && Date.now() - Number(store.get(LATER) || 0) > PAUSE) wantCart = true;
@@ -209,7 +228,11 @@ import Icon from './ui/Icon.astro';
     document.addEventListener('elevenlabs-convai:call', () => (chatting = true), true);
 
     const timer = window.setInterval(() => {
-      if (signedIn()) return window.clearInterval(timer);
+      if (signedIn()) {
+        if (dlg.open) dlg.close();
+        return window.clearInterval(timer);
+      }
+      if (dlg.open) return;
       if (busy()) {
         // Si el carrito se ha abierto, su recuadro ya pide iniciar sesión.
         if (document.querySelector('[data-cart]:not([hidden])')) wantCart = false;
