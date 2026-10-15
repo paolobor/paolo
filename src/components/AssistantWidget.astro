@@ -99,6 +99,13 @@ const textos = JSON.stringify({
           };
           if (LIMIT && usadas() >= LIMIT) {
             el.remove();
+            // Ya gastadas hoy: se avisa una vez por visita (si no, parecía que el asistente había desaparecido).
+            try {
+              if (!sessionStorage.getItem('fairino-asistente-aviso')) {
+                sessionStorage.setItem('fairino-asistente-aviso', '1');
+                aviso();
+              }
+            } catch (e) {}
             return;
           }
           if (LIMIT) {

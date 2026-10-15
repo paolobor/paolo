@@ -742,20 +742,25 @@
     gsap.ticker.remove(tick);
     var host = intro.closest('.fi-overlay') || intro;
     window.scrollTo(0, 0);
-    gsap.to(host, {
-      opacity: 0,
-      duration: duration,
-      ease: 'power2.inOut',
-      onComplete: function () {
-        root.classList.remove('fi-play');
-        host.remove();
-        // Fuera el vídeo de la memoria.
+    // Desde que empieza a fundirse ya no tapa la web: los clics pasan a la página aunque el fundido tarde.
+    host.style.pointerEvents = 'none';
+    var finished = false;
+    var finish = function () {
+      if (finished) return;
+      finished = true;
+      root.classList.remove('fi-play');
+      host.remove();
+      // Fuera el vídeo de la memoria.
+      try {
         video.pause();
         video.removeAttribute('src');
         video.load();
         if (blobUrl) URL.revokeObjectURL(blobUrl);
-      },
-    });
+      } catch (e) {}
+    };
+    gsap.to(host, { opacity: 0, duration: duration, ease: 'power2.inOut', onComplete: finish });
+    // Por si el fundido no llega a terminar (en algún portátil se quedaba la capa invisible encima de la web).
+    setTimeout(finish, duration * 1000 + 1500);
   }
   function go() {
     remember();

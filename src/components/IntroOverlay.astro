@@ -33,6 +33,10 @@ const v = (s: string) => `?v=${createHash('sha256').update(s).digest('hex').slic
         var s = document.createElement('script');
         s.src = n[i].getAttribute('src');
         s.async = false;
+        // Sin sus scripts (bloqueados por un antivirus o una extensión, o sin red) no hay intro: se ve la página.
+        s.onerror = function () {
+          root.classList.remove('fi-play');
+        };
         document.body.appendChild(s);
       }
     };
@@ -41,5 +45,19 @@ const v = (s: string) => `?v=${createHash('sha256').update(s).digest('hex').slic
       root.classList.remove('fi-play');
     };
     document.head.appendChild(css);
+    // Vigilante: si la capa de la intro se queda encima sin verse (fundida pero sin quitar), se quita para que la web
+    // se pueda usar. También si la intro no ha arrancado en 20 s (scripts que no llegan).
+    var t0 = Date.now();
+    var watch = setInterval(function () {
+      if (!root.classList.contains('fi-play')) return clearInterval(watch);
+      var o = document.querySelector('.fi-overlay');
+      var faded = o && parseFloat(getComputedStyle(o).opacity) < 0.05;
+      var stuck = Date.now() - t0 > 20000 && !window.gsap;
+      if (!o || faded || stuck) {
+        root.classList.remove('fi-play');
+        if (o && faded) o.remove();
+        clearInterval(watch);
+      }
+    }, 1000);
   })();
 </script>
