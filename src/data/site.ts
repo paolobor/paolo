@@ -105,6 +105,22 @@ export const site = {
     shopifyDomain: null as string | null,
   },
 
+  // Stock y plazos (src/scripts/stock.ts). El stock sale de la hoja de Google «Stock web FAIRINO España»: una fila por
+  // producto con «Código web» (el de la dirección de su ficha), «Unidades en stock» y, si se quiere, «Plazo si no hay
+  // stock (días)». La hoja se comparte como «Cualquier persona con el enlace: lector» y sheetId es lo que va entre
+  // /d/ y /edit en su enlace. La web la lee al abrir cada página (como mucho cada 2 minutos por visitante), así que
+  // los cambios se ven al momento sin volver a subir la web. Mientras sheetId sea null no se enseña el stock.
+  stock: {
+    sheetId: null as string | null,
+    // Plazo de entrega con stock, tal cual se enseña (p. ej. '2 a 4 días laborables'); null = no se dice plazo.
+    inStockDelivery: null as string | null,
+    // Sin stock, de la tarifa: «Unidades fuera de stock: plazo de suministro de 45 días» (nota de los cobots). En el
+    // resto de productos, solo si la hoja pone su plazo.
+    cobotOnOrderDays: 45,
+    // Con estas unidades o menos sale «Últimas X unidades».
+    lastUnits: 3,
+  },
+
   // Configurador: precios ocultos por defecto. Para mostrarlos, poner true y rellenar "price" en cada producto.
   showPrices: true,
   currency: 'EUR',

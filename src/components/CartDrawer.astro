@@ -142,6 +142,7 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
           <a class="font-semibold hover:text-signal"></a>
           <span class="font-mono text-xs text-muted"></span>
           <span class="flex items-start gap-1.5 text-xs leading-snug text-ok" data-inc hidden><span aria-hidden="true">✓</span><span></span></span>
+          <span class="stock text-xs" data-stock hidden><span class="stock-dot" aria-hidden="true"></span><span data-stock-text></span></span>
           <div class="mt-1 flex items-center justify-between gap-3">
             <div class="inline-flex items-center rounded-full border border-line">
               <button type="button" class="grid size-8 place-items-center hover:text-signal" aria-label="Quitar uno">−</button>
@@ -165,6 +166,9 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
       const inc = li.querySelector<HTMLElement>('[data-inc]')!;
       inc.hidden = !r.includes;
       inc.lastElementChild!.textContent = r.includes;
+      const stock = li.querySelector<HTMLElement>('[data-stock]')!;
+      stock.dataset.stock = r.id;
+      stock.dataset.stockCat = r.item.category;
       li.querySelector('.min-w-6')!.textContent = String(r.q);
       li.querySelector('.justify-between > .font-mono')!.textContent = r.unit != null ? s.fmt(r.unit * r.q) : 'Consultar';
       const [minus, plus] = li.querySelectorAll('button');
@@ -172,6 +176,8 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
       plus.addEventListener('click', () => setQty(r.id, r.v, r.q + 1));
       list.append(li);
     }
+    // Stock de cada línea (src/scripts/stock.ts).
+    window.dispatchEvent(new CustomEvent('stock:scan', { detail: list }));
     drawer!.querySelector('[data-cart-subtotal]')!.textContent = s.fmt(s.subtotal) + (s.unpriced ? ' + consultar' : '');
     drawer!.querySelector('[data-cart-shipping]')!.textContent = s.fmt(s.shipping);
     drawer!.querySelector('[data-cart-total]')!.textContent = s.fmt(s.total);

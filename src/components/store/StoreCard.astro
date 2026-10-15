@@ -1,4 +1,5 @@
 ---
+import StockBadge from './StockBadge.astro';
 import type { CollectionEntry } from 'astro:content';
 import Icon from '../ui/Icon.astro';
 import SmartImage from '../ui/SmartImage.astro';
@@ -15,6 +16,8 @@ interface Props {
 }
 const { product, selectable = false } = Astro.props;
 const d = product.data;
+// Con la hoja de stock (site.stock), la etiqueta de stock va encima del precio.
+const stockOn = Boolean(site.stock.sheetId) && !d.upcoming;
 const box = hasBox(product);
 const spare = SPARE_IDS.includes(product.id);
 // En la tienda, pulsar la foto abre el visor de fotos (ProductLightbox) y elige el producto para ver sus compatibles.
@@ -91,9 +94,10 @@ const mediaAttrs = selectable
         </p>
       )
     }
+    {!d.upcoming && <StockBadge id={product.id} category={d.category} class={box ? 'pt-1' : 'mt-auto pt-2'} />}
     <!-- En tarjetas estrechas (la tienda en el móvil va a dos columnas), precio arriba y botón debajo a todo lo ancho. -->
     {box && <IncludedNote short class="mt-auto pt-2" />}
-    <div class:list={['flex flex-col gap-2 @min-[15rem]:flex-row @min-[15rem]:items-center @min-[15rem]:justify-between @min-[15rem]:gap-3', box ? 'pt-1' : 'mt-auto pt-3']}>
+    <div class:list={['flex flex-col gap-2 @min-[15rem]:flex-row @min-[15rem]:items-center @min-[15rem]:justify-between @min-[15rem]:gap-3', box || stockOn ? 'pt-1' : 'mt-auto pt-3']}>
       <span class="font-mono text-lg leading-tight">
         {d.store.price != null ? formatEUR(d.store.price) : 'Consultar'}
         {d.store.price != null && site.store.vatIncluded === false && <span class="block font-sans text-[0.68rem] text-muted">IVA no incluido</span>}

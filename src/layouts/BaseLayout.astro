@@ -48,6 +48,7 @@ const clientConfig = {
   whatsapp: site.whatsapp.number,
   forms: { endpoint: site.forms.endpoint, accessKey: site.forms.accessKey, fallbackEmail: site.forms.fallbackEmail },
   showPrices: site.showPrices,
+  stock: site.stock,
   currency: site.currency,
   base: import.meta.env.BASE_URL,
   // Con PUBLIC_FIREBASE_EMULATOR=1 (solo para probar en local) las cuentas usan los emuladores de Firebase.
@@ -153,6 +154,7 @@ const accountsOn = Boolean(clientConfig.accounts.firebase);
       import '../scripts/bg-video';
       import '../scripts/fx';
       import '../scripts/teaser';
+      import '../scripts/stock';
     </script>
   </body>
 </html>

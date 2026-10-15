@@ -13,6 +13,7 @@ import { solutions } from '../../data/solutions';
 import { formatEUR } from '../../lib/store';
 import { site } from '../../data/site';
 import { url, formatNumber } from '../../lib/url';
+import StockBadge from './StockBadge.astro';
 
 const allCobots = await getProducts('cobot');
 // Los que están «Próximamente» (el ART7 R7) van al final, después del FR30.
@@ -223,6 +224,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
               {vatNote && <span class="ml-1 text-xs text-mist">{vatNote}</span>}
             </p>
             {s.box && <IncludedNote id={s.id} />}
+            <StockBadge id={s.id} category="cobot" full shipping={s.product.data.store.shipping} class="justify-items-center text-center" />
           </div>
 
           {s.box && <BoxContents product={s.product} selectable class="max-w-3xl" />}
@@ -349,6 +351,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
             <div class="mr-auto grid gap-1.5">
               <p class="font-mono text-xl">{s.price != null ? formatEUR(s.price) : 'Consultar'} {vatNote && <span class="text-xs text-mist">{vatNote}</span>}</p>
               {s.box && <IncludedNote id={s.id} />}
+              <StockBadge id={s.id} category={s.product.data.category} full shipping={s.product.data.store.shipping} />
             </div>
             <button type="button" class="btn btn-primary" data-add-cart={s.id} data-name={s.name} data-version={s.versions[0]?.id} data-power={s.box ? 'ac' : undefined} data-open-cart>
               <Icon name="plus" size={18} />

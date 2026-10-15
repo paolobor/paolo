@@ -2,6 +2,7 @@ export interface ClientConfig {
   whatsapp: string;
   forms: { endpoint: string; accessKey: string | null; fallbackEmail: string };
   showPrices: boolean;
+  stock: { sheetId: string | null; inStockDelivery: string | null; cobotOnOrderDays: number; lastUnits: number };
   currency: string;
   base: string;
   // Cuentas de cliente (src/scripts/account.ts). emulator: solo en pruebas locales con los emuladores de Firebase.

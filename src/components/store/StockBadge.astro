@@ -1,0 +1,31 @@
+---
+// Stock de un producto (src/scripts/stock.ts lo rellena con la hoja de Google de site.stock): «En stock», «Últimas X
+// unidades» o «Bajo pedido». Sale oculto y solo se ve si la hoja se ha podido leer. Con «full» lleva el plazo entero y,
+// si el producto tiene precio de envío en la tarifa, la línea del envío (esa no depende de la hoja).
+import { site } from '../../data/site';
+import { formatEUR } from '../../lib/store';
+
+interface Props {
+  id: string;
+  category: string;
+  full?: boolean;
+  shipping?: number | null;
+  class?: string;
+}
+const { id, category, full = false, shipping = null, class: className } = Astro.props;
+const on = Boolean(site.stock.sheetId);
+---
+
+{
+  (on || (full && shipping)) && (
+    <div class:list={['grid gap-1', className]}>
+      {on && (
+        <p class:list={['stock', full ? 'text-sm' : 'text-xs']} data-stock={id} data-stock-cat={category} data-stock-full={full ? '' : undefined} hidden>
+          <span class="stock-dot" aria-hidden="true" />
+          <span data-stock-text />
+        </p>
+      )}
+      {full && shipping ? <p class="text-sm text-muted">Envío a cualquier punto de España: {formatEUR(shipping)}</p> : null}
+    </div>
+  )
+}
