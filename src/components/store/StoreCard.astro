@@ -94,7 +94,7 @@ const mediaAttrs = selectable
         </p>
       )
     }
-    {!d.upcoming && <StockBadge id={product.id} category={d.category} class={box ? 'pt-1' : 'mt-auto pt-2'} />}
+    {!d.upcoming && <StockBadge id={product.id} class={box ? 'pt-1' : 'mt-auto pt-2'} />}
     <!-- En tarjetas estrechas (la tienda en el móvil va a dos columnas), precio arriba y botón debajo a todo lo ancho. -->
     {box && <IncludedNote short class="mt-auto pt-2" />}
     <div class:list={['flex flex-col gap-2 @min-[15rem]:flex-row @min-[15rem]:items-center @min-[15rem]:justify-between @min-[15rem]:gap-3', box || stockOn ? 'pt-1' : 'mt-auto pt-3']}>

@@ -9,6 +9,8 @@ import { url } from '../../lib/url';
 // Como en Amazon: para comprar hay que iniciar sesión o crear una cuenta (src/scripts/account.ts). Sin Firebase
 // configurado (site.accounts) el pedido funciona como antes, sin cuenta.
 const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIREBASE_EMULATOR === '1';
+// Recogida sin gastos de envío en las instalaciones (site.stock.pickup, site.address).
+const pickupPlace = site.stock.pickup ? `${site.address.street ? `${site.address.street}, ` : ''}${site.address.postalCode} ${site.address.city} (${site.address.region})` : null;
 ---
 
 <BaseLayout title="Tramitar pedido" description="Revisa tu carrito y envía tu pedido a FAIRINO España." noindex>
@@ -42,6 +44,21 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
 <!-- Trampa antispam (Web3Forms): invisible para las personas; si un robot la marca, el envío se rechaza. -->
 <input type="checkbox" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="display:none" />
         <h2 class="text-2xl font-bold" style="font-stretch:112%">Datos de facturación y entrega</h2>
+        {
+          pickupPlace && (
+            <fieldset class="grid gap-2.5" data-delivery data-pickup-place={pickupPlace}>
+              <legend class="mb-2 text-sm font-semibold text-white">Entrega *</legend>
+              <label class="form-check">
+                <input type="radio" name="entrega_modo" value="envio" checked />
+                <span>Envío a mi dirección, a cualquier punto de España</span>
+              </label>
+              <label class="form-check">
+                <input type="radio" name="entrega_modo" value="recogida" />
+                <span>Recogida sin gastos de envío en nuestras instalaciones: {pickupPlace}</span>
+              </label>
+            </fieldset>
+          )
+        }
         <div class="form-grid">
           <div class="form-field"><label for="o-empresa">Empresa *</label><input id="o-empresa" name="empresa" required autocomplete="organization" /></div>
           <div class="form-field"><label for="o-cif">DNI, CIF o NIF *</label><input id="o-cif" name="cif" required /></div>
@@ -49,7 +66,7 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
           <div class="form-field"><label for="o-email">Correo electrónico *</label><input id="o-email" name="email" type="email" required autocomplete="email" /></div>
           <div class="form-field"><label for="o-tel">Teléfono *</label><input id="o-tel" name="telefono" type="tel" required autocomplete="tel" /></div>
           <div class="form-field"><label for="o-cp">Código postal *</label><input id="o-cp" name="codigo_postal" required autocomplete="postal-code" /></div>
-          <div class="form-field sm:col-span-2"><label for="o-dir">Dirección de entrega *</label><input id="o-dir" name="direccion" required autocomplete="street-address" /></div>
+          <div class="form-field sm:col-span-2"><label for="o-dir" data-dir-label>Dirección de entrega *</label><input id="o-dir" name="direccion" required autocomplete="street-address" /></div>
           <div class="form-field"><label for="o-ciudad">Población *</label><input id="o-ciudad" name="poblacion" required autocomplete="address-level2" /></div>
           <div class="form-field"><label for="o-prov">Provincia *</label><input id="o-prov" name="provincia" required autocomplete="address-level1" /></div>
           <div class="form-field sm:col-span-2"><label for="o-notas">Observaciones</label><textarea id="o-notas" name="observaciones" rows="3" placeholder="Horario de entrega, muelle de carga, versión IP65…"></textarea></div>
@@ -68,7 +85,7 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
         <ul class="grid gap-3 text-sm" data-order-lines></ul>
         <dl class="grid gap-1.5 border-t border-line pt-3 font-mono text-sm">
           <div class="flex justify-between"><dt class="text-muted">Subtotal</dt><dd data-order-subtotal>—</dd></div>
-          <div class="flex justify-between"><dt class="text-muted">Envío nacional</dt><dd data-order-shipping>—</dd></div>
+          <div class="flex justify-between"><dt class="text-muted" data-order-shipping-label>Envío nacional</dt><dd data-order-shipping>—</dd></div>
           <div class="flex justify-between text-base text-white"><dt>Total</dt><dd data-order-total>—</dd></div>
         </dl>
         <p class="text-sm text-muted" data-order-empty hidden>Tu carrito está vacío. <a href={url('tienda/')} class="text-brand underline">Ir a la tienda</a>.</p>
@@ -90,8 +107,15 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
   import { getConfig } from '../../scripts/config';
 
   const lines = document.querySelector<HTMLUListElement>('[data-order-lines]');
-  const render = () => {
+  // Recogida en las instalaciones: sin envío (la dirección se sigue pidiendo para la factura).
+  const delivery = document.querySelector<HTMLElement>('[data-delivery]');
+  const pickup = () => delivery?.querySelector<HTMLInputElement>('input[value="recogida"]')?.checked ?? false;
+  const totals = () => {
     const s = cartSummary();
+    return pickup() ? { ...s, shipping: 0, total: s.subtotal } : s;
+  };
+  const render = () => {
+    const s = totals();
     if (!lines) return;
     lines.innerHTML = '';
     for (const r of s.rows) {
@@ -106,18 +130,33 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
         inc.textContent = `✓ ${r.includes}`;
         a.append(inc);
       }
+      // Stock y plazo de cada línea (src/scripts/stock.ts).
+      const stock = document.createElement('span');
+      stock.className = 'stock text-xs';
+      stock.hidden = true;
+      stock.dataset.stock = r.id;
+      stock.dataset.stockVersion = r.v;
+      stock.innerHTML = '<span class="stock-dot" aria-hidden="true"></span><span data-stock-text></span>';
+      a.append(stock);
       const b = document.createElement('span');
       b.className = 'font-mono';
       b.textContent = r.unit != null ? s.fmt(r.unit * r.q) : 'Consultar';
       li.append(a, b);
       lines.append(li);
     }
+    window.dispatchEvent(new CustomEvent('stock:scan', { detail: lines }));
+    document.querySelector('[data-order-shipping-label]')!.textContent = pickup() ? 'Recogida' : 'Envío nacional';
     document.querySelector('[data-order-subtotal]')!.textContent = s.fmt(s.subtotal);
     document.querySelector('[data-order-shipping]')!.textContent = s.fmt(s.shipping);
     document.querySelector('[data-order-total]')!.textContent = s.fmt(s.total);
     document.querySelector<HTMLElement>('[data-order-empty]')!.hidden = s.rows.length > 0;
   };
   window.addEventListener('cart:change', render);
+  delivery?.addEventListener('change', () => {
+    const label = document.querySelector('[data-dir-label]');
+    if (label) label.textContent = pickup() ? 'Dirección de facturación *' : 'Dirección de entrega *';
+    render();
+  });
   render();
 
   const form = document.querySelector<HTMLFormElement>('[data-order-form]');
@@ -167,16 +206,21 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
     e.preventDefault();
     if (!form.reportValidity()) return;
     const st = form.querySelector<HTMLElement>('[data-form-status]');
-    const s = cartSummary();
+    const s = totals();
     if (s.rows.length === 0) {
       if (st) st.textContent = 'Añade al menos un producto al carrito.';
       return;
     }
-    const extra: Record<string, string> = { pedido: cartText() };
+    const place = pickup() ? (delivery?.dataset.pickupPlace ?? '') : null;
+    const extra: Record<string, string> = {
+      pedido: cartText(undefined, place),
+      entrega: place ? `Recogida en nuestras instalaciones: ${place}` : 'Envío a la dirección indicada',
+    };
     if (acc && user) {
       // Se guarda en la cuenta (Mis pedidos) con la dirección para la próxima vez. Si falla, llega igual por correo.
       const data = Object.fromEntries([...new FormData(form).entries()].map(([k, v]) => [k, String(v).trim()]));
-      const entrega = Object.fromEntries(fields.map((k) => [k, data[k] ?? '']));
+      const datos = Object.fromEntries(fields.map((k) => [k, data[k] ?? '']));
+      const entrega = { ...datos, modo: place ? 'recogida' : 'envio' };
       extra.cuenta = `${user.email} (cliente registrado)`;
       try {
         extra.referencia = await acc.saveOrder(user, {
@@ -187,7 +231,7 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
           pendiente: s.unpriced,
           entrega,
         });
-        acc.saveProfile(user, entrega).catch(() => {});
+        acc.saveProfile(user, datos).catch(() => {});
       } catch {
         /* sin guardar en la cuenta: el correo con el pedido sale igual */
       }

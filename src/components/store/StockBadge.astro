@@ -1,31 +1,34 @@
 ---
 // Stock de un producto (src/scripts/stock.ts lo rellena con la hoja de Google de site.stock): «En stock», «Últimas X
-// unidades» o «Bajo pedido». Sale oculto y solo se ve si la hoja se ha podido leer. Con «full» lleva el plazo entero y,
-// si el producto tiene precio de envío en la tarifa, la línea del envío (esa no depende de la hoja).
+// unidades» o «Bajo pedido». Sale oculto y solo se ve si la hoja se ha podido leer. Con «full» lleva el plazo entero,
+// el precio del envío si la tarifa lo tiene y la recogida sin gastos en las instalaciones (estas dos no dependen de la
+// hoja). «ip65»: el producto tiene versión IP65, que lleva su propio stock.
 import { site } from '../../data/site';
 import { formatEUR } from '../../lib/store';
 
 interface Props {
   id: string;
-  category: string;
+  ip65?: boolean;
   full?: boolean;
   shipping?: number | null;
   class?: string;
 }
-const { id, category, full = false, shipping = null, class: className } = Astro.props;
+const { id, ip65 = false, full = false, shipping = null, class: className } = Astro.props;
 const on = Boolean(site.stock.sheetId);
+const pickup = full && site.stock.pickup ? `${site.address.city} (${site.address.region})` : null;
 ---
 
 {
-  (on || (full && shipping)) && (
+  (on || (full && (shipping || pickup))) && (
     <div class:list={['grid gap-1', className]}>
       {on && (
-        <p class:list={['stock', full ? 'text-sm' : 'text-xs']} data-stock={id} data-stock-cat={category} data-stock-full={full ? '' : undefined} hidden>
+        <p class:list={['stock', full ? 'text-sm' : 'text-xs']} data-stock={id} data-stock-ip65={ip65 ? '' : undefined} data-stock-full={full ? '' : undefined} hidden>
           <span class="stock-dot" aria-hidden="true" />
           <span data-stock-text />
         </p>
       )}
       {full && shipping ? <p class="text-sm text-muted">Envío a cualquier punto de España: {formatEUR(shipping)}</p> : null}
+      {pickup && <p class="text-sm text-muted">O recógelo sin gastos de envío en {pickup}: elígelo al hacer el pedido.</p>}
     </div>
   )
 }

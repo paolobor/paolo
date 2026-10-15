@@ -325,7 +325,7 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
           )
         }
 
-        {!d.upcoming && <StockBadge id={product.id} category={d.category} full shipping={d.store.shipping} />}
+        {!d.upcoming && <StockBadge id={product.id} ip65={d.store.versions.some((v) => v.id === 'ip65')} full shipping={d.store.shipping} />}
 
         <div class="flex flex-wrap gap-3 pt-1">
           {

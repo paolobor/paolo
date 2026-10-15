@@ -112,13 +112,15 @@ export const site = {
   // los cambios se ven al momento sin volver a subir la web. Mientras sheetId sea null no se enseña el stock.
   stock: {
     sheetId: null as string | null,
-    // Plazo de entrega con stock, tal cual se enseña (p. ej. '2 a 4 días laborables'); null = no se dice plazo.
-    inStockDelivery: null as string | null,
-    // Sin stock, de la tarifa: «Unidades fuera de stock: plazo de suministro de 45 días» (nota de los cobots). En el
-    // resto de productos, solo si la hoja pone su plazo.
-    cobotOnOrderDays: 45,
+    // Plazo de entrega con stock, tal cual se enseña (lo da FAIRINO España, 15-10-2026).
+    inStockDelivery: '2 a 4 días laborables' as string | null,
+    // Sin stock, para todos los productos: «Unidades fuera de stock: plazo de suministro de 45 días» (tarifa; FAIRINO
+    // España confirma que también vale para los accesorios). La columna «Plazo» de la hoja lo cambia por producto.
+    onOrderDays: 45,
     // Con estas unidades o menos sale «Últimas X unidades».
     lastUnits: 3,
+    // Se puede recoger sin gastos de envío en las instalaciones (site.address). En el pedido se elige «Recogida».
+    pickup: true,
   },
 
   // Configurador: precios ocultos por defecto. Para mostrarlos, poner true y rellenar "price" en cada producto.

@@ -1,6 +1,8 @@
 // Stock y plazos: lee la hoja de Google «Stock web FAIRINO España» (site.stock) y rellena las etiquetas
-// [data-stock="<id del producto>"] de la tienda, las fichas y el carrito:
-//   En stock · Últimas X unidades (con site.stock.lastUnits o menos) · Bajo pedido (con el plazo, si se sabe).
+// [data-stock="<id del producto>"] de la tienda, las fichas, el carrito y el pedido:
+//   En stock · Últimas X unidades (con site.stock.lastUnits o menos) · Bajo pedido (con el plazo).
+// La versión IP65 de los cobots lleva su propia fila en la hoja («fr5-ip65»); sin esa fila sale «Bajo pedido», porque el
+// stock de la fila normal es de la versión estándar (IP54). data-stock-version dice la versión elegida.
 // Si la hoja no se puede leer (sin red, sin compartir…) no se enseña nada: mejor nada que un stock equivocado.
 // La lectura se guarda 2 minutos en sessionStorage («fairino-stock») para no pedirla en cada página.
 import { getConfig } from './config';
@@ -69,7 +71,7 @@ function toMap(csv: string): Map<string, Row> | null {
   if (id < 0 || units < 0) return null;
   const map = new Map<string, Row>();
   for (const r of rows) {
-    const k = (r[id] ?? '').trim();
+    const k = (r[id] ?? '').trim().toLowerCase().replace(/\s+/g, '-');
     if (k) map.set(k, { units: num(r[units]), days: days >= 0 ? num(r[days]) : null });
   }
   return map;
@@ -102,15 +104,21 @@ function load(): Promise<Map<string, Row> | null> {
   return data;
 }
 
-// Texto y tono de un producto. «cat» es la categoría (cobot, controlador, accesorio) para el plazo de la tarifa.
-function info(row: Row | undefined, cat: string, full: boolean) {
+// Fila de un producto en la versión elegida: la IP65 solo cuenta con su propia fila.
+function rowOf(map: Map<string, Row>, id: string, version: string) {
+  return /ip65/.test(version) ? map.get(`${id}-ip65`) : map.get(id);
+}
+
+// Texto y tono. «ip54»: el producto tiene versión IP65 y no se ha elegido; el stock es de la estándar y se dice.
+function info(row: Row | undefined, full: boolean, ip54: boolean) {
   const units = row?.units ?? 0;
   if (units > 0) {
     const label = units <= cfg.lastUnits ? (units === 1 ? 'Última unidad' : `Últimas ${units} unidades`) : 'En stock';
+    const which = full && ip54 ? ' (versión estándar IP54)' : '';
     const when = full && cfg.inStockDelivery ? ` · entrega en ${cfg.inStockDelivery}` : '';
-    return { tone: units <= cfg.lastUnits ? 'last' : 'in', text: label + when };
+    return { tone: units <= cfg.lastUnits ? 'last' : 'in', text: label + which + when };
   }
-  const days = row?.days ?? (cat === 'cobot' ? cfg.cobotOnOrderDays : null);
+  const days = row?.days ?? cfg.onOrderDays;
   const when = days ? (full ? ` · plazo de suministro de unos ${days} días` : ` · ${days} días`) : '';
   return { tone: 'order', text: 'Bajo pedido' + when };
 }
@@ -121,7 +129,9 @@ export async function fillStock(root: ParentNode = document) {
   const map = await load();
   if (!map) return;
   for (const el of els) {
-    const r = info(map.get(el.dataset.stock!), (el.dataset.stockCat ?? '').toLowerCase(), el.hasAttribute('data-stock-full'));
+    const version = el.dataset.stockVersion ?? '';
+    const ip54 = el.hasAttribute('data-stock-ip65') && !/ip65/.test(version);
+    const r = info(rowOf(map, el.dataset.stock!, version), el.hasAttribute('data-stock-full'), ip54);
     el.dataset.tone = r.tone;
     el.querySelector('[data-stock-text]')!.textContent = r.text;
     el.hidden = false;
@@ -132,4 +142,12 @@ if (cfg?.sheetId) {
   fillStock();
   // El carrito pinta sus líneas cada vez que cambia: avisa con «stock:scan».
   window.addEventListener('stock:scan', (e) => fillStock((e as CustomEvent).detail ?? document));
+  // Escaparate de cobots: al cambiar entre estándar e IP65 cambia su etiqueta.
+  document.addEventListener('change', (e) => {
+    const r = e.target as HTMLInputElement;
+    if (!r.matches?.('[data-version-for]')) return;
+    const box = r.closest('article, section') ?? document;
+    box.querySelectorAll<HTMLElement>(`[data-stock="${r.dataset.versionFor}"]`).forEach((el) => (el.dataset.stockVersion = r.value));
+    fillStock(box);
+  });
 }

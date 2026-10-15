@@ -85,7 +85,8 @@ export function cartSummary(lines = readCart()) {
   return { rows, count, subtotal, shipping, total: subtotal + shipping, unpriced, fmt: (n: number) => fmt.format(n) };
 }
 
-export function cartText(lines = readCart()) {
+// Texto del pedido para el correo. Con «pickup» (lugar de recogida) no hay envío.
+export function cartText(lines = readCart(), pickup: string | null = null) {
   const s = cartSummary(lines);
   return [
     ...s.rows.flatMap((r) => [
@@ -93,6 +94,6 @@ export function cartText(lines = readCart()) {
       ...(r.includes ? [`  ${r.includes}.`] : []),
     ]),
     `Subtotal: ${s.fmt(s.subtotal)}${s.unpriced ? ' + artículos a consultar' : ''}`,
-    `Envío: ${s.fmt(s.shipping)}`,
+    pickup ? `Envío: no (recogida sin gastos en ${pickup})` : `Envío: ${s.fmt(s.shipping)}`,
   ].join('\n');
 }

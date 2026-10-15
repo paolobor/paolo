@@ -168,7 +168,7 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
       inc.lastElementChild!.textContent = r.includes;
       const stock = li.querySelector<HTMLElement>('[data-stock]')!;
       stock.dataset.stock = r.id;
-      stock.dataset.stockCat = r.item.category;
+      stock.dataset.stockVersion = r.v;
       li.querySelector('.min-w-6')!.textContent = String(r.q);
       li.querySelector('.justify-between > .font-mono')!.textContent = r.unit != null ? s.fmt(r.unit * r.q) : 'Consultar';
       const [minus, plus] = li.querySelectorAll('button');
