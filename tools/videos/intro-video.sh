@@ -3,7 +3,7 @@
 #   tools/videos/intro-video.sh <fotogramas> public/intro/assets
 # <fotogramas>: la carpeta de PNG sin pérdidas que deja intro-fotogramas.sh con FORMATO=png SIN_PAQUETES=1 (lo mejor;
 # ver README) o, si no, una de paquetes pNN.webp de 1920 (sale peor: esos fotogramas ya vienen comprimidos).
-# Deja intro-1080.mp4 (ordenador y móvil), intro-720.mp4 (conexiones lentas o con ahorro de datos), intro-poster.webp
+# Deja intro-1080.mp4 (ordenador y móvil), intro-720.mp4 (con ahorro de datos), sus copias -frag.mp4, intro-poster.webp
 # (primer fotograma) e intro-still-1..3.webp (las tres imágenes fijas del movimiento reducido). Después, sube VIDEO.v en
 # intro.js.
 # H.264 de 8 bits porque lo reproduce el chip de vídeo de cualquier aparato (10 bits o AV1 irían más finos, pero muchos
@@ -47,6 +47,11 @@ mkdir -p "$OUT"
 COMUN=(-c:v libx264 -preset veryslow -tune film -pix_fmt yuv420p -profile:v high -x264-params aq-mode=3:aq-strength=0.9 -g "$FPS" -movflags +faststart -an)
 ffmpeg -v error -y -framerate "$FPS" -i "$IN" -vf "format=yuv420p" "${COMUN[@]}" -crf "${CRF_1080:-16}" -level:v 4.2 -maxrate 24M -bufsize 48M "$OUT/intro-1080.mp4"
 ffmpeg -v error -y -framerate "$FPS" -i "$IN" -vf "scale=1280:720:flags=lanczos,format=yuv420p" "${COMUN[@]}" -crf "${CRF_720:-19}" -level:v 4.0 -maxrate 8M -bufsize 16M "$OUT/intro-720.mp4"
+# Las mismas, troceadas (MP4 fragmentado, sin volver a codificar) para reproducirlas mientras llegan (Media Source). El
+# códec que dice intro.js (CODEC: avc1.64002A y avc1.640028) tiene que ser el de estos archivos.
+for H in 1080 720; do
+  ffmpeg -v error -y -i "$OUT/intro-$H.mp4" -c copy -movflags frag_keyframe+empty_moov+default_base_moof "$OUT/intro-$H-frag.mp4"
+done
 still() { ffmpeg -v error -y -i "$SRC/f$(printf %04d "$1").$EXT" -c:v libwebp -quality 88 "$OUT/$2"; }
 still 0 intro-poster.webp
 still $((FPS * 3 / 2)) intro-still-1.webp

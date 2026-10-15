@@ -2,8 +2,8 @@
  * Intro de FAIRINO Spain: llegar en persona a una gran fábrica, como el arranque de una película.
  * Un único plano secuencia en vídeo (assets/intro-1080.mp4, a la máxima calidad): lo reproduce el chip de vídeo del
  * aparato, así que va fluido también en móviles y ordenadores modestos (antes eran 768 fotogramas sueltos en un <canvas>,
- * que no cabían en la memoria de muchos aparatos). Se descarga entero mientras se ve la pantalla de inicio y se reproduce
- * desde la memoria: siempre en 1080p y a su velocidad, sin depender de la conexión. La cámara va siempre hacia delante,
+ * que no cabían en la memoria de muchos aparatos). Se descarga mientras se ve la pantalla de inicio y arranca en cuanto
+ * lo que falta va a llegar a tiempo: siempre en 1080p y a su velocidad, sin frenar ni bajar de calidad. La cámara va siempre hacia delante,
  * recta y sin pararse: la rueda o el dedo la aceleran un rato (más velocidad de reproducción, que se va apagando sola).
  *   Inicio   la pantalla de siempre: el bloque «FAIRINO SPAIN» con su destello y «Haz clic para entrar». Al hacer
  *            clic (o Intro, espacio, rueda o dedo), la cámara cruza el hueco de la «O» y empieza el recorrido.
@@ -33,7 +33,9 @@
   // VIDEO: assets/intro-<alto>.mp4 (tools/videos/intro-video.sh; v: súbelo al cambiar el vídeo, para que el navegador no
   // use el guardado). Tramos en segundos del vídeo: aéreo, entrada (bajada y puertas), nave (luces y cobots) y final (el
   // dron vuela entre los cobots y sale por el techo). Si cambias el vídeo, cambia estos números (README).
-  var VIDEO = { fps: 48, v: 15 };
+  var VIDEO = { fps: 48, dur: 16, v: 16 };
+  // Códecs de los vídeos (H.264 High, nivel 4.2 y 4.0) para reproducirlos mientras llegan (Media Source).
+  var CODEC = { 1080: 'avc1.64002A', 720: 'avc1.640028' };
   var SEG = { entrada: 3.5, nave: 5.5, final: 12 };
   // LOCK: marco «objetivo fijado» sobre un cobot, de un instante a otro. Vacío: con el final nuevo (la cámara sube)
   // no hay cobot elegido.
@@ -96,10 +98,14 @@
   var revealTl = null;
 
   // ---------------------------------------------------------------- el vídeo
-  // Se descarga entero mientras se ve la pantalla de inicio (una línea naranja fina bajo el logotipo dice cuánto
-  // falta) y se reproduce desde la memoria del aparato: así siempre va en 1080p y a su velocidad, sin frenar ni bajar de
-  // calidad aunque la conexión sea floja. El pulso de la «O» sale cuando ya está; si se entra antes, se espera a que
-  // acabe y arranca solo. El póster (primer fotograma) se ve al instante.
+  // Se descarga mientras se ve la pantalla de inicio (una línea naranja fina bajo el logotipo dice cuánto lleva) y se
+  // reproduce desde la memoria del aparato, así que no depende de la conexión: siempre en 1080p y a su velocidad. No hace
+  // falta tenerlo entero: con el ritmo al que llega se calcula cuándo lo que falta va a llegar antes de que haga falta
+  // (aunque se vaya en automático), y desde ese momento ya se puede entrar. Con buena conexión, enseguida; con una floja,
+  // se espera solo lo justo. El pulso de la «O» sale entonces; si se entra antes, se espera y arranca solo.
+  // Va por Media Source (assets/intro-<alto>-frag.mp4, el mismo vídeo troceado): se reproduce mientras llega. Donde no se
+  // puede (iPhone con iOS antiguo, navegadores viejos), se descarga entero a la memoria y arranca al tenerlo
+  // (assets/intro-<alto>.mp4). El póster (primer fotograma) se ve al instante.
   var src = function (name) {
     return ASSETS + name + '?v=' + VIDEO.v;
   };
@@ -122,7 +128,7 @@
   prep.innerHTML = '<i></i>';
   intro.appendChild(prep);
   var prepBar = prep.firstChild;
-  var full = false; // vídeo descargado entero
+  var full = false; // ya se puede entrar: el vídeo está o va a llegar a tiempo
   var wantIn = false; // han pedido entrar antes de tenerlo
   var blobUrl = '';
   function loaded() {
@@ -140,36 +146,137 @@
     video.load();
     loaded();
   }
-  function download() {
-    var url = src('intro-' + HEIGHT + '.mp4');
-    if (!window.fetch || !window.ReadableStream || !window.URL || !URL.createObjectURL) return stream(url);
-    fetch(url)
-      .then(function (r) {
-        if (!r.ok || !r.body) throw new Error('HTTP ' + r.status);
-        var total = +r.headers.get('Content-Length') || 0;
-        var reader = r.body.getReader();
-        var parts = [];
-        var got = 0;
-        var pump = function () {
-          return reader.read().then(function (d) {
-            if (d.done) return new Blob(parts, { type: 'video/mp4' });
-            parts.push(d.value);
-            got += d.value.length;
-            if (total) prepBar.style.transform = 'scaleX(' + Math.min(1, got / total).toFixed(3) + ')';
-            return pump();
-          });
-        };
-        return pump();
-      })
-      .then(function (blob) {
-        blobUrl = URL.createObjectURL(blob);
+  // ¿Llega a tiempo? Con lo descargado (segundos de vídeo) y el ritmo al que llega (segundos de vídeo por segundo), lo
+  // que falta tiene que llegar antes de que la cámara lo alcance yendo en automático (con un 20 % de margen).
+  var MARGIN = AUTO * 1.2;
+  function onTime(got, total, secs) {
+    if (!total || secs < 0.8) return false;
+    var have = (got / total) * VIDEO.dur;
+    var rate = have / secs;
+    if (rate >= MARGIN) return have >= 2;
+    return have >= VIDEO.dur * (1 - rate / MARGIN) + 1;
+  }
+  function progress(got, total) {
+    if (total) prepBar.style.transform = 'scaleX(' + Math.min(1, got / total).toFixed(3) + ')';
+  }
+  // Descarga con fetch, trozo a trozo (each: cada trozo; end: al terminar).
+  function fetchAll(url, each, end) {
+    return fetch(url).then(function (r) {
+      if (!r.ok || !r.body) throw new Error('HTTP ' + r.status);
+      var total = +r.headers.get('Content-Length') || 0;
+      var reader = r.body.getReader();
+      var got = 0;
+      var pump = function () {
+        return reader.read().then(function (d) {
+          if (d.done) return end(total);
+          got += d.value.length;
+          each(d.value, got, total);
+          return pump();
+        });
+      };
+      return pump();
+    });
+  }
+  // Sin Media Source: entero a la memoria y arranca al tenerlo.
+  function viaBlob(url) {
+    if (!window.fetch || !window.ReadableStream || !URL.createObjectURL) return stream(url);
+    var parts = [];
+    fetchAll(
+      url,
+      function (chunk, got, total) {
+        parts.push(chunk);
+        progress(got, total);
+      },
+      function () {
+        blobUrl = URL.createObjectURL(new Blob(parts, { type: 'video/mp4' }));
         video.src = blobUrl;
         video.load();
         loaded();
-      })
-      .catch(function () {
-        stream(url);
-      });
+      },
+    ).catch(function () {
+      stream(url);
+    });
+  }
+  // Con Media Source: se le va dando el vídeo según llega y se puede entrar en cuanto llega a tiempo.
+  function viaMse(url, plain) {
+    var MS = window.ManagedMediaSource || window.MediaSource;
+    var type = 'video/mp4; codecs="' + CODEC[HEIGHT] + '"';
+    var ms = new MS();
+    var t0 = performance.now();
+    var failed = false;
+    var fail = function () {
+      if (failed) return;
+      failed = true;
+      if (state === 'idle') viaBlob(plain);
+      else skipNow();
+    };
+    video.disableRemotePlayback = true;
+    blobUrl = URL.createObjectURL(ms);
+    video.src = blobUrl;
+    ms.addEventListener(
+      'sourceopen',
+      function () {
+        var sb;
+        try {
+          ms.duration = VIDEO.dur;
+          sb = ms.addSourceBuffer(type);
+        } catch (e) {
+          return fail();
+        }
+        var queue = [];
+        var done = false;
+        // Se le pasa todo lo que haya llegado de una vez, cuando ha terminado con lo anterior.
+        var feed = function () {
+          if (failed || sb.updating || ms.readyState !== 'open') return;
+          if (queue.length) {
+            var n = 0;
+            queue.forEach(function (c) {
+              n += c.length;
+            });
+            var all = new Uint8Array(n);
+            var o = 0;
+            queue.forEach(function (c) {
+              all.set(c, o);
+              o += c.length;
+            });
+            queue = [];
+            try {
+              sb.appendBuffer(all);
+            } catch (e) {
+              fail();
+            }
+          } else if (done) {
+            try {
+              ms.endOfStream();
+            } catch (e) {}
+            loaded();
+          }
+        };
+        sb.addEventListener('updateend', feed);
+        sb.addEventListener('error', fail);
+        fetchAll(
+          url,
+          function (chunk, got, total) {
+            queue.push(chunk);
+            progress(got, total);
+            if (!full && onTime(got, total, (performance.now() - t0) / 1000)) loaded();
+            feed();
+          },
+          function () {
+            done = true;
+            feed();
+          },
+        ).catch(fail);
+      },
+      { once: true },
+    );
+  }
+  function download() {
+    var plain = src('intro-' + HEIGHT + '.mp4');
+    var MS = window.ManagedMediaSource || window.MediaSource;
+    var ok = MS && MS.isTypeSupported && MS.isTypeSupported('video/mp4; codecs="' + CODEC[HEIGHT] + '"');
+    if (ok && window.fetch && window.ReadableStream && URL.createObjectURL) viaMse(src('intro-' + HEIGHT + '-frag.mp4'), plain);
+    else viaBlob(plain);
   }
   // Arranca el vídeo (dentro del clic, para que los navegadores lo dejen). Si aun así lo frenan, vuelve a intentarlo
   // con el siguiente toque.
@@ -590,7 +697,7 @@
       if (want !== bed) mix();
     }
 
-    if (started && (video.ended || (dur && t >= dur - 0.06))) finale();
+    if (started && (video.ended || t >= VIDEO.dur - 0.06)) finale();
   }
 
   // ---------------------------------------------------------------- final: la cámara sigue subiendo y aparece la web
