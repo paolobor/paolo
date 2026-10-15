@@ -14,6 +14,16 @@ Revisión del 6-10-2026: 468 vídeos del canal (233 vídeos y 235 Shorts); 19 no
 (FR3C 1, FR5 7, FR10 5, FR20 5, FR30 1). FR3, FR16, FR3WMS, FR3WML y FR5WML no tienen ninguno con su nombre.
 El FR5-C del vídeo de desempaquetado del FR3-C no está en el catálogo.
 
+Revisión del 15-10-2026 (RSS oficial del canal, con las descripciones): ningún vídeo nuevo nombra un modelo. El
+tutorial «Configuring and Using the FR Robot Smart Tool» va en la ficha de la Smart Tool (sin fecha: no se pudo
+comprobar).
+
+## Vídeos de toda la gama
+
+`fairinoRangeVideos` (mismo archivo): salen en la ficha de cada cobot FR, después de los de su modelo, o solos si el
+modelo no tiene. Son tutoriales del software (igual en todos los cobots FR) y aplicaciones en clientes en las que
+FAIRINO no dice qué modelo sale; la tarjeta lo dice («Tutorial · toda la gama», «Aplicación · toda la gama»).
+
 ## Cómo añadir uno
 
 1. Añadir la entrada en `src/data/fairino-videos.ts` (título en español, fiel al original; fecha de publicación).
