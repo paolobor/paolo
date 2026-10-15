@@ -39,7 +39,7 @@ export const slotOverrides: Record<string, string> = {
 // Lo que NO va en la muñeca aunque sea de una familia que sí (garras, visión, fuerza): cajas de control, aspiradores…
 // Y lo que SÍ va en la muñeca siendo de otra familia (enseñanza manual, cambiadores y adaptadores de brida).
 export const offWrist = ['controlbox-softgripping', 'aspirador-lijado-mirka'];
-export const onWristExtra = ['smart-tool', 'cambiador-rapido', 'adaptador-doble-herramienta', 'adaptador-antorcha'];
+export const onWristExtra = ['smart-tool', 'cambiador-rapido'];
 export const wristFamilies = ['garra', 'vision', 'fuerza'];
 
 // Lo que necesita otro accesorio para funcionar (se avisa al marcarlo).

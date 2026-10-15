@@ -19,6 +19,8 @@ Options -Indexes
   RedirectMatch 301 ^/robotica-humanoide-en-la-industria-el-siguiente-salto-en-automatizacion-inteligente/?$ /aplicaciones/soluciones/robot-humanoide/
   RedirectMatch 301 ^/catalogo-fairino-2026-robotica-colaborativa-para-la-industria/?$ /descargas/
   RedirectMatch 301 ^/camaras-3d-en-la-automatizacion-industrial-la-vision-inteligente-que-impulsa-la-robotica-colaborativa/?$ /productos/orbbec-gemini-2/
+  # Productos retirados de la tienda (no son de la gama que vende FAIRINO España): sus direcciones llevan a Accesorios.
+  RedirectMatch 301 ^/productos/(sensor-fuerza-par-inlux|mesa-desarrollo|plataforma-fijacion|pinza-a-medida|adaptador-antorcha|placa-montaje|pinza-vacio-area|mesa-fijacion|soporte-cobot-acero|adaptador-doble-herramienta)/?$ /accesorios/
 </IfModule>
 
 # Tipos de archivo que algunos servidores no conocen

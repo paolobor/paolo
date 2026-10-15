@@ -561,7 +561,6 @@ import { url } from '../lib/url';
       img.src = ph.src;
       img.alt = ph.alt || it.name;
       if (img.complete) img.classList.remove('is-loading');
-      $('ill').hidden = !ph.ill;
       $('kind').textContent = e.section;
       // Posición dentro de su apartado: «3 de 24».
       const same = list.filter((x) => x.section === e.section);
