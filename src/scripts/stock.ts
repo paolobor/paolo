@@ -1,6 +1,6 @@
 // Stock y plazos: lee la hoja de Google «Stock web FAIRINO España» (site.stock) y rellena las etiquetas
 // [data-stock="<id del producto>"] de la tienda, las fichas, el carrito y el pedido:
-//   En stock · Últimas X unidades (con site.stock.lastUnits o menos) · Bajo pedido (con el plazo).
+//   En stock · ¡Últimas X unidades! (con site.stock.lastUnits o menos, en una etiqueta naranja) · Bajo pedido (con el plazo).
 // La versión IP65 de los cobots lleva su propia fila en la hoja («fr5-ip65»); sin esa fila sale «Bajo pedido», porque el
 // stock de la fila normal es de la versión estándar (IP54). data-stock-version dice la versión elegida.
 // Si la hoja no se puede leer (sin red, sin compartir…) no se enseña nada: mejor nada que un stock equivocado.
@@ -113,14 +113,15 @@ function rowOf(map: Map<string, Row>, id: string, version: string) {
 function info(row: Row | undefined, full: boolean, ip54: boolean) {
   const units = row?.units ?? 0;
   if (units > 0) {
-    const label = units <= cfg.lastUnits ? (units === 1 ? 'Última unidad' : `Últimas ${units} unidades`) : 'En stock';
+    const last = units <= cfg.lastUnits;
+    const label = last ? (units === 1 ? '¡Última unidad!' : `¡Últimas ${units} unidades!`) : 'En stock';
     const which = full && ip54 ? ' (versión estándar IP54)' : '';
     const when = full && cfg.inStockDelivery ? ` · entrega en ${cfg.inStockDelivery}` : '';
-    return { tone: units <= cfg.lastUnits ? 'last' : 'in', text: label + which + when };
+    return { tone: last ? 'last' : 'in', label, rest: which + when };
   }
   const days = row?.days ?? cfg.onOrderDays;
   const when = days ? (full ? ` · plazo de suministro de unos ${days} días` : ` · ${days} días`) : '';
-  return { tone: 'order', text: 'Bajo pedido' + when };
+  return { tone: 'order', label: 'Bajo pedido', rest: when };
 }
 
 export async function fillStock(root: ParentNode = document) {
@@ -133,7 +134,14 @@ export async function fillStock(root: ParentNode = document) {
     const ip54 = el.hasAttribute('data-stock-ip65') && !/ip65/.test(version);
     const r = info(rowOf(map, el.dataset.stock!, version), el.hasAttribute('data-stock-full'), ip54);
     el.dataset.tone = r.tone;
-    el.querySelector('[data-stock-text]')!.textContent = r.text;
+    const text = el.querySelector('[data-stock-text]')!;
+    // «Últimas unidades» va en una etiqueta naranja para que no pase desapercibido.
+    if (r.tone === 'last') {
+      const flag = document.createElement('span');
+      flag.className = 'stock-flag';
+      flag.textContent = r.label;
+      text.replaceChildren(flag, r.rest);
+    } else text.textContent = r.label + r.rest;
     el.hidden = false;
   }
 }

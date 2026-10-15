@@ -521,7 +521,7 @@ body {
 /* Stock (StockBadge y carrito, src/scripts/stock.ts) */
 .stock {
   display: inline-flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 0.45rem;
   font-weight: 600;
   line-height: 1.3;
@@ -533,6 +533,7 @@ body {
   width: 0.55rem;
   height: 0.55rem;
   flex-shrink: 0;
+  margin-top: 0.38em;
   border-radius: 999px;
   background: currentColor;
   box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 22%, transparent);
@@ -541,7 +542,37 @@ body {
   color: var(--color-ok);
 }
 .stock[data-tone='last'] {
-  color: var(--color-brand-hi);
+  color: var(--color-mist);
+}
+/* «¡Últimas X unidades!»: etiqueta naranja maciza y punto que late, para que se vea a la primera. */
+.stock[data-tone='last'] .stock-dot {
+  margin-top: 0.6em;
+  background: var(--color-signal);
+  animation: stock-pulse 1.6s ease-out infinite;
+}
+.stock-flag {
+  display: inline-block;
+  margin-right: 0.15rem;
+  padding: 0.18em 0.6em;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--color-brand-hi), var(--color-brand-700));
+  color: var(--color-ink);
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  box-shadow: 0 6px 18px -8px rgb(255 106 19 / 0.9);
+}
+@keyframes stock-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgb(255 122 26 / 0.65);
+  }
+  100% {
+    box-shadow: 0 0 0 9px rgb(255 122 26 / 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stock[data-tone='last'] .stock-dot {
+    animation: none;
+  }
 }
 .stock[data-tone='order'] {
   color: var(--color-mist);
