@@ -11,6 +11,25 @@
       "alt": "Cobot FAIRINO FR3 (imagen provisional del modelo 3D oficial)"
     },
     {
+      "src": "../../assets/products/fr3/fr3-render-a-oficial.png",
+      "alt": "Cobot FAIRINO FR3, render oficial de FAIRINO"
+    },
+    {
+      "src": "../../assets/products/fairino-oficial/fr3-helados.jpg",
+      "alt": "Cobots FAIRINO en un puesto automático de helados (foto de FAIRINO)",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fairino-oficial/fr3-helado-detalle.jpg",
+      "alt": "Cobot FAIRINO sujetando un cucurucho de helado con una pinza (foto de FAIRINO)",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fairino-oficial/fr3-bebidas.jpg",
+      "alt": "Cobot FAIRINO en un robot de bebidas, sujetando el filtro del café con una pinza eléctrica (foto de FAIRINO)",
+      "illustrative": true
+    },
+    {
       "src": "../../assets/products/fr3/fairino-fr3-escena-producto.webp",
       "alt": "Cobot FAIRINO FR3 sobre una peana en una sala de exposición con luz naranja de fondo",
       "illustrative": true
@@ -23,6 +42,16 @@
     {
       "src": "../../assets/products/fr3/fairino-fr3-escena-dosificacion.webp",
       "alt": "Cobot FAIRINO FR3 aplicando un cordón de adhesivo en una carcasa de aluminio con un dosificador",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fairino-oficial/detalle-articulacion.jpg",
+      "alt": "Detalle de las articulaciones de un cobot FAIRINO (foto de FAIRINO)",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fairino-oficial/guiado-manual.jpg",
+      "alt": "Mano pulsando los botones de guiado de un cobot FAIRINO para enseñarle los movimientos a mano (foto de FAIRINO)",
       "illustrative": true
     }
   ],

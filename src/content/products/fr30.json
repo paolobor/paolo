@@ -11,6 +11,19 @@
       "alt": "Cobot FAIRINO FR30 (imagen provisional del modelo 3D oficial)"
     },
     {
+      "src": "../../assets/products/fr30/fr30-render-a-oficial.png",
+      "alt": "Cobot FAIRINO FR30, render oficial de FAIRINO"
+    },
+    {
+      "src": "../../assets/products/fairino-oficial/fr30-render-sala.jpg",
+      "alt": "Cobot FAIRINO FR30 en una sala blanca (imagen oficial de FAIRINO)",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fairino-oficial/fr30-presentacion.jpg",
+      "alt": "Cobot FAIRINO FR30, imagen de presentación de FAIRINO"
+    },
+    {
       "src": "../../assets/products/fr30/fairino-fr30-escena-producto.webp",
       "alt": "Cobot FAIRINO FR30 sobre una peana en una sala de exposición con luz naranja de fondo",
       "illustrative": true
@@ -23,6 +36,16 @@
     {
       "src": "../../assets/products/fr30/fairino-fr30-escena-manipulacion.webp",
       "alt": "Cobot FAIRINO FR30 con garra levantando una pieza de fundición en una nave",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fairino-oficial/detalle-articulacion.jpg",
+      "alt": "Detalle de las articulaciones de un cobot FAIRINO (foto de FAIRINO)",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fairino-oficial/guiado-manual.jpg",
+      "alt": "Mano pulsando los botones de guiado de un cobot FAIRINO para enseñarle los movimientos a mano (foto de FAIRINO)",
       "illustrative": true
     }
   ],

@@ -11,6 +11,20 @@
       "alt": "Cobot FAIRINO FR20 (imagen provisional del modelo 3D oficial)"
     },
     {
+      "src": "../../assets/products/fr20/fr20-render-a-oficial.png",
+      "alt": "Cobot FAIRINO FR20, render oficial de FAIRINO"
+    },
+    {
+      "src": "../../assets/products/fairino-oficial/fr20-soldadura-laser.jpg",
+      "alt": "Cobot FAIRINO FR20 en una estación de soldadura láser en un taller (foto de FAIRINO)",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fairino-oficial/corte-plasma.jpg",
+      "alt": "Cobot FAIRINO cortando metal con una antorcha de plasma en un taller (foto de FAIRINO)",
+      "illustrative": true
+    },
+    {
       "src": "../../assets/products/fr20/fairino-fr20-escena-producto.webp",
       "alt": "Cobot FAIRINO FR20 sobre una peana en una sala de exposición con luz naranja de fondo",
       "illustrative": true
@@ -23,6 +37,16 @@
     {
       "src": "../../assets/products/fr20/fairino-fr20-escena-paletizado-doble.webp",
       "alt": "Cobot FAIRINO FR20 paletizando cajas en una nave logística, con un palé vacío preparado al lado",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fairino-oficial/detalle-articulacion.jpg",
+      "alt": "Detalle de las articulaciones de un cobot FAIRINO (foto de FAIRINO)",
+      "illustrative": true
+    },
+    {
+      "src": "../../assets/products/fairino-oficial/guiado-manual.jpg",
+      "alt": "Mano pulsando los botones de guiado de un cobot FAIRINO para enseñarle los movimientos a mano (foto de FAIRINO)",
       "illustrative": true
     }
   ],

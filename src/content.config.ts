@@ -25,7 +25,8 @@ const products = defineCollection({
     tagline: z.string(),
     description: z.string(),
     highlights: z.array(z.string()).default([]),
-    // illustrative: escena generada a partir del render oficial (se muestra a sangre y con el pie «Imagen ilustrativa»).
+    // illustrative: foto a sangre (escena generada a partir del render oficial o foto de aplicación de FAIRINO); sin
+    // él, recorte con transparencia que se muestra entero.
     images: z.array(z.object({ src: image(), alt: z.string(), illustrative: z.boolean().default(false) })).default([]),
     // Vídeo del producto: sale el primero en la galería de la ficha.
     // - Propio: mp4/webm en /public/media/ (p. ej. 'media/fairino-fr3.mp4'); se reproduce solo, en bucle y sin sonido.

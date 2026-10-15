@@ -199,7 +199,7 @@ const placeholderViews = ['vista principal', 'vista lateral', 'detalle', 'en apl
             )
           }
         </div>
-        <div class:list={['grid gap-3', mediaCount > 4 ? 'grid-cols-5' : 'grid-cols-4']}>
+        <div class:list={['grid gap-3', mediaCount > 8 ? 'grid-cols-5 gap-2 sm:grid-cols-6' : mediaCount > 4 ? 'grid-cols-5' : 'grid-cols-4']}>
           {
             mediaCount > 1 && d.video && (
               <button
