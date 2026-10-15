@@ -38,16 +38,6 @@
       "src": "../../assets/products/fr3wms/fairino-fr3wms-escena-soldadura-movil.webp",
       "alt": "Cobot FAIRINO FR3WMS sobre un carro con el equipo de soldadura, soldando en una nave de calderería",
       "illustrative": true
-    },
-    {
-      "src": "../../assets/products/fairino-oficial/detalle-articulacion.jpg",
-      "alt": "Detalle de las articulaciones de un cobot FAIRINO (foto de FAIRINO)",
-      "illustrative": true
-    },
-    {
-      "src": "../../assets/products/fairino-oficial/guiado-manual.jpg",
-      "alt": "Mano pulsando los botones de guiado de un cobot FAIRINO para enseñarle los movimientos a mano (foto de FAIRINO)",
-      "illustrative": true
     }
   ],
   "video": {

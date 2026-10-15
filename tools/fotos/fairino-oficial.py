@@ -6,8 +6,8 @@
 #   src/assets/products/<modelo>/<modelo>-render-a-oficial.png (y -b): render recortado a la silueta, ≤ 1600 px
 #   src/assets/products/fairino-oficial/*.jpg: fotos de aplicaciones (varias se repiten en fichas de la misma serie)
 # Solo se asigna a un modelo lo que FAIRINO pone en la ficha de ese modelo (o de su serie: FR3/FR3-C/FR3-WMS/FR3-WML,
-# FR5/FR5-WML). Las fotos que la web oficial repite en todas las fichas (articulación, botones de guiado) valen para
-# todos los cobots FR. Lo que se usa de cada ficha está en src/content/products/<modelo>.json.
+# FR5/FR5-WML). Las dos fotos que la web oficial repite en todas las fichas (articulación y botones de guiado) se
+# quitaron a petición de FAIRINO España (15-10-2026). Lo que se usa de cada ficha está en src/content/products/<modelo>.json.
 
 import os
 import sys
@@ -51,8 +51,6 @@ FOTOS = {
     '20230811/959ef6ae943b367e014c9221e961e139.jpg': ('fr3-helados.jpg', None),
     '20230811/c2dac00b70f13614f89972699442cf53.jpg': ('fr3-bebidas.jpg', None),
     '20230815/fdc3b854b199f6bd0d5fe8845bd5d4bc.png': ('fr3-helado-detalle.jpg', (270, 780)),
-    '20230815/331119b384c559b4f3ed2d42ddbd5d8b.png': ('detalle-articulacion.jpg', (135, 645)),
-    '20230815/4c09de83f5e6e238fb42bef85d08cfe0.png': ('guiado-manual.jpg', (60, 570)),
     '20240816/ccb1c1293fc328ba2dcbb8cc756e5455.jpg': ('fr30-render-sala.jpg', None),
     '20240816/7a967c7b6f59badb1a980515f696ef72.jpg': ('fr30-presentacion.jpg', None),
 }

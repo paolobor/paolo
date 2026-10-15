@@ -38,16 +38,6 @@
       "src": "../../assets/products/fr10/fairino-fr10-escena-manipulacion.webp",
       "alt": "Cobot FAIRINO FR10 con garra eléctrica moviendo piezas torneadas entre bandejas sobre una cinta",
       "illustrative": true
-    },
-    {
-      "src": "../../assets/products/fairino-oficial/detalle-articulacion.jpg",
-      "alt": "Detalle de las articulaciones de un cobot FAIRINO (foto de FAIRINO)",
-      "illustrative": true
-    },
-    {
-      "src": "../../assets/products/fairino-oficial/guiado-manual.jpg",
-      "alt": "Mano pulsando los botones de guiado de un cobot FAIRINO para enseñarle los movimientos a mano (foto de FAIRINO)",
-      "illustrative": true
     }
   ],
   "video": {

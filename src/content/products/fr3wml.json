@@ -38,16 +38,6 @@
       "src": "../../assets/products/fr3wml/fairino-fr3wml-escena-soldadura.webp",
       "alt": "Cobot FAIRINO FR3WML soldando una pieza de chapa en una mesa de soldadura con aspiración de humos",
       "illustrative": true
-    },
-    {
-      "src": "../../assets/products/fairino-oficial/detalle-articulacion.jpg",
-      "alt": "Detalle de las articulaciones de un cobot FAIRINO (foto de FAIRINO)",
-      "illustrative": true
-    },
-    {
-      "src": "../../assets/products/fairino-oficial/guiado-manual.jpg",
-      "alt": "Mano pulsando los botones de guiado de un cobot FAIRINO para enseñarle los movimientos a mano (foto de FAIRINO)",
-      "illustrative": true
     }
   ],
   "video": {
