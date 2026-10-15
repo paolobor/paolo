@@ -136,7 +136,8 @@ export async function saveProfile(u: User, p: Partial<Profile>) {
   }
 }
 
-export async function saveOrder(u: User, o: { lineas: OrderLine[]; subtotal: number; envio: number; total: number; pendiente: boolean; entrega: Partial<Profile> }) {
+// entrega.modo: «envio» o «recogida» (sin gastos de envío, en las instalaciones).
+export async function saveOrder(u: User, o: { lineas: OrderLine[]; subtotal: number; envio: number; total: number; pendiente: boolean; entrega: Partial<Profile> & { modo?: string } }) {
   const ref = await addDoc(collection(db!, 'pedidos'), { ...o, uid: u.uid, email: u.email, estado: 'Recibido', fecha: serverTimestamp() });
   return ref.id;
 }
