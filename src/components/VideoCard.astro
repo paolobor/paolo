@@ -1,0 +1,43 @@
+---
+// Tarjeta de un vídeo de YouTube en la ficha de producto: miniatura guardada en la web y, al pulsar, el reproductor en la
+// ventana de la página (data-video-open, en productos/[slug].astro). Hasta entonces no se carga nada de YouTube.
+import Icon from './ui/Icon.astro';
+
+interface Props {
+  youtube: string;
+  title: string;
+  short: boolean;
+  poster?: string;
+  // Duración ya formateada (m:ss); en los Shorts se pone «Short».
+  length: string | null;
+  // Línea de debajo del título (fecha o tipo de vídeo).
+  meta: string | null;
+}
+const { youtube, title, short, poster, length, meta } = Astro.props;
+---
+
+<button type="button" class="vid-card group grid w-full gap-3 text-left" data-video-open data-yt={youtube} data-title={title} data-short={short ? '' : undefined} aria-label={`Reproducir el vídeo: ${title}`}>
+  <span class="relative block aspect-video overflow-hidden rounded-xl border border-white/10 bg-black">
+    <img src={poster} alt="" width="640" height="360" loading="lazy" decoding="async" class="size-full object-cover transition-transform duration-500 group-hover:scale-105" />
+    <span class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></span>
+    <span class="absolute left-1/2 top-1/2 grid size-14 -translate-x-1/2 -translate-y-1/2 place-items-center rounded-full bg-signal text-ink shadow-[0_10px_40px_-6px_rgba(255,106,19,0.7)] transition-transform group-hover:scale-110">
+      <Icon name="play" size={24} />
+    </span>
+    {(short || length) && <span class="absolute bottom-2 right-2 rounded-md bg-black/75 px-1.5 py-1 font-mono text-[0.68rem] leading-none text-white">{short ? 'Short' : length}</span>}
+  </span>
+  <span class="grid gap-1">
+    <span class="font-semibold leading-snug text-white group-hover:text-signal">{title}</span>
+    {meta && <span class="text-sm capitalize-first text-white/60">{meta}</span>}
+  </span>
+</button>
+
+<style>
+  .vid-card:focus-visible {
+    outline: 2px solid var(--color-signal);
+    outline-offset: 4px;
+    border-radius: 14px;
+  }
+  .capitalize-first::first-letter {
+    text-transform: uppercase;
+  }
+</style>

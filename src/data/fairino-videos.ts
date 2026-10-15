@@ -12,8 +12,8 @@ export interface FairinoVideo {
   short: boolean;
   // Duración en segundos (los Shorts no la publican en el listado del canal).
   duration: number | null;
-  // Fecha de publicación (AAAA-MM-DD).
-  date: string;
+  // Fecha de publicación (AAAA-MM-DD); null si no se ha podido comprobar (no se enseña).
+  date: string | null;
 }
 
 export const fairinoVideos: FairinoVideo[] = [
@@ -41,6 +41,28 @@ export const fairinoVideos: FairinoVideo[] = [
   { youtube: 'Isq0c5ckwFA', title: 'FR20 en paletizado y pick and place en Tailandia', models: ['fr20'], short: false, duration: 110, date: '2023-12-05' },
   // FR30
   { youtube: 'vFznCarJe-0', title: 'FR30 paletizando en la industria alimentaria (India)', models: ['fr30'], short: true, duration: null, date: '2025-12-17' },
+  // Accesorios
+  { youtube: 'Abutmnjbvhs', title: 'Configurar y usar la Smart Tool en un cobot FAIRINO', models: ['smart-tool'], short: false, duration: 217, date: null },
+];
+
+// Vídeos del mismo canal que valen para toda la gama FR y salen en la ficha de cada cobot FR, después de los de su
+// modelo (o solos, si el modelo no tiene): tutoriales del software (todos los cobots FR llevan la misma controladora y
+// el mismo programa) y aplicaciones en clientes en las que FAIRINO no dice qué modelo sale.
+export interface FairinoRangeVideo {
+  youtube: string;
+  title: string;
+  kind: 'Tutorial' | 'Aplicación';
+  short: boolean;
+  duration: number;
+}
+
+export const fairinoRangeVideos: FairinoRangeVideo[] = [
+  { youtube: '5zJ3x1TooCE', title: 'Soldadura robotizada en Corea del Sur', kind: 'Aplicación', short: false, duration: 28 },
+  { youtube: '3XZFIwvE5ZM', title: 'Pulido robotizado en Tailandia', kind: 'Aplicación', short: false, duration: 20 },
+  { youtube: 'AKuiPafXEkY', title: 'Paletizado en la República Checa', kind: 'Aplicación', short: false, duration: 95 },
+  { youtube: '7bUgkwf2hfU', title: 'Programación gráfica de los cobots FR', kind: 'Tutorial', short: false, duration: 146 },
+  { youtube: 'aK7vcWw5v5I', title: 'Configurar el punto de inicio y el programa principal', kind: 'Tutorial', short: false, duration: 118 },
+  { youtube: 'nuCT_AgDDn4', title: 'Control de fuerza y arrastre asistido', kind: 'Tutorial', short: false, duration: 312 },
 ];
 
 export const fairinoChannel = 'https://www.youtube.com/@FAIRINOrobot';
