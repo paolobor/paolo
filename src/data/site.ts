@@ -111,7 +111,9 @@ export const site = {
   // /d/ y /edit en su enlace. La web la lee al abrir cada página (como mucho cada 2 minutos por visitante), así que
   // los cambios se ven al momento sin volver a subir la web. Mientras sheetId sea null no se enseña el stock.
   stock: {
-    sheetId: '10y-QObHQglJW1GTNusYvn5ogWcHuRmDAf8WLViflt5M' as string | null,
+    // Quitado a petición de FAIRINO España (16-10-2026): el stock saldrá de a3ERP (tools/a3erp/LEEME.md). Para volver
+    // a la hoja de Google: '10y-QObHQglJW1GTNusYvn5ogWcHuRmDAf8WLViflt5M'.
+    sheetId: null as string | null,
     // Plazo de entrega con stock, tal cual se enseña (lo da FAIRINO España, 15-10-2026).
     inStockDelivery: '2 a 4 días laborables' as string | null,
     // Sin stock, para todos los productos: «Unidades fuera de stock: plazo de suministro de 45 días» (tarifa; FAIRINO
