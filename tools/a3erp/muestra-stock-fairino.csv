@@ -1,7 +1,86 @@
 ﻿codigo_articulo;descripcion;unidades_disponibles
-FR3;Cobot FAIRINO FR3 (IP54);2
-FR5;Cobot FAIRINO FR5 (IP54);4
+ART7-R7;Cobot FAIRINO ART7 R7;0
+FR3;Cobot FAIRINO FR3 (IP54);0
+FR3-IP65;Cobot FAIRINO FR3 IP65;0
+FR3C;Cobot FAIRINO FR3C (IP54);2
+FR3C-IP65;Cobot FAIRINO FR3C IP65;0
+FR3 WMS;Cobot FAIRINO FR3WMS (IP54);0
+FR3 WMS-IP65;Cobot FAIRINO FR3WMS IP65;0
+FR3 WML;Cobot FAIRINO FR3WML (IP54);2
+FR3 WML-IP65;Cobot FAIRINO FR3WML IP65;0
+FR5;Cobot FAIRINO FR5 (IP54);7
 FR5-IP65;Cobot FAIRINO FR5 IP65;0
+FR5-NEGRO;Cobot FAIRINO FR5 Negro;0
+FR5 WML;Cobot FAIRINO FR5WML (IP54);0
+FR5 WML-IP65;Cobot FAIRINO FR5WML IP65;0
 FR10;Cobot FAIRINO FR10 (IP54);8
-EPG4-10-50;Pinza eléctrica de 4 dedos EPG4-10-50;7
-TP1;Consola Teach Pendant;3
+FR10-IP65;Cobot FAIRINO FR10 IP65;0
+FR10-NEGRO;Cobot FAIRINO FR10 Negro;0
+FR16;Cobot FAIRINO FR16 (IP54);0
+FR16-IP65;Cobot FAIRINO FR16 IP65;0
+FR20;Cobot FAIRINO FR20 (IP54);2
+FR20-IP65;Cobot FAIRINO FR20 IP65;0
+FR30;Cobot FAIRINO FR30 (IP54);2
+FR30-IP65;Cobot FAIRINO FR30 IP65;0
+CTROL 1 DC;DC Mini Controller 2KW;0
+CTROL 2 DC;DC Controller 5KW;0
+CTROL 1 AC;AC Mini Controller 2KW;0
+CTROL 2 AC;AC Controller 5KW;0
+ORBEC GEMINI CAMERA;Cámara Orbbec Gemini 2;0
+EPG40-50;Gripper EPG40-050;8
+GZCX-6F-75MM;Sensor de fuerza GZCX-6F-75MM;0
+XJC-6F-D80-H28;Sensor de fuerza XJC-6F-D80-H28-A;0
+SAFETY-BOX;Safety Box;0
+SMTool;Smart Tool;0
+TP1;Teach Pendant;2
+PINZA-IR75-300;Pinza eléctrica IR75-300;0
+PINZA-IR20-80C;Pinza eléctrica de 3 dedos IR20-80C;0
+PINZA-VACIO-ELECTRICA;Pinza de vacío eléctrica ECBPMi para FAIRINO;0
+PINZA-VACIO-230X120;Pinza de vacío de superficie FQE-V 230 × 120;0
+PINZA-VACIO-400X280;Pinza de vacío de superficie FQE-V 400 × 280;0
+CAMBIADOR-RAPIDO;Cambiador rápido de herramienta SmartShift;0
+BASE-MAGNETICA;Base magnética para cobot;0
+SOPORTE-COBOT;Mesa soporte FAIRINO;0
+MESA-TRABAJO-MODULAR;Mesa de trabajo modular FAIRINO;0
+PINZA-IR120-130;Pinza eléctrica adaptativa IR120-130;0
+PINZA-IR100-25;Pinza eléctrica adaptativa IR100-25;0
+PINZA-IR130-100C;Pinza eléctrica de 3 dedos IR130-100C;0
+PINZA-IR20-100R;Pinza eléctrica giratoria IR20-100R;0
+SOFTGRIPPER-PARALLEL-FINGER;Pinza flexible paralela SoftGripper;0
+SOFTGRIPPER-CENTRIC-FINGER;Pinza flexible céntrica SoftGripper;0
+SOFTACTUATOR-CENTRIC-FINGER;Actuador flexible céntrico SoftActuator;0
+CONTROLBOX-SOFTGRIPPING;Caja de control SoftGripping;0
+ADAPTADOR-PINZA-VACIO;Adaptador multiventosa SLG para ECBPMi;0
+KIT-VISION-2D-IFM;Kit de visión 2D para FAIRINO;0
+KIT-VISION-3D-IFM;Kit de visión 3D para FAIRINO;0
+KIT-HMI-DELTA;Pantalla HMI Delta DOP-100L para FAIRINO;0
+KIT-ESCANER-SEGURIDAD-IDEC;Escáner láser de seguridad IDEC SE2L;0
+KIT-LIJADO-MIRKA;Lijadora para cobot Mirka AIROS 650;0
+ASPIRADOR-LIJADO-MIRKA;Aspirador Mirka 1230 L AFC;0
+TARJETA-PROFINET-ETHERNETIP;Tarjeta de comunicación PROFINET / EtherNet/IP;0
+EPGS-6-10;Pinza eléctrica compacta EPGS-6-10;0
+EPGS-8-10;Pinza eléctrica compacta EPGS-8-10;0
+EPGS-8P-10;Pinza eléctrica compacta EPGS-8P-10;0
+EPGS-12P-15;Pinza eléctrica compacta EPGS-12P-15;0
+EPGS-16-15;Pinza eléctrica compacta EPGS-16-15;0
+EPG2-26-15;Pinza eléctrica paralela EPG2-26-15;1
+EPG2-26-50;Pinza eléctrica paralela EPG2-26-50;1
+EPG2-50-50;Pinza eléctrica paralela EPG2-50-50;1
+EPG2-50-150;Pinza eléctrica paralela EPG2-50-150;0
+EPGL-160-1200;Pinza eléctrica de carrera larga EPGL-160-1200;0
+EPGL-220-1200;Pinza eléctrica de carrera larga EPGL-220-1200;0
+EPG3-10-10;Pinza eléctrica de 3 dedos EPG3-10-10;1
+EPG4-10-50;Pinza eléctrica de 4 dedos EPG4-10-50;1
+EPGC-50-150;Pinza eléctrica para cobots EPGC-50-150;0
+EPG2-100-50;Pinza eléctrica de carrera larga EPG2-100-50;1
+ERG-20-80;Pinza eléctrica giratoria ERG-20-80;0
+ERGD-25-35;Pinza eléctrica giratoria de accionamiento directo ERGD-25-35;0
+AX7-FR3/5;Track lineal de 1 m (7.º eje);0
+AX7-FR10/30;Track lineal de 25 m (7.º eje);0
+CL-H;Columna con base en H para cobot;0
+MSegur1;Módulo de seguridad (seta de emergencia);0
+CL-G;Columna con guías para cobot;0
+CL-P;Columna telescópica con base tamaño palé;0
+TRANSPORTADOR-CHARNELA;Transportador de charnela;0
+SMALL SCF;Pinza multiventosa de vacío pequeña (18 ventosas);0
+BIG SCF;Pinza multiventosa de vacío grande (39 ventosas);0
