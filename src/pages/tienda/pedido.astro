@@ -50,7 +50,7 @@ const pickupPlace = site.stock.pickup ? `${site.address.street ? `${site.address
               <legend class="mb-2 text-sm font-semibold text-white">Entrega *</legend>
               <label class="form-check">
                 <input type="radio" name="entrega_modo" value="envio" checked />
-                <span>Envío a mi dirección, a cualquier punto de España</span>
+                <span>Envío a mi dirección, a cualquier punto de España (a Baleares y Canarias, portes a consultar)</span>
               </label>
               <label class="form-check">
                 <input type="radio" name="entrega_modo" value="recogida" />
@@ -85,7 +85,7 @@ const pickupPlace = site.stock.pickup ? `${site.address.street ? `${site.address
         <ul class="grid gap-3 text-sm" data-order-lines></ul>
         <dl class="grid gap-1.5 border-t border-line pt-3 font-mono text-sm">
           <div class="flex justify-between"><dt class="text-muted">Subtotal</dt><dd data-order-subtotal>—</dd></div>
-          <div class="flex justify-between"><dt class="text-muted" data-order-shipping-label>Envío nacional</dt><dd data-order-shipping>—</dd></div>
+          <div class="flex justify-between"><dt class="text-muted" data-order-shipping-label>Envío (península)</dt><dd data-order-shipping>—</dd></div>
           <div class="flex justify-between text-base text-white"><dt>Total</dt><dd data-order-total>—</dd></div>
         </dl>
         <p class="text-sm text-muted" data-order-empty hidden>Tu carrito está vacío. <a href={url('tienda/')} class="text-brand underline">Ir a la tienda</a>.</p>
@@ -102,7 +102,7 @@ const pickupPlace = site.stock.pickup ? `${site.address.street ? `${site.address
 </BaseLayout>
 
 <script>
-  import { cartSummary, cartText, clearCart } from '../../scripts/cart';
+  import { cartSummary, cartText, clearCart, islandOf } from '../../scripts/cart';
   import { submitForm } from '../../scripts/forms';
   import { getConfig } from '../../scripts/config';
 
@@ -110,9 +110,13 @@ const pickupPlace = site.stock.pickup ? `${site.address.street ? `${site.address
   // Recogida en las instalaciones: sin envío (la dirección se sigue pidiendo para la factura).
   const delivery = document.querySelector<HTMLElement>('[data-delivery]');
   const pickup = () => delivery?.querySelector<HTMLInputElement>('input[value="recogida"]')?.checked ?? false;
+  // Baleares o Canarias (por el código postal o la provincia de la entrega): portes a consultar, fuera del total.
+  const val = (k: string) => document.querySelector<HTMLInputElement>(`[data-order-form] [name="${k}"]`)?.value ?? '';
+  const island = () => (pickup() ? null : islandOf(val('codigo_postal'), val('provincia')));
   const totals = () => {
     const s = cartSummary();
-    return pickup() ? { ...s, shipping: 0, total: s.subtotal } : s;
+    const is = island();
+    return pickup() || is ? { ...s, shipping: 0, total: s.subtotal, island: is } : { ...s, island: null };
   };
   const render = () => {
     const s = totals();
@@ -145,10 +149,10 @@ const pickupPlace = site.stock.pickup ? `${site.address.street ? `${site.address
       lines.append(li);
     }
     window.dispatchEvent(new CustomEvent('stock:scan', { detail: lines }));
-    document.querySelector('[data-order-shipping-label]')!.textContent = pickup() ? 'Recogida' : 'Envío nacional';
+    document.querySelector('[data-order-shipping-label]')!.textContent = pickup() ? 'Recogida' : s.island ? `Envío a ${s.island}` : 'Envío (península)';
     document.querySelector('[data-order-subtotal]')!.textContent = s.fmt(s.subtotal);
-    document.querySelector('[data-order-shipping]')!.textContent = s.fmt(s.shipping);
-    document.querySelector('[data-order-total]')!.textContent = s.fmt(s.total);
+    document.querySelector('[data-order-shipping]')!.textContent = s.island ? 'A consultar' : s.fmt(s.shipping);
+    document.querySelector('[data-order-total]')!.textContent = s.fmt(s.total) + (s.island ? ' + portes' : '');
     document.querySelector<HTMLElement>('[data-order-empty]')!.hidden = s.rows.length > 0;
   };
   window.addEventListener('cart:change', render);
@@ -160,6 +164,10 @@ const pickupPlace = site.stock.pickup ? `${site.address.street ? `${site.address
   render();
 
   const form = document.querySelector<HTMLFormElement>('[data-order-form]');
+  form?.addEventListener('input', (e) => {
+    const n = (e.target as HTMLInputElement).name;
+    if (n === 'codigo_postal' || n === 'provincia') render();
+  });
 
   // Cuentas de cliente: Firebase solo se descarga si están activadas.
   type Account = typeof import('../../scripts/account');
@@ -176,6 +184,7 @@ const pickupPlace = site.stock.pickup ? `${site.address.street ? `${site.address
     }
     const mail = form.elements.namedItem('email') as HTMLInputElement | null;
     if (mail && email) mail.value = email;
+    render(); // la dirección guardada puede ser de Baleares o Canarias
   };
 
   if (getConfig().accounts?.firebase && form) {
@@ -213,8 +222,12 @@ const pickupPlace = site.stock.pickup ? `${site.address.street ? `${site.address
     }
     const place = pickup() ? (delivery?.dataset.pickupPlace ?? '') : null;
     const extra: Record<string, string> = {
-      pedido: cartText(undefined, place),
-      entrega: place ? `Recogida en nuestras instalaciones: ${place}` : 'Envío a la dirección indicada',
+      pedido: cartText(undefined, place, s.island),
+      entrega: place
+        ? `Recogida en nuestras instalaciones: ${place}`
+        : s.island
+          ? `Envío a la dirección indicada (${s.island}: portes a consultar)`
+          : 'Envío a la dirección indicada',
     };
     if (acc && user) {
       // Se guarda en la cuenta (Mis pedidos) con la dirección para la próxima vez. Si falla, llega igual por correo.
@@ -227,6 +240,7 @@ const pickupPlace = site.stock.pickup ? `${site.address.street ? `${site.address
           lineas: s.rows.map((r) => ({ id: r.id, nombre: r.item.name, version: r.version, incluye: r.includes, cantidad: r.q, precio: r.unit })),
           subtotal: s.subtotal,
           envio: s.shipping,
+          envioConsultar: Boolean(s.island),
           total: s.total,
           pendiente: s.unpriced,
           entrega,

@@ -71,7 +71,7 @@ export const GET: APIRoute = async () => {
     if (d.upcoming) out.push(`Precio de ${d.name}: se anunciará.`);
     else if (price != null && price > 0) {
       const versions = d.store.versions.filter((v) => v.delta).map((v) => `${v.label}: +${eur(v.delta)}`);
-      out.push(`Precio de ${d.name} (PVP): ${eur(price)}${versions.length ? ` (${versions.join('; ')})` : ''}${d.store.shipping ? `; envío ${eur(d.store.shipping)}` : ''}.`);
+      out.push(`Precio de ${d.name} (PVP): ${eur(price)}${versions.length ? ` (${versions.join('; ')})` : ''}${d.store.shipping ? `; envío a la península ${eur(d.store.shipping)} (Baleares y Canarias: portes a consultar)` : ''}.`);
     } else out.push(`Precio de ${d.name}: consultar (presupuesto a medida).`);
     const compat = d.compatibleWith.map((id) => byId.get(id)?.data.name).filter(Boolean);
     if (compat.length) out.push(`${d.category === 'cobot' ? `Controladores compatibles con ${d.name}` : `${d.name} es compatible con`}: ${compat.join(', ')}.`);

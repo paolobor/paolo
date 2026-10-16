@@ -27,7 +27,7 @@ const pickup = full && site.stock.pickup ? `${site.address.city} (${site.address
           <span data-stock-text />
         </p>
       )}
-      {full && shipping ? <p class="text-sm text-muted">Envío a cualquier punto de España: {formatEUR(shipping)}</p> : null}
+      {full && shipping ? <p class="text-sm text-muted">Envío a la península: {formatEUR(shipping)} · Baleares y Canarias: portes a consultar</p> : null}
       {pickup && <p class="text-sm text-muted">O recógelo sin gastos de envío en {pickup}: elígelo al hacer el pedido.</p>}
     </div>
   )

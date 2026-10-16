@@ -17,6 +17,7 @@ Muestras en esta carpeta: `muestra-stock-fairino.csv` y `muestra-pedido-web-fair
   web pública). a3ERP lo recoge por FTP y lo borra o lo mueve a `procesados/`.
 - Una fila por línea; los datos del pedido y del cliente se repiten en cada fila. `pedido_web` es la referencia del
   pedido en Firebase (la que ve el cliente en «Mi cuenta»). `entrega`: `envio` o `recogida` (sin portes).
-  `precio_unitario` vacío = producto «Consultar» (precio pendiente). El IVA lo aplica a3ERP.
+  `precio_unitario` vacío = producto «Consultar» (precio pendiente). `portes` vacío = entrega en Baleares o Canarias
+  (portes a consultar). El IVA lo aplica a3ERP (Canarias, Ceuta y Melilla, sin IVA: provincias 35, 38, 51 y 52).
 - Pendiente en la web: un script PHP en Dinahosting que reciba el pedido (comprobando la sesión de Firebase del cliente)
   y escriba el fichero.

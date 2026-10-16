@@ -41,10 +41,10 @@ const accountsOn = Boolean(site.accounts.firebase) || import.meta.env.PUBLIC_FIR
   <footer class="grid gap-3 border-t border-line px-5 py-5" data-cart-footer>
     <dl class="grid gap-1.5 font-mono text-sm">
       <div class="flex justify-between"><dt class="text-muted">Subtotal</dt><dd data-cart-subtotal>—</dd></div>
-      <div class="flex justify-between"><dt class="text-muted">Envío nacional</dt><dd data-cart-shipping>—</dd></div>
+      <div class="flex justify-between"><dt class="text-muted">Envío (península)</dt><dd data-cart-shipping>—</dd></div>
       <div class="flex justify-between border-t border-line pt-2 text-base text-white"><dt>Total</dt><dd data-cart-total>—</dd></div>
     </dl>
-    {vatNote && <p class="text-right text-xs text-muted">{vatNote}</p>}
+    <p class="text-right text-xs text-muted">{vatNote && <>{vatNote} · </>}Baleares y Canarias: portes a consultar.</p>
     {
       accountsOn && (
         <div class="cart-acct grid gap-3" data-cart-account-note>

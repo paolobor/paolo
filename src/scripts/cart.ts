@@ -85,8 +85,24 @@ export function cartSummary(lines = readCart()) {
   return { rows, count, subtotal, shipping, total: subtotal + shipping, unpriced, fmt: (n: number) => fmt.format(n) };
 }
 
-// Texto del pedido para el correo. Con «pickup» (lugar de recogida) no hay envío.
-export function cartText(lines = readCart(), pickup: string | null = null) {
+// Baleares (código postal 07…) y Canarias (35…, 38…): el envío sale más caro y se presupuesta aparte («a consultar»).
+// Sin código postal válido se mira la provincia.
+export function islandOf(cp = '', provincia = ''): 'Baleares' | 'Canarias' | null {
+  const c = cp.replace(/\s/g, '');
+  if (/^07\d{3}$/.test(c)) return 'Baleares';
+  if (/^3[58]\d{3}$/.test(c)) return 'Canarias';
+  if (/^\d{5}$/.test(c)) return null;
+  const p = provincia
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase();
+  if (/balear|mallorca|menorca|ibiza|eivissa|formentera/.test(p)) return 'Baleares';
+  if (/canaria|las palmas|tenerife|lanzarote|fuerteventura|gomera|hierro/.test(p)) return 'Canarias';
+  return null;
+}
+
+// Texto del pedido para el correo. Con «pickup» (lugar de recogida) no hay envío; con «island», portes a consultar.
+export function cartText(lines = readCart(), pickup: string | null = null, island: string | null = null) {
   const s = cartSummary(lines);
   return [
     ...s.rows.flatMap((r) => [
@@ -94,6 +110,6 @@ export function cartText(lines = readCart(), pickup: string | null = null) {
       ...(r.includes ? [`  ${r.includes}.`] : []),
     ]),
     `Subtotal: ${s.fmt(s.subtotal)}${s.unpriced ? ' + artículos a consultar' : ''}`,
-    pickup ? `Envío: no (recogida sin gastos en ${pickup})` : `Envío: ${s.fmt(s.shipping)}`,
+    pickup ? `Envío: no (recogida sin gastos en ${pickup})` : island ? `Envío: a consultar (${island})` : `Envío: ${s.fmt(s.shipping)}`,
   ].join('\n');
 }
