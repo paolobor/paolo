@@ -15,6 +15,11 @@
       "alt": "Cobot FAIRINO FR3WMS, render oficial de FAIRINO"
     },
     {
+      "src": "../../assets/products/fr3/fr3-soldadura.jpg",
+      "alt": "Cobot FAIRINO de la serie FR3 soldando una pieza en ángulo con una antorcha de soldadura sobre una mesa de trabajo",
+      "illustrative": true
+    },
+    {
       "src": "../../assets/products/fairino-oficial/fr3-bebidas.jpg",
       "alt": "Cobot FAIRINO en un robot de bebidas, sujetando el filtro del café con una pinza eléctrica (foto de FAIRINO)",
       "illustrative": true
